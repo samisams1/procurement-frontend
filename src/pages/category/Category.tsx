@@ -12,7 +12,7 @@ export const Category = () => (
   <>
     <Helmet>
       <title>
-        Category | Seblewongale
+        Category | itrustu2
       </title>
     </Helmet>
     <Box

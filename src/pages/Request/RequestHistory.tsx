@@ -7,7 +7,7 @@ export const RequestHistory = () => (
   <>
     <Helmet>
       <title>
-        Overview | Inventory
+        Overview | itrustu2
       </title>
     </Helmet>
     <Box

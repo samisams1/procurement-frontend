@@ -10,7 +10,7 @@ export const Profile = () => (
   <>
     <Helmet>
       <title>
-        Profile | Seblewengale
+        Profile | itrustu2
       </title>
     </Helmet>
     <Box

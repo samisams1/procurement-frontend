@@ -7,7 +7,7 @@ const NotFoud = () => (
   <>
     <Helmet>
       <title>
-        404 | Inventory
+        404 | itrustu2
       </title>
     </Helmet>
     <Box

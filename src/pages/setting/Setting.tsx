@@ -7,7 +7,7 @@ const Setting = () => (
   <>
     <Helmet>
       <title>
-        Settings | Seblewongale
+        Settings | itrustu2
       </title>
     </Helmet>
     <Box

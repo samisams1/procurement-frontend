@@ -9,7 +9,7 @@ export const Report = () => (
   <>
     <Helmet>
       <title>
-        Overview | Inventory
+        Overview | itrustu2
       </title>
     </Helmet>
     <Box

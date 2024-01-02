@@ -14,7 +14,7 @@ const Login = () => (
   >
     <Box p={3}>
       <Helmet>
-        <title>Login | Inventory</title>
+        <title>Login | itrustu2</title>
       </Helmet>
       <Box component="main" sx={{ flexGrow: 1, py: 2 }}>
         <Container maxWidth="xl" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
