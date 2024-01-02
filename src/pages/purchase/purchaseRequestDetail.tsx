@@ -25,16 +25,11 @@ const GET_PURCHASE_REQUEST = gql`
 `;
 
 const CREATE_QUOTATION = gql`
-mutation CreateQuotation($input: QuotationInput!) {
+mutation CreateQuotation($input: CreateQuotationInput!) {
   createQuotation(input: $input) {
     id
     supplierId
     customerId
-    shippingPrice
-    productPrices {
-      productId
-      price
-    }
   }
 }
 `;
@@ -150,12 +145,9 @@ const PurchaseRequestDetail: React.FC = () => {
       <Typography variant="h3" component="h1" align="center">
         Purchase Request Detail
       </Typography>
-      <Box mt={4}>
+      <Box mt={2}>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h5" component="h2">
-              Products
-            </Typography>
+          <Grid item xs={12} md={12}>
             {purchaseRequest.products.map((product: Product) => (
               <Box key={product.id} mt={2}>
                 <Typography>{product.title}</Typography>
@@ -170,24 +162,7 @@ const PurchaseRequestDetail: React.FC = () => {
                 />
               </Box>
             ))}
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h5" component="h2">
-              Suppliers
-            </Typography>
-            {purchaseRequest.suppliers.map((supplier) => (
-              <Box key={supplier.id} mt={2}>
-                <Typography>{supplier.user.username}</Typography>
-              </Box>
-            ))}
-          </Grid>
-        </Grid>
-        <Box mt={4}>
-          <Typography variant="h5" component="h2">
-            Quotation
-          </Typography>
-          {successMessage && <div>{successMessage}</div>}
-          {errorMessage && <div>{errorMessage}</div>}
+            <Box mt={2}>
           <Form onSubmit={handleSubmit}>
             <TextField
               type="number"
@@ -198,13 +173,20 @@ const PurchaseRequestDetail: React.FC = () => {
               fullWidth
               margin="normal"
               variant="outlined"
-             // error={!!errors.shippingPrice}
-            //  helperText={errors.shippingPrice}
             />
-            <Button type="submit">Create Quotation</Button>
+            <Grid item xs={12}>
+              <Button type="submit" text="Create Quotation" />
+            </Grid>
+
           </Form>
           
         </Box>
+        {successMessage && <div>{successMessage}</div>}
+          {errorMessage && <div>{errorMessage}</div>}
+          </Grid>
+          
+        </Grid>
+        
       </Box>
     </div>
   );

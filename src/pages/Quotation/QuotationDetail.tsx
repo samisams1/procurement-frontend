@@ -21,15 +21,22 @@ const GET_QUOTATION = gql`
   }
 `;
 const CREATE_ORDER = gql`
-  mutation CreateOrder($input: OrderInput!) {
+  mutation CreateOrder($input: CreateOrderInput!) {
     createOrder(input: $input) {
       id
-      
+      customerId
+      supplierId
+      orderDetails {
+        id
+        title
+        price
+        quantity
+      }
+      totalPrice
+      tax
     }
   }
 `;
-
-
 
 interface QuotationData {
   quotation: {
@@ -87,12 +94,12 @@ const QuotationDetail: React.FC = () => {
       })),
       totalPrice: calculateTotal(),
       tax: calculateVAT(),
-      status: "pending",
+      status: 'pending',
       shippingCost: shipping,
     };
 
     try {
-      console.log(input)
+      console.log(input);
       await createOrder({ variables: { input } });
       setSuccessMessage('Order created successfully!');
     } catch (error: any) {
@@ -102,11 +109,7 @@ const QuotationDetail: React.FC = () => {
 
   const { quotation } = data!;
 
-  const handleQuantityChange = (
-    index: number,
-    value: string,
-    field: string
-  ) => {
+  const handleQuantityChange = (index: number, value: string, field: string) => {
     const parsedValue = parseFloat(value);
     if (!isNaN(parsedValue)) {
       if (field === 'quantity') {
@@ -138,6 +141,15 @@ const QuotationDetail: React.FC = () => {
     });
     total += shipping;
     return total;
+  };
+
+  const calculateSubTotal = () => {
+    let subTotal = 0;
+    quotation.productPrices.forEach(({ product, price }) => {
+      const quantity = quantities[product.title] || 0;
+      subTotal += quantity * price;
+    });
+    return subTotal;
   };
 
   return (
@@ -183,7 +195,6 @@ const QuotationDetail: React.FC = () => {
               </Grid>
             ))}
 
-            
             <Grid item xs={12}>
               <Box display="flex" alignItems="center">
                 <TextField
@@ -197,6 +208,9 @@ const QuotationDetail: React.FC = () => {
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6" component="h2">
+                Subtotal: {calculateSubTotal()}
+              </Typography>
+              <Typography variant="h6" component="h2">
                 Total Price: {calculateTotal()}
               </Typography>
               <Typography variant="h6" component="h2">
@@ -204,14 +218,13 @@ const QuotationDetail: React.FC = () => {
               </Typography>
             </Grid>
             <Grid item xs={12}>
-            <Button type="submit" text="Submit" />
+              <Button type="submit" text="Submit" />
             </Grid>
           </Grid>
         </form>
+        <Typography>{successMessage}</Typography>
+      <Typography>{errorMessage}</Typography>
       </Paper>
-      <Typography>{successMessage}</Typography>
-          <Typography>{errorMessage}</Typography>
-
     </Box>
   );
 };
