@@ -9,9 +9,9 @@ import Popup from '../../Popup';
 import { gql, useQuery } from '@apollo/client';
 
 const ORDER_QUERY = gql`
-  query GetOrderDetailBySupplierId($supplierId: Float!) {
-    getOrderBySupplierId(supplierId: $supplierId) {
-      id
+query{
+  orders{
+     id
       status
       tax
       totalPrice
@@ -19,8 +19,8 @@ const ORDER_QUERY = gql`
       shippingCost
       customerId
     supplierId
-    }
   }
+}
 `;
 
 interface OrderInterface {
@@ -30,25 +30,21 @@ interface OrderInterface {
   totalPrice: number;
   createdAt: string;
   status: string;
-  newstatus: string;
+  newstatus:string;
 }
 
-const OrderList = () => {
+const AllOrderList = () => {
   const [openPopup, setOpenPopup] = useState(false);
   const [newData, setNewData] = useState<any>('');
-  const { loading, error, data } = useQuery(ORDER_QUERY, {
-    variables: { supplierId: 1 },
-  });
-
+  const { loading, error, data } = useQuery(ORDER_QUERY);
   const { currentUser } = useContext(UserContext);
   if (!currentUser) {
     return <Spinner />;
   }
-
   if (loading) return <Spinner />;
   if (error) return <p>{error.message}</p>;
 
-  const productList = data.getOrderBySupplierId.map((row: OrderInterface) => [
+  const productList = data.orders.map((row: OrderInterface) => [
     row.id,
     row.customerId,
     row.supplierId,
@@ -141,10 +137,10 @@ const OrderList = () => {
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >
-        {newData && <OrderDetail id={newData[0]}  status={newData[5]} newstatus={"comformed"} />}
+        {newData && <OrderDetail id={newData[0]} status={newData[5]} newstatus='approved' />}
       </Popup>
     </Grid>
   );
 };
 
-export default OrderList;
+export default AllOrderList;

@@ -66,11 +66,6 @@ export const navConfig = [
     icon: getIcon('icon-park-solid:transaction-order'),
   },
   {
-    title: 'Supplier',
-    path: 'attachement',
-    icon: getIcon('fluent-mdl2:review-request-solid'),
-  },
-  {
     title: 'User',
     path: 'user',
     icon: getIcon('fa:users'),

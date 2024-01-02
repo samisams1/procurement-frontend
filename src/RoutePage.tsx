@@ -8,7 +8,6 @@ import Dashboard from './pages/dashboard';
 import { Report } from './pages/report/Report';
 import { RequestHistory } from './pages/Request/RequestHistory';
 import ProtectedRoute from './auth/ProtectedRoute';
-import { Order } from './pages/order';
 import { Category } from './pages/category/Category';
 import Setting from './pages/setting/Setting';
 //import { Profile } from './pages/profile/Profile';
@@ -26,6 +25,7 @@ import QuotationDetail from './pages/Quotation/QuotationDetail';
 import { Profile } from './pages/profile/Profile';
 import Register from './pages/account/Register';
 import PurchaseRequest from './pages/purchase/purchaseRequest';
+import Order from './pages/order';
 export default function RoutePage() {
 
     return useRoutes([
