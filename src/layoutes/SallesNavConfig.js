@@ -20,11 +20,6 @@ export const SallesNavConfig = [
     icon: getIcon('ri:product-hunt-fill'),
   },
   {
-    title: 'Requests',
-    path: 'purchaseRequestList',
-    icon: getIcon('fluent-mdl2:review-request-solid'),
-  },
-  {
     title: 'Quotation',
     path: 'quotationList',
     icon: getIcon('foundation:burst-sale'),
