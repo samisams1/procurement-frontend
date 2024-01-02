@@ -26,6 +26,7 @@ import { Profile } from './pages/profile/Profile';
 import Register from './pages/account/Register';
 import PurchaseRequest from './pages/purchase/purchaseRequest';
 import Order from './pages/order';
+import NotificationDetail from './pages/notification';
 export default function RoutePage() {
 
     return useRoutes([
@@ -49,6 +50,7 @@ export default function RoutePage() {
               { path:'/purchaseRequestDetail/:id', element: <ProtectedRoute  element={<PurchaseRequestDetail />} /> },
               { path:'/quotationList', element: <ProtectedRoute  element={<QuotationList />} /> },
               { path:'/quotationDetail/:id', element: <ProtectedRoute  element={<QuotationDetail />} /> },
+              { path:'/notificationDetail', element: <ProtectedRoute  element={<NotificationDetail />} /> },
       
             ],
           },

@@ -27,7 +27,7 @@ const GET_ORDER_QUERY = gql`
   }
 `;
 
-const OrderDetail = ({ id, status, newstatus }: { id: number;status :string; newstatus: string }) => {
+const OrderDetail = ({ id, status, newstatus }: { id: number; status: string; newstatus: string }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const { currentUser } = useContext(UserContext);
@@ -82,11 +82,11 @@ const OrderDetail = ({ id, status, newstatus }: { id: number;status :string; new
         </Grid>
       </Grid>
     );
-    message = 'Admin approval pending';
-  } else if (status === 'confirmed') {
-    message = 'Waiting for admin approval';
+    message = 'Please revie the order and comform';
+  } else if (status === 'comformed') {
+    message = 'You comformed the order Waiting for admin approval!';
   } else if (status === 'approved') {
-    message = 'Admin approved';
+    message = 'the admin aproved wait for customer make payments';
   }
 
   return (
@@ -135,18 +135,27 @@ const OrderDetail = ({ id, status, newstatus }: { id: number;status :string; new
           </Grid>
         ))}
 
-
         <Grid container justifyContent="center">
           <Grid item>
             <h3>Total Amount = {totalAmount}</h3>
           </Grid>
         </Grid>
-      </Form>
-      <Typography>{successMessage}</Typography>
-      <Typography>{errorMessage}</Typography>
-      <Typography>{message}</Typography>
-      {buttonArea}
 
+        <Typography>{successMessage}</Typography>
+        <Typography>{errorMessage}</Typography>
+        <Typography style={{ color: 'green', textAlign: 'center' }}>{message}</Typography>
+        {buttonArea && (
+          <Grid container justifyContent="center">
+            <Grid item>
+              <Button
+                type="submit"
+                text="Accept"
+                style={{ backgroundColor: '#9ac96f', color: 'white' }}
+              />
+            </Grid>
+          </Grid>
+        )}
+      </Form>
     </Grid>
   );
 };
