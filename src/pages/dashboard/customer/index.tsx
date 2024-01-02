@@ -1,17 +1,13 @@
 import React from 'react';
 import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
-//import { StoreProducts } from '../../../components/scensComponents/dashboard/store/TotalProducts';
-//import { TotalOrders } from '../../../components/scensComponents/dashboard/TotalOrders';
 import { Helmet } from 'react-helmet';
-import { TotalOrders } from '../../../components/pageComponents/dashboard/TotalOrders';
+import { TotalUser } from '../../../components/pageComponents/dashboard/TotalUsers';
 
-
-
-export const StoreDashboard = () => (
+export const Customer = () => (
   <>
     <Helmet>
       <title>
-        Overview | Inventory
+        Dashboard | Procurement
       </title>
     </Helmet>
     <Box
@@ -29,9 +25,9 @@ export const StoreDashboard = () => (
           <Grid
             xs={12}
             sm={6}
-            lg={6}
+            lg={3}
           >
-            <TotalOrders
+            <TotalUser
               difference={16}
               positive={false}
               sx={{ height: '100%' }}
@@ -41,14 +37,35 @@ export const StoreDashboard = () => (
           <Grid
             xs={12}
             sm={6}
-            lg={6}
+            lg={3}
           >
-            <TotalOrders
+            <TotalUser
+              difference={16}
+              positive={false}
+              sx={{ height: '100%' }}
+              value="1.6k"
+            />
+          </Grid>
+          <Grid
+            xs={12}
+            sm={6}
+            lg={3}
+          >
+            <TotalUser
+              sx={{ height: '100%' }}
+              value={75.5}
+            />
+          </Grid>
+          <Grid
+            xs={12}
+            sm={6}
+            lg={3}
+          >
+            <TotalUser
               sx={{ height: '100%' }}
               value="$15k"
             />
           </Grid>
-         
         </Grid>
       </Container>
     </Box>

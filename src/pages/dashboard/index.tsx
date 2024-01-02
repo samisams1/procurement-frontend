@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import Spinner from '../../components/Spinner';
-//import { AdminDashboard } from './admin';
-import { SellerDashboard } from './sale';
-import { StoreDashboard } from './store';
 import { UserContext } from '../../auth/UserContext';
 import { AdminDashboard } from './admin';
+import { Customer } from './customer';
+import { Supplier } from './supplier';
 
 const Dashboard = () => {
     const { currentUser } = useContext(UserContext);
@@ -15,10 +14,10 @@ const Dashboard = () => {
 
   let dashboardComponent;
 
-  if (currentUser.role === 'SELLER') {
-    dashboardComponent = <SellerDashboard />;
-  } else if (currentUser.role === 'STORE') {
-    dashboardComponent = <StoreDashboard />;
+  if (currentUser.role === 'SUPPLIER') {
+    dashboardComponent = <Supplier />;
+  } else if (currentUser.role === 'CUSTOMER') {
+    dashboardComponent = <Customer />;
   } else if (currentUser.role === 'ADMIN') {
     dashboardComponent = <AdminDashboard />;
   }

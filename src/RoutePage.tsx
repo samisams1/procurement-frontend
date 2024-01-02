@@ -50,7 +50,7 @@ export default function RoutePage() {
               { path:'/purchaseRequestDetail/:id', element: <ProtectedRoute  element={<PurchaseRequestDetail />} /> },
               { path:'/quotationList', element: <ProtectedRoute  element={<QuotationList />} /> },
               { path:'/quotationDetail/:id', element: <ProtectedRoute  element={<QuotationDetail />} /> },
-              { path:'/notificationDetail', element: <ProtectedRoute  element={<NotificationDetail />} /> },
+              { path:'/notificationDetail/:id', element: <ProtectedRoute  element={<NotificationDetail />} /> },
       
             ],
           },

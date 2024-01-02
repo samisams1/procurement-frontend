@@ -1,37 +1,66 @@
 import React from 'react';
 import { Typography, Box, Button, Grid } from '@mui/material';
+import { useParams } from 'react-router-dom';
+import { gql, useQuery } from '@apollo/client';
+import Spinner from '../../components/Spinner';
+
+const ORDER_QUERY = gql`
+  query GetOrderById($id: Float!) {
+    getOrderById(id: $id) {
+      id
+      supplierId
+      customerId
+      totalPrice
+      shippingCost
+      status
+      orderDetails {
+        price
+        title
+        quantity
+      }
+    }
+  }
+`;
+
+interface OrderInterface {
+  id: string;
+  customerId: string;
+  supplierId: string;
+  totalPrice: number;
+  createdAt: string;
+  status: string;
+  shippingCost: number;
+  orderDetails: {
+    price: number;
+    title: string;
+    quantity: number;
+  }[];
+}
 
 const SupplierNotificationDetail = () => {
+  const { id } = useParams<{ id?: string }>();
+
+  const { loading, error, data } = useQuery(ORDER_QUERY, {
+    variables: { id: Number(id) },
+  });
+
   const handlePay = () => {
     // Logic to handle payment
     console.log('Payment logic goes here');
   };
 
-  // Product data
-  const products = [
-    {
-      name: 'Product 1',
-      price: 25,
-      quantity: 5,
-    },
-    {
-      name: 'Product 2',
-      price: 40,
-      quantity: 10,
-    },
-    {
-      name: 'Product 3',
-      price: 50,
-      quantity: 11,
-    },
-  ];
+  if (loading) return <Spinner />;
+  if (error) return <p>{error.message}</p>;
 
-  // Calculate total price
-  const totalPrice = products.reduce((total, product) => {
-    return total + product.price * product.quantity;
-  }, 0);
+  const order = data?.getOrderById as OrderInterface;
+  const products = order.orderDetails.map((product) => ({
+    name: product.title.toString(),
+    price: product.price,
+    quantity: product.quantity,
+  }));
 
-  const shippingPrice = 25;
+  const totalPrice = order.totalPrice;
+  const shippingPrice = order.shippingCost;
   const totalAmount = totalPrice + shippingPrice;
 
   return (
@@ -55,17 +84,11 @@ const SupplierNotificationDetail = () => {
           </Typography>
         </Grid>
         <Grid item xs={6}>
-          <Typography variant="body1">
-            4155dddedef
-          </Typography>
-          <Typography variant="body1">
-            555ddd555
-          </Typography>
-          <Typography variant="body1">
-            Your example date
-          </Typography>
+          <Typography variant="body1">{order.id}</Typography>
+          <Typography variant="body1">{order.customerId}</Typography>
+          <Typography variant="body1">{order.createdAt}</Typography>
           <Typography variant="body1" sx={{ mt: 4 }}>
-            Samisams
+            {order.supplierId}
           </Typography>
         </Grid>
       </Grid>
@@ -111,8 +134,8 @@ const SupplierNotificationDetail = () => {
           Company Name: Yosis Procurement
         </Typography>
         {/* Logo of the company goes here */}
-        {/* <img src="company_logo.png" alt="Company Logo" /> */}
-      </Box>
+        {/* <img src="company_logo.png" alt="Company Logo" />    */}
+        </Box>
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'green' }}>
           Status: Admin Approved - Please Make Payment

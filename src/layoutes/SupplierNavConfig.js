@@ -1,8 +1,9 @@
-const getIcon = (name) => ({
-  icon: name,
-});
+import React from 'react';
+import Iconify from "../components/Iconify";
 
-export const StoreNavConfig = [
+const getIcon = (name) => <Iconify icon={name} width={22} height={22} color="#3c44b1" />;
+
+export const SupplierNavConfig = [
   {
     title: 'Dashboard',
     path: '/',
@@ -28,4 +29,10 @@ export const StoreNavConfig = [
     path: 'setting',
     icon: getIcon('uiw:setting'),
   },
+  {
+    title: 'Report',
+    path: 'report',
+    icon: getIcon('mdi:report-areaspline-variant'),
+  },
 ];
+  

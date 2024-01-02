@@ -1,10 +1,12 @@
 import React from 'react';
 import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { TotalUser } from '../../../components/pageComponents/dashboard/TotalUsers';
 import { TotalPurchaseRequest } from '../../../components/pageComponents/dashboard/supplier/TotalPurchaseRequest';
+import { TotalOrders } from '../../../components/pageComponents/dashboard/supplier/TotalOrder';
+import { TotalSales } from '../../../components/pageComponents/dashboard/supplier/Totalselles';
+import { PaymentWaitt } from '../../../components/pageComponents/dashboard/supplier/PaymentWaiting';
 
-export const AdminDashboard = () => (
+export const Supplier = () => (
   <>
     <Helmet>
       <title>
@@ -40,7 +42,7 @@ export const AdminDashboard = () => (
             sm={6}
             lg={3}
           >
-            <TotalUser
+            <TotalOrders
               difference={16}
               positive={false}
               sx={{ height: '100%' }}
@@ -52,7 +54,7 @@ export const AdminDashboard = () => (
             sm={6}
             lg={3}
           >
-            <TotalUser
+            <PaymentWaitt
               sx={{ height: '100%' }}
               value={75.5}
             />
@@ -62,7 +64,7 @@ export const AdminDashboard = () => (
             sm={6}
             lg={3}
           >
-            <TotalUser
+            <TotalSales
               sx={{ height: '100%' }}
               value="$15k"
             />
