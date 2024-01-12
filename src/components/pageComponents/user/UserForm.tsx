@@ -34,6 +34,7 @@ export const UserForm = () => {
     password: '',
     role: RoleEnum.CUSTOMER,
     status: '',
+    categoryId: 1,
   };
 
   const validate = (fieldValues: userInterface = values): boolean => {
@@ -122,6 +123,17 @@ export const UserForm = () => {
                 error={errors.role}
                // fullWidth // Make input full width
               // style={{ marginBottom: '1rem' }}
+              />
+              <Controls.Select
+                name="category"
+                label="Category"
+                value={values.role}
+                onChange={handleInputChange}
+                options={[
+                  { id: '1', label: 'Construction', value: '1' },
+                  { id: '2', label: 'Electronics', value: '2' },
+                ]}
+                error={errors.role}
               />
               <Controls.Input
                 name="username"

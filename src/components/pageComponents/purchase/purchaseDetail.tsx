@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
-import { useParams } from 'react-router-dom';
 import { Typography, Box, TextField, Grid, Table, TableHead, TableRow, TableCell, TableBody, Input } from '@mui/material';
-import Button from '../../components/Button';
-import { Form, useForm } from '../../components/useForm';
+import { Form, useForm } from '../../useForm';
+import Button from '../../Button';
 
 const GET_PURCHASE_REQUEST = gql`
   query GetPurchaseRequestById($id: Float!) {
@@ -41,8 +40,6 @@ mutation CreateQuotation($input: CreateQuotationInput!) {
   }
 }
 `;
-
-
 interface PurchaseRequestData {
   purchaseRequest: {
     id: string;
@@ -67,7 +64,6 @@ interface PurchaseRequestData {
     }[];
   };
 }
-
 interface QuotationInterface {
   price: string;
   shippingPrice: string;
@@ -86,17 +82,14 @@ interface Product {
       model  :string;
 }
 
-const PurchaseRequestDetail: React.FC = () => {
-  const { id } = useParams<{ id?: string }>();
+const PurchaseRequestDetailForm: React.FC<{ id: number | null, status:string,customerId:string,supplierId:number }> = ({ id,status,customerId,supplierId }) => {
   const [prices, setPrices] = useState<{ [key: string]: string }>({});
-
   const [createQuotation] = useMutation(CREATE_QUOTATION);
-  
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
+  //const [priceError, setPriceError] = useState('');
   const { loading, error, data } = useQuery<PurchaseRequestData>(GET_PURCHASE_REQUEST, {
-    variables: { id: parseFloat(id || '0') },
+    variables: { id: id },
   });
 
   const initialFormValues: QuotationInterface = {
@@ -140,12 +133,29 @@ const PurchaseRequestDetail: React.FC = () => {
   }
  
   const { purchaseRequest } = data!;
+  const shippingPrice = parseFloat(values.shippingPrice);
+  const calculateSubtotal = (): number => {
+    let subtotal = 0;
+    purchaseRequest.products.forEach((product) => {
+      const price = parseFloat(prices[product.id]);
+    
+      if (!isNaN(price)) {
+        subtotal += price * product.quantity;
+      }
+    });
+    return subtotal + shippingPrice;
+  };
+  const subtotal = calculateSubtotal();
+  const tax = 0.15 * subtotal;
+  const total = tax +subtotal;
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     const input = {
-      supplierId: 1, // Replace with the actual supplier ID
-      customerId: 1, // Replace with the actual customer ID
-      status:"replaed",
+      supplierId: supplierId, 
+      customerId: customerId, 
+      status:"comformed",
+      requestId:id,
       shippingPrice: parseFloat(values.shippingPrice),
       productPrices: Object.keys(prices).map((key) => ({
         productId: parseInt(key),
@@ -156,7 +166,6 @@ const PurchaseRequestDetail: React.FC = () => {
     try {
       const response = await createQuotation({ variables: { input } });
       const quotation = response.data.createQuotation;
-  
       setSuccessMessage('Quotation created successfully!');
       resetForm();
       setPrices({});
@@ -166,11 +175,12 @@ const PurchaseRequestDetail: React.FC = () => {
       console.error('Mutation error:', error);
     }
   };
+ 
   return (
     <div>
-      <Typography variant="h3" component="h1" align="center">
-        Purchase Request Detail
-      </Typography>
+      {
+      status ==="comformed"?<div>You Comformed the request you can check it in the Order</div>:
+    <div>
       <Box mt={2}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={12}>
@@ -191,47 +201,29 @@ const PurchaseRequestDetail: React.FC = () => {
   <TableBody>
             {purchaseRequest.products.map((product: Product) => (
              <TableRow  sx={{ height: '1px' }}>
-             <TableCell sx={{  padding: '1px', height: '2px' }}>
-              {product.title}
-              </TableCell>
-              <TableCell sx={{  padding: '1px', height: '2px' }}>
-              {product.title}
-              </TableCell>
-              <TableCell sx={{  padding: '1px', height: '2px' }}>
-              {product.code}
-              </TableCell>
-              <TableCell sx={{  padding: '1px', height: '2px' }}>
-              {product.partNumber}
-              </TableCell>
-              <TableCell sx={{  padding: '1px', height: '2px' }}>
-              {product.uom}
-              </TableCell>
-              <TableCell sx={{  padding: '1px', height: '2px' }}>
-              {product.quantity}
-              </TableCell>
-              <TableCell sx={{  padding: '1px', height: '2px' }}>
-              {product.quantity}
-              </TableCell>
+              <TableCell sx={{  padding: '1px', height: '2px' }}> image</TableCell>
+              <TableCell sx={{  padding: '1px', height: '2px' }}>{product.title}</TableCell>
+              <TableCell sx={{  padding: '1px', height: '2px' }}>{product.code} </TableCell>
+              <TableCell sx={{  padding: '1px', height: '2px' }}>{product.partNumber}</TableCell>
+              <TableCell sx={{  padding: '1px', height: '2px' }}>{product.uom}</TableCell>
+              <TableCell sx={{  padding: '1px', height: '2px' }}> more </TableCell>
+              <TableCell sx={{  padding: '1px', height: '2px' }}>{product.quantity}</TableCell>
               <TableCell sx={{  padding: '1px', height: '2px' }}>
               <Input
-   type="number"
-   placeholder="Please Enter Price"
-   value={prices[product.id] || ''}
-   onChange={(e) => handlePriceChange(product.id, e)}
-/>Birr
+               type="number"
+               placeholder="Please Enter Price"
+               value={prices[product.id] || ''}
+               onChange={(e) => handlePriceChange(product.id, e)} 
+              //  /error={priceError !== ''}
+               />Birr
               </TableCell>
-              <TableCell sx={{  padding: '1px', height: '2px' }}>
-              {Number(product.quantity) * Number(prices) }
-              </TableCell>
-              </TableRow>   
-            
+              <TableCell sx={{  padding: '1px', height: '2px' }}>{Number(product.quantity) * Number(prices)}</TableCell>
+              </TableRow>     
             ))}
 </TableBody>
 </Table>
             <Box mt={2}>
           <Form onSubmit={handleSubmit}>
-            <Typography>Total 200000 Birr</Typography>
-            <Typography>Vat  3000 Birr</Typography>
             <TextField
               type="number"
               label="Shipping Price"
@@ -242,8 +234,9 @@ const PurchaseRequestDetail: React.FC = () => {
               margin="normal"
               variant="outlined"
             />
-          
-            <Typography>Total (inc,Shipping 23000 Birr)</Typography>
+            <Typography>Subtotal: ${subtotal.toFixed(2)}</Typography>
+            <Typography>Tax: ${tax.toFixed(2)}</Typography>
+            <Typography>Total: ${total.toFixed(2)}</Typography>
               <Grid item xs={12}>
               <Button type="submit" text="Send Quotation" />
             </Grid>
@@ -257,7 +250,8 @@ const PurchaseRequestDetail: React.FC = () => {
         
       </Box>
     </div>
+     }
+    </div>
   );
 };
-
-export default PurchaseRequestDetail;
+export default PurchaseRequestDetailForm;

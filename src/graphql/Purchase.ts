@@ -1,27 +1,36 @@
+import { gql } from '@apollo/client';
 
-  import gql from "graphql-tag"
-export const PURCHASE_QUERY = gql`
-query{
-    purchases{
+const PURCHASE_REQUEST_BY_SUPPLIER_QUERY = gql`
+  query PurchaseRequestBySupplier($id: Float!) {
+    purchaseRequestBySupplier(id: $id) {
       id
-      quantity
-      product{
-        name
-        category{
-          name
+      status
+      createdAt
+      user {
+        id
+        username
+      }
+      products {
+        id
+        title
+        code
+        partNumber
+        uom
+        quantity
+        mark
+        description
+        manufacturer
+        model
+      }
+      suppliers {
+        id
+        user {
+          id
+          username
         }
       }
-      store{
-        name
-      }
-      purchaseDate
     }
   }
-`
-export const CREATE_PURCHASE_MUTATION = gql`
-  mutation CreatePurchase($quantity: Int!, $productId: Int!, $storeId: Int!) {
-    createPurchase(input: { quantity: $quantity, productId: $productId, storeId: $storeId }) {
-      quantity
-    }
-  }
-`
+`;
+
+export default PURCHASE_REQUEST_BY_SUPPLIER_QUERY;

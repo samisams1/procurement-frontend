@@ -37,7 +37,7 @@ interface OrderInterface {
   }[];
 }
 
-const CustomerNotificationDetail = () => {
+const SupplierNotificationDetail = () => {
   const { id } = useParams<{ id?: string }>();
 
   const { loading, error, data } = useQuery(ORDER_QUERY, {
@@ -150,4 +150,4 @@ const CustomerNotificationDetail = () => {
   );
 };
 
-export default CustomerNotificationDetail;
+export default SupplierNotificationDetail;

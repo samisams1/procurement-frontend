@@ -7,6 +7,7 @@ const GET_PURCHASE_REQUESTS = gql`
   query GetPurchaseRequests {
     purchaseRequests {
       id
+      status
       user {
         username
       }
@@ -27,6 +28,7 @@ const GET_PURCHASE_REQUESTS = gql`
 
 interface PurchaseRequest {
   id: string;
+  status: string;
   user: {
     username: string;
   };
@@ -64,9 +66,7 @@ const PurchaseRequestList: React.FC = () => {
 
   return (
     <div>
-      <Typography variant="h3" component="div" style={{ color: '##3c44b1' }}>
-                Requests
-              </Typography>
+      <Typography variant="h3" component="div" style={{ color: '##3c44b1' }}>Requests</Typography>
       <Grid container spacing={2}>
         {purchaseRequests.map((request) => (
           <Grid item xs={12} sm={6} md={4} key={request.id} onClick={() => handleClick(request.id)}>

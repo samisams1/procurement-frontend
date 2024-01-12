@@ -51,7 +51,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCl
   const renderContent = (
     <div> 
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
-        <img src={require('../assets/inventory.png')} alt="logo" />
+        <img src={require('../assets/pro.png')} alt="logo" />
         <h1 style={{ color: '#9c27b0' }}> </h1>
       </Box>
       <Box sx={{ mb: 5, mx: 2.5 }}>

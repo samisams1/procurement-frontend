@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { useParams } from 'react-router-dom';
-import { Typography, Box, TextField, Grid, Paper } from '@mui/material';
+import { Typography, Box, TextField, Grid, Checkbox, Table, TableHead, TableRow, TableCell, TableBody, } from '@mui/material';
 import Button from '../../components/Button';
 
 const GET_QUOTATION = gql`
@@ -14,12 +14,23 @@ const GET_QUOTATION = gql`
       productPrices {
         price
         product {
+          id
           title
+          code
+          partNumber
+          uom
+          quantity
+          mark
+          Description
+          manufacturer
+          model
+          status
         }
       }
     }
   }
 `;
+
 const CREATE_ORDER = gql`
   mutation CreateOrder($input: CreateOrderInput!) {
     createOrder(input: $input) {
@@ -45,7 +56,17 @@ interface QuotationData {
     productPrices: {
       price: number;
       product: {
+        id: string;
         title: string;
+        code:string;
+            partNumber  :string;
+            uom :string;
+            quantity :number;
+            mark  :string;
+            description :string;
+            manufacturer  :string;
+            model  :string;
+            status :string;
       };
     }[];
   };
@@ -54,12 +75,17 @@ interface QuotationData {
 const QuotationDetail: React.FC = () => {
   const { id } = useParams<{ id?: string }>();
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+  const [selectedItems, setSelectedItems] = useState<{ [key: string]: boolean }>({});
   const [shipping, setShipping] = useState<number>(0);
 
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const [createOrder] = useMutation(CREATE_ORDER);
+  const[count,setCount]=useState(0);
+
+  const [showTitleColumn, setShowTitleColumn] = useState(true);
+  const [showPriceColumn, setShowPriceColumn] = useState(true);
 
   const { loading, error, data } = useQuery<QuotationData>(GET_QUOTATION, {
     variables: { id: parseFloat(id || '0') },
@@ -69,6 +95,7 @@ const QuotationDetail: React.FC = () => {
       setShipping(data.quotation.shippingPrice);
     }
   }, [data]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -84,10 +111,20 @@ const QuotationDetail: React.FC = () => {
       setErrorMessage('Quotation data not found!');
       return;
     }
+
+    const selectedProducts = data.quotation.productPrices.filter(
+      (product) => selectedItems[product.product.title]
+    );
+
+    if (selectedProducts.length === 0) {
+      setErrorMessage('Please select at least one product!');
+      return;
+    }
+
     const input = {
       customerId: 1,
       supplierId: 1,
-      orderDetails: data.quotation.productPrices.map(({ product, price }) => ({
+      orderDetails: selectedProducts.map(({ product, price }) => ({
         title: product.title,
         price,
         quantity: quantities[product.title] || 0,
@@ -99,7 +136,6 @@ const QuotationDetail: React.FC = () => {
     };
 
     try {
-      console.log(input);
       await createOrder({ variables: { input } });
       setSuccessMessage('Order created successfully!');
     } catch (error: any) {
@@ -109,123 +145,203 @@ const QuotationDetail: React.FC = () => {
 
   const { quotation } = data!;
 
-  const handleQuantityChange = (index: number, value: string, field: string) => {
+  /*const handleQuantityChange = (productTitle: string, value: string) => {
     const parsedValue = parseFloat(value);
     if (!isNaN(parsedValue)) {
-      if (field === 'quantity') {
-        setQuantities((prevQuantities) => ({
-          ...prevQuantities,
-          [quotation.productPrices[index].product.title]: parsedValue,
-        }));
-      }
+      setQuantities((prevQuantities) => ({
+        ...prevQuantities,
+        [productTitle]: parsedValue,
+      }));
     } else {
-      if (field === 'quantity') {
-        setQuantities((prevQuantities) => ({
-          ...prevQuantities,
-          [quotation.productPrices[index].product.title]: 0,
-        }));
-      }
+      setQuantities((prevQuantities) => ({
+        ...prevQuantities,
+        [productTitle]: 0,
+      }));
     }
+  }; */
+
+  const handleCheckboxChange = (productTitle: string, checked: boolean) => {
+    setSelectedItems((prevSelectedItems) => ({
+      ...prevSelectedItems,
+      [productTitle]: checked,
+    }));
   };
 
-  const calculateVAT = () => {
-    const total = calculateTotal();
-    return total * 0.15; // Assuming 15% VAT
-  };
-
+ 
   const calculateTotal = () => {
     let total = 0;
     quotation.productPrices.forEach(({ product, price }) => {
-      const quantity = quantities[product.title] || 0;
+      const quantity = product.quantity;
       total += quantity * price;
     });
     total += shipping;
     return total;
   };
-
+  const calculateVAT = () => {
+    const total = calculateTotal();
+    return total * 0.15; // Assuming 15% VAT
+  };
   const calculateSubTotal = () => {
     let subTotal = 0;
     quotation.productPrices.forEach(({ product, price }) => {
-      const quantity = quantities[product.title] || 0;
+      const quantity = product.quantity;
       subTotal += quantity * price;
     });
     return subTotal;
   };
+ const handleTitleColumnToggle = () => {
+    setShowTitleColumn(!showTitleColumn);
+  };
+
+  const handlePriceColumnToggle = () => {
+    setShowPriceColumn(!showPriceColumn);
+  };
 
   return (
-    <Box display="flex" justifyContent="center">
-      <Paper elevation={3} style={{ padding: '20px' }}>
-        <Typography component="p" align="left" gutterBottom>
-          This is a quotation result from the supplier, which means the supplier has added their price.
-        </Typography>
-        <Typography variant="h4" component="h1" align="center" gutterBottom>
-          Purchase by Filling the Amount
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
-            {quotation.productPrices.map(({ product, price }, index) => (
-              <Grid item xs={12} key={index}>
-                <Box display="flex" alignItems="center">
-                  <TextField
-                    type="text"
-                    value={product.title.toString()}
-                    placeholder="Product Title"
-                    variant="filled"
-                    disabled
-                  />
-                  <Box mx={2} />
-                  <TextField
-                    type="text"
-                    value={price.toString()}
-                    placeholder="Price"
-                    variant="filled"
-                    disabled
-                  />
-                  <Box mx={2} />
-                  <TextField
-                    type="number"
-                    value={quantities[product.title] || ''}
-                    placeholder="Quantity"
-                    variant="outlined"
-                    onChange={(e) =>
-                      handleQuantityChange(index, e.target.value, 'quantity')
-                    }
-                  />
-                </Box>
-              </Grid>
-            ))}
+    <div>
+      <form onSubmit={handleSubmit}>
+      <Typography variant="h3" textAlign="center"><span style={{ textDecoration: "underline" }}>Quotation  / Request Accepted Form</span> </Typography>
 
-            <Grid item xs={12}>
-              <Box display="flex" alignItems="center">
-                <TextField
-                  type="text"
-                  value={shipping.toString()}
-                  placeholder="Shipping Cost"
-                  variant="filled"
-                  disabled
-                />
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" component="h2">
-                Subtotal: {calculateSubTotal()}
-              </Typography>
-              <Typography variant="h6" component="h2">
-                Total Price: {calculateTotal()}
-              </Typography>
-              <Typography variant="h6" component="h2">
-                VAT (15%): {calculateVAT()}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Button type="submit" text="Submit" />
-            </Grid>
+        {successMessage && (
+          <Typography color="success">
+            {successMessage}
+          </Typography>
+        )}
+        {errorMessage && (
+          <Typography color="error">
+            {errorMessage}
+          </Typography>
+        )}
+<Box display="flex" alignItems="center" borderBottom={1} pb={1} mb={2}>
+  <Grid container>
+    <Grid item xs={4}>
+      <Typography mt={2}>Requested for/Project: <span style={{ textDecoration: "underline" }}> Samisams</span> </Typography>
+    </Grid>
+<Grid item xs={4} textAlign="center">
+  <Typography mt={2} >
+   Item Category: <span style={{ textDecoration: "underline" }}> Construction</span> 
+  </Typography>
+</Grid>
+    <Grid item xs={4} textAlign="right">
+      <Typography mt={2}  >No: <span style={{ textDecoration: "underline" }}> 525</span> </Typography>
+    </Grid>
+  </Grid>
+</Box>
+<div>
+        <label>
+          <Checkbox checked={showTitleColumn} onChange={handleTitleColumnToggle} />
+          Show Title Column
+        </label>
+        <label>
+          <Checkbox checked={showPriceColumn} onChange={handlePriceColumnToggle} />
+          Show Price Column
+        </label>
+      </div>
+        <Box mt={2}>
+          <Grid container spacing={2}>
+    <Table>
+    <TableHead>
+    <TableRow sx={{ backgroundColor: 'primary.main' }} >
+    <TableCell sx={{ padding: '4px', height: '32px' }}>#</TableCell>
+    <TableCell sx={{ padding: '4px', height: '32px' }}>Selcet</TableCell>
+    {showTitleColumn && <TableCell sx={{ padding: '4px', height: '32px' }}>Image</TableCell>}
+    {showTitleColumn && <TableCell>Title</TableCell>}
+    {showTitleColumn &&  <TableCell sx={{ padding: '4px', height: '32px' }}>Item Code</TableCell>}
+    {showTitleColumn && <TableCell sx={{ padding: '4px', height: '32px' }}>Part Number</TableCell>}
+
+      {showTitleColumn && <TableCell sx={{ padding: '4px', height: '32px' }}>UOM</TableCell>}
+      {showTitleColumn && <TableCell sx={{ padding: '4px', height: '32px' }}>Qty</TableCell>}
+      {showTitleColumn && <TableCell sx={{ padding: '4px', height: '32px' }}>Price</TableCell>} 
+      {showTitleColumn && <TableCell sx={{ padding: '4px', height: '32px' }}>Sub total</TableCell>}
+
+     </TableRow>
+  </TableHead>
+ 
+            {quotation.productPrices.map(({ product, price },index) => (
+  <TableBody key={product.title}>
+  <TableRow>
+    <TableCell sx={{ padding: '0px', height: '24px' }}>
+      {index + 1}
+    </TableCell>
+
+    <TableCell sx={{ padding: '0px', height: '24px' }}>
+          <Checkbox
+            checked={selectedItems[product.title] || false}
+            onChange={(e) => {
+              if (product.status === 'wait') {
+                handleCheckboxChange(product.title, e.target.checked);
+              }
+            }}
+            disabled={product.status !== 'wait'}
+          />
+        </TableCell>
+    {showTitleColumn && <TableCell sx={{ padding: '0px', height: '24px' }}>{"image.jpeg"}</TableCell>}
+    <TableCell sx={{ padding: '0px', height: '24px' }}>
+                    {showTitleColumn && <TableCell>{product.title}</TableCell>}
+                    </TableCell>
+                    {showTitleColumn &&     <TableCell sx={{ padding: '0px', height: '24px' }}>
+                   {product.code}
+                    </TableCell>}
+                    {showTitleColumn &&   <TableCell sx={{ padding: '0px', height: '24px' }}>
+                      {product.status}
+                    </TableCell> }
+
+                    {showTitleColumn &&  <TableCell sx={{ padding: '0px', height: '24px' }}>
+                    {product.uom}
+                    </TableCell>}
+                    {showTitleColumn &&  <TableCell sx={{ padding: '0px', height: '24px' }}>
+                    {product.quantity}
+                    </TableCell>}
+                    {showTitleColumn && <TableCell sx={{ padding: '0px', height: '24px' }}>
+                    {price}
+                    </TableCell>}
+                    {showTitleColumn &&  <TableCell sx={{ padding: '0px', height: '24px' }}>
+                     {price * product.quantity}
+                    </TableCell>}
+  </TableRow>
+</TableBody>
+            ))}
+  <TableBody/>
+  </Table>
           </Grid>
-        </form>
-        <Typography>{successMessage}</Typography>
-      <Typography>{errorMessage}</Typography>
-      </Paper>
-    </Box>
+        </Box>
+      <Box mt={2} textAlign="right">
+    <Typography>Subtotal: ${calculateSubTotal().toFixed(2)}</Typography>
+    <Typography>VAT: ${calculateVAT().toFixed(2)}</Typography>
+    <Typography>Shipping Price: ${200}</Typography>
+    <Typography>Total: ${calculateTotal().toFixed(2)}</Typography>
+  </Box>
+  <Box display="flex" alignItems="center"  mb={2}>
+  <Grid container>
+    <Grid item xs={4}>
+      <Typography mt={2}>Requested  Date : 2024/05/25</Typography>
+    </Grid>
+    <Grid item xs={4} textAlign="center">
+      <Typography mt={2}>Checked  Date : 2024/05/25</Typography>
+    </Grid>
+    <Grid item xs={4} textAlign="right">
+      <Typography mt={2}>Approved Date : 2024/05/25</Typography>
+    </Grid>
+  </Grid>
+</Box>
+  <Box display="flex" alignItems="center" borderBottom={1} pb={1} mb={2}>
+  <Grid container>
+    <Grid item xs={4}>
+      <Typography mt={2}>Requested by: <span style={{ textDecoration: "underline" }}> Samisams</span> </Typography>
+    </Grid>
+    <Grid item xs={4} textAlign="center">
+      <Typography mt={2}>Checked by: <span style={{ textDecoration: "underline" }}> Admin</span> </Typography>
+    </Grid>
+    <Grid item xs={4} textAlign="right">
+      <Typography mt={2}>Approved by: <span style={{ textDecoration: "underline" }}> Yosis</span> </Typography>
+    </Grid>
+  </Grid>
+</Box>
+<Box mt={2} textAlign="center">
+  <Button type="submit" variant="contained" color="primary" text="Send Order" />
+</Box>
+      </form>
+    </div>
   );
 };
 

@@ -44,8 +44,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
         <Typography variant="h3" component="div" sx={{ fontWeight: '900', color: '#3c44b1' }}>
-        itrustu2 Procuriment
-
+Et Proforma
         </Typography>
 
         <Box sx={{ flexGrow: 1 }} />
