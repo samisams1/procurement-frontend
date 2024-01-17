@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useQuery, gql, useMutation } from '@apollo/client';
-import { useParams } from 'react-router-dom';
-import { Typography, Box, TextField, Grid, Checkbox, Table, TableHead, TableRow, TableCell, TableBody, } from '@mui/material';
-import Button from '../../components/Button';
+import { useQuery, gql, useMutation, useApolloClient } from '@apollo/client';
+import { Typography, Box, Grid, Checkbox, Table, TableHead, TableRow, TableCell, TableBody, } from '@mui/material';
+import Button from '../../Button';
+
 
 const GET_QUOTATION = gql`
   query GetQuotationById($id: Float!) {
@@ -53,6 +53,7 @@ const CREATE_ORDER = gql`
 interface QuotationData {
   quotation: {
     id: string;
+    supplierId:number;
     shippingPrice: number;
     productPrices: {
       price: number;
@@ -72,29 +73,38 @@ interface QuotationData {
     }[];
   };
 }
+type QuotationDetailProps = {
+    id: number;
+  };
+const QuotationDetail: React.FC<QuotationDetailProps> = (props) => {
+    const { id } = props;
+ // const { id } = useParams<{ id?: string }>();
+ const client = useApolloClient();
 
-const QuotationDetail: React.FC = () => {
-  const { id } = useParams<{ id?: string }>();
-  const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+  const [quantities] = useState<{ [key: string]: number }>({});
   const [selectedItems, setSelectedItems] = useState<{ [key: string]: boolean }>({});
   const [shipping, setShipping] = useState<number>(0);
+  const [supplierId, setSupplierId] = useState<number>(0);
+
 
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const [createOrder] = useMutation(CREATE_ORDER);
-  const[count,setCount]=useState(0);
 
   const [showTitleColumn, setShowTitleColumn] = useState(true);
   const [showPriceColumn, setShowPriceColumn] = useState(true);
 
   const { loading, error, data } = useQuery<QuotationData>(GET_QUOTATION, {
-    variables: { id: parseFloat(id || '0') },
+    variables: { id: id}
   });
+
+
+  
   React.useEffect(() => {
     if (data?.quotation.shippingPrice !== undefined) {
       setShipping(data.quotation.shippingPrice);
-    }
+    } 
   }, [data]);
 
   if (loading) {
@@ -121,10 +131,11 @@ const QuotationDetail: React.FC = () => {
       setErrorMessage('Please select at least one product!');
       return;
     }
-
-    const input = {
+    console.log("supplierId")
+console.log(supplierId)
+ const input = {
       customerId: 1,
-      supplierId: 1,
+      supplierId: supplierId,
       orderDetails: selectedProducts.map(({ product, price }) => ({
         title: product.title,
         productId:product.id,
@@ -135,38 +146,54 @@ const QuotationDetail: React.FC = () => {
       tax: calculateVAT(),
       status: 'pending',
       shippingCost: shipping,
-    };
-
-    try {
+    }
+    /*try {
       await createOrder({ variables: { input } });
+      
       setSuccessMessage('Order created successfully!');
     } catch (error: any) {
       setErrorMessage(error.message);
+    } */
+    try {
+      const response = await createOrder({ variables: { input } });
+      const createdOrder = response.data.createOrder;
+    
+      // Perform actions with the created order
+      console.log('Order created:', createdOrder);
+      setSuccessMessage('Order created successfully!');
+    
+      // Refetch the data after creating
+      const refetchResponse = await client.query<QuotationData>({
+        query: GET_QUOTATION,
+        variables: { id: id },
+      });
+    
+      // Access the updated data from the refetched data
+      const updatedData = refetchResponse.data; // or perform any other action with the updated data
+      console.log('Updated data:', updatedData);
+    
+      // Adjust the code below based on the structure of the updatedData object
+     // const { quotation } = updatedData; // Access the 'quotation' property from the updated data
+      // ... continue with your code that uses the 'quotation' variable
+    } catch (error: any) {
+      setErrorMessage(error.message);
     }
+    
+
+    
   };
+
 
   const { quotation } = data!;
 
-  /*const handleQuantityChange = (productTitle: string, value: string) => {
-    const parsedValue = parseFloat(value);
-    if (!isNaN(parsedValue)) {
-      setQuantities((prevQuantities) => ({
-        ...prevQuantities,
-        [productTitle]: parsedValue,
-      }));
-    } else {
-      setQuantities((prevQuantities) => ({
-        ...prevQuantities,
-        [productTitle]: 0,
-      }));
-    }
-  }; */
 
-  const handleCheckboxChange = (productTitle: string, checked: boolean) => {
+  const handleCheckboxChange = (title: string, checked: boolean, supplierId: number) => {
     setSelectedItems((prevSelectedItems) => ({
       ...prevSelectedItems,
-      [productTitle]: checked,
+      [title]: checked,
     }));
+
+    setSupplierId(supplierId); // Update the supplierId state variable
   };
 
  
@@ -198,11 +225,14 @@ const QuotationDetail: React.FC = () => {
   const handlePriceColumnToggle = () => {
     setShowPriceColumn(!showPriceColumn);
   };
+  const isWaiting = quotation.productPrices.some(
+    ({ product }) => product.status === 'wait'
+  );
 
   return (
-    <div>
+<div>
+    {isWaiting && <div>
       <form onSubmit={handleSubmit}>
-      <Typography variant="h3" textAlign="center"><span style={{ textDecoration: "underline" }}>Quotation  / Request Accepted Form</span> </Typography>
 
         {successMessage && (
           <Typography color="success">
@@ -243,7 +273,7 @@ const QuotationDetail: React.FC = () => {
           <Grid container spacing={2}>
     <Table>
     <TableHead>
-    <TableRow sx={{ backgroundColor: 'primary.main' }} >
+    <TableRow sx={{ backgroundColor: '#1c9fef' }} >
     <TableCell sx={{ padding: '4px', height: '32px' }}>#</TableCell>
     <TableCell sx={{ padding: '4px', height: '32px' }}>Selcet</TableCell>
     {showTitleColumn && <TableCell sx={{ padding: '4px', height: '32px' }}>Image</TableCell>}
@@ -271,8 +301,9 @@ const QuotationDetail: React.FC = () => {
             checked={selectedItems[product.title] || false}
             onChange={(e) => {
               if (product.status === 'wait') {
-                handleCheckboxChange(product.title, e.target.checked);
+                handleCheckboxChange(product.title, e.target.checked, quotation.supplierId);
               }
+
             }}
             disabled={product.status !== 'wait'}
           />
@@ -344,6 +375,8 @@ const QuotationDetail: React.FC = () => {
 </Box>
       </form>
     </div>
+        }
+        </div>
   );
 };
 

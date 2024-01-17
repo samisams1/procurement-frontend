@@ -30,18 +30,31 @@ export default function DashboardLayout() {
  // const currentUser = useContext(UserContext);
   // const navigate = useNavigate();
   return(
+    
    <RootStyle>
-    <DashboardNavbar
+     <div className="sidebar">
+     <DashboardNavbar
               onOpenSidebar={() => setOpen(true)}
           //    onLogout={handleLogout}
+          
             />
+     </div>
+     <div className="sidebar">
      <DashboardSidebar
               isOpenSidebar={open}
               onCloseSidebar={() => setOpen(false)}
             />
+      </div>
       <MainStyle>
           <Outlet />
         </MainStyle>
+        <style>{`
+        @media print {
+          .sidebar {
+            display: none;
+          }
+        }
+      `}</style>
    </RootStyle>
   )
 }

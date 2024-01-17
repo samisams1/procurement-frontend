@@ -47,7 +47,6 @@ const Purchase: React.FC = () => {
     try {
       // Perform any necessary validation or data transformations before calling the mutation
       const validProducts = products.filter((product) => product.productTitle.trim() !== '');
-
       // Format the input object
       const input = {
         userId: userId,
@@ -90,8 +89,7 @@ const Purchase: React.FC = () => {
       // Handle error or display error message
     }
   };
-
-  return (
+return (
     <>
       <Helmet>
         <title>Purchase</title>

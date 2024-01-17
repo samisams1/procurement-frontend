@@ -16,7 +16,7 @@ export const SupplierNavConfig = [
   },
   {
     title: 'Requests',
-    path: 'purchaseRequestList',
+    path: 'purchaseRequests',
     icon: getIcon('fluent-mdl2:review-request-solid'),
   },
   {

@@ -43,8 +43,8 @@ export default function DashboardNavbar({ onOpenSidebar }) {
         >
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
-        <Typography variant="h3" component="div" sx={{ fontWeight: '900', color: '#3c44b1' }}>
-Et Proforma
+        <Typography variant="h3" component="div" sx={{ fontWeight: '900', color: '#1c9fef' }}>
+ET Proforma
         </Typography>
 
         <Box sx={{ flexGrow: 1 }} />

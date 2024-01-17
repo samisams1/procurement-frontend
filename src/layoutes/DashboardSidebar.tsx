@@ -22,7 +22,7 @@ const AccountStyle = styled('div')(({ theme }) => ({
   alignItems: 'center',
   padding: theme.spacing(2, 2.5),
   borderRadius: Number(theme.shape.borderRadius) * 1.5,
-  backgroundColor: '#3c44b1',
+  backgroundColor: '#1c9fef',
 }));
 
 type DashboardSidebarProps = {
@@ -52,7 +52,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCl
     <div> 
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
         <img src={require('../assets/pro.png')} alt="logo" />
-        <h1 style={{ color: '#9c27b0' }}> </h1>
+        <h1 style={{ color: '#fbbc04' }}> </h1>
       </Box>
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">

@@ -2,10 +2,10 @@ import React, { useContext, useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { Grid, Paper, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../../auth/UserContext';
-import Spinner from '../../components/Spinner';
-import Popup from '../../components/Popup';
-import PurchaseRequestDetailForm from '../../components/pageComponents/purchase/purchaseDetail';
+import { UserContext } from '../../../auth/UserContext';
+import Spinner from '../../Spinner';
+import Popup from '../../Popup';
+import PurchaseDetail from './purchaseDetail';
 
 interface PurchaseRequest {
   id: number;
@@ -64,7 +64,7 @@ const PURCHASE_REQUEST_BY_SUPPLIER_QUERY = gql`
   }
 `;
 
-const PurchaseRequestSupplier: React.FC = () => {
+const PurchaseRequests: React.FC = () => {
   const { currentUser } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -200,12 +200,11 @@ const PurchaseRequestList: React.FC<{ id: number; navigate: any }> = ({ id, navi
           </Grid>
         ))}
       </Grid>
-      <Popup title="Purchase Request Detail" openPopup={openPopup} setOpenPopup={setOpenPopup}>
-        {/* Content of the popup */}
-        <PurchaseRequestDetailForm id={selectedId} status={status} customerId={customerId} supplierId={id} />
+      <Popup title="Purchase Request " openPopup={openPopup} setOpenPopup={setOpenPopup}>
+        <PurchaseDetail id={selectedId} status={status} customerId={customerId} supplierId={id} />
       </Popup>
     </div>
   );
 };
 
-export default PurchaseRequestSupplier;
+export default PurchaseRequests;

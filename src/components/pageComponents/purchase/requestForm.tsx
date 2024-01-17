@@ -93,7 +93,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
     variables: { categoryId: categoryId || 0 },
   });*/
 
-  const { loading: loadingCategories } = useQuery(GET_CATEGORIES);
+  //const { loading: loadingCategories } = useQuery(GET_CATEGORIES);
   const { loading: loadingSuppliers, error: errorSuppliers, data: supplierData } = useQuery(
     GET_SUPPLIERS_BY_CATEGORY_ID,
     {
@@ -339,10 +339,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   setSelectedSuppliers([]); // Clear the selected suppliers when the category changes
   };
  
-  if (loadingCategories || loadingSuppliers) {
-    return <p>Loading...</p>;
-  }
-
+ 
   if (errorSuppliers) {
     return <p>Error: {errorSuppliers.message}</p>;
   }
@@ -367,7 +364,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
 <Grid container spacing={2}>
   <Grid item xs={12}>
     <Paper elevation={3} sx={{ padding: '20px' }}>
-    <Typography variant="h3" align="center" style={{ color: "#3c44b1" }}>Purchase Request Form</Typography>
+    <Typography variant="h3" align="center" style={{ color: "#fbbc04" }}>NEW REQUISITION FORM</Typography>
       <form onSubmit={handleSubmit} onReset={handleReset}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12}></Grid>
@@ -408,7 +405,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
 {error && categoryId === undefined && <Typography color="error">{error}</Typography>}
 <Table>
   <TableHead>
-    <TableRow sx={{ backgroundColor: 'primary.main' }}>
+    <TableRow sx={{ backgroundColor: '#fbbc04' }}>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Image</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Name</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Code</TableCell>
@@ -449,7 +446,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
                   style={{
                     textTransform: 'none',
                     fontSize: '14px',
-                    color: '#555',
+                    color: '#DE970B',
                     borderColor: '#777',
                   }}
                 >

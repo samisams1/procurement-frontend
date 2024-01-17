@@ -27,6 +27,11 @@ import Register from './pages/account/Register';
 import PurchaseRequest from './pages/purchase/purchaseRequest';
 import Order from './pages/order';
 import NotificationDetail from './pages/notification';
+import MyPurchaseRequest from './pages/purchase/myPurchaseRequest';
+import ManageRequisition from './pages/purchase/manageRequisition';
+import Rfq from './pages/Quotation/rfq';
+import ManageRfq from './pages/Quotation/manageRfq';
+import OrderDetail from './components/pageComponents/order/customer/orderDetail';
 export default function RoutePage() {
 
     return useRoutes([
@@ -46,12 +51,17 @@ export default function RoutePage() {
               { path: '/purchase', element: <ProtectedRoute  element={<Purchase />} /> },
               { path: '/purchaseOrder', element: <ProtectedRoute  element={<PurchaseOrder />} /> },
               { path: '/invoice', element: <ProtectedRoute  element={<Invoice />} /> },
-              { path: '/purchaseRequestList', element: <ProtectedRoute  element={<PurchaseRequest />} /> },
+              { path: '/purchaseRequests', element: <ProtectedRoute  element={<PurchaseRequest />} /> },
+              { path: '/myRequest', element: <ProtectedRoute  element={<MyPurchaseRequest />} /> },
+              { path: '/manageRequisition', element: <ProtectedRoute  element={<ManageRequisition />} /> },
               { path:'/purchaseRequestDetail/:id', element: <ProtectedRoute  element={<PurchaseRequestDetail />} /> },
-              { path:'/quotationList', element: <ProtectedRoute  element={<QuotationList />} /> },
+              { path:'/rfq', element: <ProtectedRoute  element={<Rfq />} /> },
+
+              { path:'/manageRfq/:id', element: <ProtectedRoute  element={<ManageRfq />} /> },
               { path:'/quotationDetail/:id', element: <ProtectedRoute  element={<QuotationDetail />} /> },
               { path:'/notificationDetail/:id', element: <ProtectedRoute  element={<NotificationDetail />} /> },
-      
+               
+              { path:'/orderDetail/:id', element: <ProtectedRoute  element={<OrderDetail />} /> },
             ],
           },
           {

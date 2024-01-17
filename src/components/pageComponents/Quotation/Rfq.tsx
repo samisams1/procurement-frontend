@@ -27,7 +27,7 @@ interface Quotation {
   supplierId: string;
   customerId: string;
   shippingPrice: number;
-  purchaseRequestId:number;
+  purchaseRequestId:string;
   productPrices: {
     price: number;
     product: {
@@ -36,7 +36,7 @@ interface Quotation {
   }[];
 }
 
-const QuotationList: React.FC = () => {
+const RfqComponent: React.FC = () => {
   const navigate = useNavigate();
   
   const { loading, error, data } = useQuery<{ quotations: Quotation[] }>(GET_QUOTATIONS);
@@ -48,7 +48,7 @@ const QuotationList: React.FC = () => {
   }
   const { quotations } = data!;
   const handleClick = (id: string) => {
-    navigate(`/quotationDetail/${id}`);
+    navigate(`/manageRfq/${id}`);
   };
 
   const calculateSubtotal = (quotation: Quotation) => {
@@ -100,7 +100,7 @@ const QuotationList: React.FC = () => {
       options: {
         customBodyRenderLite: (dataIndex) => {
           return (
-            <div onClick={() => handleClick(quotations[dataIndex].id)} style={{ cursor: 'pointer' }}>
+            <div onClick={() => handleClick(quotations[dataIndex].purchaseRequestId)} style={{ cursor: 'pointer' }}>
              <Typography  component="div" style={{ color: 'blue', }}>Manage Rfq</Typography>
             </div>
           );
@@ -137,4 +137,4 @@ const QuotationList: React.FC = () => {
   );
 };
 
-export default QuotationList;
+export default RfqComponent;

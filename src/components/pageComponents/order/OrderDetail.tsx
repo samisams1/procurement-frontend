@@ -36,7 +36,7 @@ const OrderDetail = ({ id, status, newstatus }: { id: number; status: string; ne
   });
 
   const { loading, error, data } = useQuery(GET_ORDER_QUERY, {
-    variables: { id },
+    variables: { id:id },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {

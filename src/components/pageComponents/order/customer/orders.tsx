@@ -1,17 +1,17 @@
 import React, { useContext, useState } from 'react';
 import { Chip, Grid, Stack } from '@mui/material';
-import OrderDetail from './OrderDetail';
-import { UserContext } from '../../../auth/UserContext';
-import Spinner from '../../Spinner';
-import Button from '../../Button';
 import MUIDataTable from 'mui-datatables';
-import Popup from '../../Popup';
 import { gql, useQuery } from '@apollo/client';
-
+import Spinner from '../../../Spinner';
+import { UserContext } from '../../../../auth/UserContext';
+import Button from '../../../Button';
+import Popup from '../../../Popup';
+import { useNavigate } from 'react-router-dom';
+import OrderDetail from './orderDetail';
 const ORDER_QUERY = gql`
-  query GetOrderDetailBySupplierId($supplierId: Float!) {
-    getOrderBySupplierId(supplierId: $supplierId) {
-      id
+query GetOrderByCustomerId($customerId: Float!) {
+  getOrderByCustomerId(customerId: $customerId) {
+     id
       status
       tax
       totalPrice
@@ -19,8 +19,13 @@ const ORDER_QUERY = gql`
       shippingCost
       customerId
     supplierId
+    orderDetails {
+      id
+      price
+      quantity
     }
   }
+}
 `;
 
 interface OrderInterface {
@@ -32,23 +37,29 @@ interface OrderInterface {
   status: string;
   newstatus: string;
 }
-
-const OrderList = () => {
-  const [openPopup, setOpenPopup] = useState(false);
-  const [newData, setNewData] = useState<any>('');
-  const { loading, error, data } = useQuery(ORDER_QUERY, {
-    variables: { supplierId: 5 },
-  });
-
+const Orders : React.FC = () => {
   const { currentUser } = useContext(UserContext);
+  const navigate = useNavigate();
+
   if (!currentUser) {
     return <Spinner />;
   }
 
+  const id = currentUser.id as number; // Type assertion
+
+  return <List id={id} navigate={navigate} />;
+};
+
+  const List: React.FC<{ id: number; navigate: any }> = ({ id, navigate }) => {
+
+  const [openPopup, setOpenPopup] = useState(false);
+const { loading, error, data } = useQuery(ORDER_QUERY, {
+  variables: { customerId: id },
+});
   if (loading) return <Spinner />;
   if (error) return <p>{error.message}</p>;
 
-  const productList = data.getOrderBySupplierId.map((row: OrderInterface) => [
+  const productList = data.getOrderByCustomerId.map((row: OrderInterface) => [
     row.id,
     row.customerId,
     row.supplierId,
@@ -116,21 +127,22 @@ const OrderList = () => {
         sort: false,
         empty: true,
         customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
+          const orderId = productList[tableMeta.rowIndex][0];
           return (
-            <Button
+            <Button 
               text="Show Detail"
               variant="outlined"
-              onClick={() => {
-                setOpenPopup(true);
-                setNewData(tableMeta.rowData);
-              }}
+              onClick={() => handleClick(orderId)}        
             />
           );
         },
       },
     },
+    
   ];
-
+  const handleClick = (id: string) => {
+    navigate(`/orderDetail/${id}`);
+  };
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -141,10 +153,9 @@ const OrderList = () => {
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >
-        {newData && <OrderDetail id={newData[0]}  status={newData[5]} newstatus={"comformed"} />}
+        {<OrderDetail  />}
       </Popup>
     </Grid>
   );
 };
-
-export default OrderList;
+export default Orders

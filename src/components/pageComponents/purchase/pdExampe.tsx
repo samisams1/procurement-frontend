@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
-import { Typography, Box, TextField, Grid, Input } from '@mui/material';
+import { Typography, Box, TextField, Grid, Table, TableHead, TableRow, TableCell, TableBody, Input } from '@mui/material';
 import Button from '../../Button';
 import { Form, useForm } from '../../useForm';
 interface Product {
@@ -79,9 +79,9 @@ const PurchaseDetail: React.FC<{
 }> = ({ id, status, customerId, supplierId }) => {
 
   const [prices, setPrices] = useState<{ [key: string]: string }>({});
-  //const [priceError, setPriceError] = useState('');
+  const [priceError, setPriceError] = useState('');
 
-  const [updateQuotation] = useMutation(UPDATE_QUOTATION_MUTATION);
+  const [updateQuotation, { loading:load1, error:error1 }] = useMutation(UPDATE_QUOTATION_MUTATION);
 
   const { loading, error, data } = useQuery<QuotationResponse>(GET_QUOTATION, {
     variables: { id: id, supplierId: 5 },
@@ -108,7 +108,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
     return fieldValues === values ? Object.values(tempErrors).every((x) => x === '') : false;
   };
 
-  const { values, errors, setErrors, handleInputChange } = useForm(
+  const { values, errors, setErrors, handleInputChange, resetForm } = useForm(
     initialFormValues,
     true,
     validate
@@ -156,13 +156,12 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
   } 
   const calculateSubtotal = (): number => {
     let subtotal = 0;
-    quotations.forEach((quotation: Quotation) => {
-      quotation.productPrices.forEach((productPrice: ProductPrice) => {
-        const price = parseFloat(prices[String(productPrice.id)]);
-        if (!isNaN(price)) {
-          subtotal += price * productPrice.product.quantity;
-        }
-      });
+    quotations.forEach((product:any) => {
+      const price = parseFloat(prices[product.id]);
+    
+      if (!isNaN(price)) {
+        subtotal += price * product.quantity;
+      }
     });
     return subtotal + shippingPrice;
   };
@@ -171,8 +170,6 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
   const total = tax +subtotal;
 
   return (
-<div>
-{theStatus.toString() === "comformed" ? <div>All Request are comformed! </div>:
     <div>
       <table>
         <thead>
@@ -188,33 +185,30 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
           </tr>
         </thead>
         <tbody>
-        {quotations.map((quotation) =>
-  quotation.productPrices.map((productPrice) => {
-    const price = parseFloat(prices[String(productPrice.id)]);
-    const subtotal = isNaN(price) ? 0 : price * productPrice.product.quantity;
+          {quotations.map((quotation) =>
+            quotation.productPrices.map((productPrice) => (
+              <tr key={productPrice.id}>
+                <td>{productPrice.product.title}</td>
+                <td>{productPrice.product.partNumber}</td>
+                <td>{productPrice.product.code}</td>
+                <td>{productPrice.product.Description}</td>
+                <td>{productPrice.product.status}</td>
+                <td>{productPrice.product.quantity}</td>
+                
+                <td>
+                <Input
+  type="number"
+  placeholder="Please Enter Price"
+  value={prices[String(productPrice.id)] || ''}
+  onChange={(e) => handlePriceChange(String(productPrice.id), e)} 
+  //error={priceError}
+/>
 
-    return (
-      <tr key={productPrice.id}>
-        <td>{productPrice.product.title}</td>
-        <td>{productPrice.product.partNumber}</td>
-        <td>{productPrice.product.code}</td>
-        <td>{productPrice.product.Description}</td>
-        <td>{productPrice.product.status}</td>
-        <td>{productPrice.product.quantity}</td>
-        <td>
-          <Input
-            type="number"
-            placeholder="Please Enter Price"
-            value={prices[String(productPrice.id)] || ''}
-            onChange={(e) => handlePriceChange(String(productPrice.id), e)}
-            
-          />
-        </td>
-        <td>{subtotal.toFixed(2)}</td>
-      </tr>
-    );
-  })
-)}
+                </td>
+                <td>{"subtotal"}</td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
       <Box mt={2}>
@@ -239,8 +233,6 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
             <Typography>Tax: ${tax.toFixed(2)}</Typography>
             <Typography>Total: ${total.toFixed(2)}</Typography>
     </div>
-}
-</div>
   );
 };
 

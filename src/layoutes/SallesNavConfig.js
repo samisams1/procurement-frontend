@@ -15,13 +15,29 @@ export const SallesNavConfig = [
     icon: getIcon('iconamoon:profile-fill'),
   },
   {
-    title: 'Purchase',
+    title: 'New Requisition',
     path: 'purchase',
     icon: getIcon('ri:product-hunt-fill'),
   },
   {
-    title: 'Quotation',
-    path: 'quotationList',
+    title: 'Manage Requisition',
+    path: 'manageRequisition',
+    icon: getIcon('ri:product-hunt-fill'),
+  },
+  {
+    title: 'RFQ',
+    path: 'rfq',
+    icon: getIcon('foundation:burst-sale'),
+  },
+ 
+  {
+    title: 'order',
+    path: 'order',
+    icon: getIcon('foundation:burst-sale'),
+  },
+  {
+    title: 'MyPurchseRequest',
+    path: 'myRequest',
     icon: getIcon('foundation:burst-sale'),
   },
 {

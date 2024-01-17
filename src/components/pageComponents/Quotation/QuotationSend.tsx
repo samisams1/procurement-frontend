@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { Typography, Box, TextField, Grid, Checkbox, Table, TableHead, TableRow, TableCell, TableBody, } from '@mui/material';
-import Button from '../../components/Button';
+import Button from '../../Button';
 
 const GET_QUOTATION = gql`
   query GetQuotationById($id: Float!) {
@@ -72,9 +72,12 @@ interface QuotationData {
     }[];
   };
 }
-
-const QuotationDetail: React.FC = () => {
-  const { id } = useParams<{ id?: string }>();
+type QuotationDetailProps = {
+    id: number;
+  };
+const QuotationSend: React.FC<QuotationDetailProps> = (props) => {
+    const { id } = props;
+ // const { id } = useParams<{ id?: string }>();
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
   const [selectedItems, setSelectedItems] = useState<{ [key: string]: boolean }>({});
   const [shipping, setShipping] = useState<number>(0);
@@ -89,7 +92,7 @@ const QuotationDetail: React.FC = () => {
   const [showPriceColumn, setShowPriceColumn] = useState(true);
 
   const { loading, error, data } = useQuery<QuotationData>(GET_QUOTATION, {
-    variables: { id: parseFloat(id || '0') },
+    variables: { id: id}
   });
   React.useEffect(() => {
     if (data?.quotation.shippingPrice !== undefined) {
@@ -202,7 +205,6 @@ const QuotationDetail: React.FC = () => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-      <Typography variant="h3" textAlign="center"><span style={{ textDecoration: "underline" }}>Quotation  / Request Accepted Form</span> </Typography>
 
         {successMessage && (
           <Typography color="success">
@@ -243,7 +245,7 @@ const QuotationDetail: React.FC = () => {
           <Grid container spacing={2}>
     <Table>
     <TableHead>
-    <TableRow sx={{ backgroundColor: 'primary.main' }} >
+    <TableRow sx={{ backgroundColor: '#1c9fef' }} >
     <TableCell sx={{ padding: '4px', height: '32px' }}>#</TableCell>
     <TableCell sx={{ padding: '4px', height: '32px' }}>Selcet</TableCell>
     {showTitleColumn && <TableCell sx={{ padding: '4px', height: '32px' }}>Image</TableCell>}
@@ -339,12 +341,9 @@ const QuotationDetail: React.FC = () => {
     </Grid>
   </Grid>
 </Box>
-<Box mt={2} textAlign="center">
-  <Button type="submit" variant="contained" color="primary" text="Send Order" />
-</Box>
       </form>
     </div>
   );
 };
 
-export default QuotationDetail;
+export default QuotationSend;
