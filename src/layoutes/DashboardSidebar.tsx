@@ -52,7 +52,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCl
     <div> 
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
         <img src={require('../assets/pro.png')} alt="logo" />
-        <h1 style={{ color: '#fbbc04' }}> </h1>
+        <h1 style={{ color: '#1c9fef' }}> </h1>
       </Box>
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
