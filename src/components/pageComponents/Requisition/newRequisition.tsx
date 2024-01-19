@@ -3,9 +3,9 @@ import { gql, useMutation } from '@apollo/client';
 import { Helmet } from 'react-helmet';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import RequestForm, { SaleInput } from '../../components/pageComponents/purchase/requestForm';
-import { UserContext } from '../../auth/UserContext';
-import Spinner from '../../components/Spinner';
+import { UserContext } from '../../../auth/UserContext';
+import Spinner from '../../Spinner';
+import RequestForm,{ SaleInput } from '../purchase/requestForm';
 
 const CREATE_PURCHASE_REQUEST_MUTATION = gql`
   mutation CreatePurchaseRequest($input: CreatePurchaseRequestInput!) {
@@ -20,7 +20,7 @@ export interface AdditionalData {
   addressDetail: string;
 }
 
-const Purchase: React.FC = () => {
+const NewRequisitionComponent: React.FC = () => {
   const [flashMessage, setFlashMessage] = useState('');
   const [createPurchaseRequest] = useMutation(CREATE_PURCHASE_REQUEST_MUTATION);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -36,9 +36,9 @@ const Purchase: React.FC = () => {
     setOpenSnackbar(false);
   };
 
-  const hadleFormReset = ()=>{
+  /*const hadleFormReset = ()=>{
     console.log("remove")
-  }
+  }*/
   const handleSubmit = async (
     products: SaleInput[],
     selectedSuppliers: number[],
@@ -92,7 +92,7 @@ const Purchase: React.FC = () => {
 return (
     <>
       <Helmet>
-        <title>Purchase</title>
+        <title>New Requasition</title>
       </Helmet>
       <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleCloseSnackbar}>
         <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
@@ -104,4 +104,4 @@ return (
   );
 };
 
-export default Purchase;
+export default NewRequisitionComponent;

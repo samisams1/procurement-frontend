@@ -4,11 +4,11 @@ import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from '@mui/mate
 import UsersIcon from '@heroicons/react/24/solid/CurrencyDollarIcon';
 import { useQuery } from '@apollo/client';
 import Spinner from '../../Spinner';
-import { COUNT_SALE_QUERY } from '../../../graphql/Sale';
+import { COUNT_ORDER_BY_STATUS } from '../../../graphql/Order';
 
 export const YearTotalSales = (props:any) => {
   const { sx } = props;
-  const {loading,error,data} = useQuery(COUNT_SALE_QUERY);
+  const {loading,error,data} = useQuery(COUNT_ORDER_BY_STATUS);
   if(loading) return <Spinner/>
   if (error) return <p>{error.message}</p>
   return (

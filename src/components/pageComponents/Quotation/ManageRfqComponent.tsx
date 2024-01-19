@@ -4,6 +4,8 @@ import { Grid, Paper, Typography } from '@mui/material';
 import Spinner from '../../Spinner';
 import { useParams } from 'react-router-dom';
 import QuotationDetail from './Detail';
+import PageHeader from '../../PageHeader';
+import { PeopleTwoTone } from '@mui/icons-material';
 
 interface PurchaseRequest {
   id: number;
@@ -87,17 +89,11 @@ const ManageRfqComponent: React.FC = () => {
   return (
     <div>
       <div>
-      <Typography
-        variant="h3"
-        component="div"
-        style={{
-          color: '#3c44b1',
-          textAlign: 'center',
-          margin: 'auto',
-        }}
-      >
-        RFQ
-      </Typography>
+      <PageHeader
+            title="send New Order"
+            subTitle="You can comapre the price and select and send order RFQ Details"
+            icon={<PeopleTwoTone fontSize="large" />}
+        /> 
       <Grid container spacing={2}>
         {purchaseRequests.map((request:PurchaseRequest) => (
           <Grid item xs={12} sm={12} md={12} key={request.id} >

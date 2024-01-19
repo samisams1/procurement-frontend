@@ -1,12 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { Chip, Grid, Stack } from '@mui/material';
-import OrderDetail from './OrderDetail';
-import { UserContext } from '../../../auth/UserContext';
-import Spinner from '../../Spinner';
-import Button from '../../Button';
+import { UserContext } from '../../../../auth/UserContext';
+import Spinner from '../../../Spinner';
+import Button from '../../../Button';
 import MUIDataTable from 'mui-datatables';
-import Popup from '../../Popup';
+import Popup from '../../../Popup';
 import { gql, useQuery } from '@apollo/client';
+import OrderDetail from './OrderDetail';
 
 const ORDER_QUERY = gql`
 query{

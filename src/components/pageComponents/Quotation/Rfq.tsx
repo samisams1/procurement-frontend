@@ -1,8 +1,10 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { Typography } from '@mui/material';
+import { Grid, Paper, Typography } from '@mui/material';
 import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
 import { useNavigate } from 'react-router-dom';
+import PageHeader from '../../PageHeader';
+import { PeopleTwoTone } from '@mui/icons-material';
 
 const GET_QUOTATIONS = gql`
   query {
@@ -10,6 +12,7 @@ const GET_QUOTATIONS = gql`
       id
       supplierId
       customerId
+      status
       purchaseRequestId
       shippingPrice
       productPrices {
@@ -27,6 +30,7 @@ interface Quotation {
   supplierId: string;
   customerId: string;
   shippingPrice: number;
+  status:string;
   purchaseRequestId:string;
   productPrices: {
     price: number;
@@ -94,7 +98,14 @@ const RfqComponent: React.FC = () => {
         },
       },
     },
-  
+    {
+      name: 'Status',
+      options: {
+        customBodyRenderLite: (dataIndex) => {
+          return quotations[dataIndex].status;
+        },
+      },
+    },
     {
       name: 'Action',
       options: {
@@ -128,12 +139,18 @@ const RfqComponent: React.FC = () => {
     viewColumns: false,
   };
   return (
-    <div>
-      <Typography variant="h3" component="div" style={{ color: '#3c44b1', textAlign: 'center', margin: 'auto' }}>
-        The Request for Quotation (RFQ)
-      </Typography>
+    <Grid container spacing={2}>
+    <Grid item xs={12}>
+      <Paper elevation={3} sx={{ padding: '20px' }}>
+      <PageHeader
+       title=" The Request for Quotation (RFQ)"
+       subTitle="The Request for Quotation (RFQ) "
+       icon={<PeopleTwoTone fontSize="large" />}
+      />
       <MUIDataTable title="" data={tableData} columns={columns} options={options} />
-    </div>
+  </Paper>
+  </Grid>
+  </Grid>
   );
 };
 

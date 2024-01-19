@@ -1,4 +1,5 @@
-  import gql from "graphql-tag"
+import { gql } from "@apollo/client";
+
 export const ORDER_QUERY = gql`
 query {
     orders {
@@ -82,3 +83,9 @@ export const COUNT_ORDER_QUERY = gql`
 query{
   countOrder
 }`;
+//new for this project
+export const COUNT_ORDER_BY_STATUS = gql`
+query{
+  countOrders
+}
+`

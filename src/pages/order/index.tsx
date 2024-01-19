@@ -3,7 +3,7 @@ import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
 import { UserContext } from '../../auth/UserContext';
 import Spinner from '../../components/Spinner';
 import { OrderAdmin } from './orderAdmin';
-import AllOrderList from '../../components/pageComponents/order/allOrderList';
+import AllOrderList from '../../components/pageComponents/order/admin/allOrderList';
 import Orders from '../../components/pageComponents/order/customer/orders';
 import { Helmet } from 'react-helmet';
 import PageHeader from '../../components/PageHeader';

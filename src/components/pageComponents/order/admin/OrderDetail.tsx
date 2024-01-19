@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { Grid, TextField, Typography } from '@mui/material';
-import Spinner from '../../Spinner';
-import { Form } from '../../useForm';
-import Button from '../../Button';
-import { ORDER_QUERY } from '../../../graphql/Order';
-import { UserContext } from '../../../auth/UserContext';
+import Spinner from '../../../Spinner';
+import { Form } from '../../../useForm';
+import Button from '../../../Button';
+import { ORDER_QUERY } from '../../../../graphql/Order';
+import { UserContext } from '../../../../auth/UserContext';
 
 const UPDATE_ORDER_MUTATION = gql`
   mutation UpdateOrder($id: Float!, $status: String!) {
@@ -71,22 +71,22 @@ const OrderDetail = ({ id, status, newstatus }: { id: number; status: string; ne
   let message = '';
 
   if (status === 'pending') {
+    message = 'Please  the supplier  review the order and comform!';
+  } else if (status === 'comformed') {
     buttonArea = (
       <Grid container justifyContent="center">
         <Grid item>
           <Button
             type="submit"
-            text="Comformed"
+            text="Approve"
             style={{ backgroundColor: '#9ac96f', color: 'white' }}
           />
         </Grid>
       </Grid>
     );
-    message = 'Please   Review the order and comform!';
-  } else if (status === 'comformed') {
     message = 'Supplier comformed the order Waiting for admin approval!';
   } else if (status === 'approved') {
-    message = 'The admin aproved wait for customer make payments!';
+    message = 'The admin aproved waiting for customer make payments!';
   }
 
   return (

@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from '@mui/material';
-import UsersIcon from '@heroicons/react/24/solid/CurrencyDollarIcon';
 import { useQuery } from '@apollo/client';
-import Spinner from '../../Spinner';
-import { COUNT_ORDER_BY_STATUS } from '../../../graphql/Order';
+import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
+import Spinner from '../../../Spinner';
+import { COUNT_REQUEST } from '../../../../graphql/rquest';
 
-export const MonthTotalSales = (props:any) => {
-  const {  sx } = props;
-  const {loading,error,data} = useQuery(COUNT_ORDER_BY_STATUS);
+export const CountNewRequest = (props:any) => {
+  const {  sx,  } = props;
+  const {loading,error,data} = useQuery(COUNT_REQUEST);
   if(loading) return <Spinner/>
   if (error) return <p>{error.message}</p>
   return (
@@ -24,18 +24,18 @@ export const MonthTotalSales = (props:any) => {
             <Typography
               color="text.secondary"
               variant="overline"
-              fontSize={18}
+              fontSize={25}
               fontWeight={900}
             >
-             This Month Total Sales
+             New Request
             </Typography>
             <Typography variant="h4">
-            {data.totalSale.toLocaleString() + " "} Birr 
+              {data.countrequests}
             </Typography>
           </Stack>
           <Avatar
             sx={{
-              backgroundColor: 'red',
+              backgroundColor: '#690618',
               height: 56,
               width: 56
             }}
@@ -51,7 +51,7 @@ export const MonthTotalSales = (props:any) => {
   );
 };
 
-MonthTotalSales.prototypes = {
+CountNewRequest.prototypes = {
   difference: PropTypes.number,
   positive: PropTypes.bool,
   sx: PropTypes.object,

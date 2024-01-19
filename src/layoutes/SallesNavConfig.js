@@ -16,7 +16,7 @@ export const SallesNavConfig = [
   },
   {
     title: 'New Requisition',
-    path: 'purchase',
+    path: 'newRequest',
     icon: getIcon('ri:product-hunt-fill'),
   },
   {

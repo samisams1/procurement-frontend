@@ -15,12 +15,10 @@ import Login from './pages/login/Login';
 import NotFoundPage from './pages/NotFoundPage';
 import DashboardLayout from './layoutes/DashboardLayout';
 import { User } from './pages/User';
-import Purchase from './pages/purchase';
-import PurchaseOrder from './pages/purchase/purchaseOrder';
+import Purchase from './pages/purchase/NewRequisition';
 import Invoice from './pages/invoice';
 //import PurchaseRequestList from './pages/purchase/purchaseRequestList';
 import PurchaseRequestDetail from './pages/purchase/purchaseRequestDetail';
-import QuotationList from './pages/Quotation/QuotationList';
 import QuotationDetail from './pages/Quotation/QuotationDetail';
 import { Profile } from './pages/profile/Profile';
 import Register from './pages/account/Register';
@@ -32,6 +30,8 @@ import ManageRequisition from './pages/purchase/manageRequisition';
 import Rfq from './pages/Quotation/rfq';
 import ManageRfq from './pages/Quotation/manageRfq';
 import OrderDetail from './components/pageComponents/order/customer/orderDetail';
+import Detail from './components/pageComponents/Requisition/detail';
+import Payment from './pages/payment';
 export default function RoutePage() {
 
     return useRoutes([
@@ -48,10 +48,12 @@ export default function RoutePage() {
               { path: '/profile', element: <ProtectedRoute  element={<Profile />} /> },
               { path: '/report', element: <ProtectedRoute element={<Report />} /> },
               { path: '/setting', element: <ProtectedRoute  element={<Setting />} /> },
-              { path: '/purchase', element: <ProtectedRoute  element={<Purchase />} /> },
-              { path: '/purchaseOrder', element: <ProtectedRoute  element={<PurchaseOrder />} /> },
+              { path: '/newRequest', element: <ProtectedRoute  element={<Purchase />} /> },
               { path: '/invoice', element: <ProtectedRoute  element={<Invoice />} /> },
+
               { path: '/purchaseRequests', element: <ProtectedRoute  element={<PurchaseRequest />} /> },
+              { path:'/purchaseRequest/:id', element: <ProtectedRoute  element={<Detail />} /> },
+              
               { path: '/myRequest', element: <ProtectedRoute  element={<MyPurchaseRequest />} /> },
               { path: '/manageRequisition', element: <ProtectedRoute  element={<ManageRequisition />} /> },
               { path:'/purchaseRequestDetail/:id', element: <ProtectedRoute  element={<PurchaseRequestDetail />} /> },
@@ -62,6 +64,14 @@ export default function RoutePage() {
               { path:'/notificationDetail/:id', element: <ProtectedRoute  element={<NotificationDetail />} /> },
                
               { path:'/orderDetail/:id', element: <ProtectedRoute  element={<OrderDetail />} /> },
+
+
+              { path: '/invoice', element: <ProtectedRoute  element={<Invoice />} /> },
+               
+
+              { path: '/payment', element: <ProtectedRoute  element={<Payment />} /> },
+
+
             ],
           },
           {

@@ -8,7 +8,7 @@ export default function PurchaseRequest() {
     return <Spinner />;
   }
   const { role } = currentUser;
-  if (role === 'SUPPLIER') {
+  if (role === 'CUSTOMER') {
     return(<div><PurchaseRequests/></div>);
   } else {
     return null;

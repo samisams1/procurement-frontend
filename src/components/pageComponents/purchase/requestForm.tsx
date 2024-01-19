@@ -15,6 +15,9 @@ import { gql, useQuery } from '@apollo/client';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { SelectChangeEvent } from '@mui/material/Select';
+import Spinner from '../../Spinner';
+import PageHeader from '../../PageHeader';
+import { PeopleTwoTone } from '@mui/icons-material';
 
 export interface SaleInput {
   productTitle: string;
@@ -339,7 +342,9 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   setSelectedSuppliers([]); // Clear the selected suppliers when the category changes
   };
  
- 
+ if(loadingSuppliers){
+  return <Spinner/>
+ }
   if (errorSuppliers) {
     return <p>Error: {errorSuppliers.message}</p>;
   }
@@ -364,7 +369,11 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
 <Grid container spacing={2}>
   <Grid item xs={12}>
     <Paper elevation={3} sx={{ padding: '20px' }}>
-    <Typography variant="h3" align="center" style={{ color: "#fbbc04" }}>NEW REQUISITION FORM</Typography>
+    <PageHeader
+            title="NEW REQUISITION FORM"
+            subTitle="Create new requisition"
+            icon={<PeopleTwoTone fontSize="large" />}
+        /> 
       <form onSubmit={handleSubmit} onReset={handleReset}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12}></Grid>
@@ -405,7 +414,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
 {error && categoryId === undefined && <Typography color="error">{error}</Typography>}
 <Table>
   <TableHead>
-    <TableRow sx={{ backgroundColor: '#fbbc04' }}>
+    <TableRow sx={{ backgroundColor: '#1c9fef' }}>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Image</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Name</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Code</TableCell>
@@ -446,8 +455,8 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
                   style={{
                     textTransform: 'none',
                     fontSize: '14px',
-                    color: '#DE970B',
-                    borderColor: '#777',
+                    color: '#1c9fef',
+                    borderColor: '#1c9fef',
                   }}
                 >
                   Browse
@@ -609,15 +618,15 @@ placeholder="Item Name"
               marginRight: '10px',
             }}
           >
-            Choose a file
+            Attache a file
           </span>
           <Button
             variant="outlined"
             style={{
               textTransform: 'none',
               fontSize: '14px',
-              color: '#555',
-              borderColor: '#777',
+              color: '#1c9fef',
+              borderColor: '#1c9fef',
             }}
           >
             Browse

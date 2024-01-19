@@ -1,7 +1,10 @@
 import React from 'react';
 import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import { TotalUser } from '../../../components/pageComponents/dashboard/TotalUsers';
+import { NewRfq } from '../../../components/pageComponents/dashboard/customer/countNewRfq';
+import { PendingOrder } from '../../../components/pageComponents/dashboard/customer/countpendingOrder';
+import { ComformedOrder } from '../../../components/pageComponents/dashboard/customer/countComformedOrder';
+import { ApprovedOrder } from '../../../components/pageComponents/dashboard/customer/countApprovedOrder';
 
 export const Customer = () => (
   <>
@@ -27,7 +30,7 @@ export const Customer = () => (
             sm={6}
             lg={3}
           >
-            <TotalUser
+            <NewRfq
               difference={16}
               positive={false}
               sx={{ height: '100%' }}
@@ -39,7 +42,7 @@ export const Customer = () => (
             sm={6}
             lg={3}
           >
-            <TotalUser
+            <PendingOrder
               difference={16}
               positive={false}
               sx={{ height: '100%' }}
@@ -51,7 +54,7 @@ export const Customer = () => (
             sm={6}
             lg={3}
           >
-            <TotalUser
+            <ComformedOrder
               sx={{ height: '100%' }}
               value={75.5}
             />
@@ -61,7 +64,7 @@ export const Customer = () => (
             sm={6}
             lg={3}
           >
-            <TotalUser
+            <ApprovedOrder
               sx={{ height: '100%' }}
               value="$15k"
             />

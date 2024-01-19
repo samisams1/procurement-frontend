@@ -1,7 +1,8 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import Button from '../../../Button';
 interface OrderData {
     id: string;
     title: string;
@@ -29,6 +30,8 @@ query GetOrderById($id: Int!) {
     getOrderById(id: $id) {
       id
       shippingCost
+      referenceNumber
+      createdAt
       orderDetails {
         id
         product{
@@ -48,6 +51,7 @@ query GetOrderById($id: Int!) {
 `;
 const OrderDetail: React.FC = () => {
  const { id } = useParams<{ id?: string }>();
+ const navigate = useNavigate();
     const { loading, error, data } = useQuery(GET_ORDER_QUERY, {
         variables: { id: Number(id) },
       });
@@ -65,6 +69,8 @@ const OrderDetail: React.FC = () => {
   let subtotal = 0;
   // Calculate shipping Cost
 const shippingCost = order?.shippingCost;  
+const referenceNumber= order?.referenceNumber;
+const createdAt= order?.createdAt;
 
   // Calculate subtotal
     order?.orderDetails.forEach((orderDetail: OrderData['orderDetails']) => {
@@ -82,7 +88,11 @@ const shippingCost = order?.shippingCost;
   const handlePrint = () => {
     window.print();
   };
-
+  const handlePayment = () => {
+    // Handle payment logic here
+    // Open the payment page in a new tab or window
+    navigate('/payment');
+  };
   return (
     <>
       <div className="main">
@@ -104,8 +114,9 @@ const shippingCost = order?.shippingCost;
         </div>
         <div className="order-to">
         <p>|order To</p>
-        <h6>reference Number # 2541</h6>
-        <h6>Order Date 2541</h6>
+        <h6>Request reference Number # 2541</h6>
+        <h6>order   reference Number # {referenceNumber}</h6>
+        <h6>Order Date {createdAt}</h6>
         <h6>Due  Date 2541</h6>
         </div>
         <div className="payment-record">
@@ -185,6 +196,14 @@ const shippingCost = order?.shippingCost;
       <button className="print-button" onClick={handlePrint}>
         Print
       </button>
+      <Button
+        variant="contained"
+        color="secondary"
+        //style={styles.paymentButton}
+        onClick={handlePayment}
+      >
+        Make Payment
+      </Button>
       <style>{`
      .header {
         display: flex;

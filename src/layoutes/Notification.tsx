@@ -34,7 +34,7 @@ const NotificationComponent = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [maxHeight, setMaxHeight] = useState<number>(0);
   const { loading, error, data } = useQuery(ORDER_QUERY, {
-    variables: { supplierId: 1 },
+    variables: { supplierId: 5 },
   });
 
   useEffect(() => {
