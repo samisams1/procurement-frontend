@@ -3,11 +3,24 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typog
 import { gql, useQuery } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../../../Button';
+import numberToWords from 'number-to-words';
+
 interface OrderData {
     id: string;
     title: string;
     price: number;
     shippingCost:number;
+    status:string;
+    referenceNumber:string;
+    purchaseRequest:{
+      id:string;
+      referenceNumber:string;
+      estimatedDelivery:string;
+      addressDetail:string;
+    };
+    suppliers: {
+      name:string;
+    };
     orderDetails: {
       id: string;
       price: number;
@@ -25,16 +38,53 @@ interface OrderData {
     };
     quantity: number;
   }
+const GET_PAYMENT_QUERY = gql`
+query Payment($id: Int!) {
+  payment(id: $id){
+    id
+    paidAt
+    user{
+      firstName
+    }
+    amount
+    referenceNumber
+    paidAt
+    status
+  }
+}
+`;
 const GET_ORDER_QUERY = gql`
 query GetOrderById($id: Int!) {
-    getOrderById(id: $id) {
-      id
-      shippingCost
-      referenceNumber
-      createdAt
-      orderDetails {
+  getOrderById(id: $id) {
+    id
+    shippingCost
+    referenceNumber
+    createdAt
+    status
+    customer{
+      user{
+        username
+      }
+    }
+    suppliers {
+      name
+      user {
         id
-        product{
+        username
+      }
+    }
+    purchaseRequest {
+      id
+      referenceNumber
+      estimatedDelivery
+      addressDetail
+      user {
+        username
+      }
+    }
+    orderDetails {
+      id
+      product {
         title
         quantity
         uom
@@ -43,11 +93,11 @@ query GetOrderById($id: Int!) {
         partNumber
         mark
         model
-        }
-        price
       }
+      price
     }
   }
+}
 `;
 const OrderDetail: React.FC = () => {
  const { id } = useParams<{ id?: string }>();
@@ -55,7 +105,9 @@ const OrderDetail: React.FC = () => {
     const { loading, error, data } = useQuery(GET_ORDER_QUERY, {
         variables: { id: Number(id) },
       });
-    
+      const { loading:paymentLoading, error:paymentError, data:paymentData } = useQuery(GET_PAYMENT_QUERY, {
+        variables: { id: Number(id) },
+      });
       if (loading) {
         return <div>Loading...</div>;
       }
@@ -63,15 +115,26 @@ const OrderDetail: React.FC = () => {
       if (error) {
         return <div>Error: {error.message}</div>;
       }
+     
+      if (paymentLoading) {
+        return <div>Loading...</div>;
+      }
+    
+      if (paymentError) {
+        return <div>Error: {paymentError.message}</div>;
+      }
   const order = data?.getOrderById;
- 
-  const address = '123 Main Street, City, State';
+console.log(paymentData)
   let subtotal = 0;
+  const status = order?.status;
+
+  const requestReferenceNumber = order?.purchaseRequest.referenceNumber;
+  const estimatedDelivery = order?.purchaseRequest.estimatedDelivery;
+  const address = order?.purchaseRequest.addressDetail;
   // Calculate shipping Cost
 const shippingCost = order?.shippingCost;  
 const referenceNumber= order?.referenceNumber;
 const createdAt= order?.createdAt;
-
   // Calculate subtotal
     order?.orderDetails.forEach((orderDetail: OrderData['orderDetails']) => {
         const itemSubtotal = orderDetail.price * orderDetail.product.quantity;
@@ -83,25 +146,32 @@ const createdAt= order?.createdAt;
   const taxTotal = SubtotalShiping * 0.15;
    // Calculate grand total
   const grandTotal = SubtotalShiping + taxTotal ;
-
-
   const handlePrint = () => {
     window.print();
   };
+  //grand total in words
+  const amountInWords = numberToWords.toWords(grandTotal);
+
   const handlePayment = () => {
     // Handle payment logic here
     // Open the payment page in a new tab or window
-    navigate('/payment');
+    navigate(`/payment/${id}`);
   };
+  const formatDate = (dateString: string): string => {
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    const date: Date = new Date(dateString);
+    return date.toLocaleDateString(undefined, options);
+  };
+  
   return (
     <>
       <div className="main">
       <div className="header">
   <div className="purchase-order">
-    <h1>Purchase Order</h1>
+    <h1>Purchase Order </h1>
   </div>
-  <div className="address">
-    <p>{address}</p>
+  <div className="status">
+    <h1>{status}</h1>
   </div>
   <div className="logo-container">
     <img src={require('../../../../assets/pro.png')} alt="logo" />
@@ -110,13 +180,17 @@ const createdAt= order?.createdAt;
         <div className="purchase-info">
         <div className="order-by">
         <p>|Order By</p>
-        <h4>supplier1</h4>
+        <p>samsi sams </p>
+        <p>Request reference Number # : {requestReferenceNumber}</p>
+        <p>Estimated Delivery Days :   { " " + estimatedDelivery}</p>
+        <p>Customer Address :   { " " + address}</p>
         </div>
         <div className="order-to">
         <p>|order To</p>
-        <h6>Request reference Number # 2541</h6>
-        <h6>order   reference Number # {referenceNumber}</h6>
-        <h6>Order Date {createdAt}</h6>
+        <p>Supplier Company Name : {"Yosis Soft"}</p>
+        <p>order   reference Number # : {referenceNumber}</p>
+       
+        <p>Order Date  :  {formatDate(createdAt)}</p>
         <h6>Due  Date 2541</h6>
         </div>
         <div className="payment-record">
@@ -144,8 +218,8 @@ const createdAt= order?.createdAt;
                   <TableCell>{orderDetail.product.partNumber}</TableCell>
                   <TableCell>{orderDetail.product.uom}</TableCell>
                   <TableCell>{orderDetail.product.quantity}</TableCell>
-                  <TableCell>{orderDetail.price}</TableCell>
-                  <TableCell>{orderDetail.price * orderDetail.product.quantity}</TableCell>
+                  <TableCell>{(orderDetail.price).toLocaleString()}</TableCell>
+                  <TableCell>{(orderDetail.price * orderDetail.product.quantity).toLocaleString()}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -155,29 +229,40 @@ const createdAt= order?.createdAt;
   <div className="detail">
     <p>Customer Address {address}</p>
     <h5>Invoice Total in words</h5>
-    <h3>fifty Thousend Birre</h3>
-    payments
-    <Table>
-        <thead>
-            <td>id</td>
-            <td>name</td>
-            <td>amount</td>
-            <td>status</td>
-        </thead>
-        <tbody>
-            <td>1</td>
-            <td>2</td>
-            <td>78</td>
-            <td>5</td>
-        </tbody>
-    </Table>
+    <h3 style={{color:"red"}}>{amountInWords + " "} Birr</h3>
+   <Typography>payments</Typography> 
+    <TableContainer>
+      <Table className="blue-bordered-table">
+        <TableHead>
+        <TableRow className="blue-row">
+            <TableCell>Invoice Num</TableCell>
+            <TableCell>Amount</TableCell>
+            <TableCell>Customer Name</TableCell>
+            <TableCell>Date</TableCell>
+            <TableCell>status</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+        {paymentData?.payment.map((mypayment: any) => (
+        <TableRow>
+            <TableCell>{mypayment.referenceNumber}</TableCell>
+            <TableCell>{mypayment.amount.toLocaleString() + " "} Birr</TableCell>
+            <TableCell>{mypayment.user.firstName}</TableCell>
+            <TableCell>{formatDate(mypayment.paidAt)}</TableCell>
+            <TableCell>{mypayment.status}</TableCell>
+
+         </TableRow>
+        ))}
+        </TableBody>
+        </Table>
+   </TableContainer>1000545669092
   </div>
   <div className="calculate">
-    Sub Total: <span className="float-right">{subtotal} Birr</span>
-    <Typography> Shiping Cost <span className="float-right">{shippingCost} Birr</span> </Typography>
-    <Typography> Sub Total inc.(Shiping Cost)<span className="float-right">{SubtotalShiping} Birr</span></Typography>
-    <Typography> Taxable Amont <span className="float-right">{taxTotal} Birr</span></Typography>
-    <Typography> Grand Total  <span className="float-right">{grandTotal} Birr</span></Typography>
+    Sub Total: <span className="float-right">{subtotal.toLocaleString()} Birr</span>
+    <Typography> Shiping Cost <span className="float-right">{shippingCost.toLocaleString()} Birr</span> </Typography>
+    <Typography> Sub Total inc.(Shiping)<span className="float-right">{SubtotalShiping.toLocaleString()} Birr</span></Typography>
+    <Typography> Taxable Amont <span className="float-right">{taxTotal.toLocaleString()} Birr</span></Typography>
+    <Typography> Grand Total  <span className="float-right">{grandTotal.toLocaleString()} Birr</span></Typography>
   </div>
 </div>
       </div>
@@ -196,14 +281,27 @@ const createdAt= order?.createdAt;
       <button className="print-button" onClick={handlePrint}>
         Print
       </button>
-      <Button
-        variant="contained"
-        color="secondary"
-        //style={styles.paymentButton}
-        onClick={handlePayment}
-      >
-        Make Payment
-      </Button>
+      {status === "approved" &&(
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <h1 style={{ color: 'green', marginRight: '10px' }}>
+          The Order Status is Approved. Please Make Payment!
+        </h1>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handlePayment}
+          text="Make Payment"
+        />
+      </div>
+      )}
+        {status === "pending" &&(
+         <h1 style={{color:"red"}}>The Order Status is pending Please wait for Supplier Comformation!</h1>
+      )}
+       {status === "comformed" &&(
+         <h1 style={{color:"#1c9fef"}}>The Order Status is comformed Please wait for Admin Approval!</h1>
+      )}
+
+
       <style>{`
      .header {
         display: flex;
@@ -217,9 +315,10 @@ const createdAt= order?.createdAt;
         flex-grow: 1;
       }
       
-      .address {
+      .status {
         flex-grow: 1;
         text-align: center;
+        color:red;
       }
       
       .logo-container {
@@ -256,11 +355,11 @@ const createdAt= order?.createdAt;
       }
       
       .detail {
-        flex-basis: 80%;
+        flex-basis: 70%;
       }
       
       .calculate {
-        flex-basis: 20%;
+        flex-basis: 30%;
       }
       .footer {
         display: flex;

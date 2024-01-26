@@ -5,7 +5,6 @@ import LogoOnlyLayout from './layoutes/LogoOnlyLayout';
 import ForgotPassword from './pages/account/ForgotPassword';
 import Request from "./pages/Request";
 import Dashboard from './pages/dashboard';
-import { Report } from './pages/report/Report';
 import { RequestHistory } from './pages/Request/RequestHistory';
 import ProtectedRoute from './auth/ProtectedRoute';
 import { Category } from './pages/category/Category';
@@ -25,13 +24,19 @@ import Register from './pages/account/Register';
 import PurchaseRequest from './pages/purchase/purchaseRequest';
 import Order from './pages/order';
 import NotificationDetail from './pages/notification';
-import MyPurchaseRequest from './pages/purchase/myPurchaseRequest';
 import ManageRequisition from './pages/purchase/manageRequisition';
 import Rfq from './pages/Quotation/rfq';
 import ManageRfq from './pages/Quotation/manageRfq';
 import OrderDetail from './components/pageComponents/order/customer/orderDetail';
 import Detail from './components/pageComponents/Requisition/detail';
 import Payment from './pages/payment';
+import PaymentConfirmation from './components/pageComponents/payment/PaymentConfirmation';
+import Result from './components/pageComponents/search/result';
+import VerifyUser from './pages/User/verify';
+import Report from './pages/report/Report';
+import AccountCreation from './pages/User/accountCreation';
+import ResetPasswordForm from './pages/User/reset-password';
+import SubOrderDetail from './components/pageComponents/order/OrderDetail';
 export default function RoutePage() {
 
     return useRoutes([
@@ -54,7 +59,8 @@ export default function RoutePage() {
               { path: '/purchaseRequests', element: <ProtectedRoute  element={<PurchaseRequest />} /> },
               { path:'/purchaseRequest/:id', element: <ProtectedRoute  element={<Detail />} /> },
               
-              { path: '/myRequest', element: <ProtectedRoute  element={<MyPurchaseRequest />} /> },
+           //   { path: '/verify', element: <ProtectedRoute  element={<VerifyUser />} /> },
+ 
               { path: '/manageRequisition', element: <ProtectedRoute  element={<ManageRequisition />} /> },
               { path:'/purchaseRequestDetail/:id', element: <ProtectedRoute  element={<PurchaseRequestDetail />} /> },
               { path:'/rfq', element: <ProtectedRoute  element={<Rfq />} /> },
@@ -64,14 +70,13 @@ export default function RoutePage() {
               { path:'/notificationDetail/:id', element: <ProtectedRoute  element={<NotificationDetail />} /> },
                
               { path:'/orderDetail/:id', element: <ProtectedRoute  element={<OrderDetail />} /> },
-
-
-              { path: '/invoice', element: <ProtectedRoute  element={<Invoice />} /> },
+              { path:'/subOrderDetail/:id', element: <ProtectedRoute  element={<SubOrderDetail />} /> },
                
+              { path: '/invoice', element: <ProtectedRoute  element={<Invoice />} /> },
+              { path: '/paymentConfirmation', element: <ProtectedRoute  element={<PaymentConfirmation />} /> },
+              { path: '/result', element: <ProtectedRoute  element={<Result />} /> },
 
-              { path: '/payment', element: <ProtectedRoute  element={<Payment />} /> },
-
-
+              { path: '/payment/:id', element: <ProtectedRoute  element={<Payment />} /> },
             ],
           },
           {
@@ -82,6 +87,9 @@ export default function RoutePage() {
               { path: 'login', element: <Login/> },
               { path:  'register', element:<Register />},
               { path:  '/forgot-password', element:<ForgotPassword />},
+              { path:  '/verify', element:<VerifyUser />},
+              { path:  '/acountCreated/:email', element:<AccountCreation />},
+              { path:  '/reset-password', element:<ResetPasswordForm />},
             ],
           },
           { path: '*', element: <NotFoundPage /> },

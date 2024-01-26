@@ -1,5 +1,5 @@
-import { useQuery } from '@apollo/client';
 import React from 'react';
+import { useQuery } from '@apollo/client';
 import Chart from "react-apexcharts";
 import Spinner from '../../Spinner';
 import { DAY_REPORT_QUERY } from '../../../graphql/Report';

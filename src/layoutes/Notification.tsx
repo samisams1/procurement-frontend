@@ -1,42 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { IconButton, Badge, Popover, List, ListItem, ListItemText, ListItemIcon, Typography } from '@mui/material';
-import { Notifications, Description } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { IconButton, Badge, Popover, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Notifications, } from '@mui/icons-material';
 import useCountOrders from '../components/pageComponents/dashboard/countedOrder';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import Spinner from '../components/Spinner';
 
-const ORDER_QUERY = gql`
-  query GetOrderDetailBySupplierId($supplierId: Float!) {
-    getOrderBySupplierId(supplierId: $supplierId) {
-      id
-      status
-      tax
-      totalPrice
-      createdAt
-      shippingCost
-      customerId
-      supplierId
-    }
-  }
-`;
-
-interface OrderInterface {
-  id: string;
-  customerId: string;
-  supplierId: string;
-  totalPrice: number;
-  createdAt: string;
-  status: string;
+interface Notification {
+  id:number;
+  recipientId: string;
+  message: string;
+  type: string;
 }
-
+const ORDER_QUERY = gql`
+query{
+  notitfications{
+    id
+    recipientId
+    message
+    type
+  }
+}
+`;
+const UPDATE_NOTIFICATION_MUTATION = gql`
+mutation UpdateNotification($id: Float!) {
+  updateNotification(id: $id) {
+    status
+  }
+}
+`;
 const NotificationComponent = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [maxHeight, setMaxHeight] = useState<number>(0);
-  const { loading, error, data } = useQuery(ORDER_QUERY, {
-    variables: { supplierId: 5 },
-  });
+  const [updateNotification] = useMutation(UPDATE_NOTIFICATION_MUTATION);
 
+  const { loading, error, data } = useQuery(ORDER_QUERY);
+  const navigate = useNavigate();
   useEffect(() => {
     const handleResize = () => {
       setMaxHeight(window.innerHeight * 0.7); // Adjust the percentage as needed
@@ -66,16 +65,40 @@ const NotificationComponent = () => {
 
   if (loading) return <Spinner />;
   if (error) return <p>{error.message}</p>;
+ const notifications = data.notitfications;
+ const handleNotificationClick = async (notification: Notification) => {
+  // Determine the page to navigate based on the notification type
+  let route = '';
 
-  const productList = data?.getOrderBySupplierId?.map((row: OrderInterface) => ({
-    id: row.id,
-    customerId: row.customerId,
-    supplierId: row.supplierId,
-    totalPrice: row.totalPrice,
-    createdAt: row.createdAt,
-    status: row.status,
-  }));
+  switch (notification.type) {
+    case 'order':
+      route = '/order';
+      break;
+    case 'request':
+      route = '/request';
+      break;
+    case 'rfq':
+        route = '/rfq';
+        break;
+    // Add more cases as needed for different notification types
 
+    default:
+      // Handle the default case or unknown types
+      return;
+  }
+  const notificationId =notification.id ;
+  try {
+    const { data } = await updateNotification({
+      variables: { id: Number(notificationId) }, // Parse id to an integer if needed
+    });
+
+    console.log('Notification updated:', data.updateNotification);
+  } catch (error) {
+    console.error('Failed to update notification:', error);
+  }
+  // Navigate to the corresponding page
+  navigate(route);
+};
   return (
     <>
       <IconButton
@@ -88,7 +111,7 @@ const NotificationComponent = () => {
           },
         }}
       >
-        <Badge badgeContent={countOrders.countOrders} color="error">
+        <Badge badgeContent={countOrders.count} color="error">
           <Notifications />
         </Badge>
       </IconButton>
@@ -119,18 +142,20 @@ const NotificationComponent = () => {
               Activity
             </Typography>
           </ListItem>
-          {productList?.map((row: OrderInterface) => (
-            <ListItem key={row.id} button component={RouterLink} to={`/notificationDetail/${row.id}`} sx={{ py: 2 }}>
-    
-              <ListItemIcon>
-                <Description style={{ color: row.status === 'comformed' ? 'red' : 'green' }} />
-              </ListItemIcon>
-              <ListItemText
-                primary={`Your order is confirmed by admin with Order ID: ${row.id}, created on ${row.createdAt}. Review and please make the payment.`}
-                sx={{ wordWrap: 'break-word' }}
-              />
-            </ListItem>
-          ))}
+          <div>
+      {notifications.map((notification:Notification) => (
+      <ListItem key={notification.recipientId} onClick={() => handleNotificationClick(notification)}>
+      <ListItemText
+        primary={notification.message}
+        secondary={`Recipient ID: ${notification.recipientId}`}
+        secondaryTypographyProps={{ color: 'textSecondary' }}
+      />
+      <Typography variant="body2" color="textSecondary">
+        Type: {notification.type}
+      </Typography>
+    </ListItem>
+      ))}
+    </div>
         </List>
       </Popover>
     </>

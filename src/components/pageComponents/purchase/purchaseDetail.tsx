@@ -84,7 +84,7 @@ const PurchaseDetail: React.FC<{
   const [updateQuotation] = useMutation(UPDATE_QUOTATION_MUTATION);
 
   const { loading, error, data } = useQuery<QuotationResponse>(GET_QUOTATION, {
-    variables: { id: id, supplierId: 5 },
+    variables: { id: id, supplierId: 1 },
   });
 
   

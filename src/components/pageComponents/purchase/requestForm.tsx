@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useQuery, gql } from '@apollo/client';
+import {
+  SelectChangeEvent,
+
+  Box,
+} from '@mui/material';
 import {
   Grid,
   Paper,
@@ -10,15 +16,20 @@ import {
   Select,
   MenuItem,
   Table, TableHead, TableRow, TableCell, TableBody, Input,Accordion, AccordionSummary, AccordionDetails, 
+  Checkbox,
 } from '@mui/material';
-import { gql, useQuery } from '@apollo/client';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { SelectChangeEvent } from '@mui/material/Select';
-import Spinner from '../../Spinner';
+import { Add, DeleteOutlineTwoTone, RequestPageOutlined, RequestPageTwoTone } from '@mui/icons-material';
 import PageHeader from '../../PageHeader';
-import { PeopleTwoTone } from '@mui/icons-material';
 
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface Supplier {
+  id: string;
+  name: string;
+}
 export interface SaleInput {
   productTitle: string;
   code:string;
@@ -34,33 +45,42 @@ export interface AdditionalData {
   remark: string;
   estimatedDelivery: string;
   addressDetail: string;
+
 }
 
+/*interface RequestFormProps {
+  onSubmit: (selectedType: string, selectedValue: string[]) => void;
+}*/
 interface RequestFormProps {
-  onSubmit: (products: SaleInput[], selectedSuppliers: number[], additional: AdditionalData) => Promise<void>;
+  onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string) => Promise<void>;
 }
-
-interface SupplierData {
-    id: number;
-    name:string
-}
-
 const GET_CATEGORIES = gql`
-query{
-  categories{
-    id
-    name
+  query {
+    categories {
+      id
+      name
+    }
   }
-}
 `;
+
 const GET_SUPPLIERS_BY_CATEGORY_ID = gql`
-query GetSuppliersByCategoryId($categoryId: Int!) {
-  suppliersByCategoryId(categoryId: $categoryId) {
-    id
+  query GetSuppliersByCategoryId($categoryId: Int!) {
+    suppliersByCategoryId(categoryId: $categoryId) {
+      id
+      name
+    }
   }
-}
-`
+`;
+const GET_SUPPLIERS = gql`
+  query {
+    suppliers {
+      id
+      name
+    }
+  }
+`;
 const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
+
   const [productTitles, setProductTitles] = useState<string[]>(['']);
   const [itemCodes, setItemCodes] = useState<string[]>(['']);
   const [itemCodeErrors, setItemCodeErrors] = useState<string[]>(['']);
@@ -70,10 +90,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   const [uomErrors, setUomErrors] = useState<string[]>(['']);
   const [quantities, setQuantities] = useState<string[]>([]);
   const [quantityErrors, setQuantityErrors] = useState<string[]>(['']);
-
-  const [categoryId, setCategoryId] = useState<number | undefined>(undefined);
-  const [selectedSuppliers, setSelectedSuppliers] = useState<number[]>([]);
-
+  
   const [manufacturers, setManufacturers] = useState<string[]>(['']);
   const [descriptions, setDescriptions] = useState<string[]>(['']);
   const [marks, setMarks] = useState<string[]>(['']);
@@ -82,50 +99,47 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   const [remark, setRemark] = useState('');
   const [addressDetail, setAddressDetail] = useState('');
   const [estimatedDelivery, setEstimatedDelivery] = useState('');
-
-  //const [remarkErrors, setemarkErrors] = useState<string[]>('');
-
-
-  const [expanded, setExpanded] = useState<string | false>(false);
-  const [error, setError] = useState('');
   const [titleErrors, setTitleErrors] = useState<string[]>(['']);
 
-  
-  const { loading, data } = useQuery(GET_CATEGORIES);
-  /*const { loading: loading1, error: error1, data: data1 } = useQuery(GET_SUPPLIERS_BY_CATEGORY_ID, {
-    variables: { categoryId: categoryId || 0 },
-  });*/
 
-  //const { loading: loadingCategories } = useQuery(GET_CATEGORIES);
-  const { loading: loadingSuppliers, error: errorSuppliers, data: supplierData } = useQuery(
+  const [selectedValue, setSelectedValue] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
+  const [supplierIds, setSupplierIds] = useState<string[]>([]);
+
+  const [selectedType, setSelectedType] = useState('');
+
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [expanded, setExpanded] = useState<string | false>(false);
+
+  const {  data } = useQuery(GET_CATEGORIES);
+  const { loading: loadingSuppliers, data: supplierData } = useQuery(
     GET_SUPPLIERS_BY_CATEGORY_ID,
     {
-      variables: { categoryId: categoryId || 0 },
+      variables: { categoryId: categoryId || '' },
     }
   );
 
   useEffect(() => {
-    console.log(categoryId);
-    console.log("kaba");
-    console.log(selectedSuppliers);
-  }, [categoryId,selectedSuppliers]);
-  useEffect(() => {
-    if (supplierData) {
-      const suppliers = supplierData.suppliersByCategoryId || [];
-      const supplierIds = suppliers.map((supplier: SupplierData) => supplier.id);
-      setSelectedSuppliers(supplierIds);
-
-      console.log(supplierIds);
+    if (categoryId && supplierData && supplierData.suppliersByCategoryId) {
+      const suppliers = supplierData.suppliersByCategoryId;
+      const supplierIds = suppliers.map((supplier: Supplier) => supplier.id);
+      setSupplierIds(supplierIds);
     }
-  }, [supplierData]);
+  }, [categoryId, supplierData]);
+  const { data: supData } = useQuery(GET_SUPPLIERS);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  console.log("somali land");
-  //console.log(suppliersData);
-  const suppliers = data.categories;
+  useEffect(() => {
+    if (supData) {
+      setSelectedValue(supData.suppliers[0]?.id || '');
+    }
+  }, [supData]);
 
+  const handleChange = (event: SelectChangeEvent) => {
+    const selectedCategoryId = event.target.value as string;
+    setSelectedValue(selectedCategoryId);
+    setCategoryId(selectedCategoryId);
+  };
 
   const handleTitleChange = (index: number, value: string) => {
     const updatedTitles = [...productTitles];
@@ -244,15 +258,41 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   };
 
   const handleReset = () => {
-    //setProducts([]);
-    setSelectedSuppliers([]);
-   /// setAdditional({ remark: '', estimatedDelivery: '', addressDetail: '' });
-    //onFormReset(); // Call onFormReset prop to indicate form reset
+    setSelectedValue('');
   };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (selectedSuppliers.length === 0) {
-      setError('Please select Category.');
+
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEstimatedDelivery(event.target.value);
+  };
+  const renderDateOptions = () => {
+    const options = [];
+    for (let i = 1; i <= 30; i++) {
+      options.push(
+        <MenuItem key={i} value={i.toString()}>
+         with in    {" " + i} {i===1? "day":"days"}
+       </MenuItem>
+      );
+    }
+    return options;
+  };
+  const handleSubmit = () => {
+    if (selectedOptions.length === 0) {
+      setErrorMessage('Please select an option');
+      return;
+    }
+  
+    if (selectedOptions.includes('supplier') && (!selectedValue || !categoryId)) {
+      setErrorMessage('Please select a category');
+      return;
+    }
+  
+    if (selectedOptions.includes('agent') && !selectedValue) {
+      setErrorMessage('Please select an agent');
+      return;
+    }
+  
+    if (selectedOptions.includes('x-company') && !selectedValue) {
+      setErrorMessage('Please select an X-company');
       return;
     }
     const updatedTitleErrors = productTitles.map((title) => {
@@ -328,53 +368,150 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
       addressDetail:addressDetail,
       estimatedDelivery:estimatedDelivery
     }
-    onSubmit(products, selectedSuppliers,additional);
-    //onFormReset()
-  };
- /* const handleChange = (event: SelectChangeEvent) => {
-    setCategoryId(Number(event.target.value));
-    console.log("tigray");
-    console.log(categoryId);
-  };*/
-  const handleChange = async (event: SelectChangeEvent) => {
-    const selectedCategoryId = Number(event.target.value);
-  setCategoryId(selectedCategoryId !== 0 ? selectedCategoryId : undefined);
-  setSelectedSuppliers([]); // Clear the selected suppliers when the category changes
-  };
- 
- if(loadingSuppliers){
-  return <Spinner/>
- }
-  if (errorSuppliers) {
-    return <p>Error: {errorSuppliers.message}</p>;
-  }
+    setErrorMessage('');
 
-  //const categories = categoryData.categories;
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEstimatedDelivery(event.target.value);
-  };
-  const renderDateOptions = () => {
-    const options = [];
-    for (let i = 1; i <= 30; i++) {
-      options.push(
-        <MenuItem key={i} value={i.toString()}>
-         with in    {" " + i} {i===1? "day":"days"}
-       </MenuItem>
-      );
+    let supplierNewId: string[] = [];
+    if (selectedType === 'supplier') {
+      supplierNewId = supplierIds;
+   //   onSubmit(selectedType, supplierNewId);
+
+      onSubmit(products, supplierNewId,additional,selectedType);
+
+    } else if (selectedType === 'agent' || selectedType === 'x-company') {
+      supplierNewId = [selectedValue];
+     // onSubmit(selectedType, supplierNewId);
+     onSubmit(products, supplierNewId,additional,selectedType);
+
+     
+
     }
-    return options;
+  };
+  const handleOptionChange = (option: string) => {
+    if (selectedOptions.includes(option)) {
+      setSelectedOptions(selectedOptions.filter((item) => item !== option));
+      setSelectedType('');
+      setSelectedValue(''); // Clear the selected value when the option is deselected
+    } else {
+      setSelectedOptions([...selectedOptions, option]);
+      setSelectedType(option);
+      if (option === 'x-company') {
+        setSelectedValue('2'); // Assign the desired value to selectedValue when the option is selected
+      }
+    }
+    setErrorMessage('');
+  };
+const handleAgentChange = (event: SelectChangeEvent) => {
+    setSelectedValue(event.target.value as string);
   };
 
+  const supNewData: Supplier[] = supData?.suppliers;
   return (
-<Grid container spacing={2}>
-  <Grid item xs={12}>
-    <Paper elevation={3} sx={{ padding: '20px' }}>
-    <PageHeader
+    <div>
+      <Grid item xs={12}>
+     <div>
+
+     
+        <Grid>
+        <Paper elevation={3} sx={{ padding: '20px' }}>
+          <PageHeader
             title="NEW REQUISITION FORM"
             subTitle="Create new requisition"
-            icon={<PeopleTwoTone fontSize="large" />}
-        /> 
-      <form onSubmit={handleSubmit} onReset={handleReset}>
+            icon={<RequestPageTwoTone fontSize="large" />}
+          />
+          <Paper elevation={3} style={{ padding: '20px' }}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <PageHeader title="Select Your Source" />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Checkbox
+            checked={selectedOptions.includes('supplier')}
+            onChange={() => handleOptionChange('supplier')}
+            disabled={selectedOptions.length === 1 && !selectedOptions.includes('supplier')}
+          />
+          <Typography>Supplier</Typography>
+        </Box>
+      </Grid>
+      <Grid item xs={12} sm={4}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Checkbox
+            checked={selectedOptions.includes('agent')}
+            onChange={() => handleOptionChange('agent')}
+            disabled={selectedOptions.length === 1 && !selectedOptions.includes('agent')}
+          />
+          <Typography>Agent</Typography>
+        </Box>
+      </Grid>
+      <Grid item xs={12} sm={4}>
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <Checkbox
+      checked={selectedOptions.includes('x-company')}
+      onChange={() => handleOptionChange('x-company')}
+      disabled={selectedOptions.length === 1 && !selectedOptions.includes('x-company')}
+    />
+    {selectedOptions.includes('x-company') ? <span>{selectedOptions[0]}</span> : null}
+    <Typography>X-company</Typography>
+  </Box>
+</Grid>
+              {selectedOptions.includes('supplier') && (
+                <Grid item xs={12}>
+        <FormControl fullWidth>
+          <InputLabel>Category</InputLabel>
+          <Select value={selectedValue} onChange={handleChange} label="Category">
+            {data &&
+              data.categories.map((category: Category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+          </Select>
+        </FormControl>
+                </Grid>
+              )}
+          {selectedOptions.includes('agent') && (
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel>Agent</InputLabel>
+                    <Select value={selectedValue} onChange={handleAgentChange}  label="Agent">
+                      {supNewData && supNewData.map((supplier) => (
+                        <MenuItem key={supplier.id} value={supplier.id}>
+                          {supplier.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
+{selectedOptions.includes('x-company')}
+              
+            </Grid>
+          </Paper>
+          </Paper>
+        </Grid>
+     </div>
+      
+      </Grid>
+
+      {errorMessage && (
+        <Grid item xs={12}>
+          <Typography variant="body1" color="error">
+            {errorMessage}
+          </Typography>
+        </Grid>
+      )}
+
+      <Grid item xs={12}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<RequestPageOutlined />}
+          onClick={handleSubmit}
+        >
+          Submit
+        </Button>
+
+        <form onSubmit={handleSubmit} onReset={handleReset}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12}></Grid>
           <Grid item xs={12} sm={12}>
@@ -385,33 +522,18 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   justifyContent: 'space-between',
   marginBottom: '10px',
 }}>
-  <FormControl fullWidth>
-    <InputLabel id="demo-simple-select-label">Category</InputLabel>
-    <Select
-      labelId="demo-simple-select-label"
-      id="demo-simple-select"
-      value={categoryId !== undefined ? categoryId.toString() : ''}
-      label="Category"
-      onChange={handleChange}
-    >
-      {suppliers.map((supplier: SupplierData) => (
-        <MenuItem key={supplier.id} value={supplier.id}>
-          {supplier.name}
-        </MenuItem>
-      ))}
-    </Select>
-  </FormControl>
+  
   <Button
     variant="outlined"
     color="primary"
-    startIcon={<AddIcon />}
+    startIcon={<Add />}
     onClick={handleAddTitle}
     style={{ whiteSpace: 'nowrap' }}
   >
     Add Item
   </Button>
 </div>
-{error && categoryId === undefined && <Typography color="error">{error}</Typography>}
+
 <Table>
   <TableHead>
     <TableRow sx={{ backgroundColor: '#1c9fef' }}>
@@ -522,7 +644,7 @@ placeholder="Item Name"
     onChange={handleAccordionChange(`panel${index}`)}
     style={{ width: '240px', marginBottom: '15px' }}
   >
-        <AccordionSummary expandIcon={<AddIcon />} aria-controls="panel1bh-content" id="panel1bh-header">
+        <AccordionSummary expandIcon={<Add />} aria-controls="panel1bh-content" id="panel1bh-header">
           <Typography>Add More</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -566,7 +688,7 @@ placeholder="Item Name"
             color="error"
             onClick={() => handleRemoveTitle(index)}
             disabled={productTitles.length === 1}
-            startIcon={<DeleteIcon />}
+            startIcon={<DeleteOutlineTwoTone />}
           >
             
           </Button>
@@ -668,16 +790,13 @@ placeholder="Item Name"
 </Paper>
    </Grid>
 
-            <Grid item xs={12} sm={12}>
-              <Button type="submit" variant="contained" color="primary">
-                  Send Purchase Request
-                </Button>
-              </Grid> 
+            
             </Grid>
       </form>
-        </Paper>
       </Grid>
-    </Grid>
+
+      {loadingSuppliers && <p>Loading suppliers...</p>}
+    </div>
   );
 };
 

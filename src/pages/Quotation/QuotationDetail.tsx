@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { useParams } from 'react-router-dom';
-import { Typography, Box, TextField, Grid, Checkbox, Table, TableHead, TableRow, TableCell, TableBody, } from '@mui/material';
+import { Typography, Box, Grid, Checkbox, Table, TableHead, TableRow, TableCell, TableBody, } from '@mui/material';
 import Button from '../../components/Button';
 
 const GET_QUOTATION = gql`
@@ -75,7 +75,7 @@ interface QuotationData {
 
 const QuotationDetail: React.FC = () => {
   const { id } = useParams<{ id?: string }>();
-  const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+  const [quantities] = useState<{ [key: string]: number }>({});
   const [selectedItems, setSelectedItems] = useState<{ [key: string]: boolean }>({});
   const [shipping, setShipping] = useState<number>(0);
 
@@ -83,7 +83,6 @@ const QuotationDetail: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const [createOrder] = useMutation(CREATE_ORDER);
-  const[count,setCount]=useState(0);
 
   const [showTitleColumn, setShowTitleColumn] = useState(true);
   const [showPriceColumn, setShowPriceColumn] = useState(true);

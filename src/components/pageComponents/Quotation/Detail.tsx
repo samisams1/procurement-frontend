@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useQuery, gql, useMutation, useApolloClient } from '@apollo/client';
+import { useQuery, gql, useMutation } from '@apollo/client';
 import { Typography, Box, Grid, Checkbox, Table, TableHead, TableRow, TableCell, TableBody, } from '@mui/material';
 import Button from '../../Button';
-
+import { useNavigate } from 'react-router-dom';
 
 const GET_QUOTATION = gql`
   query GetQuotationById($id: Float!) {
@@ -75,12 +75,12 @@ interface QuotationData {
 }
 type QuotationDetailProps = {
     id: number;
+    newId:number;
   };
+  
 const QuotationDetail: React.FC<QuotationDetailProps> = (props) => {
-    const { id } = props;
- // const { id } = useParams<{ id?: string }>();
- const client = useApolloClient();
-
+    const { id,newId } = props;
+const navigate= useNavigate();
   const [quantities] = useState<{ [key: string]: number }>({});
   const [selectedItems, setSelectedItems] = useState<{ [key: string]: boolean }>({});
   const [shipping, setShipping] = useState<number>(0);
@@ -134,7 +134,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = (props) => {
     console.log("supplierId")
 console.log(supplierId)
  const input = {
-      customerId: 1,
+      customerId: newId,
       supplierId: supplierId,
       orderDetails: selectedProducts.map(({ product, price }) => ({
         title: product.title,
@@ -148,39 +148,33 @@ console.log(supplierId)
       shippingCost: shipping,
     }
     /*try {
-      await createOrder({ variables: { input } });
-      
-      setSuccessMessage('Order created successfully!');
-    } catch (error: any) {
-      setErrorMessage(error.message);
-    } */
-    try {
       const response = await createOrder({ variables: { input } });
       const createdOrder = response.data.createOrder;
-    
       // Perform actions with the created order
       console.log('Order created:', createdOrder);
       setSuccessMessage('Order created successfully!');
-    
       // Refetch the data after creating
       const refetchResponse = await client.query<QuotationData>({
         query: GET_QUOTATION,
         variables: { id: id },
       });
-    
-      // Access the updated data from the refetched data
       const updatedData = refetchResponse.data; // or perform any other action with the updated data
       console.log('Updated data:', updatedData);
     
-      // Adjust the code below based on the structure of the updatedData object
-     // const { quotation } = updatedData; // Access the 'quotation' property from the updated data
-      // ... continue with your code that uses the 'quotation' variable
+    } catch (error: any) {
+      setErrorMessage(error.message);
+    }  */
+
+    try {
+      const response = await createOrder({ variables: { input } });
+      const createdOrder = response.data.createOrder;
+      const createdOrderId = createdOrder.id; // Access the created ID
+      console.log('Order created with ID:', createdOrderId);
+      setSuccessMessage('Order created successfully!');
+      navigate(`/orderDetail/${createdOrderId}`)
     } catch (error: any) {
       setErrorMessage(error.message);
     }
-    
-
-    
   };
 
 

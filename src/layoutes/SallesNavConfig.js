@@ -35,11 +35,6 @@ export const SallesNavConfig = [
     path: 'order',
     icon: getIcon('foundation:burst-sale'),
   },
-  {
-    title: 'MyPurchseRequest',
-    path: 'myRequest',
-    icon: getIcon('foundation:burst-sale'),
-  },
 {
   title: 'Report',
   path: 'report',

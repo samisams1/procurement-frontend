@@ -1,24 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
-interface CountOrdersData {
-  countOrders: number;
+interface CountData {
+  countNotifications: number;
 }
-const COUNT_ORDERS_QUERY = gql`
+const COUNT_NOTIFICATION_QUERY = gql`
   query {
-    countOrders
+    countNotifications
   }
 `;
 const useCountOrders = () => {
-  const { loading, error, data } = useQuery<CountOrdersData>(COUNT_ORDERS_QUERY);
-  const [countOrders, setCountOrders] = useState<number | null>(null);
+  const { loading, error, data } = useQuery<CountData>(COUNT_NOTIFICATION_QUERY);
+  const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (!loading && data) {
-      setCountOrders(data.countOrders);
+      setCount(data.countNotifications);
     }
   }, [loading, data]);
 
-  return { loading, error, countOrders };
+  return { loading, error, count };
 };
 
 export default useCountOrders;

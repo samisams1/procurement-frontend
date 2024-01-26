@@ -64,7 +64,16 @@ const Invoice = () => {
     // Open the payment page in a new tab or window
     navigate('/payment');
   };
-
+/*const handleSubmit = async (selectedType: string): Promise<void> => {
+    try {
+      if (selectedType !== 'supplier' && selectedType !== 'agent' && selectedType !== 'x-company') {
+        throw new Error('Invalid selected type');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+*/
   return (
     <div style={styles.root}>
       <div style={styles.header}>
@@ -108,12 +117,7 @@ const Invoice = () => {
         </Table>
       </TableContainer>
 
-      <Button
-        variant="contained"
-        color="primary"
-        style={styles.printButton}
-        onClick={handlePrint}
-      >
+      <Button variant="contained" color="primary" style={styles.printButton} onClick={handlePrint}>
         Print
       </Button>
 

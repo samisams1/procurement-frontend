@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
+import {
+  Box,
+  Stack,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  InputBase,
+} from '@mui/material';
 import Iconify from '../components/Iconify';
 import AccountPopover from './AccountPopover';
 import NotificationCompoent from './Notification';
 import LanguageSelector from './LanguageSelector';
+import { useNavigate } from 'react-router-dom';
+import Button from '../components/Button';
 
 const DRAWER_WIDTH = 280;
 const APPBAR_MOBILE = 64;
@@ -29,11 +39,36 @@ const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
   },
 }));
 
+const SearchWrapper = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+});
+
+const SearchInput = styled(InputBase)(({ theme }) => ({
+  borderColor: '#1c9fef',
+  '& .MuiInputBase-input': {
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    '&:focus': {
+      width: 200,
+      borderColor: '#1c9fef',
+      boxShadow: '0px 0px 5px 2px #1c9fef',
+    },
+  },
+}));
+
 DashboardNavbar.propTypes = {
   onOpenSidebar: PropTypes.func,
 };
 
 export default function DashboardNavbar({ onOpenSidebar }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
+  const handleSearch = () => {
+    navigate(`/result?searchTerm=${encodeURIComponent(searchTerm)}`);
+  };  
+
+
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -44,14 +79,24 @@ export default function DashboardNavbar({ onOpenSidebar }) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
         <Typography variant="h3" component="div" sx={{ fontWeight: '900', color: '#1c9fef' }}>
-            ET Pro forma
+          ET Pro forma
         </Typography>
+          <SearchWrapper>
+            <SearchInput
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search..."
+            />
+         <Button onClick={handleSearch} text="Search" fullWidth />
+
+         
+          </SearchWrapper>
 
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-          <LanguageSelector/>
-         <NotificationCompoent />
+          <LanguageSelector />
+          <NotificationCompoent />
           <AccountPopover />
         </Stack>
       </ToolbarStyle>

@@ -23,7 +23,7 @@ export const UserList = ({title,roleId}:any) => {
     if (error) return <p>{error.message}</p>
     console.log(data)
     const row = data.users.map((row:userInterface)=>(
-        [row.id,row.firstName,row.lastName,row.username,row.email,row.status,row.role]
+        [row.id,row.firstName,row.lastName,row.username,row.email,row.role,row.role]
     ))
     const columns = [
         {

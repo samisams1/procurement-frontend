@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { Grid, Paper, Typography } from '@mui/material';
 import Spinner from '../../Spinner';
@@ -6,11 +6,13 @@ import { useParams } from 'react-router-dom';
 import QuotationDetail from './Detail';
 import PageHeader from '../../PageHeader';
 import { PeopleTwoTone } from '@mui/icons-material';
+import { UserContext } from '../../../auth/UserContext';
 
 interface PurchaseRequest {
   id: number;
   purchaseRequestId: string;
   supplierId: string;
+  referceNumber:string
   customerId: string;
   status: string;
   createdAt: string;
@@ -27,7 +29,11 @@ interface PurchaseRequest {
     price: number;
   }[];
 }
+interface CreateOrderComponentProps {
+  customerId: number;
+  fullName:string;
 
+}
 const PURCHASE_REQUEST_BY_SUPPLIER_QUERY = gql`
   query GetQuotationByRequestId($requestId: Float!) {
     quotationByRequestId(requestId: $requestId) {
@@ -53,7 +59,19 @@ const PURCHASE_REQUEST_BY_SUPPLIER_QUERY = gql`
   }
 `;
 
-const ManageRfqComponent: React.FC = () => {
+const ManageRfqComponent: React.FC =()=> {
+const { currentUser } = useContext(UserContext);
+
+if (!currentUser) {
+  return <Spinner />;
+}
+const customerId = currentUser.id as number; // Type assertion
+const fullName = currentUser.firstName;
+
+return <CreateOrderComponent  fullName = {fullName} customerId = {customerId}  />;
+};
+
+const CreateOrderComponent: React.FC<CreateOrderComponentProps> = ({ customerId,fullName }) => {
   const { id } = useParams<{ id?: string }>();
   const { loading, error, data } = useQuery(PURCHASE_REQUEST_BY_SUPPLIER_QUERY, {
     variables: { requestId: Number(id) },
@@ -96,6 +114,7 @@ const ManageRfqComponent: React.FC = () => {
         /> 
       <Grid container spacing={2}>
         {purchaseRequests.map((request:PurchaseRequest) => (
+          request.status === "comformed" ?
           <Grid item xs={12} sm={12} md={12} key={request.id} >
             <Paper
               elevation={3}
@@ -110,16 +129,19 @@ const ManageRfqComponent: React.FC = () => {
                 Supplier ID: {request.supplierId}
               </Typography>
               <Typography variant="body1" component="div" style={{ color: '#3c44b1' }}>
-                Customer ID: {request.customerId}
+                Customer Full Name: {fullName}
               </Typography>
               <Typography variant="body1" component="div" style={{ color: '#3c44b1' }}>
                 Request ID: {request.purchaseRequestId}
               </Typography>
+              <Typography variant="body1" component="div" style={{ color: '#3c44b1' }}>
+                Request ID: {request.status}
+              </Typography>
               <Typography variant="body1" component="div" style={{ color: '#555' }}>
               </Typography>
             </Paper>
-           <QuotationDetail id={Number(request.id)} />
-          </Grid>
+           <QuotationDetail id={Number(request.id)}  newId = {customerId}/>
+          </Grid>: ''
         
         ))}
       </Grid>

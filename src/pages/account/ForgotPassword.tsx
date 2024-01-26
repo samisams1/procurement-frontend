@@ -1,28 +1,53 @@
-import React from 'react';
-import { Box, Container } from '@mui/material';
-import { Helmet } from 'react-helmet';
-import ForgotPass from '../../components/pageComponents/account/changePassword/ForgotPass';
+import { useMutation, gql } from '@apollo/client';
+import React, { useState } from 'react';
 
-const ForgotPassword = () => (
-  <Box
-    display="flex"
-    justifyContent="center"
-    alignItems="center"
-    height="91vh"
-    bgcolor="white" // Set the background color to white
-    border="1px solid #eee" // Add a border with a light gray color
-  >
-    <Box p={3}>
-      <Helmet>
-        <title>Login | Inventory</title>
-      </Helmet>
-      <Box component="main" sx={{ flexGrow: 1, py: 2 }}>
-        <Container maxWidth="xl" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <ForgotPass />
-        </Container>
-      </Box>
-    </Box>
-  </Box>
-);
+const FORGOT_PASSWORD_MUTATION = gql`
+  mutation ForgotPassword($input: ForgotPasswordInput!) {
+    forgotPassword(input: $input)
+  }
+`;
 
-export default ForgotPassword
+const PasswordResetForm: React.FC = () => {
+  const [email, setEmail] = useState('');
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const [forgotPassword] = useMutation(FORGOT_PASSWORD_MUTATION);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      await forgotPassword({
+        variables: {
+          input: {
+            email: email
+          }
+        }
+      });
+      console.log('Password reset request sent');
+    } catch (error) {
+      console.error('Failed to send password reset request:', error);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={handleEmailChange}
+          required
+        />
+      </div>
+      <button type="submit">Reset Password</button>
+    </form>
+  );
+};
+
+export default PasswordResetForm;

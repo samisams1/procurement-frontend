@@ -1,14 +1,14 @@
 import React from 'react';
 import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
 import { Helmet } from 'react-helmet';
-import OrderList from '../../components/pageComponents/order/OrderList';
 import PageHeader from '../../components/PageHeader';
 import { PeopleAltTwoTone } from '@mui/icons-material';
+import OrderList from '../../components/pageComponents/order/OrderList';
 export const OrderSupplier = () => (
   <>
     <Helmet>
       <title>
-        Overview | Procurement
+        et-proforma | order
       </title>
     </Helmet>
     <Box

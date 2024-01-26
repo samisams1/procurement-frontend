@@ -1,8 +1,10 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Grid } from '@mui/material';
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Grid, Paper } from '@mui/material';
 import Button from '../../Button';
 import { useNavigate } from 'react-router-dom';
+import PageHeader from '../../PageHeader';
+import { RequestPageTwoTone } from '@mui/icons-material';
 
 // Define your GraphQL query
 const GET_QUOTES = gql`
@@ -50,7 +52,14 @@ console.log(data)
     navigate(`/purchaseRequest/${id}`);
   };
   return (
-    <Grid> 
+    <Grid container spacing={2}>
+    <Grid item xs={12}>
+      <Paper elevation={3} sx={{ padding: '20px' }}>
+      <PageHeader
+              title="M"
+              subTitle="mange requests"
+              icon={<RequestPageTwoTone fontSize="large" />}
+          /> 
     <TableContainer>
       <Table className="blue-bordered-table">
         <TableHead>
@@ -63,7 +72,6 @@ console.log(data)
             <TableCell>Status</TableCell>
             <TableCell>Date</TableCell>
             <TableCell>Action</TableCell>
-            <TableCell>Products</TableCell>
            
           </TableRow>
         </TableHead>
@@ -80,39 +88,12 @@ console.log(data)
               <TableCell><span style={{color:"red"}}>{purchaseRequest.status}</span></TableCell>
               <TableCell>{purchaseRequest.createdAt}</TableCell>
               <TableCell><Button text="View Detals"   onClick={() => handleClick(purchaseRequest.id)}  style={{ cursor: 'pointer' }}/></TableCell>
-              <TableCell>
-                <Table className="blue-bordered-table">
-                  <TableHead>
-                    <TableRow className="blue-row">
-                      <TableCell>SN</TableCell>
-                      <TableCell>Item Name</TableCell>
-                      <TableCell>Quantity</TableCell>
-                      <TableCell>Part Number</TableCell>
-                      <TableCell>Item Name</TableCell>
-                      <TableCell>Quantity</TableCell>
-                      <TableCell>Quantity</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {purchaseRequest.products.map((product: any,index:number) => (
-                        <TableRow key={product.title}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{product.title}</TableCell>
-                        <TableCell>{product.quantity}</TableCell>
-                        <TableCell>{product.partNumber}</TableCell>
-                        <TableCell>{product.title}</TableCell>
-                        <TableCell>{product.quantity}</TableCell>
-                        <TableCell>{product.quantity}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
+    </Paper></Grid>
     <style>{`
       .blue-bordered-table {
         border: 2px solid  #1c9fef;

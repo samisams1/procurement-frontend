@@ -2,12 +2,12 @@ import React, { useContext } from 'react';
 import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
 import { UserContext } from '../../auth/UserContext';
 import Spinner from '../../components/Spinner';
-import { OrderAdmin } from './orderAdmin';
 import AllOrderList from '../../components/pageComponents/order/admin/allOrderList';
 import Orders from '../../components/pageComponents/order/customer/orders';
 import { Helmet } from 'react-helmet';
 import PageHeader from '../../components/PageHeader';
 import { PeopleAltTwoTone } from '@mui/icons-material';
+import { OrderSupplier } from './orderSupplier';
 export default function Order() {
   const { currentUser } = useContext(UserContext);
   if (!currentUser) {
@@ -17,7 +17,7 @@ export default function Order() {
   if (role === 'ADMIN') {
     return(<div><AllOrderList/></div>);
   } else if (role === 'SUPPLIER') {
-    return(<div><OrderAdmin/></div>);
+    return(<div><OrderSupplier/></div>);
   } else if (role === 'CUSTOMER') {
     return( <div>
       <Helmet>

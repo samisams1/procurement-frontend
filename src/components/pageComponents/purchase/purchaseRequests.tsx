@@ -122,7 +122,7 @@ const PurchaseRequestList: React.FC<{ id: number; navigate: any }> = ({ id, navi
           margin: 'auto',
         }}
       >
-        Requests
+        Requests 
       </Typography>
       <Grid container spacing={2}>
         {purchaseRequests.map((request) => (

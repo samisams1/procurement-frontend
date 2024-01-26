@@ -40,7 +40,7 @@ mutation CreateUser($input: CreateUserInput!) {
 `;*/
 
 export const CREATE_USER_MUTATION =gql`
-mutation ($firstName: String!, $lastName: String!, $username: String!, $email: String!, $password: String!, $role: String!) {
+mutation ($firstName: String!, $lastName: String!, $username: String!, $email: String!, $password: String!, $role: String!,$categoryId:Int!) {
   createUser(input: {
     firstName: $firstName,
     lastName: $lastName,
@@ -48,6 +48,7 @@ mutation ($firstName: String!, $lastName: String!, $username: String!, $email: S
     email: $email,
     password: $password,
     role: $role
+    categoryId:$categoryId
   }) {
     firstName
   }

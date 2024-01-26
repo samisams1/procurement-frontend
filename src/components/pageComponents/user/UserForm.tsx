@@ -1,31 +1,37 @@
 import React, { useState } from 'react';
-import {
-  Alert,
-  Grid,
-  Box,
-  Container,
-  Typography,
-} from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Alert, Grid, Box, Container, Typography } from '@mui/material';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Form, useForm } from '../../useForm';
 import Button from '../../Button';
 import Controls from '../../Controls';
-import { useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { userInterface } from '../../../interface/interfaces';
-import { CREATE_USER_MUTATION, USER_QUERY } from '../../../graphql/Users';
+import { USER_QUERY } from '../../../graphql/Users';
 
+const CREATE_USER_MUTATION = gql`
+  mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      id
+      email
+      firstName
+      lastName
+      role
+      username
+      status
+    }
+  }
+`;
 export const UserForm = () => {
   const [createProfile] = useMutation(CREATE_USER_MUTATION, {
     refetchQueries: [{ query: USER_QUERY }],
   });
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
+  const navigate =  useNavigate();
   const RoleEnum = {
     CUSTOMER: 'CUSTOMER',
     SUPPLIER: 'SUPPLIER',
   };
-
   const initialFValues: userInterface = {
     firstName: '',
     lastName: '',
@@ -33,7 +39,6 @@ export const UserForm = () => {
     username: '',
     password: '',
     role: RoleEnum.CUSTOMER,
-    status: '',
     categoryId: 1,
   };
 
@@ -56,9 +61,10 @@ export const UserForm = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(values);
     if (validate()) {
       createProfile({
-        variables: values,
+        variables: { input: values }, // Provide the "input" variable with the form values
       })
         .then(() => {
           setSuccessMessage('User created successfully!');
@@ -66,6 +72,7 @@ export const UserForm = () => {
           setTimeout(() => {
             setSuccessMessage('');
           }, 5000); // Remove success message after 5 seconds
+          navigate(`/acountCreated/${'samisams@gmail.com'}`);
         })
         .catch((error) => {
           setErrorMessage(error.message);
@@ -121,20 +128,22 @@ export const UserForm = () => {
                   { id: '2', label: 'supplier', value: RoleEnum.SUPPLIER },
                 ]}
                 error={errors.role}
-               // fullWidth // Make input full width
-              // style={{ marginBottom: '1rem' }}
+                // fullWidth // Make input full width
+                // style={{ marginBottom: '1rem' }}
               />
-              <Controls.Select
-                name="category"
-                label="Category"
-                value={values.role}
-                onChange={handleInputChange}
-                options={[
-                  { id: '1', label: 'Construction', value: '1' },
-                  { id: '2', label: 'Electronics', value: '2' },
-                ]}
-                error={errors.role}
-              />
+            
+               <Controls.Select
+  name="category"
+  label="Category"
+  value={values.categoryId.toString()} // Convert categoryId to string
+  onChange={handleInputChange}
+  options={[
+    { id: '1', label: 'Construction', value: '1' }, // Provide string values
+    { id: '2', label: 'Electronics', value: '2' },
+  ]}
+  error={errors.categoryId}
+  //style={{ marginBottom: '1rem' }}
+/>
               <Controls.Input
                 name="username"
                 label="Username"

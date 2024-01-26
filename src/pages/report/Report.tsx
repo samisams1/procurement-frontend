@@ -1,73 +1,31 @@
-import React from 'react';
-import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
-import { Helmet } from 'react-helmet';
-import { DailyTotalSales } from '../../components/report/daily/TodayTotalQueue';
-import { MonthTotalSales } from '../../components/report/month/MonthTotalSales';
-import { YearTotalSales } from '../../components/report/year/YearTotalSales';
-import LabTabs from '../../components/pageComponents/Tab/Tabs';
-export const Report = () => (
-  <>
-    <Helmet>
-      <title>
-        Overview | itrustu2
-      </title>
-    </Helmet>
-    <Box
-      component="main"
-      sx={{
-        flexGrow: 1,
-        py: 8
-      }}
-    >
-      <Container maxWidth="xl">
-        <Grid
-          container
-          spacing={3}
-        >
-          <Grid
-            xs={12}
-            sm={6}
-            lg={3}
-          >
-            <DailyTotalSales
-              difference={12}
-              positive
-              sx={{ height: '100%' }}
-              value="$24k"
-            />
-          </Grid>
-          <Grid
-            xs={12}
-            sm={6}
-            lg={3}
-          >
-            <MonthTotalSales
-              difference={16}
-              positive={false}
-              sx={{ height: '100%' }}
-              value="1.6k"
-            />
-          </Grid>
-          <Grid
-            xs={12}
-            sm={6}
-            lg={3}
-          >
-            <YearTotalSales
-              sx={{ height: '100%' }}
-              value={75.5}
-            />
-          </Grid>
-        
-          <Grid
+import { Grid, Paper } from '@mui/material'
+import { Helmet } from 'react-helmet'
+import PageHeader from '../../components/PageHeader'
+import { ReportOffTwoTone, } from '@mui/icons-material'
+import LabTabs from '../../components/pageComponents/Tab/Tabs'
+const Report = () => {
+  return (
+    <Grid container spacing={2}>
+      <Helmet>
+        Et-proforma | Report
+      </Helmet>
+    <Grid item xs={12}>
+      <Paper elevation={3} sx={{ padding: '20px' }}>
+      <PageHeader
+              title="REPORT"
+              subTitle="the report"
+              icon={<ReportOffTwoTone fontSize="large" />}
+          /> 
+           <Grid
             xs={12}
             lg={12}
           >
           <LabTabs/> 
           </Grid>
-         
-        </Grid>
-      </Container>
-    </Box>
-  </>
-);
+          </Paper>
+          </Grid>
+          </Grid>
+  )
+}
+
+export default Report

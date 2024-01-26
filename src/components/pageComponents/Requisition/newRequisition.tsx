@@ -5,7 +5,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
-import RequestForm,{ SaleInput } from '../purchase/requestForm';
+import RequestForm, { SaleInput } from '../purchase/requestForm';
 
 const CREATE_PURCHASE_REQUEST_MUTATION = gql`
   mutation CreatePurchaseRequest($input: CreatePurchaseRequestInput!) {
@@ -19,7 +19,6 @@ export interface AdditionalData {
   estimatedDelivery: string;
   addressDetail: string;
 }
-
 const NewRequisitionComponent: React.FC = () => {
   const [flashMessage, setFlashMessage] = useState('');
   const [createPurchaseRequest] = useMutation(CREATE_PURCHASE_REQUEST_MUTATION);
@@ -36,21 +35,21 @@ const NewRequisitionComponent: React.FC = () => {
     setOpenSnackbar(false);
   };
 
-  /*const hadleFormReset = ()=>{
-    console.log("remove")
-  }*/
   const handleSubmit = async (
     products: SaleInput[],
-    selectedSuppliers: number[],
-    additional: AdditionalData
+    supplierNewId: string[],
+    additional: AdditionalData,
+    selectedType: string
   ): Promise<void> => {
     try {
-      // Perform any necessary validation or data transformations before calling the mutation
+      if (selectedType !== 'supplier' && selectedType !== 'agent' && selectedType !== 'x-company') {
+       // throw new Error('Invalid selected type');
+       console.log(selectedType);
+      }
       const validProducts = products.filter((product) => product.productTitle.trim() !== '');
-      // Format the input object
       const input = {
         userId: userId,
-        status: "wait",
+        status: 'wait',
         remark: additional.remark,
         addressDetail: additional.addressDetail,
         estimatedDelivery: additional.estimatedDelivery,
@@ -65,13 +64,11 @@ const NewRequisitionComponent: React.FC = () => {
           Description: product.description,
           manufacturer: product.manufacturer,
         })),
-        suppliers: selectedSuppliers.map((supplierId) => ({ id: supplierId })),
+        suppliers: supplierNewId.map((supplierId) => ({ id: supplierId })),
+        selectedType: selectedType,
+
       };
-
-      console.log("input");
-      console.log(input);
-
-      // Call the mutation to create a purchase request
+      console.log(input)
       const response = await createPurchaseRequest({ variables: { input } });
 
       console.log('Mutation response:', response);
@@ -79,20 +76,17 @@ const NewRequisitionComponent: React.FC = () => {
       setFlashMessage('Purchase request created successfully');
       setOpenSnackbar(true);
 
-      // Clear the input values
-     // setFormValues([]);
-
-      // Perform any further actions or display success message
     } catch (error: any) {
       console.error('Error creating purchase request:', error);
       setFlashMessage(error.message);
       // Handle error or display error message
     }
   };
-return (
+
+  return (
     <>
       <Helmet>
-        <title>New Requasition</title>
+        <title>New Requisition</title>
       </Helmet>
       <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleCloseSnackbar}>
         <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>

@@ -32,7 +32,6 @@ export const UserEditForm = (props:any) => {
     username: props.username,
     password:props.password,
     role:props.role,
-    status:props.status,
     categoryId:props
   };
   const validate = (fieldValues: userInterface = values): boolean => {
@@ -42,7 +41,6 @@ export const UserEditForm = (props:any) => {
     if ('role' in fieldValues) temp.role = fieldValues.role ? '' : 'This field is required.';
     if ('email' in fieldValues) temp.email = fieldValues.email ? '' : 'This field is required.';
     if ('username' in fieldValues) temp.username = fieldValues.username ? '' : 'This field is required.';
-    if ('status' in fieldValues) temp.status = fieldValues.status ? '' : 'This field is required.';
 
     setErrors({
       ...temp
