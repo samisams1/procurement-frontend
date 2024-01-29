@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Paper, Typography, Box, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { ShoppingCart, CheckCircle, Warning, LocalShipping, MonetizationOn, Dashboard } from '@mui/icons-material';
+import { ShoppingCart, CheckCircle, Warning, MonetizationOn, Dashboard } from '@mui/icons-material';
 import PageHeader from '../../../components/PageHeader';
 import NewRfq from '../../../components/pageComponents/dashboard/customer/countNewRfq';
 import CountAllRequestStatus from '../../../components/pageComponents/dashboard/customer/countAllRequestsBystatus';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { Grid, createTheme, ThemeProvider, Typography } from '@mui/material';
+import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions,MUIDataTableColumn, Responsive } from 'mui-datatables';
 import { useNavigate } from 'react-router-dom';
 import { RequestPageOutlined } from '@mui/icons-material';

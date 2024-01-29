@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions,MUIDataTableColumn, Responsive } from 'mui-datatables';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import { RequestPageOutlined } from '@mui/icons-material';
 import Button from '../../Button';
 import { SectionTitle } from '../../Section';
@@ -25,9 +25,6 @@ interface Shipping {
   
 }
 
-interface GetShippingsData {
-  shippings: Shipping[];
-}
 export const SHIPPINGS = gql`
 query{
   shippings{
@@ -47,7 +44,7 @@ query{
 `
 // Define your GraphQL query
 const AdminShipping: React.FC = () => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const { loading, error, data } = useQuery<{ shippings: Shipping[] }>(SHIPPINGS);
   if (loading) {
     return <div>Loading...</div>;
@@ -56,9 +53,9 @@ const AdminShipping: React.FC = () => {
     return <div>Error: {error.message}</div>;
   }
   const { shippings } = data!;
-  const handleClick = (id: string) => {
+  /*const handleClick = (id: string) => {
     navigate(`/manageRfq/${id}`);
-  };
+  };*/
   const columns: MUIDataTableColumn[] = [
     {
       name: 'SN',
@@ -76,7 +73,7 @@ const AdminShipping: React.FC = () => {
       name: 'Customer',
       options: {
         customBodyRenderLite: (dataIndex) => {
-          return (shippings[dataIndex].user.firstName  + " " +  " " + shippings[dataIndex].user.lastName);
+          return shippings[dataIndex].user.firstName;
         },
       },
     },

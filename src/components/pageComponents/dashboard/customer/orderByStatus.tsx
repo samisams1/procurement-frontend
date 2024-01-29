@@ -24,7 +24,7 @@ const OrderByStatus: React.FC<OrderByStatusProps> = ({ status }) => {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [refetch]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;

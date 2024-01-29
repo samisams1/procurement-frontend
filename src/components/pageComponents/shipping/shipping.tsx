@@ -1,15 +1,15 @@
 import React, { useContext } from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { Grid, createTheme, ThemeProvider, Typography } from '@mui/material';
+import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions,MUIDataTableColumn, Responsive } from 'mui-datatables';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import { RequestPageOutlined } from '@mui/icons-material';
 import Button from '../../Button';
 import { SectionTitle } from '../../Section';
 import PageHeader from '../../PageHeader';
 import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
-interface Shipping {
+interface ShippingInt {
   id: number;
   address: string;
   status:string;
@@ -25,10 +25,6 @@ interface Shipping {
     };
   };
   
-}
-
-interface GetShippingsData {
-  shippings: Shipping[];
 }
 export const SHIPPINGS = gql`
 query ShippingsByUserId($userId: Float!) {
@@ -60,9 +56,9 @@ const ViewShipping: React.FC = () => {
   return <Shipping id={id}  />;
 };
   const Shipping: React.FC<{ id: number }> = ({ id }) => {
-  const navigate = useNavigate();
+//  const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
-  const { loading, error, data } = useQuery<{ shippingsByUserId: Shipping[] }>(SHIPPINGS,{
+  const { loading, error, data } = useQuery<{ shippingsByUserId: ShippingInt[] }>(SHIPPINGS,{
     variables: {
       userId: id,
     },
@@ -79,9 +75,9 @@ const ViewShipping: React.FC = () => {
     return <div>Error: {error.message}</div>;
   }
   const { shippingsByUserId } = data!;
-  const handleClick = (id: string) => {
+  /*const handleClick = (id: string) => {
     navigate(`/manageRfq/${id}`);
-  };
+  };*/
   const columns: MUIDataTableColumn[] = [
     {
       name: 'SN',
@@ -99,7 +95,7 @@ const ViewShipping: React.FC = () => {
       name: 'Customer',
       options: {
         customBodyRenderLite: (dataIndex) => {
-          return (shippingsByUserId[dataIndex].user.firstName  + " " +  " " + shippingsByUserId[dataIndex].user.lastName);
+          return shippingsByUserId[dataIndex].user.firstName;
         },
       },
     },

@@ -24,7 +24,7 @@ const CountAllRequestStatus: React.FC<RequestByStatusProps> = ({ status }) => {
 
   useEffect(() => {
     refetch();
-  }, [status]); // Refetch when the status prop changes
+  }, [refetch]); // Refetch when the status prop changes
 
   if (loading) {
     return <p>Loading...</p>;

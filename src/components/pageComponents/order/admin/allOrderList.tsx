@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
@@ -9,7 +9,6 @@ import PageHeader from '../../../PageHeader';
 import { ShoppingCart } from '@mui/icons-material';
 import { UserContext } from '../../../../auth/UserContext';
 import Spinner from '../../../Spinner';
-import Popup from '../../../Popup';
 // Define your GraphQL query
 const ORDER_QUERY = gql`
 query{
