@@ -1,109 +1,119 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Grid, Paper } from '@mui/material';
+import { Grid, createTheme, ThemeProvider } from '@mui/material';
+import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
+import PageHeader from '../../PageHeader';
+import {RequestPageOutlined } from '@mui/icons-material';
 import Button from '../../Button';
 import { useNavigate } from 'react-router-dom';
-import PageHeader from '../../PageHeader';
-import { RequestPageTwoTone } from '@mui/icons-material';
-
+import { SectionTitle } from '../../Section';
+import { GET_QUOTES } from '../../../graphql/rquest';
 // Define your GraphQL query
-const GET_QUOTES = gql`
-  query GetQuotes {
-    purchaseRequests {
-      id
-      referenceNumber
-      status
-      createdAt
-      products {
-        title
-        partNumber
-        quantity
-        partNumber
-      }
-      user {
-        username
-      }
-      suppliers {
-        user {
-          username
-        }
-      }
-    }
-  }
-`;
-
 const ManageRequisitionComponent: React.FC = () => {
   const navigate = useNavigate();
   const { loading, error, data } = useQuery(GET_QUOTES);
-
   if (loading) {
     return <div>Loading...</div>;
   }
-
   if (error) {
     return <div>Error: {error.message}</div>;
   }
-
   // Access the data returned by the query
   const purchaseRequests = data.purchaseRequests;
-console.log(data)
   // Render your component using the data
   const handleClick = (id: string) => {
     navigate(`/purchaseRequest/${id}`);
   };
+  const columns = [
+    { name: 'SN', options: { filter: false, sort: false } },
+    'ID',
+    'Reference Number',
+    'User',
+    'Suppliers',
+    'Status',
+    'Date',
+    {
+      name: 'Action',
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value: any, tableMeta: any) => {
+          const purchaseRequestId = tableMeta.rowData[1];
+          return (
+            <Button
+              text="View Details"
+              onClick={() => handleClick(purchaseRequestId)}
+              style={{ cursor: 'pointer' }}
+            />
+          );
+        },
+      },
+    },
+  ];
+
+  const tableData = purchaseRequests.map((purchaseRequest: any, index: number) => [
+    index + 1,
+    purchaseRequest.id,
+    purchaseRequest.referenceNumber,
+    purchaseRequest.user.username,
+    purchaseRequest.suppliers.map((supplier: any) => supplier.user.username).join(', '),
+    purchaseRequest.status ==="pending" ?
+    <span style={{ color: 'red' }}>{purchaseRequest.status}</span>:
+    <span style={{ color: 'green' }}>{purchaseRequest.status}</span>,
+    purchaseRequest.createdAt,
+    '',
+  ]);
+
+  const options: MUIDataTableOptions = {
+    filter: true,
+    download: true,
+    print: true,
+    search: true,
+    selectableRows: 'none', // or 'single' for single row selection
+    responsive: 'standard' as Responsive,
+    viewColumns: true,
+    rowsPerPage: 10,
+    rowsPerPageOptions: [10, 25, 50],
+  };
+
+  const theme = createTheme({
+    components: {
+      MUIDataTableHeadCell: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#1976d2',
+            color: 'white',
+          },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        },
+      },
+    },
+  });
+
   return (
-    <Grid container spacing={2}>
-    <Grid item xs={12}>
-      <Paper elevation={3} sx={{ padding: '20px' }}>
-      <PageHeader
-              title="M"
-              subTitle="mange requests"
-              icon={<RequestPageTwoTone fontSize="large" />}
-          /> 
-    <TableContainer>
-      <Table className="blue-bordered-table">
-        <TableHead>
-        <TableRow className="blue-row">
-            <TableCell>SN</TableCell>
-            <TableCell>ID</TableCell>
-            <TableCell>Reference Number</TableCell>
-            <TableCell>User</TableCell>
-            <TableCell>Suppliers</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Date</TableCell>
-            <TableCell>Action</TableCell>
-           
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {purchaseRequests.map((purchaseRequest: any,index: number) => (
-             <TableRow key={purchaseRequest.id}>
-              <TableCell>{index + 1}</TableCell>
-              <TableCell>{purchaseRequest.id}</TableCell>
-              <TableCell>{purchaseRequest.referenceNumber}</TableCell>
-              <TableCell>{purchaseRequest.user.username}</TableCell>
-              <TableCell>
-                {purchaseRequest.suppliers.map((supplier: any) => supplier.user.username).join(', ')}
-              </TableCell>
-              <TableCell><span style={{color:"red"}}>{purchaseRequest.status}</span></TableCell>
-              <TableCell>{purchaseRequest.createdAt}</TableCell>
-              <TableCell><Button text="View Detals"   onClick={() => handleClick(purchaseRequest.id)}  style={{ cursor: 'pointer' }}/></TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-    </Paper></Grid>
-    <style>{`
-      .blue-bordered-table {
-        border: 2px solid  #1c9fef;
-      }
-      
-      .blue-row {
-        background-color: #1c9fef;
-        color: white;
-      }
-      `}</style>
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <SectionTitle variant="outlined" square>
+          <PageHeader title="Request" icon={<RequestPageOutlined />} />
+        </SectionTitle>
+      </Grid>
+      <Grid item xs={12}>
+        <ThemeProvider theme={theme}>
+          <MUIDataTable
+            title="Requests"
+            data={tableData}
+            columns={columns}
+            options={options}
+          />
+        </ThemeProvider>
+      </Grid>
     </Grid>
   );
 };

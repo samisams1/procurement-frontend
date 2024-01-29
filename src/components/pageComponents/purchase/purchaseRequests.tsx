@@ -6,6 +6,7 @@ import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
 import Popup from '../../Popup';
 import PurchaseDetail from './purchaseDetail';
+import PageHeader from '../../PageHeader';
 
 interface PurchaseRequest {
   id: number;
@@ -122,7 +123,7 @@ const PurchaseRequestList: React.FC<{ id: number; navigate: any }> = ({ id, navi
           margin: 'auto',
         }}
       >
-        Requests 
+     <PageHeader  title = "Requests"/>
       </Typography>
       <Grid container spacing={2}>
         {purchaseRequests.map((request) => (
@@ -186,6 +187,9 @@ const PurchaseRequestList: React.FC<{ id: number; navigate: any }> = ({ id, navi
               )}
               <Typography variant="body1" component="div" style={{ color: '#3c44b1' }}>
                 Request ID: {request.id}
+              </Typography>
+              <Typography variant="body1" component="div" style={{ color: '#3c44b1' }}>
+                Request ID: {request.status}
               </Typography>
               <Typography variant="body1" component="div" style={{ color: '#555' }}>
                 From Customer: {request.user.username}

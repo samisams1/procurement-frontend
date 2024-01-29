@@ -3,7 +3,6 @@ import { Navigate, useRoutes } from 'react-router-dom';
 
 import LogoOnlyLayout from './layoutes/LogoOnlyLayout';
 import ForgotPassword from './pages/account/ForgotPassword';
-import Request from "./pages/Request";
 import Dashboard from './pages/dashboard';
 import { RequestHistory } from './pages/Request/RequestHistory';
 import ProtectedRoute from './auth/ProtectedRoute';
@@ -37,6 +36,15 @@ import Report from './pages/report/Report';
 import AccountCreation from './pages/User/accountCreation';
 import ResetPasswordForm from './pages/User/reset-password';
 import SubOrderDetail from './components/pageComponents/order/OrderDetail';
+import SideMenu from './components/pageComponents/purchase/SideMenu';
+import PaymentReports from './components/pageComponents/purchase/report';
+import Shipping from './pages/shipping';
+import CreateShipping from './pages/shipping/create';
+import Request from './pages/Request';
+import MakePaymentComponent from './components/pageComponents/payment/makePaymentComponent';
+import RoleSelection from './pages/User/roleSelection';
+import CategoryPage from './pages/category';
+import Supplier from './pages/supplier';
 export default function RoutePage() {
 
     return useRoutes([
@@ -54,14 +62,14 @@ export default function RoutePage() {
               { path: '/report', element: <ProtectedRoute element={<Report />} /> },
               { path: '/setting', element: <ProtectedRoute  element={<Setting />} /> },
               { path: '/newRequest', element: <ProtectedRoute  element={<Purchase />} /> },
-              { path: '/invoice', element: <ProtectedRoute  element={<Invoice />} /> },
+              { path: '/invoices', element: <ProtectedRoute  element={<Invoice />} /> },
 
               { path: '/purchaseRequests', element: <ProtectedRoute  element={<PurchaseRequest />} /> },
               { path:'/purchaseRequest/:id', element: <ProtectedRoute  element={<Detail />} /> },
               
            //   { path: '/verify', element: <ProtectedRoute  element={<VerifyUser />} /> },
  
-              { path: '/manageRequisition', element: <ProtectedRoute  element={<ManageRequisition />} /> },
+              { path: '/requisitions', element: <ProtectedRoute  element={<ManageRequisition />} /> },
               { path:'/purchaseRequestDetail/:id', element: <ProtectedRoute  element={<PurchaseRequestDetail />} /> },
               { path:'/rfq', element: <ProtectedRoute  element={<Rfq />} /> },
 
@@ -73,10 +81,22 @@ export default function RoutePage() {
               { path:'/subOrderDetail/:id', element: <ProtectedRoute  element={<SubOrderDetail />} /> },
                
               { path: '/invoice', element: <ProtectedRoute  element={<Invoice />} /> },
-              { path: '/paymentConfirmation', element: <ProtectedRoute  element={<PaymentConfirmation />} /> },
+              { path: '/paymentConfirmation/:id', element: <ProtectedRoute  element={<PaymentConfirmation />} /> },
               { path: '/result', element: <ProtectedRoute  element={<Result />} /> },
 
               { path: '/payment/:id', element: <ProtectedRoute  element={<Payment />} /> },
+              { path: '/sidemeu', element: <ProtectedRoute  element={<SideMenu />} /> },
+              { path: '/paymentReports', element: <ProtectedRoute  element={<PaymentReports />} /> },
+              { path: '/makePayment', element: <ProtectedRoute  element={<MakePaymentComponent />} /> },
+
+
+              { path: '/shipping', element: <ProtectedRoute  element={<Shipping />} /> },
+              { path: '/create-shipping', element: <ProtectedRoute  element={<CreateShipping />} /> },
+
+              { path: '/category', element: <ProtectedRoute  element={<CategoryPage />} /> },
+
+              { path: '/supplier', element: <ProtectedRoute  element={<Supplier />} /> },
+              
             ],
           },
           {
@@ -86,6 +106,7 @@ export default function RoutePage() {
               { path: '/', element: <Navigate to="/dashboard" /> },
               { path: 'login', element: <Login/> },
               { path:  'register', element:<Register />},
+              { path:  'roleselection', element:<RoleSelection />},
               { path:  '/forgot-password', element:<ForgotPassword />},
               { path:  '/verify', element:<VerifyUser />},
               { path:  '/acountCreated/:email', element:<AccountCreation />},

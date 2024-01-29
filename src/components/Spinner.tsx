@@ -1,24 +1,26 @@
 import React from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 const Spinner = () => {
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
+        backgroundColor: '#f5f5f5', // Set the background color here
       }}
     >
       <CircularProgress
-        style={{
-          color: '#f44336',
-          width: 80,
-          height: 80,
+        size={80}
+        color="primary"
+        sx={{
+          color: '#f44336', // Set the progress color here
         }}
       />
-    </div>
+    </Box>
   );
 };
 

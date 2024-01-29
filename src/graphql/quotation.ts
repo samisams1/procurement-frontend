@@ -4,3 +4,21 @@ query{
     countRfq
 }
 `
+export const QUOTATIONS = gql`
+query{
+    allQuotations{
+        id
+        supplierId
+        customerId
+        status
+        purchaseRequestId
+        shippingPrice
+        productPrices {
+          price
+          product {
+            title
+          }
+        }
+    }
+  }
+`;

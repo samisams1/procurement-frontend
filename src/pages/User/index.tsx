@@ -8,7 +8,7 @@ import Spinner from '../../components/Spinner';
 import { UserContext } from '../../auth/UserContext';
 import { Add, PeopleOutlineTwoTone } from '@mui/icons-material';
 import { UserList } from '../../components/pageComponents/user/UserTable';
-import { UserForm } from '../../components/pageComponents/user/UserForm';
+//import { UserForm } from '../../components/pageComponents/user/UserForm';
 
 export const User = () => {
     const [openPopup, setOpenPopup] = useState(false)
@@ -43,7 +43,7 @@ export const User = () => {
                 openPopup={openPopup}
                 setOpenPopup={setOpenPopup}
             >
-               <UserForm/>
+              
             </Popup>
         </>
     )

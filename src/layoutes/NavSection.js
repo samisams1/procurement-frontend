@@ -1,17 +1,17 @@
-import React, { useContext } from 'react';
-import { List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import React, { useContext, useState } from 'react';
+import { List, ListItemButton, ListItemIcon, ListItemText, Collapse, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { navConfig } from './NavConfig';
-import Spinner from '../components/Spinner';
 import { SallesNavConfig } from './SallesNavConfig';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import Spinner from '../components/Spinner';
 import { UserContext } from '../auth/UserContext';
 import { SupplierNavConfig } from './SupplierNavConfig';
+import { NavConfig } from './NavConfig';
 
 export default function NavSection() {
-  let navigate = useNavigate();
-  const routeChange = (path) => {
-    navigate(path);
-  };
+  const [openItems, setOpenItems] = useState([]);
+  const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
 
   if (!currentUser) {
@@ -20,46 +20,248 @@ export default function NavSection() {
 
   const { role } = currentUser;
 
-  const lists = navConfig.filter((navItem) => navItem);
+  const handleItemClick = (path) => {
+    console.log('Clicked path:', path);
+    navigate(path);
+  };
 
-  const listsStore = SupplierNavConfig.filter((navItem) => navItem);
+  const toggleOpenItems = (index) => {
+    if (openItems.includes(index)) {
+      setOpenItems(openItems.filter((item) => item !== index));
+    } else {
+      setOpenItems([...openItems, index]);
+    }
+  };
 
-  const listSalles = SallesNavConfig.filter((navItem) => navItem);
+  const renderNestedItems = (items, parentIndex) => {
+    return (
+      <Collapse in={openItems.includes(parentIndex)}>
+        <List sx={{ paddingLeft: '24px', paddingTop: '0', paddingBottom: '0' }}>
+          {items.map((item) => (
+            <ListItemButton
+              key={item.title}
+              onClick={() => handleItemClick(item.path)}
+              sx={{
+                paddingLeft: '24px',
+                paddingTop: '2px',
+                paddingBottom: '2px',
+                '&:hover': {
+                  backgroundColor: '#E3F2FD',
+                },
+              }}
+            >
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText>{item.title}</ListItemText>
+            </ListItemButton>
+          ))}
+        </List>
+      </Collapse>
+    );
+  };
 
-  const listItems = lists.map((navItem) => (
-    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} key={navItem.title}>
-      <ListItemButton onClick={() => routeChange(navItem.path)}>
-        <ListItemIcon>{navItem.icon}</ListItemIcon>
-        <ListItemText>{navItem.title}</ListItemText>
-      </ListItemButton>
+  const listItemsCustomer = SallesNavConfig.map((mainItem, index) => (
+    <List
+      sx={{
+        width: '240px',
+        bgcolor: 'background.paper',
+        borderRadius: '8px',
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+        '& .MuiListItemButton-root': {
+          '&:hover': {
+            backgroundColor: '#E3F2FD',
+          },
+        },
+      }}
+      key={mainItem.title}
+    >
+      {mainItem.items ? (
+        
+        <ListItemButton
+          onClick={() => toggleOpenItems(index)}
+          sx={{
+            paddingLeft: '12px',
+            paddingTop: '8px',
+            paddingBottom: '8px',
+            '&:hover': {
+              backgroundColor: '#E3F2FD',
+            },
+          }}
+        >
+          <ListItemIcon>{mainItem.icon}</ListItemIcon>
+          <ListItemText>
+            
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+              {mainItem.title}
+            </Typography>
+          </ListItemText>
+          {openItems.includes(index) ? (
+            <ExpandMoreIcon fontSize="small" sx={{ marginLeft: 'auto' }} />
+          ) : (
+            <ChevronRightIcon fontSize="small" sx={{ marginLeft: 'auto' }} />
+          )}
+        </ListItemButton>
+      ) : (
+        <ListItemButton
+          onClick={() => handleItemClick(mainItem.path)}
+          sx={{
+            paddingLeft: '12px',
+            paddingTop: '8px',
+            paddingBottom: '8px',
+            '&:hover': {
+              backgroundColor: '#E3F2FD',
+            },
+          }}
+        >
+          <ListItemIcon>{mainItem.icon}</ListItemIcon>
+          <ListItemText>
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+              {mainItem.title}
+            </Typography>
+          </ListItemText>
+        </ListItemButton>
+      )}
+      {mainItem.items && renderNestedItems(mainItem.items, index)}
     </List>
   ));
-
-  const listItemsSeller = listSalles.map((navItem) => (
-    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} key={navItem.title}>
-      <ListItemButton onClick={() => routeChange(navItem.path)}>
-        <ListItemIcon>{navItem.icon}</ListItemIcon>
-        <ListItemText>{navItem.title}</ListItemText>
-      </ListItemButton>
+  const listItemsSupplier = SupplierNavConfig.map((mainItem, index) => (
+    <List
+      sx={{
+        width: '240px',
+        bgcolor: 'background.paper',
+        borderRadius: '8px',
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+        '& .MuiListItemButton-root': {
+          '&:hover': {
+            backgroundColor: '#E3F2FD',
+          },
+        },
+      }}
+      key={mainItem.title}
+    >
+      {mainItem.items ? (
+        
+        <ListItemButton
+          onClick={() => toggleOpenItems(index)}
+          sx={{
+            paddingLeft: '12px',
+            paddingTop: '8px',
+            paddingBottom: '8px',
+            '&:hover': {
+              backgroundColor: '#E3F2FD',
+            },
+          }}
+        >
+          <ListItemIcon>{mainItem.icon}</ListItemIcon>
+          <ListItemText>
+            
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+              {mainItem.title}
+            </Typography>
+          </ListItemText>
+          {openItems.includes(index) ? (
+            <ExpandMoreIcon fontSize="small" sx={{ marginLeft: 'auto' }} />
+          ) : (
+            <ChevronRightIcon fontSize="small" sx={{ marginLeft: 'auto' }} />
+          )}
+        </ListItemButton>
+      ) : (
+        <ListItemButton
+          onClick={() => handleItemClick(mainItem.path)}
+          sx={{
+            paddingLeft: '12px',
+            paddingTop: '8px',
+            paddingBottom: '8px',
+            '&:hover': {
+              backgroundColor: '#E3F2FD',
+            },
+          }}
+        >
+          <ListItemIcon>{mainItem.icon}</ListItemIcon>
+          <ListItemText>
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+              {mainItem.title}
+            </Typography>
+          </ListItemText>
+        </ListItemButton>
+      )}
+      {mainItem.items && renderNestedItems(mainItem.items, index)}
     </List>
   ));
-
-  const listItemsStore = listsStore.map((navItem) => (
-    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }} key={navItem.title}>
-      <ListItemButton onClick={() => routeChange(navItem.path)}>
-      <ListItemIcon>{navItem.icon}</ListItemIcon>
-        <ListItemText>{navItem.title}</ListItemText>
-      </ListItemButton>
+  const listItemsAdmin = NavConfig.map((mainItem, index) => (
+    <List
+      sx={{
+        width: '240px',
+        bgcolor: 'background.paper',
+        borderRadius: '8px',
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+        '& .MuiListItemButton-root': {
+          '&:hover': {
+            backgroundColor: '#E3F2FD',
+          },
+        },
+      }}
+      key={mainItem.title}
+    >
+      {mainItem.items ? (
+        
+        <ListItemButton
+          onClick={() => toggleOpenItems(index)}
+          sx={{
+            paddingLeft: '12px',
+            paddingTop: '8px',
+            paddingBottom: '8px',
+            '&:hover': {
+              backgroundColor: '#E3F2FD',
+            },
+          }}
+        >
+          <ListItemIcon>{mainItem.icon}</ListItemIcon>
+          <ListItemText>
+            
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+              {mainItem.title}
+            </Typography>
+          </ListItemText>
+          {openItems.includes(index) ? (
+            <ExpandMoreIcon fontSize="small" sx={{ marginLeft: 'auto' }} />
+          ) : (
+            <ChevronRightIcon fontSize="small" sx={{ marginLeft: 'auto' }} />
+          )}
+        </ListItemButton>
+      ) : (
+        <ListItemButton
+          onClick={() => handleItemClick(mainItem.path)}
+          sx={{
+            paddingLeft: '12px',
+            paddingTop: '8px',
+            paddingBottom: '8px',
+            '&:hover': {
+              backgroundColor: '#E3F2FD',
+            },
+          }}
+        >
+          <ListItemIcon>{mainItem.icon}</ListItemIcon>
+          <ListItemText>
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+              {mainItem.title}
+            </Typography>
+          </ListItemText>
+        </ListItemButton>
+      )}
+      {mainItem.items && renderNestedItems(mainItem.items, index)}
     </List>
   ));
+  //return <div>{listItemsCustomer}</div>;
 
-  if (role === 'ADMIN') {
-    return <ul>{listItems}</ul>;
-  } else if (role === 'SUPPLIER') {
-    return <ul>{listItemsStore}</ul>;
-  } else if (role === 'CUSTOMER') {
-    return <ul>{listItemsSeller}</ul>;
-  } else {
+    if (role === 'CUSTOMER') {
+    return <ul>{listItemsCustomer}</ul>;
+  }else if (role === 'SUPPLIER') {
+    return <ul>{listItemsSupplier}</ul>;
+  }else if (role === 'ADMIN') {
+    return <ul>{listItemsAdmin}</ul>;
+  }
+  
+  else {
     return null;
   }
 }

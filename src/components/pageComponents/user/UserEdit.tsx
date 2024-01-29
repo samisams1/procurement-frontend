@@ -15,10 +15,9 @@ export const UserEditForm = (props:any) => {
   const [errorMessage,setErrorMessage]= useState('');
 
   const RoleEnum = {
-    USER: 'USER',
     ADMIN: 'ADMIN',
-    STORE: 'STORE',
-    SELLER: 'SELLER',
+    STORE: 'SUPPLIER',
+    SELLER: 'CUSTOMER',
   }
   const StatusEnum = {
     active: 'active',
@@ -98,9 +97,9 @@ console.log(values)
   value={values.role}
   onChange={handleInputChange}
   options={[
-    { id: '1', label: 'Admin', value: RoleEnum.ADMIN },
-    { id: '2', label: 'Seller', value: RoleEnum.SELLER },
-    { id: '3', label: 'Store', value:  RoleEnum.STORE },
+    { id: '1', label: 'ADMIN', value: RoleEnum.ADMIN },
+    { id: '2', label: 'SUPPLLIER', value: "SUPPLLIER" },
+    { id: '3', label: 'CUSTOMER', value:  "CUSTOMER" },
   ]}
   error={errors.role}
 />

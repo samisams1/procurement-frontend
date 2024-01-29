@@ -21,24 +21,27 @@ const CREATE_USER_MUTATION = gql`
     }
   }
 `;
-export const UserForm = () => {
+enum Role {
+  Customer = 'CUSTOMER',
+  Supplier = 'SUPPLIER',
+}
+interface UserFormProps {
+  selectedRole: Role;
+}
+export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   const [createProfile] = useMutation(CREATE_USER_MUTATION, {
     refetchQueries: [{ query: USER_QUERY }],
   });
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate =  useNavigate();
-  const RoleEnum = {
-    CUSTOMER: 'CUSTOMER',
-    SUPPLIER: 'SUPPLIER',
-  };
   const initialFValues: userInterface = {
     firstName: '',
     lastName: '',
     email: '',
     username: '',
     password: '',
-    role: RoleEnum.CUSTOMER,
+    role: selectedRole,
     categoryId: 1,
   };
 
@@ -70,9 +73,12 @@ export const UserForm = () => {
           setSuccessMessage('User created successfully!');
           resetForm();
           setTimeout(() => {
+
+
             setSuccessMessage('');
-          }, 5000); // Remove success message after 5 seconds
-          navigate(`/acountCreated/${'samisams@gmail.com'}`);
+           // setLoading(false);
+            navigate(`/acountCreated/${'samisams@gmail.com'}`);
+          }, 2000); // Remove success message after 5 seconds
         })
         .catch((error) => {
           setErrorMessage(error.message);
@@ -95,7 +101,7 @@ export const UserForm = () => {
     >
       <Box p={4} boxShadow={3} bgcolor="white" borderRadius={10}>
         <Typography variant="h6" style={{ color: '#4F46E5' }}>
-          User Registration
+        {selectedRole} REGISTRATION
         </Typography>
         <Form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
@@ -118,21 +124,8 @@ export const UserForm = () => {
                 fullWidth // Make input full width
                 style={{ marginBottom: '1rem' }}
               />
-              <Controls.Select
-                name="role"
-                label="Role"
-                value={values.role}
-                onChange={handleInputChange}
-                options={[
-                  { id: '1', label: 'customer', value: RoleEnum.CUSTOMER },
-                  { id: '2', label: 'supplier', value: RoleEnum.SUPPLIER },
-                ]}
-                error={errors.role}
-                // fullWidth // Make input full width
-                // style={{ marginBottom: '1rem' }}
-              />
-            
-               <Controls.Select
+
+            {selectedRole === Role.Supplier && (   <Controls.Select
   name="category"
   label="Category"
   value={values.categoryId.toString()} // Convert categoryId to string
@@ -143,7 +136,7 @@ export const UserForm = () => {
   ]}
   error={errors.categoryId}
   //style={{ marginBottom: '1rem' }}
-/>
+/>  )}
               <Controls.Input
                 name="username"
                 label="Username"

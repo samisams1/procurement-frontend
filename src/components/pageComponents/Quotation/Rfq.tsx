@@ -1,11 +1,13 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { Grid, Paper, Typography } from '@mui/material';
-import MUIDataTable, { MUIDataTableColumn } from 'mui-datatables';
-import { useNavigate } from 'react-router-dom';
-import PageHeader from '../../PageHeader';
-import { PeopleTwoTone } from '@mui/icons-material';
+import { Grid, createTheme, ThemeProvider } from '@mui/material';
+import MUIDataTable, { MUIDataTableOptions,MUIDataTableColumn, Responsive } from 'mui-datatables';
 
+import PageHeader from '../../PageHeader';
+import {RequestPageOutlined } from '@mui/icons-material';
+import Button from '../../Button';
+import { useNavigate } from 'react-router-dom';
+import { SectionTitle } from '../../Section';
 const GET_QUOTATIONS = gql`
   query {
     quotations {
@@ -39,10 +41,9 @@ interface Quotation {
     };
   }[];
 }
-
+// Define your GraphQL query
 const RfqComponent: React.FC = () => {
   const navigate = useNavigate();
-  
   const { loading, error, data } = useQuery<{ quotations: Quotation[] }>(GET_QUOTATIONS);
   if (loading) {
     return <div>Loading...</div>;
@@ -109,11 +110,15 @@ const RfqComponent: React.FC = () => {
     {
       name: 'Action',
       options: {
+        filter: false,
+        sort: false,
         customBodyRenderLite: (dataIndex) => {
           return (
-            <div onClick={() => handleClick(quotations[dataIndex].purchaseRequestId)} style={{ cursor: 'pointer' }}>
-             <Typography  component="div" style={{ color: 'blue', }}>Manage Rfq</Typography>
-            </div>
+            <Button
+              text="View Details"
+              onClick={() => handleClick(quotations[dataIndex].purchaseRequestId)}
+              style={{ cursor: 'pointer' }}
+            />
           );
         },
       },
@@ -130,27 +135,58 @@ const RfqComponent: React.FC = () => {
     calculateTotal(quotation),
     quotation.id,
   ]);
- const options = {
-    selectableRows: 'none' as const,
-    download: false,
-    print: false,
-    search: false,
-    pagination: false,
-    viewColumns: false,
+
+  const options: MUIDataTableOptions = {
+    filter: true,
+    download: true,
+    print: true,
+    search: true,
+    selectableRows: 'none', // or 'single' for single row selection
+    responsive: 'standard' as Responsive,
+    viewColumns: true,
+    rowsPerPage: 10,
+    rowsPerPageOptions: [10, 25, 50],
   };
+
+  const theme = createTheme({
+    components: {
+      MUIDataTableHeadCell: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#1976d2',
+            color: 'white',
+          },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        },
+      },
+    },
+  });
+
   return (
-    <Grid container spacing={2}>
-    <Grid item xs={12}>
-      <Paper elevation={3} sx={{ padding: '20px' }}>
-      <PageHeader
-       title=" The Request for Quotation (RFQ)"
-       subTitle="The Request for Quotation (RFQ) "
-       icon={<PeopleTwoTone fontSize="large" />}
-      />
-      <MUIDataTable title="" data={tableData} columns={columns} options={options} />
-  </Paper>
-  </Grid>
-  </Grid>
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <SectionTitle variant="outlined" square>
+          <PageHeader title="Request" icon={<RequestPageOutlined />} />
+        </SectionTitle>
+      </Grid>
+      <Grid item xs={12}>
+        <ThemeProvider theme={theme}>
+          <MUIDataTable
+            title="Requests"
+            data={tableData}
+            columns={columns}
+            options={options}
+          />
+        </ThemeProvider>
+      </Grid>
+    </Grid>
   );
 };
 

@@ -407,10 +407,14 @@ const handleAgentChange = (event: SelectChangeEvent) => {
   const supNewData: Supplier[] = supData?.suppliers;
   return (
     <div>
-      <Grid item xs={12}>
-     <div>
-
      
+
+      <Grid item xs={12}>
+       
+
+        <form onSubmit={handleSubmit} onReset={handleReset}>
+        <Grid item xs={12}>
+     <div>
         <Grid>
         <Paper elevation={3} sx={{ padding: '20px' }}>
           <PageHeader
@@ -500,18 +504,6 @@ const handleAgentChange = (event: SelectChangeEvent) => {
           </Typography>
         </Grid>
       )}
-
-      <Grid item xs={12}>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<RequestPageOutlined />}
-          onClick={handleSubmit}
-        >
-          Submit
-        </Button>
-
-        <form onSubmit={handleSubmit} onReset={handleReset}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12}></Grid>
           <Grid item xs={12} sm={12}>
@@ -792,7 +784,18 @@ placeholder="Item Name"
 
             
             </Grid>
+            <Grid>
+      <Button
+          variant="contained"
+          color="primary"
+          startIcon={<RequestPageOutlined />}
+          onClick={handleSubmit}
+        >
+          Submit
+        </Button>
+      </Grid>
       </form>
+      
       </Grid>
 
       {loadingSuppliers && <p>Loading suppliers...</p>}

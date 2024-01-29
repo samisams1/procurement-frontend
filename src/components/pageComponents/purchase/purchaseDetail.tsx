@@ -84,7 +84,7 @@ const PurchaseDetail: React.FC<{
   const [updateQuotation] = useMutation(UPDATE_QUOTATION_MUTATION);
 
   const { loading, error, data } = useQuery<QuotationResponse>(GET_QUOTATION, {
-    variables: { id: id, supplierId: 1 },
+    variables: { id: id, supplierId: supplierId },
   });
 
   
@@ -229,15 +229,17 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
               margin="normal"
               variant="outlined"
             />
-           
+              <Grid>
+              <Typography>Subtotal: ${subtotal.toFixed(2)}</Typography>
+            <Typography>Tax: ${tax.toFixed(2)}</Typography>
+            <Typography>Total: ${total.toFixed(2)}</Typography>
+              </Grid>
               <Grid item xs={12}>
               <Button type="submit" text="Send Quotation" />
             </Grid>
           </Form>    
         </Box>
-        <Typography>Subtotal: ${subtotal.toFixed(2)}</Typography>
-            <Typography>Tax: ${tax.toFixed(2)}</Typography>
-            <Typography>Total: ${total.toFixed(2)}</Typography>
+         
     </div>
 }
 </div>

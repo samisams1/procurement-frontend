@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../../../Button';
 import numberToWords from 'number-to-words';
+import { UserContext } from '../../../../auth/UserContext';
+import Spinner from '../../../Spinner';
 
 interface OrderData {
     id: string;
@@ -102,12 +104,17 @@ query GetOrderById($id: Int!) {
 const OrderDetail: React.FC = () => {
  const { id } = useParams<{ id?: string }>();
  const navigate = useNavigate();
+ 
     const { loading, error, data } = useQuery(GET_ORDER_QUERY, {
         variables: { id: Number(id) },
       });
       const { loading:paymentLoading, error:paymentError, data:paymentData } = useQuery(GET_PAYMENT_QUERY, {
         variables: { id: Number(id) },
       });
+      const { currentUser } = useContext(UserContext);
+      if (!currentUser) {
+        return <Spinner />;
+      }
       if (loading) {
         return <div>Loading...</div>;
       }
@@ -281,7 +288,7 @@ const createdAt= order?.createdAt;
       <button className="print-button" onClick={handlePrint}>
         Print
       </button>
-      {status === "approved" &&(
+      {currentUser.role === "CUSTOMER"  && status === "approved" &&(
         <div style={{ display: 'flex', alignItems: 'center' }}>
         <h1 style={{ color: 'green', marginRight: '10px' }}>
           The Order Status is Approved. Please Make Payment!
@@ -294,10 +301,10 @@ const createdAt= order?.createdAt;
         />
       </div>
       )}
-        {status === "pending" &&(
+        {currentUser.role === "SUPPLIER"  &&  status === "pending" &&(
          <h1 style={{color:"red"}}>The Order Status is pending Please wait for Supplier Comformation!</h1>
       )}
-       {status === "comformed" &&(
+       {currentUser.role === "ADMIN"  && status === "comformed" &&(
          <h1 style={{color:"#1c9fef"}}>The Order Status is comformed Please wait for Admin Approval!</h1>
       )}
 

@@ -107,7 +107,6 @@ console.log(data)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     try {
       const paymentData:any = {
         amount: totalPrice + tax,
@@ -127,10 +126,17 @@ console.log(data)
       setOpenSnackbar(true); // Open the snackbar to show the success message
       setOpenPopup(false); // Close the popup
       // Delay navigation to the invoice page after 2 seconds
-       setTimeout(() => {
+    /*   setTimeout(() => {
         navigate('/paymentConfirmation');
         // Replace '/invoice' with the actual path of your invoice page
-      }, 3000);
+      }, 3000); */
+
+
+setTimeout(() => {
+  navigate(`/paymentConfirmation/${data?.createPayment.id}`);
+  // Replace '/paymentConfirmation' with the actual path of your payment confirmation page
+}, 3000);
+
     } catch (error) {
       console.error('Error creating payment:', error);
       setSuccessMessage('Error creating payment. Please try again.');

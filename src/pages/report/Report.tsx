@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet'
 import PageHeader from '../../components/PageHeader'
 import { ReportOffTwoTone, } from '@mui/icons-material'
 import LabTabs from '../../components/pageComponents/Tab/Tabs'
-const Report = () => {
+const ReportPage = () => {
   return (
     <Grid container spacing={2}>
       <Helmet>
@@ -28,4 +28,4 @@ const Report = () => {
   )
 }
 
-export default Report
+export default ReportPage

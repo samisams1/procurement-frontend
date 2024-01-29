@@ -1,85 +1,91 @@
-import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { COUNT_ORDER_QUERY } from "../graphql/Order";
-import Spinner from '../components/Spinner';
+import React from 'react';
 import Iconify from "../components/Iconify";
 
-const getIcon = (name) => <Iconify icon={name} width={22} height={22} color="#3c44b1" />;
-
-const NavConfig = () => {
-  const [updatedNavConfig, setUpdatedNavConfig] = useState([]);
-  const { loading, error, data } = useQuery(COUNT_ORDER_QUERY);
-
-  useEffect(() => {
-    if (data) {
-      const updatedConfig = navConfig.map((item) => {
-        if (item.path === 'order') {
-          return {
-            ...item,
-            title: (
-              <div className="notification-badge">
-                {item.title}
-                {data.countOrder > 0 && (
-                  <span className="badge">{data.countOrder}</span>
-                )}
-              </div>
-            ),
-          };
-        }
-        return item;
-      });
-      setUpdatedNavConfig(updatedConfig);
-    }
-  }, [data]);
-
-  if (loading) return <Spinner />;
-  if (error) return <p>{error.message}</p>;
-
-  return updatedNavConfig;
-};
-
-export const navConfig = [
-  { 
-    title: 'Dashboard',
-    path: '/',
-    icon: getIcon('material-symbols:dashboard'),
+const getIcon = (name) => <Iconify icon={name} width={22} height={22} color="#1c9fef" />;
+export const NavConfig = [
+    { 
+      title: 'Dashboard',
+      path: '/',
+      icon: getIcon('material-symbols:dashboard'),
+    },
+    {
+      title: 'Profile',
+      path: 'profile',
+  
+      icon: getIcon('iconamoon:profile-fill'),
+    },
+    {
+      title: 'Order',
+      path: 'order',
+      icon: getIcon('icon-park-solid:transaction-order'),
+    },
+    {
+      title: 'Requisitions',
+      path: 'requisitions',
+      icon: getIcon('fluent-mdl2:review-request-solid'),
+    },
+    {
+      title: 'RFQ',
+      path: 'rfq',
+      icon: getIcon('foundation:burst-sale'),
+    },
+    {
+      title: 'Payment',
+      icon: getIcon('ri:product-hunt-fill'),
+      items: [
+        {
+          title: 'Make Payment',
+          path: 'makePayment',
+          icon: getIcon('mdi:report-areaspline-variant'),
+        },
+        {
+          title: 'Invoices',
+          path: 'invoices',
+          icon: getIcon('ri:product-hunt-fill'),
+        },
+      ],
+    },
+    {
+      title: 'Shipping',
+      path: 'shipping',
+      icon: getIcon('mdi:report-areaspline-variant'),
+    },
+    {
+      title: 'User Managment',
+      icon: getIcon('ri:product-hunt-fill'),
+      items: [
+        {
+          title: 'Users',
+          path: 'user',
+          icon: getIcon('mdi:report-areaspline-variant'),
+        },
+        {
+          title: 'Supplier',
+          path: 'supplier',
+          icon: getIcon('mdi:report-areaspline-variant'),
+        },
+        {
+          title: ' Manage  Status ',
+          path: 'access',
+          icon: getIcon('ri:product-hunt-fill'),
+        },
+      ],
+    },
+    {
+      title: 'Category',
+      path: 'category',
+      icon: getIcon('icon-park-solid:transaction-order'),
+    },
+    {
+      title: 'Report',
+      path: 'report',
+      icon: getIcon('mdi:report-areaspline-variant'),
+    },
+    {
+      title: 'Setting',
+      path: 'setting',
+      icon: getIcon('uiw:setting'),
   },
-  {
-    title: 'Profile',
-    path: 'profile',
+  ];
 
-    icon: getIcon('iconamoon:profile-fill'),
-  },
-  {
-    title: 'Purchase',
-    path: 'purchase',
-    icon: getIcon('ri:product-hunt-fill'),
-  },
-  {
-    title: 'PRequestList',
-    path: 'purchaseRequestList',
-    icon: getIcon('fluent-mdl2:review-request-solid'),
-  },
-  {
-    title: 'Order',
-    path: 'order',
-    icon: getIcon('icon-park-solid:transaction-order'),
-  },
-  {
-    title: 'User',
-    path: 'user',
-    icon: getIcon('fa:users'),
-  },
-  {
-    title: 'Report',
-    path: 'report',
-    icon: getIcon('mdi:report-areaspline-variant'),
-  },
-  {
-    title: 'Setting',
-    path: 'setting',
-    icon: getIcon('uiw:setting'),
-},
-];
-
-export default NavConfig;
+  

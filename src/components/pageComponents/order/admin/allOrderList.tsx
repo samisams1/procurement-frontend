@@ -1,13 +1,16 @@
 import React, { useContext, useState } from 'react';
-import { Chip, Grid, Stack } from '@mui/material';
+import { useQuery, gql } from '@apollo/client';
+import { Grid, createTheme, ThemeProvider } from '@mui/material';
+import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
+import { useNavigate } from 'react-router-dom';
+import Button from '../../../Button';
+import { SectionTitle } from '../../../Section';
+import PageHeader from '../../../PageHeader';
+import { ShoppingCart } from '@mui/icons-material';
 import { UserContext } from '../../../../auth/UserContext';
 import Spinner from '../../../Spinner';
-import Button from '../../../Button';
-import MUIDataTable from 'mui-datatables';
 import Popup from '../../../Popup';
-import { gql, useQuery } from '@apollo/client';
-import OrderDetail from './OrderDetail';
-
+// Define your GraphQL query
 const ORDER_QUERY = gql`
 query{
   orders{
@@ -22,7 +25,6 @@ query{
   }
 }
 `;
-
 interface OrderInterface {
   id: string;
   customerId: string;
@@ -32,10 +34,8 @@ interface OrderInterface {
   status: string;
   newstatus:string;
 }
-
-const AllOrderList = () => {
-  const [openPopup, setOpenPopup] = useState(false);
-  const [newData, setNewData] = useState<any>('');
+const AllOrderList: React.FC = () => {
+  const navigate  = useNavigate();
   const { loading, error, data } = useQuery(ORDER_QUERY);
   const { currentUser } = useContext(UserContext);
   if (!currentUser) {
@@ -44,82 +44,32 @@ const AllOrderList = () => {
   if (loading) return <Spinner />;
   if (error) return <p>{error.message}</p>;
 
-  const productList = data.orders.map((row: OrderInterface) => [
-    row.id,
-    row.customerId,
-    row.supplierId,
-    row.totalPrice,
-    row.createdAt,
-    row.status,
-  ]);
-
+  // Access the data returned by the query
   const columns = [
+    { name: 'SN', options: { filter: false, sort: false } },
+    'ID',
+    'Reference Number',
+    'User',
+    'Suppliers',
+    'Status',
+    'Date',
     {
-      name: '#Order Id',
+      name: 'Action',
       options: {
-        filter: true,
-      },
-    },
-    {
-      name: 'Customer',
-      options: {
-        filter: true,
+        filter: false,
         sort: false,
-      },
-    },
-    {
-      name: 'Supplier',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'Total Price',
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: 'Date',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'Status',
-      options: {
-        filter: true,
-        sort: false,
-        customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
-          return (
-            <Stack direction="row" spacing={1}>
-              {value === 'approved' ? (
-                <Chip label={value} color="primary" />
-              ) : (
-                <Chip label={value} color="secondary" />
-              )}
-            </Stack>
-          );
-        },
-      },
-    },
-    {
-      name: 'Invoice',
-      options: {
-        filter: true,
-        sort: false,
-        empty: true,
-        customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
+        customBodyRender: (value: any, tableMeta: any) => {
+          const id = tableMeta.rowData[1];
           return (
             <Button
-              text="Show Detail"
-              variant="outlined"
+              text="View Details"
               onClick={() => {
-                setOpenPopup(true);
-                setNewData(tableMeta.rowData);
+              //  setOpenPopup(true);
+              //  setNewData(tableMeta.rowData);
+              navigate(`/orderDetail/${id}`);
               }}
+              
+              style={{ cursor: 'pointer' }}
             />
           );
         },
@@ -127,18 +77,70 @@ const AllOrderList = () => {
     },
   ];
 
+  const tableData = data.orders.map((order: OrderInterface, index: number) => [
+    index + 1,
+    order.id,
+    order.customerId,
+    order.supplierId,
+    order.totalPrice,
+    order.status ==="pending" ?
+    <span style={{ color: 'red' }}>{order.status}</span>:
+    <span style={{ color: 'green' }}>{order.status}</span>,
+    order.createdAt,
+    '',
+  ]);
+
+  const options: MUIDataTableOptions = {
+    filter: true,
+    download: true,
+    print: true,
+    search: true,
+    selectableRows: 'none', // or 'single' for single row selection
+    responsive: 'standard' as Responsive,
+    viewColumns: true,
+    rowsPerPage: 10,
+    rowsPerPageOptions: [10, 25, 50],
+  };
+
+  const theme = createTheme({
+    components: {
+      MUIDataTableHeadCell: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#1976d2',
+            color: 'white',
+          },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        },
+      },
+    },
+  });
+
   return (
-    <Grid container>
+    <Grid container spacing={3}>
       <Grid item xs={12}>
-        <MUIDataTable title="Order" data={productList} columns={columns} />
+        <SectionTitle variant="outlined" square>
+          <PageHeader title="order" icon={<ShoppingCart />} />
+        </SectionTitle>
       </Grid>
-      <Popup
-        title="Order Detail "
-        openPopup={openPopup}
-        setOpenPopup={setOpenPopup}
-      >
-        {newData && <OrderDetail id={newData[0]} status={newData[5]} newstatus='approved' />}
-      </Popup>
+      <Grid item xs={12}>
+        <ThemeProvider theme={theme}>
+          <MUIDataTable
+            title="Orders"
+            data={tableData}
+            columns={columns}
+            options={options}
+          />
+        </ThemeProvider>
+      </Grid>
+      
     </Grid>
   );
 };

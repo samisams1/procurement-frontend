@@ -1,23 +1,39 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Spinner from '../../components/Spinner';
 import { UserContext } from '../../auth/UserContext';
-import { AdminDashboard } from './admin';
-import { Customer } from './customer';
-import { Supplier } from './supplier';
+import ProcurementDashboard from './customer';
+import AdminDashboard from './admin';
+import SupplierDashboard from './supplier';
 
 const Dashboard = () => {
-    const { currentUser } = useContext(UserContext);
+  const { currentUser } = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (currentUser === null) {
-    return <Spinner />;
+  useEffect(() => {
+    setIsLoading(true);
+    // Simulate an API call to fetch currentUser
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div>
+        <Spinner />
+        <p>Loading user data...</p>
+      </div>
+    );
   }
 
   let dashboardComponent;
 
-  if (currentUser.role === 'SUPPLIER') {
-    dashboardComponent = <Supplier />;
+  if (currentUser === null) {
+    dashboardComponent = <div>No user data found</div>;
+  } else if (currentUser.role === 'SUPPLIER') {
+    dashboardComponent = <SupplierDashboard />;
   } else if (currentUser.role === 'CUSTOMER') {
-    dashboardComponent = <Customer />;
+    dashboardComponent = <ProcurementDashboard />;
   } else if (currentUser.role === 'ADMIN') {
     dashboardComponent = <AdminDashboard />;
   }

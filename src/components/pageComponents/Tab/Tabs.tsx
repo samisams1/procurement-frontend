@@ -26,7 +26,6 @@ export default function LabTabs() {
         <TabPanel value="1">
           {/* Content for Daily Report */}
           <DailyReportChart />
-          <DailyReportChart />
         </TabPanel>
         <TabPanel value="2">
           {/* Content for Monthly Report */}

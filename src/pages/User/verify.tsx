@@ -1,6 +1,7 @@
 import { gql, useMutation } from '@apollo/client';
+import { Box, Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const VERIFY_USER_MUTATION = gql`
   mutation VerifyUser($token: String!) {
@@ -13,7 +14,7 @@ const VerifyUser: React.FC = () => {
   //const navigate = useNavigate();
   const [verificationStatus, setVerificationStatus] = useState<'initial' | 'success' | 'error'>('initial');
   const [verifyUser] = useMutation(VERIFY_USER_MUTATION);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const token = searchParams.get('token');
@@ -41,10 +42,21 @@ const VerifyUser: React.FC = () => {
       setVerificationStatus('error');
     }
   }, [location.search, verifyUser]);
-
+  const handleLogin = () => {
+    navigate('/login');
+  };
   if (verificationStatus === 'success') {
   // navigate('/login')
-    return <p>User verification successful!</p>;
+      return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Box textAlign="center">
+          <Typography variant="h6">User verification successful!</Typography>
+          <Button variant="contained" color="primary" onClick={handleLogin}>
+            Login
+          </Button>
+        </Box>
+      </Box>
+    );
   } else if (verificationStatus === 'error') {
     // Render error message or redirect to an error page
     return <p>User verification failed. Please try again.</p>;

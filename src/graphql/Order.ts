@@ -85,7 +85,27 @@ query{
 }`;
 //new for this project
 export const COUNT_ORDER_BY_STATUS = gql`
-query{
-  countOrders
+query CountOrderByStatus($status: String!, $userId: Float!) {
+  countOrderBystatus(status: $status, userId: $userId)
+}
+`
+export const COUNT_REQUEST_BY_STATUS = gql`
+query CountPurchaseRequestBystatus($status: String!, $userId: Float!) {
+  countPurchaseRequestBystatus(status: $status, userId: $userId)
+}
+`
+export const COUNT_ALL_REQUEST_BY_STATUS = gql`
+query CountAllRequestByStatus($status: String!) {
+  countAllRequestBystatus(status: $status)
+}
+`
+export const COUNT_ALL_ORDER_BY_STATUS = gql`
+query CountOAllrderByStatus($status: String!) {
+  countOAllrderByStatus(status: $status)
+}
+`
+export const COUNT_ALL_PAYMENT_BY_STATUS = gql`
+query countPaymentBystatus($status: String!) {
+  countPaymentBystatus(status: $status)
 }
 `

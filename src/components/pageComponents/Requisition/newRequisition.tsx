@@ -49,7 +49,7 @@ const NewRequisitionComponent: React.FC = () => {
       const validProducts = products.filter((product) => product.productTitle.trim() !== '');
       const input = {
         userId: userId,
-        status: 'wait',
+        status: 'pending',
         remark: additional.remark,
         addressDetail: additional.addressDetail,
         estimatedDelivery: additional.estimatedDelivery,

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { Typography, Box, Grid, Checkbox, Table, TableHead, TableRow, TableCell, TableBody, } from '@mui/material';
 import Button from '../../Button';
-import { useNavigate } from 'react-router-dom';
 
 const GET_QUOTATION = gql`
   query GetQuotationById($id: Float!) {
@@ -79,8 +78,7 @@ type QuotationDetailProps = {
   };
   
 const QuotationDetail: React.FC<QuotationDetailProps> = (props) => {
-    const { id,newId } = props;
-const navigate= useNavigate();
+  const { id,newId } = props;
   const [quantities] = useState<{ [key: string]: number }>({});
   const [selectedItems, setSelectedItems] = useState<{ [key: string]: boolean }>({});
   const [shipping, setShipping] = useState<number>(0);
@@ -95,7 +93,7 @@ const navigate= useNavigate();
   const [showTitleColumn, setShowTitleColumn] = useState(true);
   const [showPriceColumn, setShowPriceColumn] = useState(true);
 
-  const { loading, error, data } = useQuery<QuotationData>(GET_QUOTATION, {
+  const { loading, error, data,refetch } = useQuery<QuotationData>(GET_QUOTATION, {
     variables: { id: id}
   });
 
@@ -171,7 +169,8 @@ console.log(supplierId)
       const createdOrderId = createdOrder.id; // Access the created ID
       console.log('Order created with ID:', createdOrderId);
       setSuccessMessage('Order created successfully!');
-      navigate(`/orderDetail/${createdOrderId}`)
+      //navigate(`/orderDetail/${createdOrderId}`)
+      refetch();
     } catch (error: any) {
       setErrorMessage(error.message);
     }
