@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
 import PageHeader from '../../PageHeader';
@@ -7,7 +7,7 @@ import {RequestPageOutlined } from '@mui/icons-material';
 import Button from '../../Button';
 import { useNavigate } from 'react-router-dom';
 import { SectionTitle } from '../../Section';
-import { GET_QUOTES, PURCHASE_REQUESTS } from '../../../graphql/rquest';
+import { PURCHASE_REQUESTS } from '../../../graphql/rquest';
 // Define your GraphQL query
 const Requisitions: React.FC = () => {
   const navigate = useNavigate();
