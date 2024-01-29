@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Chip, Grid, Stack,createTheme, ThemeProvider } from '@mui/material';
+import { Chip, Grid, Stack } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../../auth/UserContext';
@@ -7,7 +7,7 @@ import Spinner from '../../Spinner';
 import Button from '../../Button';
 import Popup from '../../Popup';
 import OrderDetail from '../order/customer/orderDetail';
-import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
+import MUIDataTable from 'mui-datatables';
 const ORDER_QUERY = gql`
 query GetApprovedOrderByCustomerId($customerId: Float!) {
     getApprovedOrderByCustomerId(customerId: $customerId) {
@@ -140,26 +140,7 @@ const { loading, error, data } = useQuery(ORDER_QUERY, {
     },
     
   ];
-  const theme = createTheme({
-    components: {
-      MUIDataTableHeadCell: {
-        styleOverrides: {
-          root: {
-            backgroundColor: '#1976d2',
-            color: 'white',
-          },
-        },
-      },
-      MuiTableCell: {
-        styleOverrides: {
-          root: {
-            paddingTop: 0,
-            paddingBottom: 0,
-          },
-        },
-      },
-    },
-  });
+
   const handleClick = (id: string) => {
     navigate(`/orderDetail/${id}`);
   };

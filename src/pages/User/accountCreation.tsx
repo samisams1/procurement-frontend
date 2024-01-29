@@ -1,11 +1,10 @@
 import { Button, Typography, Box } from '@mui/material';
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 
 const AccountCreation: React.FC = () => {
   const { email } = useParams<{ email?: string }>();
-  const history = useNavigate();
-
+  
   const handleVerifyClick = () => {
     window.location.href = 'https://mail.google.com/';
   };

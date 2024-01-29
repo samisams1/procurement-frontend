@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Typography, Button, Grid } from '@mui/material';
-import Register from '../account/Register';
 import { UserForm } from '../../components/pageComponents/user/UserForm';
 
 enum Role {
@@ -13,13 +12,6 @@ const RegistrationPage: React.FC = () => {
   const handleRoleSelect = (role: Role) => {
     setSelectedRole(role);
   };
-
-  const handleRegistrationSubmit = () => {
-    // Handle the registration logic based on the selected role
-    console.log('Selected role:', selectedRole);
-    // Replace the console.log with your desired logic for handling the registration
-  };
-
   return (
     <div>
       {!selectedRole ? (

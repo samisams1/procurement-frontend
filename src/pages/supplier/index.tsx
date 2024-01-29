@@ -1,8 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../../auth/UserContext';
 import Spinner from '../../components/Spinner';
-import ViewShipping from '../../components/pageComponents/shipping/shipping';
-import AdminShipping from '../../components/pageComponents/shipping/adminShipping';
 import Suppliers from '../../components/pageComponents/supplier/suppliers';
 export default function Supplier() {
   const { currentUser } = useContext(UserContext);
