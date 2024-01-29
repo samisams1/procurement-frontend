@@ -1,8 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../../auth/UserContext';
 import Spinner from '../../components/Spinner';
-import ViewShipping from '../../components/pageComponents/shipping/shipping';
-import AdminShipping from '../../components/pageComponents/shipping/adminShipping';
 import ReportPage from './Report';
 export default function Report() {
   const { currentUser } = useContext(UserContext);

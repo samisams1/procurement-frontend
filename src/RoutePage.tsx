@@ -45,6 +45,8 @@ import MakePaymentComponent from './components/pageComponents/payment/makePaymen
 import RoleSelection from './pages/User/roleSelection';
 import CategoryPage from './pages/category';
 import Supplier from './pages/supplier';
+import PrivacyPolicePage from './pages/home/PrivacyPolicyPage';
+import LandingPage from './pages/home/home';
 export default function RoutePage() {
 
     return useRoutes([
@@ -111,6 +113,11 @@ export default function RoutePage() {
               { path:  '/verify', element:<VerifyUser />},
               { path:  '/acountCreated/:email', element:<AccountCreation />},
               { path:  '/reset-password', element:<ResetPasswordForm />},
+
+              { path:  '/home', element:<LandingPage />},
+              { path:  '/privacyPolicePage', element:<PrivacyPolicePage />},
+              { path:  '/reset-password', element:<ResetPasswordForm />},
+
             ],
           },
           { path: '*', element: <NotFoundPage /> },
