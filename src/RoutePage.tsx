@@ -47,6 +47,7 @@ import PrivacyPolicePage from './pages/home/PrivacyPolicyPage';
 import LandingPage from './pages/home/home';
 import SuppliersProfile from './pages/supplier/suppliersProfile';
 import Contact from './pages/home/ContactPage';
+import About from './pages/home/About';
 export default function RoutePage() {
 
     return useRoutes([
@@ -116,6 +117,8 @@ export default function RoutePage() {
               { path:  '/home', element:<LandingPage />},
               { path:  '/privacyPolicePage', element:<PrivacyPolicePage />},
               { path:  '/reset-password', element:<ResetPasswordForm />},
+
+              { path:  '/about', element:<About />},
               { path:  '/contact', element:<Contact />},
 
             ],
