@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import { Box, Link, Drawer, Typography, MenuList, MenuItem } from '@mui/material';
+import { Box, Drawer, Typography, MenuList, MenuItem } from '@mui/material';
 import useResponsive from '../../../hooks/useResponsive';
 
 const DRAWER_WIDTH = 280;
@@ -13,13 +13,7 @@ const RootStyle = styled('div')(({ theme }) => ({
   },
 }));
 
-const AccountStyle = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  padding: theme.spacing(2, 2.5),
-  borderRadius: Number(theme.shape.borderRadius) * 1.5,
-  backgroundColor: '#1c9fef',
-}));
+
 
 type DashboardSidebarProps = {
   isOpenSidebar: boolean;
