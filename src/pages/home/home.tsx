@@ -46,7 +46,7 @@ const CategoryIcon = styled('div')(({ theme }) => ({
   alignItems: 'center',
   marginRight: theme.spacing(2),
   fontSize: '32px',
-  color: '#ffffff',
+  color: '#1c9fef',
 }));
 const CategoryTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
@@ -78,7 +78,7 @@ const LandingPageTitle = styled(Typography)(({ theme }) => ({
   fontSize: '3rem',
   fontWeight: 'bold',
   marginBottom: '1rem',
-  color: '#333',
+  color: '#1c9fef',
   [theme.breakpoints.down('sm')]: {
     fontSize: '2rem',
   },
@@ -90,7 +90,7 @@ const LandingPageTitle = styled(Typography)(({ theme }) => ({
 const LandingPageDescription = styled(Typography)(({ theme }) => ({
   fontSize: '1.5rem',
   marginBottom: '2rem',
-  color: '#666',
+  color: '#1c9fef',
   textAlign: 'center',
   [theme.breakpoints.down('sm')]: {
     fontSize: '1rem',
@@ -378,7 +378,7 @@ const Home: React.FC = () => {
           </Grid>
         </Grid>
       </ContactContainer>
-      <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
+      <Popup title="Login" openPopup={openPopup} setOpenPopup={setOpenPopup}>
           <Login />
         </Popup>setOpenPopup
     </div>
