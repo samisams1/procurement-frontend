@@ -1,55 +1,50 @@
 import React from 'react';
-import { styled } from '@mui/material';
+import { TextField, styled, Button } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import Navbar from '../Home/navBar';
 
 const ContactContainer = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
   marginTop: 80,
-  width:'100%'
-});
-
-const PageHeader = styled('h1')({
-  fontSize: 32,
-  marginBottom: 20,
-  textAlign: 'center',
-});
-
-const ContactContent = styled('div')({
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr',
-  gap: 20,
-  maxWidth: 800,
-  padding: 20,
-  textAlign: 'center',
-  margin: '0 auto',
+  padding: '40px',
+  display: 'flex',
+  justifyContent: 'center',
+  backgroundColor: '#f7f7f7',
 });
 
 const SendMessageContainer = styled('div')({
-  gridColumn: '1 / 2',
+  backgroundColor: '#ffffff',
+  padding: '30px',
+  borderRadius: '4px',
+  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  backgroundColor: '#f5f5f5',
-  padding: 20,
-  borderRadius: 4,
 });
 
 const ContactDetailsContainer = styled('div')({
-  gridColumn: '2 / 3',
   display: 'grid',
-  gap: 10,
+  gap: '20px',
 });
 
 const ContactDetailsHeading = styled('h3')({
   fontSize: 20,
   marginBottom: 10,
+  textAlign: 'center',
 });
 
 const ContactDetailsText = styled('p')({
-  fontSize: 16,
-  lineHeight: 1.5,
+  backgroundColor: '#ffffff',
+  padding: '30px',
+  borderRadius: '4px',
+  boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+});
+
+const ContactDetailsIcon = styled('span')({
+  fontSize: 20,
+  marginRight: 5,
 });
 
 const SocialMediaLinksContainer = styled('div')({
@@ -67,54 +62,105 @@ const SocialMediaLink = styled('a')({
     color: '#3384d6',
   },
 });
-
+const SubmitButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
+  transition: 'background-color 0.3s ease',
+  '&:hover': {
+    backgroundColor: theme.palette.secondary.main,
+    boxShadow: `0px 0px 10px 3px ${theme.palette.secondary.main}`,
+    transform: 'scale(1.1)',
+  },
+  height: '40px',
+  borderRadius: '30px',
+  padding: theme.spacing(0, 4),
+  '& .MuiButton-label': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+  },
+}));
 const ContactUs: React.FC = () => {
   return (
     <div>
       <Navbar />
       <ContactContainer>
-        <PageHeader>Contact Us</PageHeader>
-        <ContactContent>
-          <SendMessageContainer>
-            <h2>Send Message</h2>
-            <form>
-              <input type="email" placeholder="Email" />
-              <input type="text" placeholder="Subject" />
-              <textarea placeholder="Message"></textarea>
-              <button>Submit</button>
-            </form>
-          </SendMessageContainer>
-          <ContactDetailsContainer>
-            <div>
-              <ContactDetailsHeading>Contact Details</ContactDetailsHeading>
-              <div className="sm:grid sm:grid-cols-12">
-                <div className="sm:col-span-12 md:col-span-6">
-                  <ContactDetailsText>
-                    Address: 123 Main Street, City, Country
-                  </ContactDetailsText>
-                </div>
-                <div className="sm:col-span-12 md:col-span-6">
-                  <ContactDetailsText>
-                    Phone: +1 234 567 890
-                  </ContactDetailsText>
-                </div>
-                <div className="sm:col-span-12 md:col-span-6">
-                  <ContactDetailsText>
-                    Email: info@example.com
-                  </ContactDetailsText>
-                </div>
+        <Grid container spacing={2} justifyContent="center">
+          
+          <Grid item xs={12} md={6}>
+            <SendMessageContainer>
+              <h2 style={{ fontSize: 24, marginBottom: 20 }}>Send Message</h2>
+              <form>
+                <TextField
+                 variant="outlined"
+                  label="Name"
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  variant="outlined"
+                  label="Email"
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  variant="outlined"
+                  label="Subject"
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  variant="outlined"
+                  label="Message"
+                  multiline
+                  rows={4}
+                  fullWidth
+                  margin="normal"
+                />
+                <SubmitButton variant="contained" type="submit" color="primary">Submit</SubmitButton>
+              </form>
+            </SendMessageContainer>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ContactDetailsContainer>
+                <ContactDetailsHeading>Contact Details</ContactDetailsHeading>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={6}>
+                    <ContactDetailsText>
+                      <ContactDetailsIcon>&#x1F4CD;</ContactDetailsIcon>
+                      Haile gebresilase street, City, Ethiopia
+                    </ContactDetailsText>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <ContactDetailsText>
+                      <ContactDetailsIcon>&#x260E;</ContactDetailsIcon>
+                      +251973316377
+                    </ContactDetailsText>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <ContactDetailsText>
+                      <ContactDetailsIcon>&#x2709;</ContactDetailsIcon>
+                      etproforma@gmail.com
+                    </ContactDetailsText>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <ContactDetailsText>
+                      <ContactDetailsIcon>&#x1F4F1;</ContactDetailsIcon>
+                      Website: www.etproforma.com
+                    </ContactDetailsText>
+                  </Grid>
+                </Grid>
+              <div>
+                <ContactDetailsHeading>Social Media</ContactDetailsHeading>
+                <SocialMediaLinksContainer>
+                  <SocialMediaLink href="#">Facebook</SocialMediaLink>
+                  <SocialMediaLink href="#">Twitter</SocialMediaLink>
+                  <SocialMediaLink href="#">Instagram</SocialMediaLink>
+                </SocialMediaLinksContainer>
               </div>
-            </div>
-            <div>
-              <ContactDetailsHeading>Social Media</ContactDetailsHeading>
-              <SocialMediaLinksContainer>
-                <SocialMediaLink href="#">Facebook</SocialMediaLink>
-                <SocialMediaLink href="#">Twitter</SocialMediaLink>
-                <SocialMediaLink href="#">Instagram</SocialMediaLink>
-              </SocialMediaLinksContainer>
-            </div>
-          </ContactDetailsContainer>
-        </ContactContent>
+            </ContactDetailsContainer>
+          </Grid>
+        </Grid>
       </ContactContainer>
     </div>
   );
