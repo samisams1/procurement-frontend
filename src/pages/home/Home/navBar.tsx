@@ -7,11 +7,14 @@ import {
   Typography,
   Box,
   Button,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import LanguageSelector from '../../../layoutes/LanguageSelector';
 import { Link } from 'react-router-dom';
-import Sidebar from './sideBar';
 
 const RootStyle = styled(AppBar)(({ theme }) => ({
   boxShadow: 'none',
@@ -53,25 +56,30 @@ const ActionWrapper = styled(Box)(({ theme }) => ({
   alignItems: 'center',
 }));
 
+const Sidebar = styled(Drawer)(({ theme }) => ({
+  '& .MuiDrawer-paper': {
+    width: 240,
+  },
+}));
+
 interface DashboardNavbarProps {
   onOpenSidebar?: () => void;
 }
 
 export default function Navbar({ onOpenSidebar }: DashboardNavbarProps) {
-  const [showSidebar, setShowSidebar] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isMenuVisible, setMenuVisible] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
-      setShowSidebar(window.innerWidth <= 960); // Set the visibility of the sidebar based on the viewport width
+      setMenuVisible(window.innerWidth > 960);
     };
 
-    handleResize(); // Call the handleResize function on initial render
-
-    window.addEventListener('resize', handleResize); // Add event listener for window resize
+    handleResize();
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize); // Clean up the event listener on component unmount
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -82,6 +90,7 @@ export default function Navbar({ onOpenSidebar }: DashboardNavbarProps) {
   const handleSidebarClose = () => {
     setSidebarOpen(false);
   };
+
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -98,50 +107,68 @@ export default function Navbar({ onOpenSidebar }: DashboardNavbarProps) {
           </LogoText>
         </LogoWrapper>
 
-        <ActionWrapper>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/home"
-            sx={{
-              '&:hover': {
-                color: '#ffffff',
-              },
-              fontWeight: 'bold', // Make the text bold
-            }}
-          >
-            Home
-          </Button>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/about"
-            sx={{
-              '&:hover': {
-                color: '#ffffff',
-              },
-              fontWeight: 'bold', // Make the text bold
-            }}
-          >
-            About
-          </Button>
-          <Button
-            color="inherit"
-            component={Link}
-            to="/contact"
-            sx={{
-              '&:hover': {
-                color: '#ffffff',
-              },
-              fontWeight: 'bold', // Make the text bold
-            }}
-          >
-            Contact
-          </Button>
-          <LanguageSelector />
-        </ActionWrapper>
+        {isMenuVisible ? (
+          <ActionWrapper>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/home"
+              sx={{
+                '&:hover': {
+                  color: '#ffffff',
+                },
+                fontWeight: 'bold',
+              }}
+            >
+              Home
+            </Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/about"
+              sx={{
+                '&:hover': {
+                  color: '#ffffff',
+                },
+                fontWeight: 'bold',
+              }}
+            >
+              About
+            </Button>
+            <Button
+              color="inherit"
+              component={Link}
+              to="/contact"
+              sx={{
+                '&:hover': {
+                  color: '#ffffff',
+                },
+                fontWeight: 'bold',
+              }}
+            >
+              Contact
+            </Button>
+            <LanguageSelector />
+          </ActionWrapper>
+        ) : null}
 
-        {showSidebar &&  <Sidebar isOpenSidebar={isSidebarOpen} onCloseSidebar={handleSidebarClose} />} {/* Render the Sidebar component based on the showSidebar state */}
+        <Sidebar
+          anchor="left"
+          open={isSidebarOpen}
+          onClose={handleSidebarClose}
+        >
+          <List>
+            <ListItem button component={Link} to="/home">
+              <ListItemText primary="Home" />
+            </ListItem>
+            <ListItem button component={Link} to="/about">
+              <ListItemText primary="About" />
+            </ListItem>
+            <ListItem button component={Link} to="/contact">
+              <ListItemText primary="Contact" />
+            </ListItem>
+          </List>
+        </Sidebar>
       </ToolbarStyle>
     </RootStyle>
   );
