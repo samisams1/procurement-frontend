@@ -2,8 +2,11 @@ import React, { useState, useContext } from 'react';
 import { useMutation } from '@apollo/client';
 import { LOGIN_MUTATION } from '../../../graphql/Login';
 import { UserContext } from '../../../auth/UserContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Box, Container, CircularProgress, Typography } from '@mui/material';
+import Popup from '../../Popup';
+import Register from '../../../pages/account/Register';
+import PasswordResetForm from '../../../pages/account/ForgotPassword';
 
 interface LoginInput {
   username: string;
@@ -14,8 +17,9 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
   const [loginMutation, { error }] = useMutation(LOGIN_MUTATION);
+  const [openRegisterPopup,setOpenRegisterPopup] = useState(false);
+  const [forgotPassword,setForgotPassword] = useState(false);
   const { setCurrentUser } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -38,10 +42,18 @@ const Login: React.FC = () => {
     }
   };
 
+  const handleClick = () => {
+   // setOpenPopup(false); // Close the login popup
+    setOpenRegisterPopup(true); // Open the register popup
+  };
+  const handleClickForgotPassword = () => {
+   // setOpenPopup(false); // Close the login popup
+    setOpenRegisterPopup(false); // Open the register popup
+    setForgotPassword(true);
+  };
   return (
-    <Container maxWidth="sm" style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Box p={4} boxShadow={3} bgcolor="white" borderRadius={10}>
-        <Typography variant="h6" style={{ color: '#4F46E5' }}>Login</Typography>   
+    <Container>
+      <Box>
         {error && <p>Error: {error.message}</p>}
         <TextField
           variant="outlined"
@@ -71,12 +83,19 @@ const Login: React.FC = () => {
           {loading ? <CircularProgress size={20} color="primary" /> : 'Login'}
         </Button>
         <Typography variant="body2" style={{ marginTop: '1rem', textAlign: 'center' }}>
-          <Link to="/forgot-password" style={{ color: '#4F46E5' }}>Forgot your password?</Link>
+         <span onClick={handleClickForgotPassword} style={{ color: '#4F46E5', cursor: 'pointer' }}>Forgot your password?</span>
         </Typography>
+
         <Typography variant="body2" style={{ marginTop: '1rem', textAlign: 'center' }}>
-          Don't have an account? <Link to="/register" style={{ color: '#4F46E5' }}>Please Register now</Link>
+          Don't have an account? <span onClick={handleClick} style={{ color: '#4F46E5', cursor: 'pointer' }}>Please Register now</span>
         </Typography>
       </Box>
+      <Popup openPopup={openRegisterPopup} setOpenPopup={setOpenRegisterPopup}>
+        <Register />
+      </Popup>
+      <Popup openPopup={forgotPassword} setOpenPopup={setForgotPassword}>
+        <PasswordResetForm />
+      </Popup>
     </Container>
   );
 };

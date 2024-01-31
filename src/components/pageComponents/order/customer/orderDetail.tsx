@@ -307,8 +307,6 @@ const createdAt= order?.createdAt;
        {currentUser.role === "ADMIN"  && status === "comformed" &&(
          <h1 style={{color:"#1c9fef"}}>The Order Status is comformed Please wait for Admin Approval!</h1>
       )}
-
-
       <style>{`
      .header {
         display: flex;

@@ -126,7 +126,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
               />
 
             {selectedRole === Role.Supplier && (   <Controls.Select
-  name="category"
+  name="categoryId"
   label="Category"
   value={values.categoryId.toString()} // Convert categoryId to string
   onChange={handleInputChange}

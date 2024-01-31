@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../../auth/UserContext';
 import Spinner from '../../components/Spinner';
 import Suppliers from '../../components/pageComponents/supplier/suppliers';
+import SuppliersProfile from './suppliersProfile';
 export default function Supplier() {
   const { currentUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,7 +18,7 @@ export default function Supplier() {
   }
 
   if (!currentUser) {
-    return <div>Error: User not found</div>;
+    return <div>Error: Supplier not found</div>;
   }
 
   const { role } = currentUser;
@@ -27,7 +28,13 @@ export default function Supplier() {
         <Suppliers />
       </div>
     );
-  }else {
+  }else if(role === 'SUPPLLIER'){
+    return (
+      <div>
+        <SuppliersProfile />
+      </div>
+    );
+  } else {
     return null;
   }
 }

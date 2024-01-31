@@ -47,6 +47,7 @@ import CategoryPage from './pages/category';
 import Supplier from './pages/supplier';
 import PrivacyPolicePage from './pages/home/PrivacyPolicyPage';
 import LandingPage from './pages/home/home';
+import SuppliersProfile from './pages/supplier/suppliersProfile';
 export default function RoutePage() {
 
     return useRoutes([
@@ -97,7 +98,8 @@ export default function RoutePage() {
 
               { path: '/category', element: <ProtectedRoute  element={<CategoryPage />} /> },
 
-              { path: '/supplier', element: <ProtectedRoute  element={<Supplier />} /> },
+              { path: '/suppliers', element: <ProtectedRoute  element={<Supplier />} /> },
+              { path: '/supplier', element: <ProtectedRoute  element={<SuppliersProfile />} /> },
               
             ],
           },

@@ -29,6 +29,11 @@ export const SupplierNavConfig = [
       icon: getIcon('uiw:setting'),
     },
     {
+      title: 'Supplier Profile',
+      path: 'supplier',
+      icon: getIcon('mdi:report-areaspline-variant'),
+    },
+    {
       title: 'Report',
       path: 'report',
       icon: getIcon('mdi:report-areaspline-variant'),

@@ -6,9 +6,6 @@ import Controls from '../Controls'
 import Button from '../Button'
 import { CATEGORY_QUERY, CREATE_CATEGORY } from '../../graphql/Category'
 import { Form, useForm } from '../useForm'
-//import {  categoryInterface, } from '../../../interface/interfaces'
-//import { CATEGORY_QUERY, CREATE_CATEGORY } from '../../../graphql/Category'
-//import { Form, useForm } from '../../useForm'
 
 export const CategoryForm = () => {
   const [createProfile] = useMutation(CREATE_CATEGORY, {

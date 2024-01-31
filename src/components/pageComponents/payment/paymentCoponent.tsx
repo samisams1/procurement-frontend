@@ -1,13 +1,14 @@
 import React, { useState, FormEvent } from 'react';
-import { Typography, Grid, Card, CardContent, Paper } from '@mui/material';
+import { Typography, Grid, Card, CardContent, Paper, InputBase } from '@mui/material';
 import PageHeader from '../../PageHeader';
-import { Payment } from '@mui/icons-material';
+import { NumbersTwoTone, Payment, People } from '@mui/icons-material';
 import Popup from '../../Popup';
 import Button from '../../Button';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { useNavigate, useParams } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import { styled } from '@mui/material/styles';
 
 interface PaymentMethod {
   id: string;
@@ -45,6 +46,21 @@ interface CreatePaymentData {
   userId: number;
 }
 */
+const FullNameInput = styled(InputBase)(({ theme }) => ({
+  flex: 1,
+  padding: theme.spacing(0.5, 1),
+  color: theme.palette.text.primary,
+  border: `1px solid ${theme.palette.primary.main}`,
+  borderRadius: theme.shape.borderRadius,
+  '& .MuiInputBase-input': {
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    '&:focus': {
+      width: '100%',
+    },
+  },
+}));
+
 const GET_ORDER_QUERY = gql`
 query GetOrderById($id: Int!) {
     getOrderById(id: $id) {
@@ -77,6 +93,8 @@ const PaymentComponent: React.FC = () => {
   const [title,setTitle] = useState('');
   const [image,setImage] = useState('');
   const [paymentMethod,setPaymentMethod] = useState('');
+  const [fullName,setFullName] = useState('');
+  const [referenceNumber,setReferenceNumber] =useState('');
 
   const { id } = useParams<{ id?: string }>();
   const [createPaymentMutation] = useMutation<CreatePaymentData>(CREATE_PAYMENT_MUTATION);
@@ -96,10 +114,8 @@ const PaymentComponent: React.FC = () => {
 
   const order = data?.getOrderById;
   const customerId = order.customerId;
-  const customer = order.customer?.user?.username;
   const totalPrice = order.totalPrice;
   const tax = order.tax;
-  const referenceNumber = order.referenceNumber;
 console.log(data)
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
@@ -109,11 +125,12 @@ console.log(data)
     event.preventDefault();
     try {
       const paymentData:any = {
+        fullName:fullName,
+        referenceNumber:referenceNumber,
         amount: totalPrice + tax,
         userId: Number(customerId),
         paymentMethod:paymentMethod,
         status:'paid',
-        referenceNumber:'Iv3',
         orderId:Number(id)
       };
 
@@ -217,36 +234,52 @@ setTimeout(() => {
           </Grid>
         </Paper>
       </Grid>
-      <Popup image={image} title={title} openPopup={openPopup} setOpenPopup={setOpenPopup}>
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <div style={{ marginBottom: '20px' }}>
-          <Typography variant="h6">Payment Details</Typography>
-        </div>
-        <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ marginBottom: '10px' }}>
-            <Typography variant="body1">Transferred By Name:{customer}</Typography>
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <Typography variant="body1">Requested RFNO: 58547855</Typography>
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <Typography variant="body1">Ordered RFNO: {referenceNumber}</Typography>
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <Typography variant="body1">Payment Date: {formattedCurrentDate}</Typography>
-          </div>
-          <div style={{ marginBottom: '10px' }}>
-            <Typography variant="body1">Grand Total:  {(totalPrice + tax).toLocaleString() + " "} Birr</Typography>
-          </div>
+   <Popup image={image} title={title} openPopup={openPopup} setOpenPopup={setOpenPopup}>
+   <div style={{ padding: '20px', textAlign: 'center' }}>
+  <div style={{ marginBottom: '20px' }}>
+    <Typography variant="h6">Payment Details</Typography>
+  </div>
+  <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+  <Typography variant="body1" style={{ marginRight: '10px' }}>Transferred By:</Typography>
+  <div style={{ marginLeft: 'auto' }}>
+    <FullNameInput
+      value={fullName}
+      onChange={(event) => setFullName(event.target.value)}
+      placeholder="Full Name"
+      startAdornment={<People />}
+      style={{ textAlign: 'right' }}
+    />
+  </div>
+</div>
+    <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+      <Typography variant="body1" style={{ marginRight: '10px' }}>Reference Number:</Typography>
+        <div style={{ marginLeft: 'auto' }}>
+      <FullNameInput
+        value={referenceNumber}
+        onChange={(event) => setReferenceNumber(event.target.value)}
+        placeholder="Please Enter Reference Number"
+        startAdornment={<NumbersTwoTone />}
+        style={{ textAlign: 'right' }}
+      />
+    </div>
+    </div>
+    <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+      <Typography variant="body1" style={{ marginRight: '10px' }}>Payment Date:</Typography>
+      {formattedCurrentDate}
+    </div>
 
-          <form onSubmit={handleSubmit} style={{ marginTop: '20px' }}>
-            
+    <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+      <Typography variant="body1" style={{ marginRight: '10px' }}>Grand Total:</Typography>
+      {(totalPrice + tax).toLocaleString()} Birr
+    </div>
 
-            <Button type="submit" text="Pay" style={{ marginTop: '20px' }} />
-          </form>
-        </div>
-      </div>
-    </Popup>
+    <form onSubmit={handleSubmit} style={{ marginTop: '20px' }}>
+      <Button type="submit" text="Pay" style={{ marginTop: '20px' }} disabled={!fullName || !referenceNumber} />
+    </form>
+  </div>
+</div>
+   </Popup>
 
     </Grid>
   );

@@ -61,7 +61,7 @@ export const NavConfig = [
         },
         {
           title: 'Supplier',
-          path: 'supplier',
+          path: 'suppliers',
           icon: getIcon('mdi:report-areaspline-variant'),
         },
         {

@@ -8,7 +8,7 @@ export const OrderAdmin = () => (
   <>
     <Helmet>
       <title>
-        Overview | Procurement
+        Etrpoforma | order
       </title>
     </Helmet>
     <Box

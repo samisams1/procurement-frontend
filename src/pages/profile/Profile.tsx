@@ -10,7 +10,7 @@ export const Profile = () => (
   <>
     <Helmet>
       <title>
-        Profile | itrustu2
+        Et-proforma | Profile
       </title>
     </Helmet>
     <Box
