@@ -19,7 +19,21 @@ type DashboardSidebarProps = {
   isOpenSidebar: boolean;
   onCloseSidebar: () => void;
 };
+const LogoContainer = styled(Box)(({ theme }) => ({
+  px: 2.5,
+  py: 3,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+}));
 
+const LogoImage = styled('img')({
+  marginBottom: '8px',
+});
+const LogoTitle = styled(Typography)(({ theme }) => ({
+  color: '#1c9fef',
+  fontWeight: 'bold',
+}));
 const Sidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCloseSidebar }) => {
   const { pathname } = useLocation();
   const isDesktop = useResponsive('up', 'lg');
@@ -32,14 +46,11 @@ const Sidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCloseSideba
   }, [pathname]);
 
   const renderContent = (
-    <Box sx={{ px: 2.5, py: 3, display: 'flex', alignItems: 'center' }}>
-      <img src={require('../../../assets/pro.png')} alt="logo" style={{ marginRight: '8px' }} />
-      <Typography variant="h6" sx={{ color: '#1c9fef' }}>
-        ET Proforma
-      </Typography>
-    </Box>
+    <LogoContainer>
+      <LogoImage src={require('../../../assets/pro.png')} alt="logo" />
+      <LogoTitle variant="h6">ET Proforma</LogoTitle>
+    </LogoContainer>
   );
-
   return (
     <RootStyle>
       {isOpenSidebar && (

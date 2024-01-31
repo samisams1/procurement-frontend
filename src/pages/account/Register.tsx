@@ -27,7 +27,7 @@ const Register = () => (
 
 export default Register;*/
 import React, { useState } from 'react';
-import { Typography, Button, Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import { UserForm } from '../../components/pageComponents/user/UserForm';
 
 enum Role {
@@ -65,9 +65,6 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({ onSelectRole }) => {
   return (
     <Grid container spacing={2} justifyContent="center">
       <Grid item xs={12}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Choose your Account
-        </Typography>
       </Grid>
       <Grid item xs={6}>
         <Button

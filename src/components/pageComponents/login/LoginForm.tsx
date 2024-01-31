@@ -90,10 +90,10 @@ const Login: React.FC = () => {
           Don't have an account? <span onClick={handleClick} style={{ color: '#4F46E5', cursor: 'pointer' }}>Please Register now</span>
         </Typography>
       </Box>
-      <Popup openPopup={openRegisterPopup} setOpenPopup={setOpenRegisterPopup}>
+      <Popup title="Choose your Account" openPopup={openRegisterPopup} setOpenPopup={setOpenRegisterPopup}>
         <Register />
       </Popup>
-      <Popup openPopup={forgotPassword} setOpenPopup={setForgotPassword}>
+      <Popup title="Forgot Password" openPopup={forgotPassword} setOpenPopup={setForgotPassword}>
         <PasswordResetForm />
       </Popup>
     </Container>
