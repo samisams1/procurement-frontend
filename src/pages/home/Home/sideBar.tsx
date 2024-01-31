@@ -3,6 +3,9 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Box, Drawer, Typography, MenuList, MenuItem } from '@mui/material';
 import useResponsive from '../../../hooks/useResponsive';
+import HomeIcon from '@mui/icons-material/Home';
+import InfoIcon from '@mui/icons-material/Info';
+import { ContactMail, Phone } from '@mui/icons-material';
 
 const DRAWER_WIDTH = 280;
 
@@ -12,8 +15,6 @@ const RootStyle = styled('div')(({ theme }) => ({
     width: DRAWER_WIDTH,
   },
 }));
-
-
 
 type DashboardSidebarProps = {
   isOpenSidebar: boolean;
@@ -51,6 +52,7 @@ const Sidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCloseSideba
       <LogoTitle variant="h6">ET Proforma</LogoTitle>
     </LogoContainer>
   );
+
   return (
     <RootStyle>
       {isOpenSidebar && (
@@ -63,13 +65,49 @@ const Sidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCloseSideba
         >
           {renderContent}
           <MenuList>
-            <MenuItem component={RouterLink} to="/" selected={pathname === '/'}>
+            <MenuItem
+              component={RouterLink}
+              to="/"
+              selected={pathname === '/'}
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'blue',
+                  color: 'white',
+                },
+                fontWeight: 'bold',
+              }}
+            >
+              <HomeIcon sx={{ marginRight: 1 }} />
               Home
             </MenuItem>
-            <MenuItem component={RouterLink} to="/about" selected={pathname === '/about'}>
+            <MenuItem
+              component={RouterLink}
+              to="/about"
+              selected={pathname === '/about'}
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'blue',
+                  color: 'white',
+                },
+                fontWeight: 'bold',
+              }}
+            >
+              <InfoIcon sx={{ marginRight: 1 }} />
               About
             </MenuItem>
-            <MenuItem component={RouterLink} to="/contact" selected={pathname === '/contact'}>
+            <MenuItem
+              component={RouterLink}
+              to="/contact"
+              selected={pathname === '/contact'}
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'blue',
+                  color: 'white',
+                },
+                fontWeight: 'bold',
+              }}
+            >
+              <ContactMail sx={{ marginRight: 1 }} />
               Contact
             </MenuItem>
           </MenuList>
@@ -91,13 +129,49 @@ const Sidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCloseSideba
         >
           {renderContent}
           <MenuList>
-            <MenuItem component={RouterLink} to="/" selected={pathname === '/'}>
+            <MenuItem
+              component={RouterLink}
+              to="/"
+              selected={pathname === '/'}
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'blue',
+                  color: 'white',
+                },
+                fontWeight: 'bold',
+              }}
+            >
+              <HomeIcon sx={{ marginRight: 1 }} />
               Home
             </MenuItem>
-            <MenuItem component={RouterLink} to="/about" selected={pathname === '/about'}>
+            <MenuItem
+              component={RouterLink}
+              to="/about"
+              selected={pathname === '/about'}
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'blue',
+                  color: 'white',
+                },
+                fontWeight: 'bold',
+              }}
+            >
+              <InfoIcon sx={{ marginRight: 1 }} />
               About
             </MenuItem>
-            <MenuItem component={RouterLink} to="/contact" selected={pathname === '/contact'}>
+            <MenuItem
+              component={RouterLink}
+              to="/contact"
+              selected={pathname === '/contact'}
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'blue',
+                  color: 'white',
+                },
+                fontWeight: 'bold',
+              }}
+            >
+              <Phone sx={{ marginRight: 1 }} />
               Contact
             </MenuItem>
           </MenuList>

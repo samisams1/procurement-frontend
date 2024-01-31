@@ -1,10 +1,14 @@
 import React from 'react'
-export default function ContactPage() {
+import Navbar from '../Home/navBar'
+import Footer from '../../../layoutes/footer'
 
+const index = () => {
   return (
     <div>
-      samisContact
+      <Navbar/>
+      <Footer/>
     </div>
   )
 }
 
+export default index

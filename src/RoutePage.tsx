@@ -9,7 +9,6 @@ import ProtectedRoute from './auth/ProtectedRoute';
 import { Category } from './pages/category/Category';
 import Setting from './pages/setting/Setting';
 //import { Profile } from './pages/profile/Profile';
-import Login from './pages/login/Login';
 import NotFoundPage from './pages/NotFoundPage';
 import DashboardLayout from './layoutes/DashboardLayout';
 import { User } from './pages/User';
@@ -19,7 +18,6 @@ import Invoice from './pages/invoice';
 import PurchaseRequestDetail from './pages/purchase/purchaseRequestDetail';
 import QuotationDetail from './pages/Quotation/QuotationDetail';
 import { Profile } from './pages/profile/Profile';
-import Register from './pages/account/Register';
 import PurchaseRequest from './pages/purchase/purchaseRequest';
 import Order from './pages/order';
 import NotificationDetail from './pages/notification';
@@ -48,6 +46,7 @@ import Supplier from './pages/supplier';
 import PrivacyPolicePage from './pages/home/PrivacyPolicyPage';
 import LandingPage from './pages/home/home';
 import SuppliersProfile from './pages/supplier/suppliersProfile';
+import Contact from './pages/home/ContactPage';
 export default function RoutePage() {
 
     return useRoutes([
@@ -108,8 +107,6 @@ export default function RoutePage() {
             element: <LogoOnlyLayout />,
             children: [
               { path: '/', element: <Navigate to="/dashboard" /> },
-              { path: 'login', element: <Login/> },
-              { path:  'register', element:<Register />},
               { path:  'roleselection', element:<RoleSelection />},
               { path:  '/forgot-password', element:<ForgotPassword />},
               { path:  '/verify', element:<VerifyUser />},
@@ -119,6 +116,7 @@ export default function RoutePage() {
               { path:  '/home', element:<LandingPage />},
               { path:  '/privacyPolicePage', element:<PrivacyPolicePage />},
               { path:  '/reset-password', element:<ResetPasswordForm />},
+              { path:  '/contact', element:<Contact />},
 
             ],
           },
