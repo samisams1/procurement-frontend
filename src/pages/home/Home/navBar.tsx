@@ -102,7 +102,7 @@ export default function Navbar({ onOpenSidebar }: DashboardNavbarProps) {
           <Button
             color="inherit"
             component={Link}
-            to="/"
+            to="/home"
             sx={{
               '&:hover': {
                 color: '#ffffff',
