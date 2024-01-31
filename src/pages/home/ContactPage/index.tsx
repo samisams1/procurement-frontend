@@ -6,7 +6,8 @@ const ContactContainer = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  marginTop: 40,
+  marginTop: 80,
+  width:'100%'
 });
 
 const PageHeader = styled('h1')({
