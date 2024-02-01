@@ -1,12 +1,11 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, Typography, IconButton, styled } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Typography, IconButton, styled, useMediaQuery, useTheme } from '@mui/material';
 import { Close } from '@mui/icons-material';
 
 const StyledDialog = styled(Dialog)`
   .MuiDialog-paper {
-    width: 80%;
+    width: 100%;
     max-width: 600px;
-    padding: 20px;
     border-radius: 10px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -21,6 +20,18 @@ const StyledDialog = styled(Dialog)`
       transform: translateX(0);
     }
   }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    .MuiDialog-paper {
+      width: 100%;
+      max-width: none;
+      border-radius: 0;
+      height: 100%;
+      margin: 0;
+      animation: none;
+      padding:0;
+    }
+  }
 `;
 
 const StyledDialogTitle = styled(DialogTitle)`
@@ -32,28 +43,30 @@ const StyledDialogTitle = styled(DialogTitle)`
 const StyledTitle = styled(Typography)`
   flex-grow: 1;
   font-weight: bold !important;
-  color: #1976d2 !important;
+  color: #00b0ad !important;
 `;
 
 const StyledCloseButton = styled(IconButton)`
   margin-left: auto;
-  color: #888;
+  color: red; /* Changed color to red */
   transition: color 0.3s;
 
   &:hover {
-    color: #888;
+    color: red; /* Changed hover color to red */
   }
 `;
 
 export default function Popup(props: any) {
   const { title, children, openPopup, setOpenPopup, image } = props;
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleClose = () => {
     setOpenPopup(false);
   };
 
   return (
-    <StyledDialog open={openPopup} maxWidth="md">
+    <StyledDialog open={openPopup} maxWidth={isMobile ? 'xl' : 'md'}>
       <StyledDialogTitle>
         {image && (
           <img src={require(`../assets/${image}`).default} alt="Popup" style={{ marginRight: '10px', height: '30px' }} />

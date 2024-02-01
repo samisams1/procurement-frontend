@@ -1,9 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { LOGIN_MUTATION } from '../../../graphql/Login';
 import { UserContext } from '../../../auth/UserContext';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Box, Container, CircularProgress, Typography } from '@mui/material';
+import { TextField, Button, CircularProgress, Typography, Grid } from '@mui/material';
 import Popup from '../../Popup';
 import Register from '../../../pages/account/Register';
 import PasswordResetForm from '../../../pages/account/ForgotPassword';
@@ -18,10 +18,24 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [loginMutation, { error }] = useMutation(LOGIN_MUTATION);
-  const [openRegisterPopup,setOpenRegisterPopup] = useState(false);
-  const [forgotPassword,setForgotPassword] = useState(false);
+  const [openRegisterPopup, setOpenRegisterPopup] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState(false);
   const { setCurrentUser } = useContext(UserContext);
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize(); // Check initial window width
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handleLogin = async () => {
     setLoading(true);
@@ -43,24 +57,24 @@ const Login: React.FC = () => {
   };
 
   const handleClick = () => {
-   // setOpenPopup(false); // Close the login popup
     setOpenRegisterPopup(true); // Open the register popup
   };
   const handleClickForgotPassword = () => {
-   // setOpenPopup(false); // Close the login popup
     setOpenRegisterPopup(false); // Open the register popup
     setForgotPassword(true);
   };
+
   return (
-    <Container>
-      <Box>
+    <div className={isMobile ? 'full-screen' : ''}>
+   <Grid container spacing={3}>
+      <Grid item xs={12}>
         {error && <p>Error: {error.message}</p>}
         <TextField
           variant="outlined"
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          fullWidth
+          style={{ width: '100%' }} // Set width to 100% to fill the screen
           margin="normal"
         />
         <TextField
@@ -69,7 +83,7 @@ const Login: React.FC = () => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          fullWidth
+          style={{ width: '100%' }} // Set width to 100% to fill the screen
           margin="normal"
         />
         <Button
@@ -78,25 +92,27 @@ const Login: React.FC = () => {
           fullWidth
           onClick={handleLogin}
           disabled={loading}
-          style={{ marginTop: '1rem', borderRadius: '20px', backgroundColor: '#4F46E5', color: '#fff' }}
+          style={{ marginTop: '1rem', borderRadius: '20px', backgroundColor: '#00b0ad', color: '#fff' }}
         >
           {loading ? <CircularProgress size={20} color="primary" /> : 'Login'}
         </Button>
         <Typography variant="body2" style={{ marginTop: '1rem', textAlign: 'center' }}>
-         <span onClick={handleClickForgotPassword} style={{ color: '#4F46E5', cursor: 'pointer' }}>Forgot your password?</span>
+          <span onClick={handleClickForgotPassword} style={{ color: '#00b0ad', cursor: 'pointer' }}>Forgot your password?</span>
         </Typography>
 
         <Typography variant="body2" style={{ marginTop: '1rem', textAlign: 'center' }}>
-          Don't have an account? <span onClick={handleClick} style={{ color: '#4F46E5', cursor: 'pointer' }}>Please Register now</span>
+          Don't have an account? <span onClick={handleClick} style={{ color: '#00b0ad', cursor: 'pointer' }}>Please Register now</span>
         </Typography>
-      </Box>
+   
       <Popup title="Choose your Account" openPopup={openRegisterPopup} setOpenPopup={setOpenRegisterPopup}>
         <Register />
       </Popup>
       <Popup title="Forgot Password" openPopup={forgotPassword} setOpenPopup={setForgotPassword}>
         <PasswordResetForm />
       </Popup>
-    </Container>
+      </Grid>
+      </Grid>
+    </div>
   );
 };
 
