@@ -3,7 +3,7 @@ import { styled } from '@mui/system';
 import { Typography, Button, Card, Grid } from '@mui/material';
 import { ShoppingCart } from '@mui/icons-material';
 
-const OrderRequestCard = styled(Card)(({ theme }) => ({
+const PurchaseRequestCard = styled(Card)(({ theme }) => ({
   padding: theme.spacing(2),
   border: `2px solid ${theme.palette.primary.main}`,
   width: '100%',
@@ -33,19 +33,19 @@ const RequestButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const NewOrderRequest = () => {
-  const handleRequestClick = () => {
+const PurchaseRequest = () => {
+ /* const handleRequestClick = () => {
     // Handle click event
     console.log('Order Request clicked');
-  };
+  };*/
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <OrderRequestCard>
+        <PurchaseRequestCard>
           <Grid container alignItems="center">
             <Grid item xs={12} sm={6}>
-              <RequestTitle variant="h6">New Order Request</RequestTitle>
+              <RequestTitle variant="h6">Post Your  Request</RequestTitle>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Typography variant="body1">
@@ -58,17 +58,17 @@ const NewOrderRequest = () => {
             <Grid item xs={12}>
               <RequestButton
                 variant="contained"
-                onClick={handleRequestClick}
+               // onClick={handleRequestClick}
               >
                 <ShoppingCart />
                 Request Order
               </RequestButton>
             </Grid>
           </Grid>
-        </OrderRequestCard>
+        </PurchaseRequestCard>
       </Grid>
     </Grid>
   );
 };
 
-export default NewOrderRequest;
+export default PurchaseRequest;

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { styled, Button, Typography, Container, Card } from '@mui/material';
+import { styled, Typography, Container } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Navbar from './Home/navBar';
-import { ShoppingCart } from '@mui/icons-material';
+//import { ShoppingCart } from '@mui/icons-material';
 import '../../assets/ronald.jpeg'
 import TellUsWhatYouWant from './Home/tellUsWhatYouWant';
 import Testimonials from './Home/testimonials';
@@ -40,7 +40,7 @@ const CategoryIcon = styled('div')(({ theme }) => ({
   width: '64px',
   height: '64px',
   borderRadius: '50%',
-  backgroundColor: theme.palette.primary.main,
+  backgroundColor: '#00b0ad',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -52,13 +52,13 @@ const CategoryTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
   color: '#333333',
 }));
-const SubmitButton = styled(Button)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
+/*const SubmitButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#00b0ad',
   color: theme.palette.primary.contrastText,
   transition: 'background-color 0.3s ease',
   '&:hover': {
-    backgroundColor: theme.palette.secondary.main,
-    boxShadow: `0px 0px 10px 3px ${theme.palette.secondary.main}`,
+    backgroundColor: '#33e7e4',
+    boxShadow: `0px 0px 10px 3px #33e7e4`,
     transform: 'scale(1.1)',
   },
   height: '40px',
@@ -69,7 +69,7 @@ const SubmitButton = styled(Button)(({ theme }) => ({
     alignItems: 'center',
     gap: theme.spacing(1),
   },
-}));
+}));*/
 const TitleContainer = styled(Container)(({ theme }) => ({
   marginTop: '1rem',
 }));
@@ -78,7 +78,7 @@ const LandingPageTitle = styled(Typography)(({ theme }) => ({
   fontSize: '3rem',
   fontWeight: 'bold',
   marginBottom: '1rem',
-  color: '#1c9fef',
+  color: '#000000',
   [theme.breakpoints.down('sm')]: {
     fontSize: '2rem',
   },
@@ -90,25 +90,16 @@ const LandingPageTitle = styled(Typography)(({ theme }) => ({
 const LandingPageDescription = styled(Typography)(({ theme }) => ({
   fontSize: '1.5rem',
   marginBottom: '2rem',
-  color: '#1c9fef',
+  color: '#000000',
   textAlign: 'center',
   [theme.breakpoints.down('sm')]: {
     fontSize: '1rem',
   },
 }));
-
-const PurchaseRequestCard = styled(Card)(({ theme }) => ({
-  padding: theme.spacing(2),
-  border: `2px solid ${theme.palette.primary.main}`,
-}));
-const RequestTitle = styled(Typography)(({ theme }) => ({
-  marginRight: theme.spacing(2),
-  fontWeight: 'bold',
-}));
 //how it works 
 const SectionContainer = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(4),
-  backgroundColor: theme.palette.primary.main,
+  backgroundColor: "#00b0ad",
   color: theme.palette.primary.contrastText,
   
 }));
@@ -116,6 +107,7 @@ const SectionContainer = styled(Grid)(({ theme }) => ({
 const SectionTitle = styled(Typography)(({ theme }) => ({
 marginBottom: theme.spacing(2),
 fontWeight: 'bold',
+color:'black'
 }));
 
 const StepContainer = styled(Grid)(({ theme }) => ({
@@ -126,7 +118,8 @@ const StepIcon = styled('div')(({ theme }) => ({
 width: '64px',
 height: '64px',
 borderRadius: '50%',
-backgroundColor: theme.palette.secondary.main,
+color:'#00b0ad',
+backgroundColor: '#000000',
 display: 'flex',
 justifyContent: 'center',
 alignItems: 'center',
@@ -135,16 +128,18 @@ marginBottom: theme.spacing(2),
 
 const StepTitle = styled(Typography)(({ theme }) => ({
 fontWeight: 'bold',
+color: '#000000',
+
 }));
 
 const StepDescription = styled(Typography)(({ theme }) => ({
-color: theme.palette.primary.contrastText,
+color: '#666666',
 }));
 //service 
 const ServiceTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
   marginBottom: theme.spacing(1),
-  color: theme.palette.secondary.main,
+  color: '##00b0ad',
 }));
 
 const ServiceList = styled("ul")(({ theme }) => ({
@@ -165,7 +160,7 @@ const ServiceItem = styled("li")(({ theme }) => ({
     width: "8px",
     height: "8px",
     borderRadius: "50%",
-    background: theme.palette.secondary.main,
+    background: '#00b0ad',
   },
 }));
 //service
@@ -173,13 +168,16 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
   backgroundImage: 'url(../../assets/ronald.jpeg)',
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-  backgroundColor:'#afceeb',
+  backgroundColor:'#00b0ad',
 }));
+///Request
+
+
 const Home: React.FC = () => {
   const [openPopup,setOpenPopup] = useState(false);
-  const handleRequestClick = () => {
+ /* const handleRequestClick = () => {
     setOpenPopup(true);
-  };
+  };*/
   const categories = [
     { title: 'Electronics', icon: '💻' },
     { title: 'Fashion', icon: '👗' },
@@ -217,30 +215,7 @@ const Home: React.FC = () => {
   </ServiceList>
          </StyledGrid>
           <Grid item xs={12} md={12} sm={12}>
-          <PurchaseRequestCard>
-          <Grid container alignItems="center">
-            <Grid item xs={12} sm={6}>
-              <RequestTitle variant="h6">New Purchase Request</RequestTitle>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body1">
-                "New Purchase Request" is a formal process used to acquire goods or services. 
-                It involves a detailed request, budget consideration, and evaluation. It ensures
-                 accountability, transparency, and efficient resource allocation, enabling organizations
-                  to make informed decisions and initiate the procurement process.
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <SubmitButton
-                variant="contained"
-                onClick={handleRequestClick}
-              >
-                <ShoppingCart />
-                Purchase Request
-              </SubmitButton>
-            </Grid>
-          </Grid>
-        </PurchaseRequestCard>
+        
           <ProductCategoriesContainer>
       <Title variant="h5">Product Categories</Title>
       {categories.map((category, index) => (
@@ -250,30 +225,6 @@ const Home: React.FC = () => {
         </CategoryContainer>
       ))}
       </ProductCategoriesContainer>
-          <PurchaseRequestCard>
-          <Grid container alignItems="center">
-            <Grid item xs={12} sm={6}>
-              <RequestTitle variant="h6">New Purchase Request</RequestTitle>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="body1">
-                "New Purchase Request" is a formal process used to acquire goods or services. 
-                It involves a detailed request, budget consideration, and evaluation. It ensures
-                 accountability, transparency, and efficient resource allocation, enabling organizations
-                  to make informed decisions and initiate the procurement process.
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <SubmitButton
-                variant="contained"
-                onClick={handleRequestClick}
-              >
-                <ShoppingCart />
-                My Order
-              </SubmitButton>
-            </Grid>
-          </Grid>
-        </PurchaseRequestCard>
         
         <SectionContainer container alignItems="center" justifyContent="center">
         <Grid item xs={12} md={12} lg={12}>
@@ -380,7 +331,7 @@ const Home: React.FC = () => {
       </ContactContainer>
       <Popup title="Login" openPopup={openPopup} setOpenPopup={setOpenPopup}>
           <Login />
-        </Popup>setOpenPopup
+        </Popup>
     </div>
   );
 };

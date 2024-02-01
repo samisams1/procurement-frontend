@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Grid, Box, Container, Typography } from '@mui/material';
+import { Alert, Grid, Typography } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Form, useForm } from '../../useForm';
 import Button from '../../Button';
@@ -90,16 +90,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      style={{
-        height: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Box p={4} boxShadow={3} bgcolor="white" borderRadius={10}>
+     <div> 
         <Typography variant="h6" style={{ color: '#4F46E5' }}>
         {selectedRole} REGISTRATION
         </Typography>
@@ -200,7 +191,6 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
 
           </Grid>  
         </Grid>
-      </Box>
-    </Container>
+      </div>
   );
 };

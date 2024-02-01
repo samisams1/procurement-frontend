@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/system';
 import { Typography, Button } from '@mui/material';
+import Popup from '../../../components/Popup';
+import Login from '../../login/Login';
 
 const TellUsWhatYouWantContainer = styled('div')({
   backgroundColor: '#ffffff',
@@ -31,14 +33,17 @@ const ButtonContainer = styled('div')({
 });
 
 const StyledButton = styled(Button)({
-  backgroundColor: '#ff4f00',
+  backgroundColor: '#892e05',
   color: '#ffffff',
   '&:hover': {
-    backgroundColor: '#ff6f1a',
+    backgroundColor: '#ff4f00',
   },
 });
-
 const TellUsWhatYouWant = () => {
+  const [openPopup,setOpenPopup] = useState(false);
+  const handleclick = ()=>{
+    setOpenPopup(true);
+  }
   return (
     <TellUsWhatYouWantContainer>
       <Title variant="h5">Tell Us What You Want</Title>
@@ -46,8 +51,11 @@ const TellUsWhatYouWant = () => {
         Let us know the items or services you need, and we'll take care of the rest.
       </Description>
       <ButtonContainer>
-        <StyledButton variant="contained">Request Now</StyledButton>
+        <StyledButton variant="contained" onClick={handleclick}>Request Now</StyledButton>
       </ButtonContainer>
+      <Popup  title = 'Login' openPopup={openPopup} setOpenPopup={setOpenPopup}>
+        <Login/>
+      </Popup>
     </TellUsWhatYouWantContainer>
   );
 };

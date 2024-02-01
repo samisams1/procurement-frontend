@@ -6,7 +6,6 @@ import Popup from '../../components/Popup';
 import Login from '../login/Login';
 import Testimonials from './Home/testimonials';
 import Services from './Home/services';
-import NewPurchaseRequest from './Home/NewPurchaseRequest';
 import HowItWorksSection from './Home/HowItWorksSection';
 import TellUsWhatYouWant from './Home/tellUsWhatYouWant';
 import ProductCategories from './Home/ProductCategories';
@@ -95,7 +94,6 @@ const LandingPage: React.FC = () => {
         <Grid item xs={12} md={6}>
             <SectionTitle>New Purchase Request</SectionTitle>
             {/* Add your content for new purchase request */}
-            <NewPurchaseRequest/>
           </Grid>
         <Grid item xs={12} md={6}>
             <SectionTitle>Our Services</SectionTitle>

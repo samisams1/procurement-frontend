@@ -11,7 +11,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    // Simulate an API call to fetch currentUser
     setTimeout(() => {
       setIsLoading(false);
     }, 2000);

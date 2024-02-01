@@ -35,10 +35,10 @@ const App: React.FC = () => {
   });
 
 //const httpLink = new HttpLink({ uri: 'https://54.172.139.217/graphql' });
-const httpLink = new HttpLink({ uri: 'http://localhost:5000/graphql' });
+const httpLink = new HttpLink({ uri: 'http://localhost:9000/graphql' });
   const wsLink = new WebSocketLink({
    // uri: 'ws://54.172.139.217:5000/graphql',
-   uri: 'wss://http://localhost:5000/graphql',
+   uri: 'wss://http://localhost:9000/graphql',
     options: {
       reconnect: true,
     },
@@ -61,7 +61,7 @@ const httpLink = new HttpLink({ uri: 'http://localhost:5000/graphql' });
     cache: new InMemoryCache(),
   });
   useEffect(() => {
-    initWebSocket('wss://localhost:5000/graphql');
+    initWebSocket('wss://localhost:9000/graphql');
   }, []);
 
   return (

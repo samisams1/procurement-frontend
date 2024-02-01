@@ -5,9 +5,8 @@ import { styled } from '@mui/material/styles';
 const FooterContainer = styled(Grid)({
   fontSize: '0.8rem',
   color: '#fff',
-  backgroundColor: '#1c9fef',
+  backgroundColor: '#00b0ad',
   textAlign: 'center',
-  width: '100%',
   bottom: 0,
   left: 0,
   right: 0,
@@ -27,7 +26,6 @@ const FooterLink = styled(Typography)({
 const Powdered = styled(Typography)({
   backgroundColor: '#000',
   color: '#fff',
-  padding: '2rem',
   fontSize: '0.8rem',
 });
 
