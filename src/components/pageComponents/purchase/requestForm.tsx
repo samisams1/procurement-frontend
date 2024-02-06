@@ -528,7 +528,7 @@ const handleAgentChange = (event: SelectChangeEvent) => {
 
 <Table>
   <TableHead>
-    <TableRow sx={{ backgroundColor: '#1c9fef' }}>
+    <TableRow sx={{ backgroundColor: '#00b0ad' }}>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Image</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Name</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Code</TableCell>
@@ -569,8 +569,8 @@ const handleAgentChange = (event: SelectChangeEvent) => {
                   style={{
                     textTransform: 'none',
                     fontSize: '14px',
-                    color: '#1c9fef',
-                    borderColor: '#1c9fef',
+                    color: '#00b0ad',
+                    borderColor: '##00b0ad',
                   }}
                 >
                   Browse
@@ -739,8 +739,8 @@ placeholder="Item Name"
             style={{
               textTransform: 'none',
               fontSize: '14px',
-              color: '#1c9fef',
-              borderColor: '#1c9fef',
+              color: '#00b0ad',
+              borderColor: '##00b0ad',
             }}
           >
             Browse

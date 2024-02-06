@@ -7,7 +7,7 @@ const Setting = () => (
   <>
     <Helmet>
       <title>
-        Settings | itrustu2
+        Et-Proforma | Settings
       </title>
     </Helmet>
     <Box

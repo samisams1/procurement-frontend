@@ -1,12 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
-import { Alert, CardActions, CardContent, CardHeader, Divider, Grid, Stack } from '@mui/material';
+import { Alert, CardActions, CardContent, Divider, Grid, Stack } from '@mui/material';
 import { USER_QUERY } from '../../../../graphql/Users';
 import { Form, useForm } from '../../../useForm';
 import Controls from '../../../Controls';
 import Button from '../../../Button';
 import Spinner from '../../../Spinner';
 import { UserContext } from '../../../../auth/UserContext';
+import PageHeader from '../../../PageHeader';
 
 export interface ChangePass {
   currentPassword?: string;
@@ -92,7 +93,10 @@ const ChangeNewPassword = () => {
     <Form onSubmit={handleSubmit}>
       <Grid container>
         <Grid item xs={12}>
-          <CardHeader subheader="Update password" title="Password" />
+          <PageHeader 
+            title="Update password"
+            subTitle="Update password"
+          />
           <Divider />
           <CardContent>
             <Stack spacing={3} sx={{ maxWidth: 400 }}>
@@ -120,12 +124,20 @@ const ChangeNewPassword = () => {
             </Stack>
           </CardContent>
           <Divider />
-          <CardActions sx={{ justifyContent: 'flex-end' }}>
-            <Grid>
-              <Button type="submit" text="Submit" />
-              <Button text="Reset" onClick={resetForm} />
-            </Grid>
-          </CardActions>
+<CardActions sx={{ justifyContent: 'flex-end', pt: 2 }}>
+  <Grid container spacing={2} justifyContent="start">
+    <Grid item>
+      <Button type="submit" text="Submit" />
+    </Grid>
+    <Grid item>
+      <Button
+        text="Reset"
+        onClick={resetForm}
+        sx={{ backgroundColor: 'red'}}
+      />
+    </Grid>
+  </Grid>
+</CardActions>
         </Grid>
       </Grid>
       {successMessage && (

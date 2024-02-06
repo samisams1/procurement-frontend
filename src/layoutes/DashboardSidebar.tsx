@@ -22,7 +22,7 @@ const AccountStyle = styled('div')(({ theme }) => ({
   alignItems: 'center',
   padding: theme.spacing(2, 2.5),
   borderRadius: Number(theme.shape.borderRadius) * 1.5,
-  backgroundColor: '#1c9fef',
+  backgroundColor: theme.palette.primary.main,
 }));
 
 type DashboardSidebarProps = {

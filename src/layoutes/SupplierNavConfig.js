@@ -1,7 +1,7 @@
 import React from 'react';
 import Iconify from "../components/Iconify";
 
-const getIcon = (name) => <Iconify icon={name} width={22} height={22} color="#1c9fef" />;
+const getIcon = (name) => <Iconify icon={name} width={22} height={22} color="#00b0ad" />;
 export const SupplierNavConfig = [
     {
       title: 'Dashboard',

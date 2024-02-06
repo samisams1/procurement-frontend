@@ -51,6 +51,7 @@ const ProcurementDashboard = () => {
         <SectionTitle variant="outlined" square>
          <PageHeader
          title="Dashboard"
+         subTitle='dashboard'
         icon={<Dashboard/>}  
          />
         </SectionTitle>
