@@ -31,6 +31,7 @@ export const UserEditForm = (props:any) => {
     username: props.username,
     password:props.password,
     role:props.role,
+    companyName:'',
   };
   const validate = (fieldValues: userInterface = values): boolean => {
     let temp:userInterface = { ...errors };
@@ -39,6 +40,7 @@ export const UserEditForm = (props:any) => {
     if ('role' in fieldValues) temp.role = fieldValues.role ? '' : 'This field is required.';
     if ('email' in fieldValues) temp.email = fieldValues.email ? '' : 'This field is required.';
     if ('username' in fieldValues) temp.username = fieldValues.username ? '' : 'This field is required.';
+    if ('companyName' in fieldValues) temp.companyName = fieldValues.companyName ? '' : 'This field is required.';
 
     setErrors({
       ...temp
@@ -83,14 +85,16 @@ console.log(values)
                 onChange={handleInputChange}
                 error={errors.firstName}
             />
-             <Controls.Input
-                name="lastName"
-                label="Last Name"
-                value={values.lastName }
-                onChange={handleInputChange}
-                error={errors.lastName}
-            />
-       <Controls.Select
+ {props.role === "SUPPLIER" && (
+  <Controls.Input
+    name="lastName"
+    label="Last Name"
+    value={values.lastName}
+    onChange={handleInputChange}
+    error={errors.lastName}
+  />
+  )}
+    <Controls.Select
   name="role"
   label="Role"
   value={values.role}

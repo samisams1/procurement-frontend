@@ -6,6 +6,7 @@ export interface userInterface {
     email?: string;
     role?: string;
     password:string;
+    companyName:string;
   }
   export interface categoryInterface {
     id?: number;

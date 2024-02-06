@@ -17,6 +17,9 @@ import LanguageSelector from '../../../layoutes/LanguageSelector';
 import { Link } from 'react-router-dom';
 import logoImage from '../../../assets/pro.png'; // Path to your logo image
 import {  HomeTwoTone, LoginTwoTone, Menu as MenuIcon, PeopleTwoTone, PhoneTwoTone } from '@mui/icons-material';
+import Popup from '../../../components/Popup';
+import Login from '../../../components/pageComponents/login/LoginForm';
+import Register from '../../account/Register';
 
 
 const RootStyle = styled(AppBar)(({ theme }) => ({
@@ -96,6 +99,10 @@ export default function Navbar({ onOpenSidebar }: DashboardNavbarProps) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isMenuVisible, setMenuVisible] = useState(true);
 
+  const [openLoginPopup,setLoginOpenPopup] =useState(false);
+  const [openRegisterPopup,setRegisterOpenPopup] =useState(false);
+
+
   useEffect(() => {
     const handleResize = () => {
       setMenuVisible(window.innerWidth > 960);
@@ -116,7 +123,12 @@ export default function Navbar({ onOpenSidebar }: DashboardNavbarProps) {
   const handleSidebarClose = () => {
     setSidebarOpen(false);
   };
-
+  const handleLoginOpenPopUp =()=>{
+    setLoginOpenPopup(true);
+  }
+  const handleRegisterOpenPopUp =()=>{
+    setRegisterOpenPopup(true);
+  }
   return (
     <RootStyle>
       <ToolbarStyle>
@@ -174,6 +186,32 @@ export default function Navbar({ onOpenSidebar }: DashboardNavbarProps) {
             >
               Contact
             </Button>
+            <Button
+              color="inherit"
+              onClick={handleLoginOpenPopUp}
+              sx={{
+                borderRadius: '999px',
+                '&:hover': {
+                  color: '#ffffff',
+                },
+                fontWeight: 'bold',
+                border: '5px double #ffffff',
+              }}
+            >
+              Login
+            </Button>
+            <Button
+              onClick={handleRegisterOpenPopUp}
+              color="inherit"
+              sx={{
+                '&:hover': {
+                  color: '#ffffff',
+                },
+                fontWeight: 'bold',
+              }}
+            >
+              Register
+            </Button>
             <LanguageSelector />
           </ActionWrapper>
         ) : (
@@ -216,6 +254,14 @@ export default function Navbar({ onOpenSidebar }: DashboardNavbarProps) {
     </ListItem>
   </List>
 </Sidebar>
+<Popup title="Login" openPopup={openLoginPopup} setOpenPopup={setLoginOpenPopup}>
+          <Login />
+</Popup>
+
+<Popup title="Choose Account" openPopup={openRegisterPopup} setOpenPopup={setRegisterOpenPopup}>
+          <Register />
+</Popup>
+
     </RootStyle>
   );
 }

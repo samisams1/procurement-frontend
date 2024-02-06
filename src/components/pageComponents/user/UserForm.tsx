@@ -43,6 +43,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     username: '',
     password: '',
     role: selectedRole,
+    companyName: '',
   };
 
   const validate = (fieldValues: userInterface = values): boolean => {
@@ -74,7 +75,6 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
           resetForm();
           setTimeout(() => {
 
-
             setSuccessMessage('');
            // setLoading(false);
             navigate(`/acountCreated/${'samisams@gmail.com'}`);
@@ -97,7 +97,18 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
         <Form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-           
+            {selectedRole === "SUPPLIER" && (
+              <Controls.Input 
+                name="companyName"
+                label="Company Name"
+                value={values.companyName}
+                onChange={handleInputChange}
+                error={errors.companyName}
+                fullWidth // Make input full width
+                style={{ marginBottom: '1rem' }}
+              />
+ )
+}
               <Controls.Input
                 name="firstName"
                 label="First Name"
@@ -150,6 +161,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 fullWidth // Make input full width
                 style={{ marginBottom: '1rem' }}
               />
+
             </Grid>
             <Grid item xs={12}>
               <Button
