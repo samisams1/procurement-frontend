@@ -246,11 +246,17 @@ export default function Navbar({ onOpenSidebar }: DashboardNavbarProps) {
       </StyledListItemIcon>
       <ListItemText primary="Contact us" />
     </ListItem>
-    <ListItem button component={Link} to="/contact">
+    <ListItem onClick={handleLoginOpenPopUp}>
       <StyledListItemIcon>
         <LoginTwoTone />
       </StyledListItemIcon>
-      <ListItemText primary="LOG IN" />
+      <ListItemText primary="Login" />
+    </ListItem>
+    <ListItem onClick={handleRegisterOpenPopUp}>
+      <StyledListItemIcon>
+        <LoginTwoTone />
+      </StyledListItemIcon>
+      <ListItemText primary="Register" />
     </ListItem>
   </List>
 </Sidebar>
