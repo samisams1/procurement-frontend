@@ -425,8 +425,9 @@ const handleAgentChange = (event: SelectChangeEvent) => {
           <Paper elevation={3} style={{ padding: '20px' }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <PageHeader title="Select Your Source" />
+                <Typography>Select Your Source</Typography>
               </Grid>
+              
               <Grid item xs={12} sm={4}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Checkbox
