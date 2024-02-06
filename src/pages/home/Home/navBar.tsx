@@ -16,7 +16,7 @@ import {
 import LanguageSelector from '../../../layoutes/LanguageSelector';
 import { Link } from 'react-router-dom';
 import logoImage from '../../../assets/pro.png'; // Path to your logo image
-import {  HomeTwoTone, LoginTwoTone, Menu as MenuIcon, PeopleTwoTone, PhoneTwoTone } from '@mui/icons-material';
+import {  CreateNewFolderTwoTone, HomeTwoTone, LoginTwoTone, Menu as MenuIcon, PeopleTwoTone, PhoneTwoTone } from '@mui/icons-material';
 import Popup from '../../../components/Popup';
 import Login from '../../../components/pageComponents/login/LoginForm';
 import Register from '../../account/Register';
@@ -51,7 +51,7 @@ const LogoWrapper = styled(Box)(({ theme }) => ({
 
 const LogoText = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
-  color: '#333333',
+  color: '#ffffff',
   fontSize: '1.5rem', // Updated font size
   [theme.breakpoints.up('lg')]: {
     fontSize: '2rem', // Adjust the size for larger screens if needed
@@ -134,7 +134,7 @@ export default function Navbar({ onOpenSidebar }: DashboardNavbarProps) {
       <ToolbarStyle>
         <IconButton
           onClick={handleSidebarOpen}
-          sx={{ mr: 1, color: 'text.primary', display: { lg: 'none' } }}
+          sx={{ mr: 1, color: '#ffffff', display: { lg: 'none' } }}
         >
           <MenuIcon />
         </IconButton>
@@ -254,7 +254,7 @@ export default function Navbar({ onOpenSidebar }: DashboardNavbarProps) {
     </ListItem>
     <ListItem onClick={handleRegisterOpenPopUp}>
       <StyledListItemIcon>
-        <LoginTwoTone />
+        <CreateNewFolderTwoTone />
       </StyledListItemIcon>
       <ListItemText primary="Register" />
     </ListItem>
