@@ -68,23 +68,8 @@ const NewRequisitionComponent: React.FC = () => {
     try {
       if (selectedType !== 'supplier' && selectedType !== 'agent' && selectedType !== 'x-company') {
        // throw new Error('Invalid selected type');
-       console.log(selectedType);
       }
       const validProducts = products.filter((product) => product.productTitle.trim() !== '');
-      /*const input = {
-        userId: Number(userId),
-        status: 'pending',
-        remark: additional.remark,
-        addressDetail: additional.addressDetail,
-        estimatedDelivery: additional.estimatedDelivery,
-        products: validProducts.map((product) => ({
-          title: product.productTitle,
-          quantity: product.quantity,
-        })),
-        suppliers: supplierNewId.map((supplierId) => ({ id: supplierId })),
-        selectedType: selectedType,
-
-      };*/
       const input = {
         userId:  Number(userId),
         status: 'pending',

@@ -5,26 +5,19 @@ query{
   }
 `
 export const GET_QUOTES = gql`
-query GetQuotes {
+query PurchaseRequests {
   purchaseRequests {
     id
-    referenceNumber
+    userId
+    remark
     status
-    createdAt
+    addressDetail
+    estimatedDelivery
     products {
       title
-      partNumber
       quantity
-      partNumber
     }
-    user {
-      username
-    }
-    suppliers {
-      user {
-        username
-      }
-    }
+    
   }
 }
 `;

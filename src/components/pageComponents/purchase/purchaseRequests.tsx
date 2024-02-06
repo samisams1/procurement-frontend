@@ -41,28 +41,16 @@ interface PurchaseRequestBySupplierQueryVars {
 }
 
 const PURCHASE_REQUEST_BY_SUPPLIER_QUERY = gql`
-  query PurchaseRequestBySupplier($id: Float!) {
-    purchaseRequestBySupplier(id: $id) {
+query PurchaseRequestBYSupplierId($userId: Int!) {
+  purchaseRequestBYSupplierId(userId: $userId) {
+    userId
+    status
+    products {
+      title
       id
-      status
-      createdAt
-      user {
-        id
-        username
-      }
-      products {
-        id
-        title
-      }
-      suppliers {
-        id
-        user {
-          id
-          username
-        }
-      }
     }
   }
+}
 `;
 
 const PurchaseRequests: React.FC = () => {

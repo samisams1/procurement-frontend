@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
 import PageHeader from '../../PageHeader';
-import {RequestPageOutlined } from '@mui/icons-material';
+import {Edit, RequestPageOutlined } from '@mui/icons-material';
 import Button from '../../Button';
 import { useNavigate } from 'react-router-dom';
 import { SectionTitle } from '../../Section';
@@ -19,7 +19,8 @@ const ManageRequisitionComponent: React.FC = () => {
     return <div>Error: {error.message}</div>;
   }
   // Access the data returned by the query
-  const purchaseRequests = data.purchaseRequests;
+  const { purchaseRequests } = data;
+  console.log(purchaseRequests)
   // Render your component using the data
   const handleClick = (id: string) => {
     navigate(`/purchaseRequest/${id}`);
@@ -29,7 +30,7 @@ const ManageRequisitionComponent: React.FC = () => {
     'ID',
     'Reference Number',
     'User',
-    'Suppliers',
+    'Purchase type',
     'Status',
     'Date',
     {
@@ -41,10 +42,12 @@ const ManageRequisitionComponent: React.FC = () => {
           const purchaseRequestId = tableMeta.rowData[1];
           return (
             <Button
-              text="View Details"
-              onClick={() => handleClick(purchaseRequestId)}
-              style={{ cursor: 'pointer' }}
-            />
+            variant="outlined"
+            startIcon={<Edit />}
+            onClick={() => handleClick(purchaseRequestId)}
+            style={{ whiteSpace: 'nowrap',color:'#00b0ad' }}
+               text="  Add Item"
+          />
           );
         },
       },
@@ -53,15 +56,17 @@ const ManageRequisitionComponent: React.FC = () => {
 
   const tableData = purchaseRequests.map((purchaseRequest: any, index: number) => [
     index + 1,
-    purchaseRequest.id,
-    purchaseRequest.referenceNumber,
-    purchaseRequest.user.username,
-    purchaseRequest.suppliers.map((supplier: any) => supplier.user.username).join(', '),
+      "PR",
+       "samisams",
+       "sams",
+       "Costruction",
+    //purchaseRequest.suppliers.map((supplier: any) => supplier.user.username).join(', '),
     purchaseRequest.status ==="pending" ?
+   
     <span style={{ color: 'red' }}>{purchaseRequest.status}</span>:
     <span style={{ color: 'green' }}>{purchaseRequest.status}</span>,
-    purchaseRequest.createdAt,
-    '',
+    //purchaseRequest.createdAt,
+    "2024/25/1",
   ]);
 
   const options: MUIDataTableOptions = {
@@ -81,7 +86,7 @@ const ManageRequisitionComponent: React.FC = () => {
       MUIDataTableHeadCell: {
         styleOverrides: {
           root: {
-            backgroundColor: '#1976d2',
+            backgroundColor: '#00b0ad',
             color: 'white',
           },
         },
