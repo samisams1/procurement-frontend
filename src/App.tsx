@@ -8,6 +8,7 @@ import RoutePage from './RoutePage';
 import { initWebSocket } from './websocket';
 import UserProvider from './auth/UserContext';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 const App: React.FC = () => {
@@ -33,12 +34,13 @@ const App: React.FC = () => {
       },
     };
   });
-
+ // https://test.nilesoftdemo.com/graphql
 //const httpLink = new HttpLink({ uri: 'https://54.172.139.217/graphql' });
-const httpLink = new HttpLink({ uri: 'http://localhost:9000/graphql' });
+///const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
+const httpLink = new HttpLink({ uri: 'https://test.nilesoftdemo.com/graphql' });
   const wsLink = new WebSocketLink({
    // uri: 'ws://54.172.139.217:5000/graphql',
-   uri: 'wss://http://localhost:9000/graphql',
+   uri: 'wss://https://test.nilesoftdemo.com/graphql',
     options: {
       reconnect: true,
     },
@@ -61,10 +63,17 @@ const httpLink = new HttpLink({ uri: 'http://localhost:9000/graphql' });
     cache: new InMemoryCache(),
   });
   useEffect(() => {
-    initWebSocket('wss://localhost:9000/graphql');
+    initWebSocket('wss://localhost:4000/graphql');
   }, []);
-
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#00b0ad',
+      },
+    },
+  });
   return (
+    <ThemeProvider theme={theme}>
     <UserProvider>
         <ApolloProvider client={client}>
         <Router>
@@ -72,6 +81,7 @@ const httpLink = new HttpLink({ uri: 'http://localhost:9000/graphql' });
         </Router>
         </ApolloProvider>
      </UserProvider>
+     </ThemeProvider>
   );
 };
 

@@ -18,7 +18,10 @@ interface Props {
 
 const Select: React.FC<Props> = ({ name, label, value, error = null, onChange, options }) => {
   return (
-    <FormControl variant="outlined" error={!!error}>
+    <FormControl variant="outlined" error={!!error} sx={{
+      width: '100%',
+      marginTop: '1rem',
+    }}>
       <InputLabel>{label}</InputLabel>
       <MuiSelect label={label} name={name} value={value} onChange={onChange}>
         <MenuItem value="">None</MenuItem>

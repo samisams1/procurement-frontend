@@ -54,6 +54,16 @@ const LogoText = styled(Typography)(({ theme }) => ({
     fontSize: '2rem', // Adjust the size for larger screens if needed
   },
 }));
+const WelcomeTitle = styled(Typography)(({ theme }) => ({
+  backgroundColor: '#00b0ad',
+  padding: theme.spacing(1),
+  color: '#ffffff',
+  fontWeight: 'bold',
+  fontSize: '1.5rem',
+  [theme.breakpoints.up('lg')]: {
+    fontSize: '2rem',
+  },
+}))
 const LogoImage = styled('img')(({ theme }) => ({
   height: 40,
   [theme.breakpoints.up('lg')]: {
@@ -64,13 +74,18 @@ const LogoImage = styled('img')(({ theme }) => ({
 const ActionWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
+  color:"#ffffff"
 }));
 
 const Sidebar = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': {
     width: 240,
-    backgroundColor: '#00b0ad', // Set the same background color as the app bar
-    paddingTop: '64px', // Add top padding to align with the app bar
+    backgroundColor: '#ffffff', // Set the same background color as the app bar
+  },
+}));
+const StyledListItemIcon = styled(ListItemIcon)(({ theme }) => ({
+  '& .MuiSvgIcon-root': {
+    color: '#00b0ad', // Red color
   },
 }));
 interface DashboardNavbarProps {
@@ -165,78 +180,42 @@ export default function Navbar({ onOpenSidebar }: DashboardNavbarProps) {
           <LanguageSelector />
         )}
       </ToolbarStyle>
-
       <Sidebar
-        open={isSidebarOpen}
-        onClose={handleSidebarClose}
-        ModalProps={{ keepMounted: true }}
-        PaperProps={{
-          sx: { width: 240, backgroundColor: '#00b0ad' }, // Set the same background color as the app bar
-        }}
-      >
-        <List>
-        <ListItem button component={Link} to="/home">
-  <ListItemIcon>
-    <HomeTwoTone sx={{ color: '#ffffff' }} />
-  </ListItemIcon>
-  <ListItemText
-    primary="Home"
-    primaryTypographyProps={{
-      style: {
-        fontSize: '1.4rem', // Increase the font size as desired
-        fontWeight:'900',
-        color: '#ffffff', // Change the font color
-      },
-    }}
-  />
-</ListItem>
-          <ListItem button component={Link} to="/about">
-            <ListItemIcon>
-              <PeopleTwoTone sx={{ color: '#ffffff' }} />
-            </ListItemIcon>
-            <ListItemText
-    primary="About"
-    primaryTypographyProps={{
-      style: {
-        fontSize: '1.4rem', // Increase the font size as desired
-        fontWeight:'900',
-        color: '#ffffff', // Change the font color
-      },
-    }}
-  />
-          </ListItem>
-          <ListItem button component={Link} to="/contact">
-            <ListItemIcon>
-              <PhoneTwoTone sx={{ color: '#ffffff' }} />
-            </ListItemIcon>
-            <ListItemText
-    primary="Contact us"
-    primaryTypographyProps={{
-      style: {
-        fontSize: '1.4rem', // Increase the font size as desired
-        fontWeight:'900',
-        color: '#ffffff', // Change the font color
-      },
-    }}
-  />
-          </ListItem>
-          <ListItem button component={Link} to="/contact">
-            <ListItemIcon>
-              <LoginTwoTone sx={{ color: '#ffffff' }} />
-            </ListItemIcon>
-            <ListItemText
-    primary="LOG IN"
-    primaryTypographyProps={{
-      style: {
-        fontSize: '1.4rem', // Increase the font size as desired
-        fontWeight:'900',
-        color: '#ffffff', // Change the font color
-      },
-    }}
-  />
-          </ListItem>
-        </List>
-      </Sidebar>
+  open={isSidebarOpen}
+  onClose={handleSidebarClose}
+  ModalProps={{ keepMounted: true }}
+  PaperProps={{
+    sx: { width: 240 },
+  }}
+>
+  <WelcomeTitle variant="h6">Hi, Welcome</WelcomeTitle>
+  <List>
+    <ListItem button component={Link} to="/home">
+      <StyledListItemIcon>
+        <HomeTwoTone />
+      </StyledListItemIcon>
+      <ListItemText primary="Home" />
+    </ListItem>
+    <ListItem button component={Link} to="/about">
+      <StyledListItemIcon>
+        <PeopleTwoTone />
+      </StyledListItemIcon>
+      <ListItemText primary="About" />
+    </ListItem>
+    <ListItem button component={Link} to="/contact">
+      <StyledListItemIcon>
+        <PhoneTwoTone />
+      </StyledListItemIcon>
+      <ListItemText primary="Contact us" />
+    </ListItem>
+    <ListItem button component={Link} to="/contact">
+      <StyledListItemIcon>
+        <LoginTwoTone />
+      </StyledListItemIcon>
+      <ListItemText primary="LOG IN" />
+    </ListItem>
+  </List>
+</Sidebar>
     </RootStyle>
   );
 }

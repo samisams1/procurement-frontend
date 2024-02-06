@@ -6,12 +6,14 @@ enum Role {
   Customer = 'CUSTOMER',
   Supplier = 'SUPPLIER',
 }
+
 const RegistrationPage: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
   const handleRoleSelect = (role: Role) => {
     setSelectedRole(role);
   };
+
   return (
     <div>
       {!selectedRole ? (
@@ -40,14 +42,14 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({ onSelectRole }) => {
   return (
     <Grid container spacing={2} justifyContent="center">
       <Grid item xs={12}>
-        <Typography variant="h4" align="center" gutterBottom>
+        <Typography variant="h6" align="center" gutterBottom>
           Choose your role
         </Typography>
       </Grid>
       <Grid item xs={6}>
         <Button
           variant="contained"
-          color="primary"
+          sx={{ backgroundColor: '#00b0ad' }}
           fullWidth
           onClick={() => handleRoleSelect(Role.Customer)}
         >
@@ -57,7 +59,7 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({ onSelectRole }) => {
       <Grid item xs={6}>
         <Button
           variant="contained"
-          color="secondary"
+          sx={{ backgroundColor: 'red' }}
           fullWidth
           onClick={() => handleRoleSelect(Role.Supplier)}
         >

@@ -8,12 +8,36 @@ import Spinner from '../../Spinner';
 import RequestForm, { SaleInput } from '../purchase/requestForm';
 
 const CREATE_PURCHASE_REQUEST_MUTATION = gql`
-  mutation CreatePurchaseRequest($input: CreatePurchaseRequestInput!) {
-    createPurchaseRequest(input: $input) {
+mutation CreatePurchaseRequest($input: CreatePurchaseRequestInput!) {
+  createPurchaseRequest(input: $input) {
+    id
+    userId
+    status
+    remark
+    addressDetail
+    estimatedDelivery
+    products {
       id
+      Description
+      code
+      manufacture
+      model
+      partNumber
+      quantity
+      title
+      uom
     }
   }
+}
 `;
+
+/*mutation CreatePurchaseRequest($input: CreatePurchaseRequestInput!) {
+  createPurchaseRequest(input: $input) {
+    id
+   
+  }
+}*/
+
 export interface AdditionalData {
   remark: string;
   estimatedDelivery: string;
@@ -47,25 +71,39 @@ const NewRequisitionComponent: React.FC = () => {
        console.log(selectedType);
       }
       const validProducts = products.filter((product) => product.productTitle.trim() !== '');
-      const input = {
-        userId: userId,
+      /*const input = {
+        userId: Number(userId),
         status: 'pending',
         remark: additional.remark,
         addressDetail: additional.addressDetail,
         estimatedDelivery: additional.estimatedDelivery,
         products: validProducts.map((product) => ({
           title: product.productTitle,
-          code: product.code,
-          partNumber: product.partNumber,
-          uom: product.uom,
           quantity: product.quantity,
-          mark: product.mark,
-          model: product.model,
-          Description: product.description,
-          manufacturer: product.manufacturer,
         })),
         suppliers: supplierNewId.map((supplierId) => ({ id: supplierId })),
         selectedType: selectedType,
+
+      };*/
+      const input = {
+        userId:  Number(userId),
+        status: 'pending',
+        remark: additional.remark,
+        addressDetail: additional.addressDetail,
+        estimatedDelivery: additional.estimatedDelivery,
+        selectedType: selectedType,
+
+      //  suppliers: supplierNewId.map((supplierId) => ({ id: supplierId })),
+      suppliers: [
+        {
+          "id": 1
+        }
+      ],
+      products: validProducts.map((product) => ({
+        title: product.productTitle,
+        quantity: product.quantity,
+        Description: product.description,
+      })),
 
       };
       console.log(input)

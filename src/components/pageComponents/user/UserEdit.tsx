@@ -31,7 +31,6 @@ export const UserEditForm = (props:any) => {
     username: props.username,
     password:props.password,
     role:props.role,
-    categoryId:props
   };
   const validate = (fieldValues: userInterface = values): boolean => {
     let temp:userInterface = { ...errors };

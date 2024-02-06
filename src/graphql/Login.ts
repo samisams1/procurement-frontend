@@ -7,19 +7,21 @@ import gql from "graphql-tag";
 	}
 `
 */
+
+
 export const LOGIN_MUTATION = gql`
-  mutation Login($input: LoginInput!) {
-    login(input: $input){
-		token
-		user{
-		  id
-		  firstName
-		  lastName
-		  username
-		  email
-		  role    
-		}
+mutation Login($username: String!, $password: String!) {
+	login(username: $username, password: $password) {
+	  token
+	  user{
+		id
+		firstName
+		lastName
+		username
+		email
+		role    
 	  }
+	}
   }
 `;
 

@@ -31,7 +31,7 @@ export const CategoryList = () => {
           }
         },
       ];
-const row = data.categories.map((row:categoryInterface)=>(
+const row = data.getCategories.map((row:categoryInterface)=>(
         [row.id,row.name]
     ))
       return (

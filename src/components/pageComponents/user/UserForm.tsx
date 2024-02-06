@@ -9,20 +9,21 @@ import { userInterface } from '../../../interface/interfaces';
 import { USER_QUERY } from '../../../graphql/Users';
 
 const CREATE_USER_MUTATION = gql`
-  mutation CreateUser($input: CreateUserInput!) {
-    createUser(input: $input) {
-      id
-      email
-      firstName
-      lastName
-      role
-      username
-      status
-    }
+mutation CreateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    id
+    username
+    email
+    password
+    firstName
+    lastName
+    role
+    updatedAt
   }
+}
 `;
 enum Role {
-  Customer = 'CUSTOMER',
+  Customer = 'ADMIN',
   Supplier = 'SUPPLIER',
 }
 interface UserFormProps {
@@ -42,7 +43,6 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     username: '',
     password: '',
     role: selectedRole,
-    categoryId: 1,
   };
 
   const validate = (fieldValues: userInterface = values): boolean => {
@@ -91,19 +91,26 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
 
   return (
      <div> 
-        <Typography variant="h6" style={{ color: '#4F46E5' }}>
+        <Typography variant="h6" style={{ color: '#00b0ad' }}>
         {selectedRole} REGISTRATION
         </Typography>
         <Form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
+           
               <Controls.Input
                 name="firstName"
                 label="First Name"
                 value={values.firstName}
                 onChange={handleInputChange}
                 error={errors.firstName}
-                fullWidth // Make input full width
+                fullWidth 
+                sx={{
+                  width: '100%',
+                  marginTop: '1rem',
+                  marginBottom: '1rem',
+                  paddingBottom: '0.5rem',
+                }}
                 style={{ marginBottom: '1rem' }}
               />
               <Controls.Input
@@ -116,19 +123,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 style={{ marginBottom: '1rem' }}
               />
 
-            {selectedRole === Role.Supplier && (   <Controls.Select
-  name="categoryId"
-  label="Category"
-  value={values.categoryId.toString()} // Convert categoryId to string
-  onChange={handleInputChange}
-  options={[
-    { id: '1', label: 'Construction', value: '1' }, // Provide string values
-    { id: '2', label: 'Electronics', value: '2' },
-  ]}
-  error={errors.categoryId}
-  //style={{ marginBottom: '1rem' }}
-/>  )}
-              <Controls.Input
+                   <Controls.Input
                 name="username"
                 label="Username"
                 value={values.username}
@@ -161,7 +156,6 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 type="submit"
                 text="Submit"
                 fullWidth
-                style={{ backgroundColor: '#4F46E5', color: '#fff' }}
               />
               <Button
                 text="Reset"
@@ -185,7 +179,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
         <Grid container justifyContent="flex-end" alignItems="center" style={{ marginTop: 10 }}>
           <Grid item>
     <Typography variant="body2" style={{ marginTop: '1rem', textAlign: 'center' }}>
-    Already have an account??   <RouterLink   style={{ color: '#4F46E5' }} to="/login">Login</RouterLink>  
+    Already have an account??   <RouterLink   style={{ color: '#00b0ad' }} to="/login">Login</RouterLink>  
         </Typography>
 
 
