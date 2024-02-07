@@ -37,12 +37,13 @@ interface PurchaseRequestBySupplierQueryData {
 }
 
 interface PurchaseRequestBySupplierQueryVars {
-  id: number;
+  userId: number;
 }
 
 const PURCHASE_REQUEST_BY_SUPPLIER_QUERY = gql`
 query PurchaseRequestBYSupplierId($userId: Int!) {
   purchaseRequestBYSupplierId(userId: $userId) {
+    id
     userId
     status
     products {
@@ -74,7 +75,7 @@ const PurchaseRequestList: React.FC<{ id: number; navigate: any }> = ({ id, navi
   const { loading, error, data } = useQuery<PurchaseRequestBySupplierQueryData, PurchaseRequestBySupplierQueryVars>(
     PURCHASE_REQUEST_BY_SUPPLIER_QUERY,
     {
-      variables: { id: id },
+      variables: { userId: id },
     }
   );
 
@@ -85,7 +86,7 @@ const PurchaseRequestList: React.FC<{ id: number; navigate: any }> = ({ id, navi
   if (error) {
     return <div>Error: {error.message}</div>;
   }
-
+console.log(data)
   const purchaseRequests = data?.purchaseRequestBySupplier || [];
 
   const formatCreatedAt = (createdAt: string): string => {
