@@ -13,19 +13,19 @@ const slides: Slide[] = [
       id: 1,
       image: 'tra.jpg',
       alt: 'Slide 1',
-      title: 'Farmer Tractors',
+      title: 'Farmes',
     },
     {
       id: 2,
       image: 'car.jpg',
       alt: 'car 2',
-      title: 'Carrs motoes',
+      title: 'Cars',
     },
     {
       id: 3,
       image: 'electronics.jpeg',
       alt: 'Slide 3',
-      title: 'Eletronics Devices laptop computer andothers',
+      title: 'Eletronics Devices laptop computer others',
     },
   ];
 
