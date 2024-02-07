@@ -9,6 +9,7 @@ import Testimonials from './Home/testimonials';
 import Footer from '../../layoutes/footer';
 import Popup from '../../components/Popup';
 import Login from '../login/Login';
+import Slideshow from './Home/Slideshow';
 
 const ContactContainer = styled('div')({
   marginTop: 80,
@@ -171,8 +172,6 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
   backgroundColor:'#00b0ad',
 }));
 ///Request
-
-
 const Home: React.FC = () => {
   const [openPopup,setOpenPopup] = useState(false);
  /* const handleRequestClick = () => {
@@ -200,7 +199,12 @@ const Home: React.FC = () => {
             activities efficiently and effectively.
           </LandingPageDescription>
         </TitleContainer> 
+        <Slideshow/>
+        <Grid item xs={12} md={12} >
+        <TellUsWhatYouWant/>
+        </Grid>
          <StyledGrid item xs={12} md={12} >
+        
   <SectionTitle variant="h5">Our Services</SectionTitle>
   <ServiceTitle variant="h6">E-Procurement System</ServiceTitle>
   <ServiceList>
@@ -225,7 +229,6 @@ const Home: React.FC = () => {
         </CategoryContainer>
       ))}
       </ProductCategoriesContainer>
-        
         <SectionContainer container alignItems="center" justifyContent="center">
         <Grid item xs={12} md={12} lg={12}>
         <SectionTitle variant="h4">How It Works</SectionTitle>
@@ -323,7 +326,7 @@ const Home: React.FC = () => {
         </StepContainer>
       </Grid>
       </SectionContainer>
-      <TellUsWhatYouWant/>
+     
       <Testimonials/>
       <Footer/>
           </Grid>

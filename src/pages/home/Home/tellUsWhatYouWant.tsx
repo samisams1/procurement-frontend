@@ -33,17 +33,23 @@ const ButtonContainer = styled('div')({
 });
 
 const StyledButton = styled(Button)({
-  backgroundColor: '#892e05',
+  backgroundColor: '#00b0ad', // Main color for the button (you can adjust the color code)
   color: '#ffffff',
   '&:hover': {
-    backgroundColor: '#ff4f00',
+    backgroundColor: '#00b0ad', // Hover color for the button (you can adjust the color code)
   },
+  borderRadius: '999px', // Makes the button more rounded
+  padding: '12px 24px', // Increase padding for a more prominent button
+  fontWeight: 'bold', // Makes the button text bold
+  textTransform: 'none', // Removes uppercase transformation of the button text
 });
+
 const TellUsWhatYouWant = () => {
-  const [openPopup,setOpenPopup] = useState(false);
-  const handleclick = ()=>{
+  const [openPopup, setOpenPopup] = useState(false);
+  const handleClick = () => {
     setOpenPopup(true);
-  }
+  };
+
   return (
     <TellUsWhatYouWantContainer>
       <Title variant="h5">Tell Us What You Want</Title>
@@ -51,10 +57,12 @@ const TellUsWhatYouWant = () => {
         Let us know the items or services you need, and we'll take care of the rest.
       </Description>
       <ButtonContainer>
-        <StyledButton variant="contained" onClick={handleclick}>Request Now</StyledButton>
+        <StyledButton variant="contained" onClick={handleClick}>
+          Request Now
+        </StyledButton>
       </ButtonContainer>
-      <Popup  title = 'Login' openPopup={openPopup} setOpenPopup={setOpenPopup}>
-        <Login/>
+      <Popup title="Login" openPopup={openPopup} setOpenPopup={setOpenPopup}>
+        <Login />
       </Popup>
     </TellUsWhatYouWantContainer>
   );
