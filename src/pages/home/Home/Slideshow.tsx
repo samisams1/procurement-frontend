@@ -5,25 +5,29 @@ interface Slide {
   id: number;
   image: string;
   alt: string;
+  title:string;
 }
 
 const slides: Slide[] = [
-  {
-    id: 1,
-    image: 'tra.jpg',
-    alt: 'Slide 1',
-  },
-  {
-    id: 2,
-    image: 'car.jpg',
-    alt: 'car 2',
-  },
-  {
-    id: 3,
-    image: 'electronics.jpeg',
-    alt: 'Slide 3',
-  },
-];
+    {
+      id: 1,
+      image: 'tra.jpg',
+      alt: 'Slide 1',
+      title: 'Farmer Tractors',
+    },
+    {
+      id: 2,
+      image: 'car.jpg',
+      alt: 'car 2',
+      title: 'Carrs motoes',
+    },
+    {
+      id: 3,
+      image: 'electronics.jpeg',
+      alt: 'Slide 3',
+      title: 'Eletronics Devices laptop computer andothers',
+    },
+  ];
 
 const SlideshowContainer = styled('div')`
   position: relative;
@@ -51,13 +55,21 @@ const SlideNavigationContainer = styled('div')`
 
 const SlideNavigationButton = styled('button')`
   background-color: transparent;
-  border: none;
-  color: green; /* Change the color to green */
+  border: "red";
+  color: #00b0ad; /* Change the color to green */
   font-size: 20px;
   margin: 0 10px;
   cursor: pointer;
 `;
-
+const SlideTitle = styled('div')`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 24px;
+  text-align: center;
+`;
 const Slideshow: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -83,6 +95,7 @@ const Slideshow: React.FC = () => {
         src={require(`../../../assets/${slides[currentIndex].image}`)}
         alt={slides[currentIndex].alt}
       />
+       <SlideTitle>{slides[currentIndex].title}</SlideTitle>
       <SlideNavigationContainer>
         <SlideNavigationButton onClick={goToPreviousSlide}>Previous</SlideNavigationButton>
         <SlideNavigationButton onClick={goToNextSlide}>Next</SlideNavigationButton>
