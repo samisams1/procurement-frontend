@@ -74,12 +74,14 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
         .then(() => {
           setSuccessMessage('User created successfully!');
           resetForm();
-          setTimeout(() => {
+          setSuccessMessage('');
+          navigate(`/acountCreated/${values.email}`);
+          /*setTimeout(() => {
 
             setSuccessMessage('');
            // setLoading(false);
             navigate(`/acountCreated/${values.email}`);
-          }, 2000); // Remove success message after 5 seconds
+          }, 2000);*/ // Remove success message after 5 seconds
         })
         .catch((error) => {
           setErrorMessage(error.message);
