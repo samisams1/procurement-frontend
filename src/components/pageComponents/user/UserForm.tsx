@@ -23,7 +23,7 @@ mutation CreateUser($input: CreateUserInput!) {
 }
 `;
 enum Role {
-  Customer = 'ADMIN',
+  Customer = 'CUSTOMER',
   Supplier = 'SUPPLIER',
 }
 interface UserFormProps {
@@ -67,27 +67,24 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(values);
+  
     if (validate()) {
       createProfile({
-        variables: { input: values }, // Provide the "input" variable with the form values
+        variables: { input: values },
       })
         .then(() => {
           setSuccessMessage('User created successfully!');
           resetForm();
-          setSuccessMessage('');
-          navigate(`/acountCreated/${values.email}`);
-          /*setTimeout(() => {
-
+          setTimeout(() => {
             setSuccessMessage('');
-           // setLoading(false);
             navigate(`/acountCreated/${values.email}`);
-          }, 2000);*/ // Remove success message after 5 seconds
+          }, 2000);
         })
         .catch((error) => {
           setErrorMessage(error.message);
           setTimeout(() => {
             setErrorMessage('');
-          }, 5000); // Remove error message after 5 seconds
+          }, 5000);
         });
     }
   };
