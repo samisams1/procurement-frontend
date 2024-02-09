@@ -7,6 +7,8 @@ export interface userInterface {
     role?: string;
     password:string;
     companyName:string;
+    phoneNumber?:string;
+    confirmPassword?:string;
   }
   export interface categoryInterface {
     id?: number;

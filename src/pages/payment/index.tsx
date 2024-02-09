@@ -8,7 +8,7 @@ export default function Payment() {
     return <Spinner />;
   }
   const { role } = currentUser;
-  if (role === 'CUSTOMER') {
+  if (role === 'ADMIN') {
     return(<div><PaymentComponent/></div>);
   } else {
     return null;

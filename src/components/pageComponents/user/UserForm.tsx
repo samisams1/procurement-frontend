@@ -53,6 +53,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     if ('role' in fieldValues) temp.role = fieldValues.role ? '' : 'This field is required.';
     if ('email' in fieldValues) temp.email = fieldValues.email ? '' : 'This field is required.';
     if ('username' in fieldValues) temp.username = fieldValues.username ? '' : 'This field is required.';
+    if ('companyName' in fieldValues) temp.companyName = fieldValues.companyName ? '' : 'This field is required.';
     if ('password' in fieldValues) temp.password = fieldValues.password ? '' : 'This field is required.';
 
     setErrors({
@@ -77,7 +78,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
 
             setSuccessMessage('');
            // setLoading(false);
-            navigate(`/acountCreated/${'samisams@gmail.com'}`);
+            navigate(`/acountCreated/${values.email}`);
           }, 2000); // Remove success message after 5 seconds
         })
         .catch((error) => {
@@ -97,7 +98,6 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
         <Form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-            {selectedRole === "SUPPLIER" && (
               <Controls.Input 
                 name="companyName"
                 label="Company Name"
@@ -107,8 +107,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 fullWidth // Make input full width
                 style={{ marginBottom: '1rem' }}
               />
- )
-}
+            
               <Controls.Input
                 name="firstName"
                 label="First Name"

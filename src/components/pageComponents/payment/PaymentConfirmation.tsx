@@ -10,43 +10,27 @@ interface PaymentData {
   paidAt: string;
   amount: number;
   paymentMethod: string;
-  user: {
-    username: string;
-  };
-  order: {
-    shippingCost: number;
-    orderDetails: {
-      id: number;
-      price: number;
-      title: string;
-    }[];
-  };
+  userId: number;
+  orderId: number;
+  fullName: string;
 }
 
 interface PaymentQueryData {
-  payment: PaymentData[];
+  payment: PaymentData;
 }
 
 const GET_PAYMENT = gql`
-  query GetPayment($id: Int!) {
-    payment(id: $id) {
+  query Payment($paymentId: Int!) {
+    payment(id: $paymentId) {
       id
-      referenceNumber
-      status
-      paidAt
       amount
+      paidAt
       paymentMethod
-      user {
-        username
-      }
-      order {
-        shippingCost
-        orderDetails {
-          id
-          price
-          title
-        }
-      }
+      userId
+      orderId
+      status
+      referenceNumber
+      fullName
     }
   }
 `;
@@ -54,7 +38,7 @@ const GET_PAYMENT = gql`
 const PaymentConfirmation: React.FC = () => {
   const { id = '' } = useParams<{ id?: string }>();
   const { loading, error, data, refetch } = useQuery<PaymentQueryData>(GET_PAYMENT, {
-    variables: { id: Number(id) },
+    variables: { paymentId: Number(id) },
   });
 
   useEffect(() => {
@@ -69,7 +53,7 @@ const PaymentConfirmation: React.FC = () => {
     return <div>Error: {error.message}</div>;
   }
 
-  const payment = data?.payment?.[0];
+  const payment = data?.payment;
 
   const handlePrint = () => {
     window.print();
@@ -99,20 +83,6 @@ const PaymentConfirmation: React.FC = () => {
             <Typography variant="body1">Transaction ID: {payment.id}</Typography>
             <Typography variant="body1">Payment Method: {payment.paymentMethod}</Typography>
           </Box>
-
-          {payment.order && (
-            <Box marginBottom={2}>
-              <Typography variant="h6">Payment Summary:</Typography>
-              <Typography variant="body1">Payment Amount: ${payment.amount}</Typography>
-              <Typography variant="body1">Itemized Charges:</Typography>
-              {payment.order.orderDetails.map((orderDetail) => (
-                <Typography variant="body1" key={orderDetail.id}>
-                  - {orderDetail.title}: ${orderDetail.price}
-                </Typography>
-              ))}
-              <Typography variant="body1">Shipping Fee: ${payment.order.shippingCost}</Typography>
-            </Box>
-          )}
 
           <Box marginBottom={2}>
             <Typography variant="h6">Invoice Reference:</Typography>

@@ -9,15 +9,23 @@ query PurchaseRequests {
   purchaseRequests {
     id
     userId
-    remark
     status
+    remark
     addressDetail
     estimatedDelivery
+    referenceNumber
     products {
-      title
+      id
+      Description
+      code
+      manufacture
+      model
+      partNumber
       quantity
+      title
+      uom
     }
-    
+    createdAt
   }
 }
 `;

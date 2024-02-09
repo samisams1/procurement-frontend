@@ -36,42 +36,29 @@ import { useParams } from 'react-router-dom';
                 uom: string;
               };
 const GET_ORDER_QUERY = gql`
-query GetPurchaseRequestById($id: Float!) {
-    purchaseRequest(id: $id) {
+query PurchaseRequestById($id: Int!) {
+  purchaseRequestById(id: $id) {
+    products {
       id
-    referenceNumber
-    addressDetail
-    remark
-    estimatedDelivery
-    createdAt  
-    status
-      products {
-        id
-        title
-        code
-        partNumber
-        uom
-        quantity
-        mark
-        Description
-        manufacturer
-        model
-        status
-      }
-      user{
-        firstName
-         lastName
-         email
-      }
-      suppliers {
-        id
-        user {
-          id
-          username
-        }
-      }
+      Description
+      code
+      manufacture
+      model
+      partNumber
+      quantity
+      title
+      uom
     }
+    userId
+    id
+    status
+    remark
+    addressDetail
+    estimatedDelivery
+    referenceNumber
+    createdAt
   }
+}
 `;
 const Detail: React.FC = () => {
  const { id } = useParams<{ id?: string }>();
@@ -85,9 +72,9 @@ const Detail: React.FC = () => {
       if (error) {
         return <div>Error: {error.message}</div>;
       }
-const requests = data?.purchaseRequest;
-const customer = requests?.user?.firstName  + " " +   requests?.user?.lastName;
-const email = requests?.user?.email;
+const requests = data?.purchaseRequestById;
+const customer = "samisams";
+const email = "forsamisams@gmail.cpm";
 const addressDetail = requests?.addressDetail;
 const referenceNumber = requests?.referenceNumber;  
 const Date = requests?.createdAt;  
@@ -148,7 +135,7 @@ const status = requests?.status;
                 </TableRow>
                 </TableHead>
                 <TableBody>
-              {requests?.products.map((product: Product) => (
+              {requests?.products?.map((product: Product) => (
                 <TableRow key={product.id}>
                   <TableCell>{product.title}</TableCell>
                   <TableCell>{product.code}</TableCell>
@@ -191,8 +178,7 @@ const status = requests?.status;
         display: flex;
         align-items: center;
         margin-bottom: 20px;
-        background-color: #d1e0eb;
-        color: #79cbfd; 
+        color: #00b0ad; 
       }
       
       .purchase-order {
@@ -224,11 +210,11 @@ const status = requests?.status;
       }
 
       .blue-bordered-table {
-        border: 2px solid  #1c9fef;
+        border: 2px solid  #00b0ad;
       }
       
       .blue-row {
-        background-color: #1c9fef;
+        background-color: #00b0ad;
         color: white;
       }
 

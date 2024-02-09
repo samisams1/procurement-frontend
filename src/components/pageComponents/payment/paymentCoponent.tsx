@@ -63,19 +63,17 @@ const FullNameInput = styled(InputBase)(({ theme }) => ({
 
 const GET_ORDER_QUERY = gql`
 query GetOrderById($id: Int!) {
-    getOrderById(id: $id) {
-      id
-      customerId
-      totalPrice
-      tax
-      referenceNumber
-      customer{
-        user{
-          username
-        }
-      }
+  getOrderById(id: $id) {
+    id
+    customerId
+    totalPrice
+    tax
+    referenceNumber
+    customer {
+      username
     }
   }
+}
 `;
 
 const CREATE_PAYMENT_MUTATION = gql`
@@ -112,10 +110,10 @@ const PaymentComponent: React.FC = () => {
     return <p>Error: {error.message}</p>;
   }
 
-  const order = data?.getOrderById;
-  const customerId = order.customerId;
-  const totalPrice = order.totalPrice;
-  const tax = order.tax;
+ // const order = data?.getOrderById;
+//  const customerId = order.customerId;
+  //const totalPrice = order?.totalPrice;
+  //const tax = order.tax;
 console.log(data)
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
@@ -127,8 +125,8 @@ console.log(data)
       const paymentData:any = {
         fullName:fullName,
         referenceNumber:referenceNumber,
-        amount: totalPrice + tax,
-        userId: Number(customerId),
+      //  amount: totalPrice + tax,
+       // userId: Number(customerId),
         paymentMethod:paymentMethod,
         status:'paid',
         orderId:Number(id)
@@ -271,7 +269,7 @@ setTimeout(() => {
 
     <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
       <Typography variant="body1" style={{ marginRight: '10px' }}>Grand Total:</Typography>
-      {(totalPrice + tax).toLocaleString()} Birr
+   
     </div>
 
     <form onSubmit={handleSubmit} style={{ marginTop: '20px' }}>

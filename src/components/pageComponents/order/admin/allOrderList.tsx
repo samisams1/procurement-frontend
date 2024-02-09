@@ -106,7 +106,7 @@ const AllOrderList: React.FC = () => {
       MUIDataTableHeadCell: {
         styleOverrides: {
           root: {
-            backgroundColor: '#1976d2',
+            backgroundColor: '#00b0ad',
             color: 'white',
           },
         },

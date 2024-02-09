@@ -17,7 +17,7 @@ const UPDATE_ORDER_MUTATION = gql`
 `;
 
 const GET_ORDER_QUERY = gql`
-  query GetOrderDetailByOrderId($id: Float!) {
+  query GetOrderDetailByOrderId($id: Int!) {
     getOrderDetailByOrderId(id: $id) {
       id
       title

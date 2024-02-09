@@ -46,7 +46,7 @@ const ManageRequisitionComponent: React.FC = () => {
             startIcon={<Edit />}
             onClick={() => handleClick(purchaseRequestId)}
             style={{ whiteSpace: 'nowrap',color:'#00b0ad' }}
-               text="  Add Item"
+               text="  View Item"
           />
           );
         },
@@ -56,8 +56,8 @@ const ManageRequisitionComponent: React.FC = () => {
 
   const tableData = purchaseRequests.map((purchaseRequest: any, index: number) => [
     index + 1,
-      "PR",
-       "samisams",
+    purchaseRequest.id,
+    purchaseRequest.referenceNumber,
        "sams",
        "Costruction",
     //purchaseRequest.suppliers.map((supplier: any) => supplier.user.username).join(', '),
@@ -65,8 +65,7 @@ const ManageRequisitionComponent: React.FC = () => {
    
     <span style={{ color: 'red' }}>{purchaseRequest.status}</span>:
     <span style={{ color: 'green' }}>{purchaseRequest.status}</span>,
-    //purchaseRequest.createdAt,
-    "2024/25/1",
+    purchaseRequest.createdAt,
   ]);
 
   const options: MUIDataTableOptions = {

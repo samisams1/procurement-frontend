@@ -35,6 +35,30 @@ interface QuotationInterface {
   price: string;
   shippingPrice: string;
 }
+/*const GET_QUOTATION = gql`
+  query QuotationByRequestIdAdSupplierId($id: Float!, $supplierId: Float!) {
+    quotationByRequestIdAdSupplierId(id: $id, supplierId: $supplierId) {
+      purchaseRequestId
+      id
+      customerId
+      supplierId
+      status
+      createdAt
+      productPrices {
+        id
+        product {
+          title
+          quantity
+          partNumber
+          code
+          Description
+          status
+        }
+        price
+      }
+    }
+  }
+`;*/
 const GET_QUOTATION = gql`
   query QuotationByRequestIdAdSupplierId($id: Float!, $supplierId: Float!) {
     quotationByRequestIdAdSupplierId(id: $id, supplierId: $supplierId) {
@@ -124,7 +148,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
 
   const quotations = data?.quotationByRequestIdAdSupplierId || [];
   const qId = quotations.map((p)=>p.id);
-  const theStatus= quotations.map((p)=>p.status);
+  const theStatus= quotations?.map((p)=>p.status);
   console.log(qId);
 
   const shippingPrice = parseFloat(values.shippingPrice);
@@ -157,7 +181,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
   const calculateSubtotal = (): number => {
     let subtotal = 0;
     quotations.forEach((quotation: Quotation) => {
-      quotation.productPrices.forEach((productPrice: ProductPrice) => {
+      quotation.productPrices?.forEach((productPrice: ProductPrice) => {
         const price = parseFloat(prices[String(productPrice.id)]);
         if (!isNaN(price)) {
           subtotal += price * productPrice.product.quantity;
@@ -172,7 +196,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
 
   return (
 <div>
-{theStatus.toString() === "comformed" ? <div>All Request are comformed! </div>:
+{theStatus?.toString() === "comformed" ? <div>All Request are comformed! </div>:
     <div>
       <table>
         <thead>
@@ -188,8 +212,8 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
           </tr>
         </thead>
         <tbody>
-        {quotations.map((quotation) =>
-  quotation.productPrices.map((productPrice) => {
+        {quotations?.map((quotation) =>
+  quotation?.productPrices?.map((productPrice) => {
     const price = parseFloat(prices[String(productPrice.id)]);
     const subtotal = isNaN(price) ? 0 : price * productPrice.product.quantity;
 
