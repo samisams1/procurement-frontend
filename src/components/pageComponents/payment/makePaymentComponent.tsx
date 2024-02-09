@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { Grid } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
@@ -47,7 +47,7 @@ const ORDER_QUERY = gql`
 `;
 
 const List: React.FC<{ id: number; navigate: any }> = ({ id, navigate }) => {
-  const [openPopup, setOpenPopup] = useState(false);
+ // const [openPopup, setOpenPopup] = useState(false);
   const { loading, error, data } = useQuery<GetApprovedOrdersData, GetApprovedOrdersVariables>(ORDER_QUERY, {
     variables: { customerId: 1 },
   });
@@ -107,9 +107,9 @@ const List: React.FC<{ id: number; navigate: any }> = ({ id, navigate }) => {
     },
   ];
 
-  const handleClick = (id: string) => {
+  /*const handleClick = (id: string) => {
     navigate(`/orderDetail/${id}`);
-  };
+  };*/
 
   return (
     <Grid container>
