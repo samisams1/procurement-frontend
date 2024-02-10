@@ -9,6 +9,9 @@ export interface userInterface {
     companyName:string;
     phoneNumber?:string;
     confirmPassword?:string;
+    category?:string;
+    country?: '',
+    city?: '',
   }
   export interface categoryInterface {
     id?: number;

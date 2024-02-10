@@ -1,13 +1,25 @@
 import React, { useState } from 'react';
-import { Alert, Grid, Typography } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Alert, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { Form, useForm } from '../../useForm';
 import Button from '../../Button';
 import Controls from '../../Controls';
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { userInterface } from '../../../interface/interfaces';
 import { USER_QUERY } from '../../../graphql/Users';
 
+interface Category {
+  id: string;
+  name: string;
+}
+const GET_CATEGORIES = gql`
+  query GetCategories {
+    getCategories {
+      id
+      name
+    }
+  }
+`;
 const CREATE_USER_MUTATION = gql`
 mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {
@@ -29,13 +41,38 @@ enum Role {
 interface UserFormProps {
   selectedRole: Role;
 }
+const countryData = [
+  {
+    name: 'Ethiopia',
+    cities: ['Addis Ababa', 'Adama', 'Bahar dar'],
+  },
+  {
+    name: 'Afghanistan',
+    cities: ['Kabul', 'Herat', 'Mazar-i-Sharif'],
+  },
+  {
+    name: 'Albania',
+    cities: ['Tirana', 'Durres', 'Vlore'],
+  },
+  {
+    name: 'Algeria',
+    cities: ['Algiers', 'Oran', 'Constantine'],
+  },
+ 
+  // Add more countries and cities as needed
+];
 export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
-  const [createProfile] = useMutation(CREATE_USER_MUTATION, {
-    refetchQueries: [{ query: USER_QUERY }],
-  });
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate =  useNavigate();
+  const [createProfile] = useMutation(CREATE_USER_MUTATION, {
+    refetchQueries: [{ query: USER_QUERY }],
+  });
+  const { loading, error, data } = useQuery<{ getCategories: Category[] }>(GET_CATEGORIES);
+
+
+
+
   const initialFValues: userInterface = {
     firstName: '',
     lastName: '',
@@ -44,6 +81,10 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     password: '',
     role: selectedRole,
     companyName: '',
+    phoneNumber:'',
+    category:'',
+    country: '',
+    city:'',
   };
 
   const validate = (fieldValues: userInterface = values): boolean => {
@@ -51,11 +92,52 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     if ('firstName' in fieldValues) temp.firstName = fieldValues.firstName ? '' : 'This field is required.';
     if ('lastName' in fieldValues) temp.lastName = fieldValues.lastName ? '' : 'This field is required.';
     if ('role' in fieldValues) temp.role = fieldValues.role ? '' : 'This field is required.';
-    if ('email' in fieldValues) temp.email = fieldValues.email ? '' : 'This field is required.';
+    if ('email' in fieldValues) {
+      if (fieldValues.email) {
+        // Validate email format using a regular expression
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(fieldValues.email)) {
+          temp.email = 'Invalid email address.';
+        } else {
+          temp.email = '';
+        }
+      } else {
+        temp.email = 'This field is required.';
+      }
+    }
+    if ('phoneNumber' in fieldValues) {
+      if (fieldValues.phoneNumber) {
+        // Validate phone number format using a regular expression
+        const phoneRegex = /^\d{10}$/; // Assuming a 10-digit phone number format
+        if (!phoneRegex.test(fieldValues.phoneNumber)) {
+          temp.phoneNumber = 'Invalid phone number format.';
+        } else {
+          temp.phoneNumber = '';
+        }
+      } else {
+        temp.phoneNumber = 'This field is required.';
+      }
+    }
     if ('username' in fieldValues) temp.username = fieldValues.username ? '' : 'This field is required.';
-    if ('companyName' in fieldValues) temp.companyName = fieldValues.companyName ? '' : 'This field is required.';
-    if ('password' in fieldValues) temp.password = fieldValues.password ? '' : 'This field is required.';
-
+    if(selectedRole ==="SUPPLIER"){
+      if ('companyName' in fieldValues) temp.companyName = fieldValues.companyName ? '' : 'This field is required.';
+      if ('category' in fieldValues) temp.category = fieldValues.category ? '' : 'This field is required.';
+    }
+    if ('password' in fieldValues) {
+      if (fieldValues.password) {
+        const strongPasswordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+       // const weakPasswordRegex = /^(?=.*\d)(?=.*[a-zA-Z]).{6,}$/;
+    
+        if (!strongPasswordRegex.test(fieldValues.password)) {
+          temp.password = 'Password should be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.';
+        } else {
+          temp.password = '';
+        }
+      } else {
+        temp.password = 'This field is required.';
+      }
+    }
+ 
     setErrors({
       ...temp,
     });
@@ -63,32 +145,37 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   };
 
   const { values, errors, setErrors, handleInputChange, resetForm }: any = useForm(initialFValues, true, validate);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(values);
-  
     if (validate()) {
-      createProfile({
-        variables: { input: values },
-      })
-        .then(() => {
-          setSuccessMessage('User created successfully!');
-          resetForm();
-          setTimeout(() => {
-            setSuccessMessage('');
-            navigate(`/acountCreated/${values.email}`);
-          }, 2000);
-        })
-        .catch((error) => {
-          setErrorMessage(error.message);
-          setTimeout(() => {
-            setErrorMessage('');
-          }, 5000);
+      try {
+        await createProfile({
+          variables: { input: values }, // Provide the "input" variable with the form values
         });
+  
+        setSuccessMessage('User created successfully!');
+        resetForm();
+        setTimeout(() => {
+          setSuccessMessage('');
+          // setLoading(false);
+          navigate(`/acountCreated/${values.email}`);
+        }, 2000); // Remove success message after 5 seconds
+      } catch (error:any) {
+        setErrorMessage(error.message);
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 5000); // Remove error message after 5 seconds
+      }
     }
   };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
   return (
      <div> 
         <Typography variant="h6" style={{ color: '#00b0ad' }}>
@@ -97,7 +184,10 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
         <Form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Controls.Input 
+          {selectedRole ==="SUPPLIER" &&(
+          <div>
+            <Typography>Company Information</Typography>
+            <Controls.Input 
                 name="companyName"
                 label="Company Name"
                 value={values.companyName}
@@ -106,7 +196,31 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 fullWidth // Make input full width
                 style={{ marginBottom: '1rem' }}
               />
-            
+
+             <FormControl fullWidth>
+                  <InputLabel id="category-label">Category</InputLabel>
+                  <Select
+                    label="category-label"
+                    id="category"
+                    name="category"
+                    value={values.category}
+                    onChange={handleInputChange}
+                    error={errors.category}
+                  >
+                    {data?.getCategories.map((category) => (
+                      <MenuItem key={category.id} value={category.id}>
+                        {category.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.category && <Alert severity="error">{errors.category}</Alert>}
+                </FormControl>
+
+              <Typography>User Information</Typography>
+          </div>
+        
+
+          )}
               <Controls.Input
                 name="firstName"
                 label="First Name"
@@ -140,6 +254,17 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 error={errors.username}
                 fullWidth // Make input full width
                 style={{ marginBottom: '1rem' }}
+                inputProps={{ autoComplete: 'off' }}
+              />
+             
+             <Controls.Input
+                name="phoneNumber"
+                label="PhoneNumber"
+                value={values.phoneNumber}
+                onChange={handleInputChange}
+                error={errors.phoneNumber}
+                fullWidth // Make input full width
+                style={{ marginBottom: '1rem' }}
               />
               <Controls.Input
                 name="email"
@@ -150,16 +275,58 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 fullWidth // Make input full width
                 style={{ marginBottom: '1rem' }}
               />
-              <Controls.Input
-                name="password"
-                label="Password"
-                value={values.password}
-                onChange={handleInputChange}
-                error={errors.password}
-                fullWidth // Make input full width
-                style={{ marginBottom: '1rem' }}
-              />
-
+               <FormControl fullWidth style={{ marginBottom: '1rem' }}>
+                  <InputLabel id="Country-label">Country</InputLabel>
+                  <Select
+                    label="Country-label"
+                    id="country"
+                    name="country"
+                    value={values.country}
+                    onChange={handleInputChange}
+                    error={errors.country}
+                  >
+                    {countryData.map((country) => (
+                      <MenuItem key={country.name} value={country.name}>
+                        {country.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.country && <Alert severity="error">{errors.country}</Alert>}
+                  
+                </FormControl>
+                <FormControl fullWidth style={{ marginBottom: '1rem' }}>
+                  <InputLabel id="Country-label">City</InputLabel>
+                  <Select
+                    label="City"
+                    id="city"
+                    name="city"
+                    value={values.City}
+                    onChange={handleInputChange}
+                    error={errors.City}
+                  >
+                    {countryData
+          .find((country) => country.name === values.country)
+          ?.cities.map((city) => (
+             <MenuItem key={city} value={city}>
+             {city}
+           </MenuItem>
+          ))}
+                  </Select>
+                  {errors.country && <Alert severity="error">{errors.country}</Alert>}
+                  
+                </FormControl>
+                <Controls.Input
+  name="password"
+  label="Password"
+  value={values.password}
+  onChange={handleInputChange}
+  error={errors.password}
+  fullWidth
+  style={{ marginBottom: '1rem' }}
+  type="password" // Set the input type to "password"
+  inputProps={{ autoComplete: 'off' }}
+/>
+                   
             </Grid>
             <Grid item xs={12}>
               <Button
@@ -188,10 +355,6 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
         </Form>
         <Grid container justifyContent="flex-end" alignItems="center" style={{ marginTop: 10 }}>
           <Grid item>
-    <Typography variant="body2" style={{ marginTop: '1rem', textAlign: 'center' }}>
-    Already have an account??   <RouterLink   style={{ color: '#00b0ad' }} to="/login">Login</RouterLink>  
-        </Typography>
-
 
           </Grid>  
         </Grid>

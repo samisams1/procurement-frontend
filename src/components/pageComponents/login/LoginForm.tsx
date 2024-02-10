@@ -65,8 +65,7 @@ const Login: React.FC = () => {
       navigate('/');
       console.log('Logged in successfully:', { firstName, lastName, email, role });
     } catch (error:any) {
-      console.error( error);
-      setBackendError("error occured");
+      setBackendError(error.message);
       setLoading(false);
       setShowErrorAlert(true);
     }

@@ -34,7 +34,8 @@ const CountAllRequestStatus: React.FC<RequestByStatusProps> = ({ status }) => {
     return <p>Error: {error.message}</p>;
   }
 
-  return <p>{data?.countAllRequestBystatus}</p>;
+  return <p>{data?.countAllRequestBystatus
+  }</p>;
 };
 
 export default CountAllRequestStatus;

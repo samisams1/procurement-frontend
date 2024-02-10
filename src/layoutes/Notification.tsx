@@ -13,9 +13,9 @@ interface Notification {
   type: string;
 }
 const ORDER_QUERY = gql`
-query{
-  notitfications{
-    id
+query Notifications {
+  notifications {
+     id
     recipientId
     message
     type
@@ -143,7 +143,7 @@ const NotificationComponent = () => {
             </Typography>
           </ListItem>
           <div>
-      {notifications.map((notification:Notification) => (
+      {notifications?.map((notification:Notification) => (
       <ListItem key={notification.recipientId} onClick={() => handleNotificationClick(notification)}>
       <ListItemText
         primary={notification.message}
