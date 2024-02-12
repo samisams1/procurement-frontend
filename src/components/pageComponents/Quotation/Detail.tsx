@@ -86,14 +86,6 @@ const QuotationDetail: React.FC = () => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
-
-  /*const handleCheckboxChange = (productId: string) => {
-    setSelectedItems((prevSelectedItems) => {
-      const updatedSelectedItems = { ...prevSelectedItems };
-      updatedSelectedItems[productId] = !updatedSelectedItems[productId];
-      return updatedSelectedItems;
-    });
-  };*/
   
 const handleCheckboxChange = (key: string, checked: boolean) => {
   setSelectedItems((prevSelectedItems) => {

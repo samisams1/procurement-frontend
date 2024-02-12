@@ -136,7 +136,7 @@ const Login: React.FC = () => {
               },
                startAdornment: (
           <InputAdornment position="start">
-            <Lock style={{ color: '#00b0ad' }} />
+            <Lock  />
           </InputAdornment>
         ),
             }}
