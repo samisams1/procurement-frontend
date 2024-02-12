@@ -10,14 +10,14 @@ import {
 import { UserContext, CurrentUser } from '../../../../../auth/UserContext';
 export const AccountProfileDetails = () => {
   const { currentUser } = useContext(UserContext);
-  const { firstName, lastName, role, email, username } = currentUser as CurrentUser;
+  const { firstName, lastName, role, email, username,address } = currentUser as CurrentUser;
   const [values] = useState({
     firstName: firstName,
     lastName: lastName,
     email: email,
     role: role,
     username: username,
-    country: 'Ethiopia'
+    country: address
   });
   const handleSubmit = () => {
     alert('samisams');

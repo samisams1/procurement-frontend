@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { alpha, styled } from '@mui/material/styles';
+import { alpha, styled, useTheme } from '@mui/material/styles';
 import {
   AppBar,
   Toolbar,
@@ -7,6 +7,7 @@ import {
   Typography,
   InputBase,
   Box,
+  useMediaQuery,
 } from '@mui/material';
 import { Menu as MenuIcon, Search as SearchIcon } from '@mui/icons-material';
 import LanguageSelector from './LanguageSelector';
@@ -14,6 +15,7 @@ import AccountPopover from './AccountPopover';
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import NotificationComponent from './Notification';
+
 const RootStyle = styled(AppBar)(({ theme }) => ({
   boxShadow: 'none',
   backdropFilter: 'blur(6px)',
@@ -48,7 +50,7 @@ const LogoText = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const SearchWrapper = styled(Box)({
+const SearchWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   flex: 1,
@@ -58,7 +60,11 @@ const SearchWrapper = styled(Box)({
   border: '1px solid #ccc',
   borderRadius: 4,
   padding: '4px',
-});
+  marginTop: theme.spacing(1), // Add margin top for small or minimized screens
+  [theme.breakpoints.up('md')]: {
+    marginTop: 0, // Reset margin top for larger screens
+  },
+}));
 
 const SearchInput = styled(InputBase)(({ theme }) => ({
   flex: 1,
@@ -91,6 +97,8 @@ export default function DashboardNavbar({
 }: DashboardNavbarProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleSearch = () => {
     navigate(`/result?searchTerm=${encodeURIComponent(searchTerm)}`);
@@ -110,15 +118,29 @@ export default function DashboardNavbar({
           <LogoText variant="h6">ET Pro-forma</LogoText>
         </LogoWrapper>
 
-        <SearchWrapper>
-          <SearchInput
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Search..."
-            startAdornment={<SearchIcon />}
-          />
-          <SearchButton onClick={handleSearch} text="Search" size="small" />
-        </SearchWrapper>
+        {isSmallScreen && (
+          <SearchWrapper>
+            <SearchInput
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search..."
+              startAdornment={<SearchIcon />}
+            />
+            <SearchButton onClick={handleSearch} text="Search" size="small" />
+          </SearchWrapper>
+        )}
+
+        {!isSmallScreen && (
+          <SearchWrapper>
+            <SearchInput
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search..."
+              startAdornment={<SearchIcon />}
+            />
+            <SearchButton onClick={handleSearch} text="Search" size="small" />
+          </SearchWrapper>
+        )}
 
         <ActionWrapper>
           <LanguageSelector />
@@ -127,5 +149,5 @@ export default function DashboardNavbar({
         </ActionWrapper>
       </ToolbarStyle>
     </RootStyle>
-  );
-}
+  )
+        }

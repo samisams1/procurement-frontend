@@ -1,161 +1,148 @@
-import React, { useContext, useState } from 'react';
-import { Chip, Grid, Stack } from '@mui/material';
-import MUIDataTable from 'mui-datatables';
-import { gql, useQuery } from '@apollo/client';
-import Spinner from '../../../Spinner';
-import { UserContext } from '../../../../auth/UserContext';
-import Button from '../../../Button';
-import Popup from '../../../Popup';
+import React, { useContext } from 'react';
+import { useQuery, gql } from '@apollo/client';
+import { Grid, createTheme, ThemeProvider } from '@mui/material';
+import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
 import { useNavigate } from 'react-router-dom';
-import OrderDetail from './orderDetail';
+import Button from '../../../Button';
+import { UserContext } from '../../../../auth/UserContext';
+import Spinner from '../../../Spinner';
+
 const ORDER_QUERY = gql`
-query GetOrderByCustomerId($customerId: Float!) {
-  getOrderByCustomerId(customerId: $customerId) {
-     id
-      status
-      tax
-      totalPrice
-      createdAt
-      shippingCost
-      customerId
-    supplierId
-    orderDetails {
+  query GetOrderUserById($getOrderByUserIdId: Int!) {
+    getOrderByUserId(id: $getOrderByUserIdId) {
       id
-      price
-      quantity
+      customerId
+      supplierId
+      totalPrice
+      tax
+      shippingCost
+      status
+      createdAt
+      updatedAt
+      referenceNumber
+      purchaseRequestId
+      supplier {
+        name
+      }
+      customer {
+        username
+      }
     }
   }
-}
 `;
 
-interface OrderInterface {
-  id: string;
-  customerId: string;
-  supplierId: string;
-  totalPrice: number;
-  createdAt: string;
-  status: string;
-  newstatus: string;
-}
-const Orders : React.FC = () => {
-  const { currentUser } = useContext(UserContext);
+const Orders: React.FC = () => {
   const navigate = useNavigate();
+  const { loading, error, data } = useQuery(ORDER_QUERY, {
+    variables: { getOrderByUserIdId: 1 }, // Specify the userId here
+  });
+  const { currentUser } = useContext(UserContext);
 
   if (!currentUser) {
     return <Spinner />;
   }
 
-  const id = currentUser.id as number; // Type assertion
+  if (loading) {
+    return <Spinner />;
+  }
 
-  return <List id={id} navigate={navigate} />;
-};
-
-  const List: React.FC<{ id: number; navigate: any }> = ({ id, navigate }) => {
-
-  const [openPopup, setOpenPopup] = useState(false);
-const { loading, error, data } = useQuery(ORDER_QUERY, {
-  variables: { customerId: id },
-});
-  if (loading) return <Spinner />;
-  if (error) return <p>{error.message}</p>;
-
-  const productList = data.getOrderByCustomerId.map((row: OrderInterface) => [
-    row.id,
-    row.customerId,
-    row.supplierId,
-    row.totalPrice,
-    row.createdAt,
-    row.status,
-  ]);
+  if (error) {
+    return <p>{error.message}</p>;
+  }
 
   const columns = [
+    { name: 'SN', options: { filter: false, sort: false } },
+    'ID',
+    'Reference Number',
+    'User',
+    'Suppliers',
+    'Status',
+    'Date',
     {
-      name: '#Order Id',
+      name: 'Action',
       options: {
-        filter: true,
-      },
-    },
-    {
-      name: 'Customer',
-      options: {
-        filter: true,
+        filter: false,
         sort: false,
-      },
-    },
-    {
-      name: 'Supplier',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'Total Price',
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: 'Date',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'Status',
-      options: {
-        filter: true,
-        sort: false,
-        customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
+        customBodyRender: (value: any, tableMeta: any) => {
+          const id = tableMeta.rowData[1];
           return (
-            <Stack direction="row" spacing={1}>
-              {value === 'approved' ? (
-                <Chip label={value} color="primary" />
-              ) : (
-                <Chip label={value} color="secondary" />
-              )}
-            </Stack>
-          );
-        },
-      },
-    },
-    {
-      name: 'Invoice',
-      options: {
-        filter: true,
-        sort: false,
-        empty: true,
-        customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
-          const orderId = productList[tableMeta.rowIndex][0];
-          return (
-            <Button 
-              text="Show Detail"
-              variant="outlined"
-              onClick={() => handleClick(orderId)}        
+            <Button
+              text="View Details"
+              onClick={() => {
+                navigate(`/orderDetail/${id}`);
+              }}
+              style={{ cursor: 'pointer' }}
             />
           );
         },
       },
     },
-    
   ];
-  const handleClick = (id: string) => {
-    navigate(`/orderDetail/${id}`);
+
+  const tableData = data.getOrderByUserId.map(
+    (order: any, index: number) => [
+      index + 1,
+      order.id,
+      order.customerId,
+      order.supplierId,
+      order.totalPrice,
+      order.status === 'pending' ? (
+        <span style={{ color: 'red' }}>{order.status}</span>
+      ) : (
+        <span style={{ color: 'green' }}>{order.status}</span>
+      ),
+      order.createdAt,
+      '',
+    ]
+  );
+
+  const options: MUIDataTableOptions = {
+    filter: true,
+    download: true,
+    print: true,
+    search: true,
+    selectableRows: 'none',
+    responsive: 'standard' as Responsive,
+    viewColumns: true,
+    rowsPerPage: 10,
+    rowsPerPageOptions: [10, 25, 50],
   };
+
+  const theme = createTheme({
+    components: {
+      MUIDataTableHeadCell: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#00b0ad',
+            color: 'white',
+          },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        },
+      },
+    },
+  });
+
   return (
-    <Grid container>
+    <Grid container spacing={3}>
       <Grid item xs={12}>
-        <MUIDataTable title="Order" data={productList} columns={columns} />
+        <ThemeProvider theme={theme}>
+          <MUIDataTable
+            title="Orders"
+            data={tableData}
+            columns={columns}
+            options={options}
+          />
+        </ThemeProvider>
       </Grid>
-      <Popup
-        title="Order Detail "
-        openPopup={openPopup}
-        setOpenPopup={setOpenPopup}
-      >
-        {<OrderDetail  />}
-      </Popup>
     </Grid>
   );
 };
-export default Orders
+
+export default Orders;

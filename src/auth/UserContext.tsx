@@ -7,6 +7,7 @@ export interface CurrentUser {
   lastName:string;
   role:string;
   email:string;
+  address:string;
 }
 
 export interface UserContextProps {

@@ -1,18 +1,30 @@
-import React from 'react'
-import { TextField } from '@mui/material';
+import React from 'react';
+import { TextField, InputAdornment, IconButton } from '@mui/material';
+import { Icon } from '@mui/material';
 
 export default function Input(props:any) {
+  const { name, label, value, error = null, onChange, icon, ...other } = props;
 
-    const { name, label, value,error=null, onChange, ...other } = props;
-    return (
-        <TextField
-            variant="outlined"
-            label={label}
-            name={name}
-            value={value}
-            onChange={onChange}
-            {...other}
-            {...(error && {error:true,helperText:error})}
-        />
-    )
+  return (
+    <TextField
+      variant="outlined"
+      label={label}
+      name={name}
+      value={value}
+      onChange={onChange}
+      {...other}
+      {...(error && { error: true, helperText: error })}
+      InputProps={{
+        ...(icon && {
+          startAdornment: (
+            <InputAdornment position="start">
+              <IconButton disabled>
+                <Icon style={{ color: '#00b0ad' }}>{icon}</Icon>
+              </IconButton>
+            </InputAdornment>
+          ),
+        }),
+      }}
+    />
+  );
 }

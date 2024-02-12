@@ -5,6 +5,7 @@ import {ThemeProvider, useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Popup from '../../Popup';
 import PurchaseDetail from './purchaseDetail';
+import { useNavigate } from 'react-router-dom';
 interface PurchaseRequest {
   id: number;
   userId: number;
@@ -25,7 +26,7 @@ interface PurchaseRequestVars {
 
 const PURCHASE_REQUEST_BY_SUPPLIER_QUERY = gql`
   query PurchaseRequestBYSupplierId($userId: Int!) {
-    purchaseRequestBYSupplierId(userId: $userId) {
+    purchaseRequestBYSupplierId(userId: $usTypographyerId) {
       id
       userId
       status
@@ -38,9 +39,10 @@ const PURCHASE_REQUEST_BY_SUPPLIER_QUERY = gql`
 `;
 const PurchaseRequests: React.FC = () => {
   const [openPopup, setOpenPopup] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [status, setStatus] = useState<string>('');
-  const [customerId, setCustomerId] = useState<string>('');
+  const [selectedId] = useState<number | null>(null);
+  const [status] = useState<string>('');
+  const [customerId] = useState<string>('');
+  const navigate = useNavigate();
   const { loading, error, data } = useQuery<PurchaseRequestData, PurchaseRequestVars>(PURCHASE_REQUEST_BY_SUPPLIER_QUERY, {
     variables: { userId: 1 }, // Replace with the desired user ID
   });
@@ -63,14 +65,15 @@ const PurchaseRequests: React.FC = () => {
   const { purchaseRequestBYSupplierId } = data!;
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>Typography
       <List>
         {purchaseRequestBYSupplierId.map((request) => (
           <ListItem key={request.id} alignItems="flex-start" disableGutters={!isMobile} divider onClick={() => {
-            setSelectedId(request.id);
+            /*setSelectedId(request.id);
             setStatus(request.status);
             setCustomerId("1");
-            setOpenPopup(true);
+            setOpenPopup(true);*/
+            navigate('/sendRfq')
           }}>
             <ListItemText
               primary={

@@ -55,8 +55,8 @@ interface RequestFormProps {
   onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string) => Promise<void>;
 }
 const GET_CATEGORIES = gql`
-  query {
-    categories {
+ query GetCategories {
+    getCategories {
       id
       name
     }
@@ -72,12 +72,12 @@ const GET_SUPPLIERS_BY_CATEGORY_ID = gql`
   }
 `;
 const GET_SUPPLIERS = gql`
-  query {
-    suppliers {
-      id
-      name
-    }
+query Suppliers {
+  suppliers {
+    id
+    name
   }
+}
 `;
 const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
 
@@ -372,9 +372,10 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
 
     let supplierNewId: string[] = [];
     if (selectedType === 'supplier') {
-      supplierNewId = supplierIds;
+      supplierNewId = ['1','2'];
    //   onSubmit(selectedType, supplierNewId);
-
+   console.log(supplierIds)
+console.log(supplierIds)
       onSubmit(products, supplierNewId,additional,selectedType);
 
     } else if (selectedType === 'agent' || selectedType === 'x-company') {
@@ -465,7 +466,7 @@ const handleAgentChange = (event: SelectChangeEvent) => {
           <InputLabel>Category</InputLabel>
           <Select value={selectedValue} onChange={handleChange} label="Category">
             {data &&
-              data.categories.map((category: Category) => (
+              data.getCategories.map((category: Category) => (
                 <MenuItem key={category.id} value={category.id}>
                   {category.name}
                 </MenuItem>

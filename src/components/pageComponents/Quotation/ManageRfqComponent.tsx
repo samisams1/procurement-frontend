@@ -1,154 +1,99 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { Grid, Paper, Typography } from '@mui/material';
-import Spinner from '../../Spinner';
-import { useParams } from 'react-router-dom';
+import { ThemeProvider, useTheme } from '@mui/material/styles';
+//import useMediaQuery from '@mui/material/useMediaQuery';
+//import { List, ListItem, ListItemText, Typography } from '@mui/material';
+//import { useNavigate } from 'react-router-dom';
 import QuotationDetail from './Detail';
-import PageHeader from '../../PageHeader';
-import { PeopleTwoTone } from '@mui/icons-material';
-import { UserContext } from '../../../auth/UserContext';
 
-interface PurchaseRequest {
-  id: number;
-  purchaseRequestId: string;
-  supplierId: string;
-  referceNumber:string
-  customerId: string;
+interface Product {
+  id: string;
+  Description: string;
+  code: string;
+  manufacture: string;
+  model: string;
+  partNumber: string;
+  quantity: number;
+  title: string;
+  uom: string;
+}
+
+interface Quotation {
+  shippingPrice: number;
+  status: string;
+}
+
+interface ProductPrice {
+  id: string;
+  productId: string;
+  price: number;
+  quotationId: string;
   status: string;
   createdAt: string;
-  productPrices: {
-    id: number;
-    product: {
-      title: string;
-      quantity: string;
-      partNumber: string;
-      code: string;
-      Description: string;
-      status: string;
-    };
-    price: number;
-  }[];
+  updatedAt: string;
+  product: Product;
+  quotation: Quotation;
 }
-interface CreateOrderComponentProps {
-  customerId: number;
-  fullName:string;
 
+interface GetAllProductPricesResponse {
+  getAllProductPrices: ProductPrice[];
 }
-const PURCHASE_REQUEST_BY_SUPPLIER_QUERY = gql`
-  query GetQuotationByRequestId($requestId: Float!) {
-    quotationByRequestId(requestId: $requestId) {
-      purchaseRequestId
+
+const GET_ALL_PRODUCT_PRICES = gql`
+  query GetAllProductPrices {
+    getAllProductPrices {
       id
-      customerId
-      supplierId
+      productId
+      price
+      quotationId
       status
       createdAt
-      productPrices {
+      updatedAt
+      product {
         id
-        product {
-          title
-          quantity
-          partNumber
-          code
-          Description
-          status
-        }
-        price
+        Description
+        codedata
+        manufacture
+        model
+        partNumber
+        quantity
+        title
+        uom
+      }
+      quotation {Typography
+        shippingPrice
+        status
       }
     }
   }
 `;
 
-const ManageRfqComponent: React.FC =()=> {
-const { currentUser } = useContext(UserContext);
+const ManageRfqComponent: React.FC = () => {
+  const { loading, error } = useQuery<GetAllProductPricesResponse>(GET_ALL_PRODUCT_PRICES);
+  const theme = useTheme();
+  //const navigate = useNavigate();
 
-if (!currentUser) {
-  return <Spinner />;
-}
-const customerId = currentUser.id as number; // Type assertion
-const fullName = currentUser.firstName;
-
-return <CreateOrderComponent  fullName = {fullName} customerId = {customerId}  />;
-};
-
-const CreateOrderComponent: React.FC<CreateOrderComponentProps> = ({ customerId,fullName }) => {
-  const { id } = useParams<{ id?: string }>();
-  const { loading, error, data } = useQuery(PURCHASE_REQUEST_BY_SUPPLIER_QUERY, {
-    variables: { requestId: Number(id) },
-  });
-
+  //const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   if (loading) {
-    return <Spinner />;
+    return <p>Loading...</p>;
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <p>Error: {error.message}</p>;
   }
 
-  const purchaseRequests = data?.quotationByRequestId;
-  /*const formatCreatedAt = (createdAt: string): string => {
-    // ... (formatting logic remains the same)
+  /*const handleProductClick = (productId: string) => {
+    // Handle the click event, e.g., show the details of the product
+    console.log(`Clicked on product with ID: ${productId}`);
+  };*/
+  /*const handleClick = (productId: string) => {
+    navigate(`/manageRfq/${productId}`);
   };*/
 
-  // Filter purchase requests where product status is "wait"
-  const filteredPurchaseRequests = purchaseRequests.filter(
-    (request: PurchaseRequest) =>
-      request.productPrices.some(
-        (price) => price.product.status === 'wait'
-      )
-  );
-
-  if (filteredPurchaseRequests.length === 0) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-    <Typography variant="h4">No RFQs available  Waiting ...</Typography>
-  </div>;
-  }
-
   return (
-    <div>
-      <div>
-      <PageHeader
-            title="send New Order"
-            subTitle="You can comapre the price and select and send order RFQ Details"
-            icon={<PeopleTwoTone fontSize="large" />}
-        /> 
-      <Grid container spacing={2}>
-        {purchaseRequests.map((request:PurchaseRequest) => (
-          request.status === "comformed" ?
-          <Grid item xs={12} sm={12} md={12} key={request.id} >
-            <Paper
-              elevation={3}
-              style={{
-                padding: '16px',
-                cursor: 'pointer',
-                backgroundColor: '#e0e0e0',
-                position: 'relative',
-              }}
-            > 
-               <Typography variant="body1" component="div" style={{ color: '#3c44b1' }}>
-                Supplier ID: {request.supplierId}
-              </Typography>
-              <Typography variant="body1" component="div" style={{ color: '#3c44b1' }}>
-                Customer Full Name: {fullName}
-              </Typography>
-              <Typography variant="body1" component="div" style={{ color: '#3c44b1' }}>
-                Request ID: {request.purchaseRequestId}
-              </Typography>
-              <Typography variant="body1" component="div" style={{ color: '#3c44b1' }}>
-                Request ID: {request.status}
-              </Typography>
-              <Typography variant="body1" component="div" style={{ color: '#555' }}>
-              </Typography>
-            </Paper>
-           <QuotationDetail id={Number(request.id)}  newId = {customerId}/>
-          </Grid>: ''
-        
-        ))}
-      </Grid>
-    
-    </div>
-    </div>
+    <ThemeProvider theme={theme}>
+      <QuotationDetail/>
+    </ThemeProvider>
   );
 };
-
 export default ManageRfqComponent;

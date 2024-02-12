@@ -3,7 +3,6 @@ import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import PageHeader from '../../components/PageHeader';
 import { PeopleAltTwoTone } from '@mui/icons-material';
-import OrderList from '../../components/pageComponents/order/OrderList';
 export const OrderSupplier = () => (
   <>
     <Helmet>
@@ -33,7 +32,7 @@ export const OrderSupplier = () => (
             subTitle="orders"
             icon={<PeopleAltTwoTone fontSize="large" />}
         /> 
-            <OrderList/>   
+          sup
           </Grid>
         </Grid>
       </Container>

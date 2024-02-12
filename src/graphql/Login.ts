@@ -19,7 +19,8 @@ mutation Login($username: String!, $password: String!) {
 		lastName
 		username
 		email
-		role    
+		role
+		address    
 	  }
 	}
   }

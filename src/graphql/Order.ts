@@ -85,7 +85,7 @@ query{
 }`;
 //new for this project
 export const COUNT_ORDER_BY_STATUS = gql`
-query CountOrderByStatus($status: String!, $userId: Float!) {
+query CountOrderByStatus($status: String!, $userId: Int!) {
   countOrderBystatus(status: $status, userId: $userId)
 }
 `

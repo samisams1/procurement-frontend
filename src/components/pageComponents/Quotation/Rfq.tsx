@@ -1,192 +1,137 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { Grid, createTheme, ThemeProvider } from '@mui/material';
-import MUIDataTable, { MUIDataTableOptions,MUIDataTableColumn, Responsive } from 'mui-datatables';
-
-import PageHeader from '../../PageHeader';
-import {RequestPageOutlined } from '@mui/icons-material';
-import Button from '../../Button';
+import { ThemeProvider, useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { List, ListItem, ListItemText, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { SectionTitle } from '../../Section';
-const GET_QUOTATIONS = gql`
-  query {
-    quotations {
+
+interface Product {
+  id: string;
+  Description: string;
+  code: string;
+  manufacture: string;
+  model: string;
+  partNumber: string;
+  quantity: number;
+  title: string;
+  uom: string;
+}
+
+interface Quotation {
+  shippingPrice: number;
+  status: string;
+}
+
+interface ProductPrice {
+  id: string;
+  productId: string;
+  price: number;
+  quotationId: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  product: Product;
+  quotation: Quotation;
+}
+
+interface GetAllProductPricesResponse {
+  getAllProductPrices: ProductPrice[];
+}
+
+const GET_ALL_PRODUCT_PRICES = gql`
+  query GetAllProductPrices {
+    getAllProductPrices {
       id
-      supplierId
-      customerId
+      productId
+      price
+      quotationId
       status
-      purchaseRequestId
-      shippingPrice
-      productPrices {
-        price
-        product {
-          title
-        }
+      createdAt
+      updatedAt
+      product {
+        id
+        Description
+        code
+        manufacture
+        model
+        partNumber
+        quantity
+        title
+        uom
+      }
+      quotation {
+        shippingPrice
+        status
       }
     }
   }
 `;
 
-interface Quotation {
-  id: string;
-  supplierId: string;
-  customerId: string;
-  shippingPrice: number;
-  status:string;
-  purchaseRequestId:string;
-  productPrices: {
-    price: number;
-    product: {
-      title: string;
-    };
-  }[];
-}
-// Define your GraphQL query
 const RfqComponent: React.FC = () => {
+  const { loading, error, data } = useQuery<GetAllProductPricesResponse>(GET_ALL_PRODUCT_PRICES);
+  const theme = useTheme();
   const navigate = useNavigate();
-  const { loading, error, data } = useQuery<{ quotations: Quotation[] }>(GET_QUOTATIONS);
+
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   if (loading) {
-    return <div>Loading...</div>;
+    return <p>Loading...</p>;
   }
+
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <p>Error: {error.message}</p>;
   }
-  const { quotations } = data!;
-  const handleClick = (id: string) => {
-    navigate(`/manageRfq/${id}`);
+
+  /*const handleProductClick = (productId: string) => {
+    // Handle the click event, e.g., show the details of the product
+    console.log(`Clicked on product with ID: ${productId}`);
+  };*/
+  const handleClick = (productId: string) => {
+    navigate(`/manageRfq/${productId}`);
   };
-
-  const calculateSubtotal = (quotation: Quotation) => {
-    let subtotal = 0;
-    quotation.productPrices.forEach((product) => {
-      subtotal += product.price;
-    });
-    return subtotal;
-  };
-  const calculateTotal = (quotation: Quotation) => {
-    const subtotal = calculateSubtotal(quotation);
-    const vat = subtotal * 0.2; // Assuming 20% VAT
-    const total = subtotal + vat + quotation.shippingPrice;
-    return total;
-  };
-
-  const columns: MUIDataTableColumn[] = [
-    {
-      name: 'SN',
-      options: {
-        customBodyRenderLite: (dataIndex) => {
-          return (
-            <div>
-              {dataIndex + 1}
-            </div>
-          );
-        },
-      },
-    },
-    {
-      name: 'Request Id',
-      options: {
-        customBodyRenderLite: (dataIndex) => {
-          return quotations[dataIndex].purchaseRequestId;
-        },
-      },
-    },
-    {
-      name: 'Customer ID',
-      options: {
-        customBodyRenderLite: (dataIndex) => {
-          return quotations[dataIndex].customerId;
-        },
-      },
-    },
-    {
-      name: 'Status',
-      options: {
-        customBodyRenderLite: (dataIndex) => {
-          return quotations[dataIndex].status;
-        },
-      },
-    },
-    {
-      name: 'Action',
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRenderLite: (dataIndex) => {
-          return (
-            <Button
-              text="View Details"
-              onClick={() => handleClick(quotations[dataIndex].purchaseRequestId)}
-              style={{ cursor: 'pointer' }}
-            />
-          );
-        },
-      },
-    },
-  ];
-
-  const tableData = quotations.map((quotation) => [
-    quotation.id,
-    quotation.supplierId,
-    quotation.customerId,
-    quotation.shippingPrice,
-    calculateSubtotal(quotation),
-    calculateSubtotal(quotation) * 0.2,
-    calculateTotal(quotation),
-    quotation.id,
-  ]);
-
-  const options: MUIDataTableOptions = {
-    filter: true,
-    download: true,
-    print: true,
-    search: true,
-    selectableRows: 'none', // or 'single' for single row selection
-    responsive: 'standard' as Responsive,
-    viewColumns: true,
-    rowsPerPage: 10,
-    rowsPerPageOptions: [10, 25, 50],
-  };
-
-  const theme = createTheme({
-    components: {
-      MUIDataTableHeadCell: {
-        styleOverrides: {
-          root: {
-            backgroundColor: '#1976d2',
-            color: 'white',
-          },
-        },
-      },
-      MuiTableCell: {
-        styleOverrides: {
-          root: {
-            paddingTop: 0,
-            paddingBottom: 0,
-          },
-        },
-      },
-    },
-  });
 
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <SectionTitle variant="outlined" square>
-          <PageHeader title="Request" icon={<RequestPageOutlined />} />
-        </SectionTitle>
-      </Grid>
-      <Grid item xs={12}>
-        <ThemeProvider theme={theme}>
-          <MUIDataTable
-            title="Requests"
-            data={tableData}
-            columns={columns}
-            options={options}
-          />
-        </ThemeProvider>
-      </Grid>
-    </Grid>
+    <ThemeProvider theme={theme}>
+      <List>
+        {data?.getAllProductPrices.map((productPrice) => (
+          <ListItem
+            key={productPrice.id}
+            alignItems="flex-start"
+            disableGutters={!isMobile}
+            divider
+            onClick={() => handleClick(productPrice.id)}
+            style={{ cursor: 'pointer' }}
+          >
+            <ListItemText
+              primary={
+                <Typography variant="h6" color="primary">
+                  Request ID: {productPrice.id}
+                </Typography>
+              }
+              secondary={
+                <>
+                  <Typography variant="body2" color="textSecondary">
+                    Created At: {productPrice.createdAt}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Status: {productPrice.status}
+                  </Typography>
+                </>
+              }
+            />
+            <div>
+              <Typography variant="h6" color="primary">
+                Products:
+              </Typography>
+              {productPrice.quotation && (
+                <Typography variant="body2">
+                  - Shipping Price: {productPrice.quotation.shippingPrice}
+                </Typography>
+              )}
+            </div>
+          </ListItem>
+        ))}
+      </List>
+    </ThemeProvider>
   );
 };
 

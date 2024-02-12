@@ -33,7 +33,6 @@ import VerifyUser from './pages/User/verify';
 import Report from './pages/report/Report';
 import AccountCreation from './pages/User/accountCreation';
 import ResetPasswordForm from './pages/User/reset-password';
-import SubOrderDetail from './components/pageComponents/order/OrderDetail';
 import SideMenu from './components/pageComponents/purchase/SideMenu';
 import PaymentReports from './components/pageComponents/purchase/report';
 import Shipping from './pages/shipping';
@@ -49,6 +48,7 @@ import Contact from './pages/home/ContactPage';
 import About from './pages/home/About';
 import Home from './pages/home/home';
 import LandingPage from './pages/home/samissm';
+import SendRfq from './pages/Quotation/sendRfq';
 export default function RoutePage() {
 
     return useRoutes([
@@ -82,8 +82,6 @@ export default function RoutePage() {
               { path:'/notificationDetail/:id', element: <ProtectedRoute  element={<NotificationDetail />} /> },
                
               { path:'/orderDetail/:id', element: <ProtectedRoute  element={<OrderDetail />} /> },
-              { path:'/subOrderDetail/:id', element: <ProtectedRoute  element={<SubOrderDetail />} /> },
-               
               { path: '/invoice', element: <ProtectedRoute  element={<Invoice />} /> },
               { path: '/paymentConfirmation/:id', element: <ProtectedRoute  element={<PaymentConfirmation />} /> },
               { path: '/result', element: <ProtectedRoute  element={<Result />} /> },
@@ -93,7 +91,6 @@ export default function RoutePage() {
               { path: '/paymentReports', element: <ProtectedRoute  element={<PaymentReports />} /> },
               { path: '/makePayment', element: <ProtectedRoute  element={<MakePaymentComponent />} /> },
 
-
               { path: '/shipping', element: <ProtectedRoute  element={<Shipping />} /> },
               { path: '/create-shipping', element: <ProtectedRoute  element={<CreateShipping />} /> },
 
@@ -102,6 +99,8 @@ export default function RoutePage() {
               { path: '/suppliers', element: <ProtectedRoute  element={<Supplier />} /> },
               { path: '/supplier', element: <ProtectedRoute  element={<SuppliersProfile />} /> },
               
+
+              { path: '/sendRfq', element: <ProtectedRoute  element={<SendRfq />} /> },
             ],
           },
           {

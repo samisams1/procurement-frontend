@@ -7,6 +7,7 @@ import Controls from '../../Controls';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { userInterface } from '../../../interface/interfaces';
 import { USER_QUERY } from '../../../graphql/Users';
+import { AccountCircle, EmailTwoTone, KeyOutlined, PhoneEnabledTwoTone } from '@mui/icons-material';
 
 interface Category {
   id: string;
@@ -123,21 +124,8 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
       if ('companyName' in fieldValues) temp.companyName = fieldValues.companyName ? '' : 'This field is required.';
       if ('category' in fieldValues) temp.category = fieldValues.category ? '' : 'This field is required.';
     }
-    if ('password' in fieldValues) {
-      if (fieldValues.password) {
-        const strongPasswordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
-       // const weakPasswordRegex = /^(?=.*\d)(?=.*[a-zA-Z]).{6,}$/;
-    
-        if (!strongPasswordRegex.test(fieldValues.password)) {
-          temp.password = 'Password should be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.';
-        } else {
-          temp.password = '';
-        }
-      } else {
-        temp.password = 'This field is required.';
-      }
-    }
- 
+    if ('password' in fieldValues) temp.password = fieldValues.password ? '' : 'This field is required.';
+
     setErrors({
       ...temp,
     });
@@ -193,7 +181,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 value={values.companyName}
                 onChange={handleInputChange}
                 error={errors.companyName}
-                fullWidth // Make input full width
+                fullWidth // Make input full width••••••••••••
                 style={{ marginBottom: '1rem' }}
               />
 
@@ -220,7 +208,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
           </div>
         
 
-          )}
+          )}••••••••••••
               <Controls.Input
                 name="firstName"
                 label="First Name"
@@ -228,6 +216,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 onChange={handleInputChange}
                 error={errors.firstName}
                 fullWidth 
+                icon={<AccountCircle />} // Add icon for the field
                 sx={{
                   width: '100%',
                   marginTop: '1rem',
@@ -243,6 +232,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 onChange={handleInputChange}
                 error={errors.lastName}
                 fullWidth // Make input full width
+                icon={<AccountCircle />}
                 style={{ marginBottom: '1rem' }}
               />
 
@@ -253,6 +243,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 onChange={handleInputChange}
                 error={errors.username}
                 fullWidth // Make input full width
+                icon={<AccountCircle />}
                 style={{ marginBottom: '1rem' }}
                 inputProps={{ autoComplete: 'off' }}
               />
@@ -264,6 +255,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 onChange={handleInputChange}
                 error={errors.phoneNumber}
                 fullWidth // Make input full width
+                icon={<PhoneEnabledTwoTone />}
                 style={{ marginBottom: '1rem' }}
               />
               <Controls.Input
@@ -273,6 +265,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 onChange={handleInputChange}
                 error={errors.email}
                 fullWidth // Make input full width
+                icon={<EmailTwoTone />}
                 style={{ marginBottom: '1rem' }}
               />
                <FormControl fullWidth style={{ marginBottom: '1rem' }}>
@@ -322,6 +315,8 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   onChange={handleInputChange}
   error={errors.password}
   fullWidth
+  icon={<KeyOutlined />}
+
   style={{ marginBottom: '1rem' }}
   type="password" // Set the input type to "password"
   inputProps={{ autoComplete: 'off' }}

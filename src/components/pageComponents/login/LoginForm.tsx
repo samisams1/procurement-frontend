@@ -59,11 +59,11 @@ const Login: React.FC = () => {
       const user = data.login.user;
       localStorage.setItem('token', token);
       setCurrentUser(user);
-      const { firstName, lastName, email, role } = user;
+      const { firstName, lastName, email, role,address } = user;
       setLoading(false);
       setShowSuccessAlert(true);
       navigate('/');
-      console.log('Logged in successfully:', { firstName, lastName, email, role });
+      console.log('Logged in successfully:', { firstName, lastName, email, role,address });
     } catch (error:any) {
       setBackendError(error.message);
       setLoading(false);
