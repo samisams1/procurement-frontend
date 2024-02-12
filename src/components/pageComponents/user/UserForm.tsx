@@ -208,7 +208,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
           </div>
         
 
-          )}••••••••••••
+          )}
               <Controls.Input
                 name="firstName"
                 label="First Name"
