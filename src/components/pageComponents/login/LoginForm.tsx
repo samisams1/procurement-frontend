@@ -3,6 +3,9 @@ import { useMutation } from '@apollo/client';
 import { LOGIN_MUTATION } from '../../../graphql/Login';
 import { UserContext } from '../../../auth/UserContext';
 import { useNavigate } from 'react-router-dom';
+import {  InputAdornment } from '@mui/material';
+import { AccountCircle, Lock } from '@mui/icons-material';
+
 import { TextField, Button, CircularProgress, Typography, Grid } from '@mui/material';
 import Popup from '../../Popup';
 import Register from '../../../pages/account/Register';
@@ -107,7 +110,13 @@ const Login: React.FC = () => {
                 root: 'input-field',
                 focused: 'input-field-focused', // Add a custom class for focused state
               },
+              startAdornment: (
+                <InputAdornment position="start">
+                  <AccountCircle style={{ color: '#00b0ad' }} />
+                </InputAdornment>
+              ),
             }}
+            
             error={validationErrors.includes('Username is required')}
             helperText={validationErrors.includes('Username is required') ? 'This field is required' : ''}
             required // Added required attribute
@@ -125,6 +134,11 @@ const Login: React.FC = () => {
                 root: 'input-field',
                 focused: 'input-field-focused', // Add a custom class for focused state
               },
+               startAdornment: (
+          <InputAdornment position="start">
+            <Lock style={{ color: '#00b0ad' }} />
+          </InputAdornment>
+        ),
             }}
             error={validationErrors.includes('Password is required')}
             helperText={validationErrors.includes('Password is required') ? 'This field is required' : ''}

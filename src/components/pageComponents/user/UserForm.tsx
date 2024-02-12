@@ -7,8 +7,8 @@ import Controls from '../../Controls';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { userInterface } from '../../../interface/interfaces';
 import { USER_QUERY } from '../../../graphql/Users';
-import { AccountCircle, EmailTwoTone, KeyOutlined, PhoneEnabledTwoTone } from '@mui/icons-material';
-
+import { AccountCircle, EmailTwoTone, Lock, PhoneEnabledTwoTone } from '@mui/icons-material';
+//import PhoneInput from 'react-phone-number-input';
 interface Category {
   id: string;
   name: string;
@@ -258,6 +258,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 icon={<PhoneEnabledTwoTone />}
                 style={{ marginBottom: '1rem' }}
               />
+
               <Controls.Input
                 name="email"
                 label="Email"
@@ -315,7 +316,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   onChange={handleInputChange}
   error={errors.password}
   fullWidth
-  icon={<KeyOutlined />}
+  icon={<Lock />}
 
   style={{ marginBottom: '1rem' }}
   type="password" // Set the input type to "password"
