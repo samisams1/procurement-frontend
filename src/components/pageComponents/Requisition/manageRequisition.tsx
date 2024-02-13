@@ -1,30 +1,42 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
 import PageHeader from '../../PageHeader';
-import {Edit, RequestPageOutlined } from '@mui/icons-material';
+import { Edit, RequestPageOutlined } from '@mui/icons-material';
 import Button from '../../Button';
 import { useNavigate } from 'react-router-dom';
 import { SectionTitle } from '../../Section';
 import { GET_QUOTES } from '../../../graphql/rquest';
-// Define your GraphQL query
+
 const ManageRequisitionComponent: React.FC = () => {
   const navigate = useNavigate();
-  const { loading, error, data } = useQuery(GET_QUOTES);
+  const { loading, error, data, refetch } = useQuery(GET_QUOTES);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetch();
+    }, 10000); // Refetch data every 10 seconds
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [refetch]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
+
   if (error) {
     return <div>Error: {error.message}</div>;
   }
-  // Access the data returned by the query
+
   const { purchaseRequests } = data;
-  console.log(purchaseRequests)
-  // Render your component using the data
+
   const handleClick = (id: string) => {
     navigate(`/purchaseRequest/${id}`);
   };
+
   const columns = [
     { name: 'SN', options: { filter: false, sort: false } },
     'ID',
@@ -42,12 +54,12 @@ const ManageRequisitionComponent: React.FC = () => {
           const purchaseRequestId = tableMeta.rowData[1];
           return (
             <Button
-            variant="outlined"
-            startIcon={<Edit />}
-            onClick={() => handleClick(purchaseRequestId)}
-            style={{ whiteSpace: 'nowrap',color:'#00b0ad' }}
-               text="  View Item"
-          />
+              variant="outlined"
+              startIcon={<Edit />}
+              onClick={() => handleClick(purchaseRequestId)}
+              style={{ whiteSpace: 'nowrap', color: '#00b0ad' }}
+              text="  View Item"
+            />
           );
         },
       },
@@ -58,13 +70,13 @@ const ManageRequisitionComponent: React.FC = () => {
     index + 1,
     purchaseRequest.id,
     purchaseRequest.referenceNumber,
-       "sams",
-       "Costruction",
-    //purchaseRequest.suppliers.map((supplier: any) => supplier.user.username).join(', '),
-    purchaseRequest.status ==="pending" ?
-   
-    <span style={{ color: 'red' }}>{purchaseRequest.status}</span>:
-    <span style={{ color: 'green' }}>{purchaseRequest.status}</span>,
+    'sams',
+    'Costruction',
+    purchaseRequest.status === 'pending' ? (
+      <span style={{ color: 'red' }}>{purchaseRequest.status}</span>
+    ) : (
+      <span style={{ color: 'green' }}>{purchaseRequest.status}</span>
+    ),
     purchaseRequest.createdAt,
   ]);
 
@@ -73,7 +85,7 @@ const ManageRequisitionComponent: React.FC = () => {
     download: true,
     print: true,
     search: true,
-    selectableRows: 'none', // or 'single' for single row selection
+    selectableRows: 'none',
     responsive: 'standard' as Responsive,
     viewColumns: true,
     rowsPerPage: 10,

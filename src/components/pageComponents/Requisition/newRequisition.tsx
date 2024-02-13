@@ -6,6 +6,8 @@ import Alert from '@mui/material/Alert';
 import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
 import RequestForm, { SaleInput } from '../purchase/requestForm';
+import { GET_QUOTES } from '../../../graphql/rquest';
+import { useNavigate } from 'react-router-dom';
 
 const CREATE_PURCHASE_REQUEST_MUTATION = gql`
 mutation CreatePurchaseRequest($input: CreatePurchaseRequestInput!) {
@@ -44,8 +46,11 @@ export interface AdditionalData {
   addressDetail: string;
 }
 const NewRequisitionComponent: React.FC = () => {
+  const navigate = useNavigate();
   const [flashMessage, setFlashMessage] = useState('');
-  const [createPurchaseRequest] = useMutation(CREATE_PURCHASE_REQUEST_MUTATION);
+  const [createPurchaseRequest] = useMutation(CREATE_PURCHASE_REQUEST_MUTATION, {
+    refetchQueries: [{ query:GET_QUOTES }],
+  });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const { currentUser } = useContext(UserContext);
 
@@ -98,6 +103,15 @@ const NewRequisitionComponent: React.FC = () => {
 
       setFlashMessage('Purchase request created successfully');
       setOpenSnackbar(true);
+
+      setTimeout(() => {
+        if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
+          navigate(`/purchaseRequest/${response.data.createPurchaseRequest.id}`);
+        } else {
+          console.error('Invalid response data');
+          // Handle the case when the response data is not as expected
+        }
+      }, 2000);
 
     } catch (error: any) {
       console.error('Error creating purchase request:', error);

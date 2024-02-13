@@ -452,8 +452,8 @@ return(
       onChange={() => handleOptionChange('x-company')}
       disabled={selectedOptions.length === 1 && !selectedOptions.includes('x-company')}
     />
-    {selectedOptions.includes('x-company') ? <span>{selectedOptions[0]}</span> : null}
-    <Typography>X-company</Typography>
+    {selectedOptions.includes('x-company') ? <span></span> : null}
+    <Typography>Nile Soft</Typography>
   </Box>
 </Grid>
               {selectedOptions.includes('supplier') && (
