@@ -4,7 +4,6 @@ import {
   SelectChangeEvent,
 
   Box,
-  useMediaQuery,
 } from '@mui/material';
 import {
   Grid,
@@ -21,7 +20,7 @@ import {
 } from '@mui/material';
 import { Add, DeleteOutlineTwoTone, RequestPageOutlined, RequestPageTwoTone } from '@mui/icons-material';
 import PageHeader from '../../PageHeader';
-import { ThemeProvider, useTheme } from '@mui/material/styles';
+
 interface Category {
   id: string;
   name: string;
@@ -407,13 +406,18 @@ const handleAgentChange = (event: SelectChangeEvent) => {
   };
 
   const supNewData: Supplier[] = supData?.suppliers;
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-return(
-  <ThemeProvider theme={theme}>
-     <form onSubmit={handleSubmit} onReset={handleReset}>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={12}>
+  return (
+    <div>
+     
+
+      <Grid item xs={12}>
+       
+
+        <form onSubmit={handleSubmit} onReset={handleReset}>
+        <Grid item xs={12}>
+     <div>
+        <Grid>
+        <Paper elevation={3} sx={{ padding: '20px' }}>
           <PageHeader
             title="NEW REQUISITION FORM"
             subTitle="Create new requisition"
@@ -425,7 +429,7 @@ return(
                 <Typography>Select Your Source</Typography>
               </Grid>
               
-              <Grid item xs={4} sm={4}>
+              <Grid item xs={12} sm={4}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Checkbox
             checked={selectedOptions.includes('supplier')}
@@ -435,7 +439,7 @@ return(
           <Typography>Supplier</Typography>
         </Box>
       </Grid>
-      <Grid item xs={4} sm={4}>
+      <Grid item xs={12} sm={4}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Checkbox
             checked={selectedOptions.includes('agent')}
@@ -445,7 +449,7 @@ return(
           <Typography>Agent</Typography>
         </Box>
       </Grid>
-      <Grid item xs={4} sm={4}>
+      <Grid item xs={12} sm={4}>
   <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
     <Checkbox
       checked={selectedOptions.includes('x-company')}
@@ -489,17 +493,23 @@ return(
               
             </Grid>
           </Paper>
+          </Paper>
         </Grid>
-        {errorMessage && (
+     </div>
+      
+      </Grid>
+
+      {errorMessage && (
         <Grid item xs={12}>
           <Typography variant="body1" color="error">
             {errorMessage}
           </Typography>
         </Grid>
-        )}
-       
-        <Grid item xs={12} sm={12}>
-        <Paper elevation={3} sx={{ padding: '20px' }}>
+      )}
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={12}></Grid>
+          <Grid item xs={12} sm={12}>
+            <Paper elevation={3} sx={{ padding: '20px' }}>
             <div style={{
   display: 'flex',
   alignItems: 'center',
@@ -517,267 +527,8 @@ return(
     Add Item
   </Button>
 </div>
-</Paper>
-        </Grid>
-        {isMobile ? (  
-        <TableBody>
-    {productTitles.map((title, index) => (
-     <Grid item xs={12} key={index} sx={{  marginLeft:'1rem', padding: '8px', border: '1px solid #ddd' }}>
-     
-          <FormControl style={{ flex: 1, marginBottom: '1rem'  }} >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                padding: '6px 10px',
-                cursor: 'pointer',
-              }}
-            >
-              <input
-                type="file"
-                accept=".pdf"
-                style={{
-                  display: 'none',
-                }}
-                // onChange={handleFileChange}
-              />
-              <label htmlFor="attachment-input">
-               
-                <Button
-                  variant="outlined"
-                  style={{
-                    textTransform: 'none',
-                    fontSize: '14px',
-                    color: '#00b0ad',
-                    borderColor: '##00b0ad',
-                  }}
-                >
-                  Browse
-                </Button>
-              </label>
-            </div>
-          </FormControl>
-     <TextField
-      label="Item Name"
-      variant="outlined"
-      fullWidth
-      value={title}
-      onChange={(e) => handleTitleChange(index, e.target.value)}
-      error={titleErrors[index] !== ''}
-     style={{ marginBottom: '1rem' }}
-    />
-       <TextField
-      label="Item Code"
-      variant="outlined"
-      fullWidth
-      value={itemCodes[index]}
-      onChange={(e) => handleItemCodeChange(index, e.target.value)}
-      error={itemCodeErrors[index] !== ''}
-     style={{ marginBottom: '1rem' }}
-    />
-    <TextField
-      label="Part Number"
-      variant="outlined"
-      fullWidth
-      value={partNumbers[index]}
-      onChange={(e) => handlePartNumberChange(index, e.target.value)}
-      error={partNumberErrors[index] !== ''}
-     style={{ marginBottom: '1rem' }}
-    />
-       <TextField
-      label="UOM"
-      variant="outlined"
-      fullWidth
-      value={uoms[index]}
-      onChange={(e) => handleUomChange(index, e.target.value)}
-      error={uomErrors[index] !== ''}
-     style={{ marginBottom: '1rem' }}
-    /> 
-    <TextField
-      label="Qty"
-      variant="outlined"
-      fullWidth
-      value={quantities[index]}
-      onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
-      error={quantityErrors[index] !== ''}
-     style={{ marginBottom: '1rem' }}
-    /> 
-      
-        <div>
-        <Accordion
-    key={index}
-    expanded={expanded === `panel${index}`}
-    onChange={handleAccordionChange(`panel${index}`)}
-  >
-        <AccordionSummary expandIcon={<Add />} aria-controls="panel1bh-content" id="panel1bh-header">
-          <Typography>Add More</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <div>
-         <TextField
-      label="Mark"
-      variant="outlined"
-      fullWidth
-      value={marks[index]}
-      onChange={(e) => handleMarkChange(index, e.target.value)}
-      //error={quantityErrors[index] !== ''}
-     style={{ marginBottom: '1rem' }}
-    /> 
-        
-      <TextField
-      label="Description"
-      variant="outlined"
-      fullWidth
-      value={descriptions[index]}
-      onChange={(e) => handleDescriptionChange(index, e.target.value)}
-      //   error={quantityErrors[index] !== ''}
-      style={{ marginBottom: '1rem' }}
-      /> 
-      <TextField
-      label="Manufacture"
-      variant="outlined"
-      fullWidth
-      value={manufacturers[index]}
-      onChange={(e) => handleManufacturersChange(index, e.target.value)}
-      //   error={quantityErrors[index] !== ''}
-      style={{ marginBottom: '1rem' }}
-      /> 
-      <TextField
-      label="Model"
-      variant="outlined"
-      fullWidth
-      value={models[index]}
-      onChange={(e) => handleModelChange(index, e.target.value)}
-      //   error={quantityErrors[index] !== ''}
-      style={{ marginBottom: '1rem' }}
-      />
-          </div>
-        </AccordionDetails>
-      </Accordion>
 
-
-      {/* Rest of your code */}
-    </div>
-    
-        
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => handleRemoveTitle(index)}
-            disabled={productTitles.length === 1}
-            startIcon={<DeleteOutlineTwoTone />}
-          >
-            
-          </Button>
-      </Grid>
-    ))}
-              <Grid item xs={12} sm={12}>
-            <Paper elevation={3} sx={{ padding: '20px' }}>
-<Grid container spacing={2}>
-<Grid item xs={12} sm={6}>
-    <TextField
-      label="Address details"
-      variant="outlined"
-      fullWidth
-      value={addressDetail}
-      onChange={(e) => handleAddressChange(e.target.value)}
-     // error={remarkErrors !== ''}
-    />
-  </Grid>
-  <Grid item xs={12} sm={6} md={4}>
-    <FormControl variant="outlined" fullWidth>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          padding: '6px 10px',
-          cursor: 'pointer',
-        }}
-      >
-        <input
-          type="file"
-          accept=".pdf"
-          style={{ display: 'none' }}
-          // onChange={handleFileChange}
-        />
-        <label htmlFor="attachment-input">
-          <span
-            style={{
-              flex: 1,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              marginRight: '10px',
-            }}
-          >
-            Attache a file
-          </span>
-          <Button
-            variant="outlined"
-            style={{
-              textTransform: 'none',
-              fontSize: '14px',
-              color: '#00b0ad',
-              borderColor: '##00b0ad',
-            }}
-          >
-            Browse
-          </Button>
-        </label>
-      </div>
-    </FormControl>
-  </Grid>
-
-  <Grid item xs={12} sm={6} md={4}>
-    <Grid item xs={12}>
-          <TextField
-            select
-            required
-            label="Estimated Delivery Date"
-            value={estimatedDelivery}
-            onChange={handleDateChange}
-            fullWidth
-          >
-            {renderDateOptions()}
-          </TextField>
-        </Grid>
-
-  </Grid>
-
-  <Grid item xs={12} sm={6}>
-    <TextField
-      label="Remark"
-      variant="outlined"
-      value={remark}
-      onChange={(e) => handleRemarkChange(e.target.value)}
-     // error={remarkErrors !== ''}
-      fullWidth
-
-    />
-  </Grid>
-</Grid>
-<Grid>
-      <Button
-          variant="contained"
-          color="primary"
-          startIcon={<RequestPageOutlined />}
-          onClick={handleSubmit}
-        >
-          Submit
-        </Button>
-      </Grid>
-</Paper>
-   </Grid>
-  </TableBody>
-  
-  ):(
-    <Grid container spacing={2}>
-    <Paper elevation={3} sx={{ padding: '20px' }}>
-    <Table>
+<Table>
   <TableHead>
     <TableRow sx={{ backgroundColor: '#00b0ad' }}>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Image</TableCell>
@@ -940,7 +691,9 @@ placeholder="Item Name"
     ))}
   </TableBody>
 </Table>
-<Grid item xs={12} sm={12}>
+</Paper>
+           </Grid>
+           <Grid item xs={12} sm={12}>
             <Paper elevation={3} sx={{ padding: '20px' }}>
 <Grid container spacing={2}>
 <Grid item xs={12} sm={6}>
@@ -1027,7 +780,13 @@ placeholder="Item Name"
     />
   </Grid>
 </Grid>
-<Grid>
+
+</Paper>
+   </Grid>
+
+            
+            </Grid>
+            <Grid>
       <Button
           variant="contained"
           color="primary"
@@ -1037,22 +796,13 @@ placeholder="Item Name"
           Submit
         </Button>
       </Grid>
-</Paper>
-   </Grid>
-   </Paper>
-   </Grid>
-  ) 
-}
-        {isMobile && (
-          <Grid item xs={12}>
-            {/* Additional content for mobile layout */}
-          </Grid>
-        )}
-      </Grid>
       </form>
-        {loadingSuppliers && <p>Loading suppliers...</p>}
-    </ThemeProvider>
-)
+      
+      </Grid>
+
+      {loadingSuppliers && <p>Loading suppliers...</p>}
+    </div>
+  );
 };
 
 export default RequestForm;

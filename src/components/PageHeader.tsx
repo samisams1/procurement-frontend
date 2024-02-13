@@ -22,10 +22,10 @@ export default function PageHeader(props: any) {
       <RowContainer>
         {icon}
         <div>
-          <Typography variant="h6" component="div">
+        <Typography variant="h6" component="div" style={{ color: '#ffffff' }}>
             {title}
           </Typography>
-          <Typography variant="subtitle2" component="div">
+          <Typography variant="subtitle2" component="div" style={{ color: '#ffffff' }}>
             {subTitle}
           </Typography>
         </div>
