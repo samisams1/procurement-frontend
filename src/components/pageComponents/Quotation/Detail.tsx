@@ -38,12 +38,12 @@ interface ProductPrice {
 }
 
 interface GetAllProductPricesResponse {
-  getAllProductPrices: ProductPrice[];
+  quotationByRequestId: ProductPrice[];
 }
 
 const GET_ALL_PRODUCT_PRICES = gql`
-  query GetAllProductPrices {
-    getAllProductPrices {
+query QuotationByRequestId($id: Int!) {
+  quotationByRequestId(id: $id) {
       id
       productId
       price
@@ -71,9 +71,14 @@ const GET_ALL_PRODUCT_PRICES = gql`
     }
   }
 `;
+type QuotationDetailProps = {
+  qId:number;
+};
 
-const QuotationDetail: React.FC = () => {
-  const { loading, error, data } = useQuery<GetAllProductPricesResponse>(GET_ALL_PRODUCT_PRICES);
+const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId }) => {
+  const { loading, error, data } = useQuery<GetAllProductPricesResponse>(GET_ALL_PRODUCT_PRICES,{
+    variables: { id: qId}
+  });
   const theme = useTheme();
  // const navigate = useNavigate();
   const [selectedItems, setSelectedItems] = useState<{ [productId: string]: boolean }>({});
@@ -96,7 +101,7 @@ const handleCheckboxChange = (key: string, checked: boolean) => {
 };
   // Group product prices by quotationId
   const quotationGroups: { [key: string]: ProductPrice[] } = {};
-  data?.getAllProductPrices.forEach((productPrice) => {
+  data?.quotationByRequestId.forEach((productPrice) => {
     const quotationId = productPrice.quotationId;
     if (quotationGroups[quotationId]) {
       quotationGroups[quotationId].push(productPrice);
@@ -109,7 +114,7 @@ const handleCheckboxChange = (key: string, checked: boolean) => {
     event.preventDefault();
 
     // Get the selected products
-    const selectedProducts = data?.getAllProductPrices.filter(
+    const selectedProducts = data?.quotationByRequestId.filter(
       (productPrice) => selectedItems[productPrice.productId]
     );
 console.log(selectedProducts)

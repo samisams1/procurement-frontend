@@ -19,6 +19,7 @@ interface Product {
 
 interface Quotation {
   shippingPrice: number;
+  purchaseRequestId:string;
   status: string;
 }
 
@@ -62,6 +63,7 @@ const GET_ALL_PRODUCT_PRICES = gql`
       quotation {
         shippingPrice
         status
+        purchaseRequestId
       }
     }
   }
@@ -80,11 +82,6 @@ const RfqComponent: React.FC = () => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
-
-  /*const handleProductClick = (productId: string) => {
-    // Handle the click event, e.g., show the details of the product
-    console.log(`Clicked on product with ID: ${productId}`);
-  };*/
   const handleClick = (productId: string) => {
     navigate(`/manageRfq/${productId}`);
   };
@@ -98,7 +95,7 @@ const RfqComponent: React.FC = () => {
             alignItems="flex-start"
             disableGutters={!isMobile}
             divider
-            onClick={() => handleClick(productPrice.id)}
+            onClick={() => handleClick(productPrice.quotation.purchaseRequestId)}
             style={{ cursor: 'pointer' }}
           >
             <ListItemText
@@ -113,7 +110,7 @@ const RfqComponent: React.FC = () => {
                     Created At: {productPrice.createdAt}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    Status: {productPrice.status}
+                  Status  <span style={{ color: 'red' }}>: {productPrice.status}</span>
                   </Typography>
                 </>
               }

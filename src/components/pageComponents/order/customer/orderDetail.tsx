@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Grid, Paper, Typography } from '@mui/material';
 //import numberToWords from 'number-to-words';
 import { gql } from '@apollo/client';
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../../../auth/UserContext';
 import Spinner from '../../../Spinner';
 import Button from '../../../Button';
+//import { number } from 'prop-types';
 
 const GET_ORDER_DETAIL_BY_ORDER_ID = gql`
   query GetOrderDetailByOrderId($id: Int!) {
@@ -52,7 +53,14 @@ const GET_ORDER_DETAIL_BY_ORDER_ID = gql`
     }
   }
 `;
-
+const UPDATE_ORDER = gql`
+mutation UpdateOrder($id: Int!, $input: String!) {
+  updateOrder(id: $id, input: $input) {
+    id
+    status
+  }
+}
+`;
 
 
 interface Product {
@@ -107,6 +115,10 @@ interface OrderDetailVariables {
 
 function ProductTable({ orderId }: { orderId: number }) {
   const navigate = useNavigate();
+  //const [updateOrder] = useMutation(UPDATE_ORDER);
+  //const [updateOrder, { loading: loadingOrder, error: errorOrder }] = useMutation(UPDATE_ORDER);
+
+  const [updateOrder] = useMutation(UPDATE_ORDER);
 
   const { loading, error, data } = useQuery<OrderDetailData, OrderDetailVariables>(GET_ORDER_DETAIL_BY_ORDER_ID, {
     variables: { id: orderId },
@@ -128,7 +140,7 @@ function ProductTable({ orderId }: { orderId: number }) {
   if (error) return <p>Error: {error}</p>;
   const orderDetail = data?.getOrderDetailByOrderId[0]; // Assuming there's only one order detail for a given order ID
   
-  const status = orderDetail?.order?.status[0];
+  //const status = orderDetail?.order?.status[0];
   const shippingCost = data?.getOrderDetailByOrderId[0].order.shippingCost || 0;
   const subTotal = data?.getOrderDetailByOrderId.reduce((total, orderDetail) => {
     return total + orderDetail.price * orderDetail.quantity;
@@ -138,19 +150,21 @@ function ProductTable({ orderId }: { orderId: number }) {
     const handlePrint = () => {
       window.print();
     };
-    //grand total in words
-   // const amountInWords = numberToWords.toWords(grandTotal);
   
     const handlePayment = () => {
-      // Handle payment logic here
-      // Open the payment page in a new tab or window
       navigate(`/payment/${1}`);
     };
- /*   const formatDate = (dateString: string): string => {
-      const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-      const date: Date = new Date(dateString);
-      return date.toLocaleDateString(undefined, options);
-    };*/
+    const handleUpdate = async (e: React.FormEvent) => {
+      e.preventDefault();
+  
+      try {
+        const { data } = await updateOrder({ variables: { id:orderId, input:"samisams" } });
+        console.log('Order updated:', data.updateOrder);
+      } catch (updateError) {
+        console.error('Failed to update order:', updateError);
+      }
+    };
+
     
   return (
     <div>
@@ -244,31 +258,74 @@ function ProductTable({ orderId }: { orderId: number }) {
         Grand Total <span className="float-right">{grandTotal.toLocaleString()} Birr</span>
       </Typography>
     </TableContainer>
-    <div>
-      <button className="print-button" onClick={handlePrint}>
+    <button className="print-button" onClick={handlePrint}>
         Print
       </button>
-      {currentUser.role === "ADMIN"  &&(
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div>
+  {orderDetail?.order.status === "comformed" && (
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      {currentUser.role !== "ADMIN" && (
         <h1 style={{ color: 'green', marginRight: '10px' }}>
-          The Order Status is Approved. Please Make Payment!
+          Waiting for Admin approval for the order.
         </h1>
+      )}
+      {currentUser.role === "ADMIN" && (
         <Button
           variant="contained"
           color="secondary"
-          onClick={handlePayment}
-          text="Make Payment"
+          onClick={handleUpdate}
+          text="Approve Order"
         />
-      </div>
       )}
-        {currentUser.role === "SUPPLIER"  &&  status === "pending" &&(
-         <h1 style={{color:"red"}}>The Order Status is pending Please wait for Supplier Comformation!</h1>
-      )}
-       {currentUser.role === "CUSTOMER"  &&(
-         <h1 style={{color:"#1c9fef"}}>The Order Status is comformed Please wait for Admin Approval!</h1>
-      )}
-      </div>
     </div>
+  )}
+
+  {orderDetail?.order.status === "pending" && (
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      {currentUser.role !== "SUPPLIER" && (
+        <h1 style={{ color: 'green', marginRight: '10px' }}>
+          Waiting for Supplier confirmation for the order.
+        </h1>
+      )}
+      {currentUser.role === "SUPPLIER" && (
+        <div>
+          <h4 style={{ color: 'green', marginRight: '10px' }}>
+            Please confirm the order.
+          </h4>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleUpdate}
+            text="Confirm Order"
+          />
+        </div>
+      )}
+    </div>
+  )}
+
+  {orderDetail?.order.status === "approved" && (
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      {currentUser.role !== "CUSTOMER" && (
+        <h4 style={{ color: 'green', marginRight: '10px' }}>
+          Waiting for Customer payment for the order.
+        </h4>
+      )}
+      {currentUser.role === "CUSTOMER" && (
+        <div>
+          <h4>
+            Please make the payment for the order.
+          </h4>
+          <Button
+            variant="contained"
+            onClick={handlePayment}
+            text="Make Payment"
+          />
+        </div>
+      )}
+    </div>
+  )}
+</div>
+</div>
   );
 }
 
