@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Grid,
 //import numberToWords from 'number-to-words';
 import { gql } from '@apollo/client';
 import PageHeader from '../../../PageHeader';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { UserContext } from '../../../../auth/UserContext';
 import Spinner from '../../../Spinner';
 import Button from '../../../Button';
@@ -330,9 +330,10 @@ function ProductTable({ orderId }: { orderId: number }) {
 }
 
 function Detail() {
+  const { id } = useParams<{ id?: string }>();
   return (
     <div>
-      <ProductTable orderId={1} /> {/* Replace 1 with the actual order ID */}
+      <ProductTable orderId={Number(id)} /> 
     </div>
   );
 }

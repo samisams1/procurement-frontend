@@ -8,10 +8,12 @@ import { gql, useMutation, useQuery } from '@apollo/client';
 import { userInterface } from '../../../interface/interfaces';
 import { USER_QUERY } from '../../../graphql/Users';
 import { AccountCircle, EmailTwoTone, Lock, PhoneEnabledTwoTone } from '@mui/icons-material';
+
 //import PhoneInput from 'react-phone-number-input';
 interface Category {
   id: string;
   name: string;
+  
 }
 const GET_CATEGORIES = gql`
   query GetCategories {
@@ -45,22 +47,24 @@ interface UserFormProps {
 const countryData = [
   {
     name: 'Ethiopia',
+    code: 'ET',
     cities: ['Addis Ababa', 'Adama', 'Bahar dar'],
   },
   {
     name: 'Afghanistan',
+    code: 'AF',
     cities: ['Kabul', 'Herat', 'Mazar-i-Sharif'],
   },
   {
     name: 'Albania',
+    code: 'AL',
     cities: ['Tirana', 'Durres', 'Vlore'],
   },
   {
     name: 'Algeria',
+    code: 'DZ',
     cities: ['Algiers', 'Oran', 'Constantine'],
   },
- 
-  // Add more countries and cities as needed
 ];
 export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   const [successMessage, setSuccessMessage] = useState('');
@@ -93,32 +97,8 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     if ('firstName' in fieldValues) temp.firstName = fieldValues.firstName ? '' : 'This field is required.';
     if ('lastName' in fieldValues) temp.lastName = fieldValues.lastName ? '' : 'This field is required.';
     if ('role' in fieldValues) temp.role = fieldValues.role ? '' : 'This field is required.';
-    if ('email' in fieldValues) {
-      if (fieldValues.email) {
-        // Validate email format using a regular expression
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(fieldValues.email)) {
-          temp.email = 'Invalid email address.';
-        } else {
-          temp.email = '';
-        }
-      } else {
-        temp.email = 'This field is required.';
-      }
-    }
-    if ('phoneNumber' in fieldValues) {
-      if (fieldValues.phoneNumber) {
-        // Validate phone number format using a regular expression
-        const phoneRegex = /^\d{10}$/; // Assuming a 10-digit phone number format
-        if (!phoneRegex.test(fieldValues.phoneNumber)) {
-          temp.phoneNumber = 'Invalid phone number format.';
-        } else {
-          temp.phoneNumber = '';
-        }
-      } else {
-        temp.phoneNumber = 'This field is required.';
-      }
-    }
+    if ('phoneNumber' in fieldValues) temp.phoneNumber = fieldValues.phoneNumber ? '' : 'This field is required.';
+    if ('email' in fieldValues) temp.email = fieldValues.email ? '' : 'This field is required.';
     if ('username' in fieldValues) temp.username = fieldValues.username ? '' : 'This field is required.';
     if(selectedRole ==="SUPPLIER"){
       if ('companyName' in fieldValues) temp.companyName = fieldValues.companyName ? '' : 'This field is required.';
@@ -172,9 +152,6 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
         <Form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-          {selectedRole ==="SUPPLIER" &&(
-          <div>
-            <Typography>Company Information</Typography>
             <Controls.Input 
                 name="companyName"
                 label="Company Name"
@@ -185,6 +162,9 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 style={{ marginBottom: '1rem' }}
               />
 
+          {selectedRole ==="SUPPLIER" &&(
+          <div>
+           
              <FormControl fullWidth>
                   <InputLabel id="category-label">Category</InputLabel>
                   <Select
@@ -269,25 +249,27 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 icon={<EmailTwoTone />}
                 style={{ marginBottom: '1rem' }}
               />
-               <FormControl fullWidth style={{ marginBottom: '1rem' }}>
-                  <InputLabel id="Country-label">Country</InputLabel>
-                  <Select
-                    label="Country-label"
-                    id="country"
-                    name="country"
-                    value={values.country}
-                    onChange={handleInputChange}
-                    error={errors.country}
-                  >
-                    {countryData.map((country) => (
-                      <MenuItem key={country.name} value={country.name}>
-                        {country.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {errors.country && <Alert severity="error">{errors.country}</Alert>}
-                  
-                </FormControl>
+              <FormControl fullWidth style={{ marginBottom: '1rem' }}>
+  <InputLabel id="Country-label">Country</InputLabel>
+  <Select
+    label="Country-label"
+    id="country"
+    name="country"
+    value={values.country}
+    onChange={handleInputChange}
+    error={errors.country}
+  >
+    {countryData.map((country) => (
+      <MenuItem key={country.name} value={country.name}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+   
+          <span style={{ marginLeft: '0.5rem' }}>{country.name}</span>
+        </div>
+      </MenuItem>
+    ))}
+  </Select>
+  {errors.country && <Alert severity="error">{errors.country}</Alert>}
+</FormControl>
                 <FormControl fullWidth style={{ marginBottom: '1rem' }}>
                   <InputLabel id="Country-label">City</InputLabel>
                   <Select
