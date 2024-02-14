@@ -10,8 +10,8 @@ export interface userInterface {
     phoneNumber?:string;
     confirmPassword?:string;
     category?:string;
-    country?: '',
-    city?: '',
+    country?: string;
+    city?: string;
   }
   export interface categoryInterface {
     id?: number;

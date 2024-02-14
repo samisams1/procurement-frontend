@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, FormControl, Grid, InputAdornment, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { Alert, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Form, useForm } from '../../useForm';
 import Button from '../../Button';
@@ -8,8 +8,8 @@ import { gql, useMutation, useQuery } from '@apollo/client';
 import { userInterface } from '../../../interface/interfaces';
 import { USER_QUERY } from '../../../graphql/Users';
 import { AccountCircle, EmailTwoTone, Lock, PhoneEnabledTwoTone } from '@mui/icons-material';
-import ReactFlagsSelect from "react-flags-select";
 
+//import PhoneInput from 'react-phone-number-input';
 interface Category {
   id: string;
   name: string;
@@ -44,39 +44,38 @@ enum Role {
 interface UserFormProps {
   selectedRole: Role;
 }
-
-const cities: { [key: string]: string[] } = {
-  ET: ['Addis Ababa', 'Adama', 'Bahar dar'],
-  // Add more country codes and cities as needed
-};
-const countryPhoneCodes: { [key: string]: string } = {
-  ET: '+251', // Ethiopia
-  AF: '+93', // Afghanistan
-  AL: '+355', // Albania
-  DZ: '+213', // Algeria
-  // Add more country codes and phone codes as needed
-};
-
+const countryData = [
+  {
+    name: 'Ethiopia',
+    code: 'ET',
+    cities: ['Addis Ababa', 'Adama', 'Bahar dar'],
+  },
+  {
+    name: 'Afghanistan',
+    code: 'AF',
+    cities: ['Kabul', 'Herat', 'Mazar-i-Sharif'],
+  },
+  {
+    name: 'Albania',
+    code: 'AL',
+    cities: ['Tirana', 'Durres', 'Vlore'],
+  },
+  {
+    name: 'Algeria',
+    code: 'DZ',
+    cities: ['Algiers', 'Oran', 'Constantine'],
+  },
+];
 export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate =  useNavigate();
- // const [phoneNumber, setPhoneNumber] = useState('');
-  const [selected, setSelected] = useState('');
-
-
-    const handleCountrySelect = (value: string) => {
-    setSelected(value);
-  };
-
-
   const [createProfile] = useMutation(CREATE_USER_MUTATION, {
     refetchQueries: [{ query: USER_QUERY }],
   });
   const { loading, error, data } = useQuery<{ getCategories: Category[] }>(GET_CATEGORIES);
 
 
-  //const formattedPhoneNumber = `${countryPhoneCodes[selected]} ${phoneNumber}`;
 
 
   const initialFValues: userInterface = {
@@ -89,7 +88,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     companyName: '',
     phoneNumber:'',
     category:'',
-    country:'Ethiopia',
+    country: '',
     city:'',
   };
 
@@ -153,33 +152,6 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
         <Form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-  
-            <div>
-  <ReactFlagsSelect selected={selected} onSelect={handleCountrySelect} />
-  {selected && cities[selected] && (
-<FormControl fullWidth style={{ marginBottom: '1rem' }}>
-                  <InputLabel id="Country-label">City</InputLabel>
-                 
-                  <Select
-      label="City"
-      id="city"
-      name="city"
-      value={values.City}
-      onChange={handleInputChange}
-      error={errors.City}
-    >
-        {cities[selected].map((city: string) => (
-         <MenuItem key={city} value={city}>
-         {city}
-       </MenuItem>
-      ))}
-                  </Select>
-                
-                  {errors.country && <Alert severity="error">{errors.country}</Alert>}
-                  
-                </FormControl>
-                )}
-</div>
             <Controls.Input 
                 name="companyName"
                 label="Company Name"
@@ -255,21 +227,18 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 style={{ marginBottom: '1rem' }}
                 inputProps={{ autoComplete: 'off' }}
               />
-   {selected && (
-        <div>
-          <Controls.Input
-            name="phoneNumber"
-            label="PhoneNumber"
-            value={values.phoneNumber}
-            onChange={handleInputChange}
-            error={errors.phoneNumber}
-            fullWidth // Make input full width
-            icon={<PhoneEnabledTwoTone />}
-            style={{ marginBottom: '1rem' }}
-            endAdornment={<InputAdornment position="start">{countryPhoneCodes[selected]}</InputAdornment>}
-          />
-        </div>
-      )}
+             
+             <Controls.Input
+                name="phoneNumber"
+                label="PhoneNumber"
+                value={values.phoneNumber}
+                onChange={handleInputChange}
+                error={errors.phoneNumber}
+                fullWidth // Make input full width
+                icon={<PhoneEnabledTwoTone />}
+                style={{ marginBottom: '1rem' }}
+              />
+
               <Controls.Input
                 name="email"
                 label="Email"
@@ -280,7 +249,48 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 icon={<EmailTwoTone />}
                 style={{ marginBottom: '1rem' }}
               />
-            
+              <FormControl fullWidth style={{ marginBottom: '1rem' }}>
+  <InputLabel id="Country-label">Country</InputLabel>
+  <Select
+    label="Country-label"
+    id="country"
+    name="country"
+    value={values.country}
+    onChange={handleInputChange}
+    error={errors.country}
+  >
+    {countryData.map((country) => (
+      <MenuItem key={country.name} value={country.name}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+   
+          <span style={{ marginLeft: '0.5rem' }}>{country.name}</span>
+        </div>
+      </MenuItem>
+    ))}
+  </Select>
+  {errors.country && <Alert severity="error">{errors.country}</Alert>}
+</FormControl>
+                <FormControl fullWidth style={{ marginBottom: '1rem' }}>
+                  <InputLabel id="Country-label">City</InputLabel>
+                  <Select
+                    label="City"
+                    id="city"
+                    name="city"
+                    value={values.City}
+                    onChange={handleInputChange}
+                    error={errors.City}
+                  >
+                    {countryData
+          .find((country) => country.name === values.country)
+          ?.cities.map((city) => (
+             <MenuItem key={city} value={city}>
+             {city}
+           </MenuItem>
+          ))}
+                  </Select>
+                  {errors.country && <Alert severity="error">{errors.country}</Alert>}
+                  
+                </FormControl>
                 <Controls.Input
   name="password"
   label="Password"
@@ -291,10 +301,11 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   icon={<Lock />}
 
   style={{ marginBottom: '1rem' }}
-  type="password" // Set the istartnput type to "password"
+  type="password" // Set the input type to "password"
   inputProps={{ autoComplete: 'off' }}
 />
- </Grid>
+                   
+            </Grid>
             <Grid item xs={12}>
               <Button
                 type="submit"
