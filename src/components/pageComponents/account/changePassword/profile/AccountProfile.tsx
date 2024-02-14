@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -9,44 +9,57 @@ import {
   Divider,
   Typography
 } from '@mui/material';
-import { UserContext,CurrentUser } from '../../../../../auth/UserContext';
+import { gql, useMutation } from '@apollo/client';
+import { UserContext, CurrentUser } from '../../../../../auth/UserContext';
 import Spinner from '../../../../Spinner';
-const user = {
-  avatar: '../../../../assets/sams.jpg',
-  city: 'Addis Ababa',
-  country: 'Ethiopia',
-  jobTitle: 'Admin',
-  name: 'Admin',
-  timezone: 'GMT-7'
-};
+
+const UPLOAD_IMAGE_MUTATION = gql`
+  mutation UploadImage($file: Upload!) {
+    uploadImage(file: $file) {
+      url
+    }
+  }
+`;
 
 export const AccountProfile = () => {
+  const [previewImage, setPreviewImage] = useState<string | ArrayBuffer | null>(null);
   const { currentUser } = useContext(UserContext);
+  const [uploadImageMutation] = useMutation(UPLOAD_IMAGE_MUTATION);
 
   if (!currentUser) {
     return <Spinner />;
   }
 
-  const {lastName }: CurrentUser = currentUser;
+  const { username, lastName }: CurrentUser = currentUser;
 
-  const handleUpload = (event:any) => {
-   // const file = event.target.files[0];
-    // Perform the necessary upload logic here
-  };
- /* const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  
+  const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     const reader = new FileReader();
 
     reader.onloadend = () => {
       const result = reader.result;
       setPreviewImage(result);
-      // Perform the necessary upload logic here
     };
 
     if (file) {
       reader.readAsDataURL(file);
+      // Call the uploadImageMutation function to upload the file to the server
+      try {
+        const { data } = await uploadImageMutation({
+          variables: { file },
+        });
+        const imageUrl = data.uploadImage.url; // Assuming the GraphQL mutation response contains the uploaded image URL
+        // Perform any additional logic with the imageUrl, such as saving it to the user's profile
+        console.log('Image uploaded:', imageUrl);
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
     }
-  };*/
+  };
+
+  const avatarSrc = previewImage ? `${previewImage}` : undefined;
+
   return (
     <Card>
       <CardContent>
@@ -58,21 +71,15 @@ export const AccountProfile = () => {
           }}
         >
           <Avatar
-            src={user.avatar}
+            src={avatarSrc}
             sx={{
               height: 80,
               mb: 2,
               width: 80
             }}
           />
-          <Typography gutterBottom variant="h5">
-            {lastName}
-          </Typography>
           <Typography color="text.secondary" variant="body2">
-            {user.city} {user.country}
-          </Typography>
-          <Typography color="text.secondary" variant="body2">
-            {user.timezone}
+            {username} {lastName}
           </Typography>
         </Box>
       </CardContent>
@@ -88,6 +95,9 @@ export const AccountProfile = () => {
           type="file"
           onChange={handleUpload}
         />
+        <Button fullWidth variant="contained" >
+          Save
+        </Button>
       </CardActions>
     </Card>
   );
