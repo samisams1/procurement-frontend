@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, FormControl, Grid, InputAdornment, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { Alert, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Form, useForm } from '../../useForm';
 import Button from '../../Button';
@@ -9,6 +9,8 @@ import { userInterface } from '../../../interface/interfaces';
 import { USER_QUERY } from '../../../graphql/Users';
 import { AccountCircle, EmailTwoTone, Lock, PhoneEnabledTwoTone } from '@mui/icons-material';
 import ReactFlagsSelect from "react-flags-select";
+import { countryPhoneCodes } from '../../common/countryPhoneCodes';
+import { cities } from '../../common/countryCitiesCodes';
 
 interface Category {
   id: string;
@@ -44,24 +46,10 @@ enum Role {
 interface UserFormProps {
   selectedRole: Role;
 }
-
-const cities: { [key: string]: string[] } = {
-  ET: ['Addis Ababa', 'Adama', 'Bahar dar'],
-  // Add more country codes and cities as needed
-};
-const countryPhoneCodes: { [key: string]: string } = {
-  ET: '+251', // Ethiopia
-  AF: '+93', // Afghanistan
-  AL: '+355', // Albania
-  DZ: '+213', // Algeria
-  // Add more country codes and phone codes as needed
-};
-
 export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate =  useNavigate();
- // const [phoneNumber, setPhoneNumber] = useState('');
   const [selected, setSelected] = useState('');
 
 
@@ -98,15 +86,51 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     if ('firstName' in fieldValues) temp.firstName = fieldValues.firstName ? '' : 'This field is required.';
     if ('lastName' in fieldValues) temp.lastName = fieldValues.lastName ? '' : 'This field is required.';
     if ('role' in fieldValues) temp.role = fieldValues.role ? '' : 'This field is required.';
-    if ('phoneNumber' in fieldValues) temp.phoneNumber = fieldValues.phoneNumber ? '' : 'This field is required.';
-    if ('email' in fieldValues) temp.email = fieldValues.email ? '' : 'This field is required.';
+    if ('phoneNumber' in fieldValues && fieldValues.phoneNumber?.trim()) {
+      const phoneNumber = fieldValues.phoneNumber.trim();
+      const phoneNumberRegex = /^[0-9]{10}$/; // Assumes a 10-digit phone number format
+      
+      if (phoneNumber === '') {
+        temp.phoneNumber = 'This field is required.';
+      } else if (!phoneNumberRegex.test(phoneNumber)) {
+        temp.phoneNumber = 'Invalid phone number. Please enter a 10-digit number.';
+      } else {
+        temp.phoneNumber = '';
+      }
+    }
+
+    if ('email' in fieldValues) {
+      const email = fieldValues.email;
+    
+      if (!email) {
+        temp.email = 'This field is required.';
+      } else {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const isValidEmail = emailRegex.test(email);
+    
+        if (!isValidEmail) {
+          temp.email = 'Please enter a valid email address.';
+        } else {
+          temp.email = '';
+        }
+      }
+    }
     if ('username' in fieldValues) temp.username = fieldValues.username ? '' : 'This field is required.';
     if(selectedRole ==="SUPPLIER"){
       if ('companyName' in fieldValues) temp.companyName = fieldValues.companyName ? '' : 'This field is required.';
       if ('category' in fieldValues) temp.category = fieldValues.category ? '' : 'This field is required.';
     }
-    if ('password' in fieldValues) temp.password = fieldValues.password ? '' : 'This field is required.';
-
+    if ('password' in fieldValues) {
+  const password = fieldValues.password.trim();
+  
+  if (password === '') {
+    temp.password = 'This field is required.';
+  } else if (password.length < 4) {
+    temp.password = 'Password should have at least 4 characters.';
+  } else {
+    temp.password = '';
+  }
+}
     setErrors({
       ...temp,
     });
@@ -266,8 +290,8 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 style={{ marginBottom: '1rem' }}
                 inputProps={{ autoComplete: 'off' }}
               />
-   {selected && (
-        <div>
+              {selected && (
+         <div>
           <Controls.Input
             name="phoneNumber"
             label="PhoneNumber"
@@ -277,7 +301,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
             fullWidth // Make input full width
             icon={<PhoneEnabledTwoTone />}
             style={{ marginBottom: '1rem' }}
-            endAdornment={<InputAdornment position="start">{countryPhoneCodes[selected]}</InputAdornment>}
+            secondField={countryPhoneCodes[selected]}
           />
         </div>
       )}
@@ -290,6 +314,9 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 fullWidth // Make input full width
                 icon={<EmailTwoTone />}
                 style={{ marginBottom: '1rem' }}
+                inputProps={{
+                  autoComplete: 'email' // Set the autocomplete attribute to 'email'
+                }}
               />
             
                 <Controls.Input

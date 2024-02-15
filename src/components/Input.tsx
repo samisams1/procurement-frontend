@@ -1,9 +1,9 @@
 import React from 'react';
-import { TextField, InputAdornment, IconButton } from '@mui/material';
+import { TextField, InputAdornment, IconButton, Box } from '@mui/material';
 import { Icon } from '@mui/material';
 
 export default function Input(props: any) {
-  const { name, label, value, error = null, onChange, icon, endAdornment, ...other } = props;
+  const { name, label, value, error = null, onChange, icon, endAdornment, secondField, ...other } = props;
 
   return (
     <TextField
@@ -18,9 +18,12 @@ export default function Input(props: any) {
         ...(icon && {
           startAdornment: (
             <InputAdornment position="start">
-              <IconButton disabled>
-                <Icon style={{ color: '#00b0ad' }}>{icon}</Icon>
-              </IconButton>
+              <Box display="flex" alignItems="center">
+                <IconButton disabled>
+                  <Icon style={{ color: '#00b0ad' }}>{icon}</Icon>
+                </IconButton>
+                {secondField}
+              </Box>
             </InputAdornment>
           ),
         }),
