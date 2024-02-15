@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
-import { ThemeProvider, useTheme } from '@mui/material/styles';
-//import useMediaQuery from '@mui/material/useMediaQuery';
-import { Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Grid, Paper } from '@mui/material';
-//import { useNavigate } from 'react-router-dom';
-import Button from '../../Button';
+import { useQuery, gql, useMutation } from '@apollo/client';
+import {
+  ThemeProvider,
+  useTheme,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Checkbox,
+  Grid,
+  Paper,
+  Button,
+  Alert,
+} from '@mui/material';
 
 interface Product {
   id: string;
@@ -19,11 +28,12 @@ interface Product {
 }
 
 interface Quotation {
-  id:number;
-  supplierId: number; // Add supplierId property to Quotation interface
+  id: number;
+  supplierId: number;
   shippingPrice: number;
   status: string;
 }
+
 
 interface ProductPrice {
   id: string;
@@ -36,14 +46,29 @@ interface ProductPrice {
   product: Product;
   quotation: Quotation;
 }
+interface OrderDetail {
+  title: string;
+  productId: number;
+  price: number;
+  quantity: number;
+}
 
+interface CreateOrderInput {
+  customerId: number;
+  supplierId: number;
+  orderDetails?: OrderDetail[];
+  productPriceIds: number[];
+  totalPrice: number;
+  tax: number;
+  status: string;
+  shippingCost: number;
+}
 interface GetAllProductPricesResponse {
   quotationByRequestId: ProductPrice[];
 }
-
 const GET_ALL_PRODUCT_PRICES = gql`
-query QuotationByRequestId($id: Int!) {
-  quotationByRequestId(id: $id) {
+  query QuotationByRequestId($id: Int!) {
+    quotationByRequestId(id: $id) {
       id
       productId
       price
@@ -71,18 +96,27 @@ query QuotationByRequestId($id: Int!) {
     }
   }
 `;
+// Define the mutation
+const CREATE_ORDER_MUTATION = gql`
+  mutation CreateOrder($input: CreateOrderInput!) {
+    createOrder(input: $input) {
+      id
+    }
+  }
+`;
 type QuotationDetailProps = {
-  qId:number;
+  qId: number;
 };
 
 const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId }) => {
-  const { loading, error, data } = useQuery<GetAllProductPricesResponse>(GET_ALL_PRODUCT_PRICES,{
-    variables: { id: qId}
+  const [createOrder] = useMutation(CREATE_ORDER_MUTATION);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const { loading, error, data,refetch } = useQuery<GetAllProductPricesResponse>(GET_ALL_PRODUCT_PRICES, {
+    variables: { id: qId },
   });
   const theme = useTheme();
- // const navigate = useNavigate();
   const [selectedItems, setSelectedItems] = useState<{ [productId: string]: boolean }>({});
- // const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   if (loading) {
     return <p>Loading...</p>;
@@ -91,15 +125,15 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId }) => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
-  
-const handleCheckboxChange = (key: string, checked: boolean) => {
-  setSelectedItems((prevSelectedItems) => {
-    const updatedSelectedItems = { ...prevSelectedItems };
-    updatedSelectedItems[key] = checked;
-    return updatedSelectedItems;
-  });
-};
-  // Group product prices by quotationId
+
+  const handleCheckboxChange = (productId: string, checked: boolean) => {
+    setSelectedItems((prevSelectedItems) => {
+      const updatedSelectedItems = { ...prevSelectedItems };
+      updatedSelectedItems[productId] = checked;
+      return updatedSelectedItems;
+    });
+  };
+
   const quotationGroups: { [key: string]: ProductPrice[] } = {};
   data?.quotationByRequestId.forEach((productPrice) => {
     const quotationId = productPrice.quotationId;
@@ -113,50 +147,70 @@ const handleCheckboxChange = (key: string, checked: boolean) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Get the selected products
     const selectedProducts = data?.quotationByRequestId.filter(
       (productPrice) => selectedItems[productPrice.productId]
     );
-console.log(selectedProducts)
-    // Calculate total price
+
     const totalPrice = selectedProducts?.reduce(
       (total, productPrice) => total + productPrice.price * productPrice.product.quantity,
       0
     );
 
-    // Calculate VAT
-    const calculateVAT = () => {
+   /* const calculateVAT = () => {
       // Implement the logic to calculate VAT
-    };
+    };*/
 
-    // Calculate shipping cost
     const shippingCost = 0; // Provide the appropriate value for shipping cost
 
-    // Create the input object for the mutation
-    const input = {
+    const productPriceIds: number[] = selectedProducts
+  ? selectedProducts.map(({ id }) => Number(id))
+  : [];
+    const orderDetails: OrderDetail[] = selectedProducts
+    ? selectedProducts.map(({ product, price,id }) => ({
+        title: product.title,
+        productId: parseInt(product.id),
+        price,
+        quantity: Number(product.quantity),
+      }))
+    : [];
+    const input: CreateOrderInput = {
       customerId: 1,
       supplierId: 1,
-      orderDetails: selectedProducts?.map(({ product, price }) => ({
-        title: product.title,
-        productId: product.id,
-        price,
-        quantity: product.quantity,
-      })),
+      orderDetails,
+      productPriceIds: productPriceIds, // Include productPriceIds in the input object
       totalPrice: totalPrice || 0,
-      tax: calculateVAT(),
+      tax:11,
       status: 'pending',
       shippingCost: shippingCost,
     };
-    console.log("botu")
-
-console.log(input)
-    // Perform the mutation using the input object
-    // Use the appropriate Apollo Client function to perform the mutation
+console.log(productPriceIds)
+  try {
+       await createOrder({ variables: { input } });
+      refetch(); 
+      setSuccessMessage('Order created successfully!');
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 5000); 
+    } catch (error:any) {
+      setErrorMessage(error.message);
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 5000); 
+    }
   };
-
   return (
     <ThemeProvider theme={theme}>
       <Grid container spacing={2}>
+      {successMessage && (
+            <Alert variant="filled" severity="success" style={{ marginTop: 10 }}>
+              {successMessage}
+            </Alert>
+          )}
+          {errorMessage && (
+            <Alert variant="filled" severity="error" style={{ marginTop: 10 }}>
+              {errorMessage}
+            </Alert>
+          )}
         {Object.entries(quotationGroups).map(([quotationId, productPrices]) => (
           <Grid item xs={12} key={quotationId}>
             <Paper>
@@ -165,52 +219,53 @@ console.log(input)
                   <TableRow sx={{ backgroundColor: '#00b0ad' }}>
                     <TableCell sx={{ padding: '4px', height: '32px' }}>#</TableCell>
                     <TableCell sx={{ padding: '4px', height: '32px' }}>Select</TableCell>
-                    <TableCell>Title</TableCell>
+                    <TableCell>Title</TableCell>S
                     <TableCell sx={{ padding: '4px', height: '32px' }}>Item Code</TableCell>
+                    <TableCell sx={{ padding: '4px', height: '32px' }}>Manufacturer</TableCell>S
+                    <TableCell sx={{ padding: '4px', height: '32px' }}>Model</TableCell>
                     <TableCell sx={{ padding: '4px', height: '32px' }}>Part Number</TableCell>
+                    <TableCell sx={{ padding: '4px', height: '32px' }}>Quantity</TableCell>
                     <TableCell sx={{ padding: '4px', height: '32px' }}>UOM</TableCell>
-                    <TableCell sx={{ padding: '4px', height: '32px' }}>Qty</TableCell>
                     <TableCell sx={{ padding: '4px', height: '32px' }}>Price</TableCell>
-                    <TableCell sx={{ padding: '4px', height: '32px' }}>Sub total</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {productPrices.map((productPrice, index) => (
-                    <TableRow key={productPrice.id}>
-                      <TableCell sx={{ padding: '0px', height: '24px' }}>{index + 1}</TableCell>
-                      <TableCell>
-                      <Checkbox
-  checked={!!selectedItems[`${productPrice.quotationId}-${productPrice.product.title}`]}
-  onChange={(e) => {
-    if (productPrice.status === 'pending') {
-      handleCheckboxChange(
-        `${productPrice.quotationId}-${productPrice.product.title}`,
-        e.target.checked
-      );
-    }
-  }}
-  disabled={productPrice.status !== 'pending'}
-/>
-                      </TableCell>
-                      <TableCell>{productPrice.product.title}</TableCell>
-                      <TableCell>{productPrice.product.code}</TableCell>
-                      <TableCell>{productPrice.product.partNumber}</TableCell>
-                      <TableCell>{productPrice.product.uom}</TableCell>
-                      <TableCell>{productPrice.product.quantity}</TableCell>
-                      <TableCell>{productPrice.price}</TableCell>
-                      <TableCell>{productPrice.price * productPrice.product.quantity}</TableCell>
-                    </TableRow>
-                  ))}
+                  {productPrices.map((productPrice, index) => {
+                    const { product, price,id,status } = productPrice;
+                    const isOrdered = status === "ordered";
+
+                    return (
+                      <TableRow key={product.id}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedItems[product.id] || false}
+                            onChange={(event) => handleCheckboxChange(product.id, event.target.checked)}
+                            disabled={isOrdered}
+                          />
+                        </TableCell>
+                        <TableCell>{product.title }<span>{status} {id}</span> <span>{quotationId}</span></TableCell>
+                        <TableCell>{product.code}</TableCell>
+                        <TableCell>{product.manufacture}</TableCell>
+                        <TableCell>{product.model}</TableCell>
+                        <TableCell>{product.partNumber}</TableCell>
+                        <TableCell>{product.quantity}</TableCell>
+                        <TableCell>{product.uom}</TableCell>
+                        <TableCell>{price}</TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
-             <Button
-             onClick={handleSubmit}
-             text="send Order"
-             />
             </Paper>
           </Grid>
         ))}
       </Grid>
+      <form onSubmit={handleSubmit}>
+        <Button type="submit" variant="contained" color="primary">
+          Submit
+        </Button>
+      </form>
     </ThemeProvider>
   );
 };
