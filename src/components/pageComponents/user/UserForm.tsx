@@ -129,7 +129,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
           setSuccessMessage('');
           // setLoading(false);
           navigate(`/acountCreated/${values.email}`);
-        }, 2000); // Remove success message after 5 seconds
+        }, 5000); // Remove success message after 5 seconds
       } catch (error:any) {
         setErrorMessage(error.message);
         setTimeout(() => {
@@ -149,6 +149,17 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
      <div> 
         <Typography variant="h6" style={{ color: '#00b0ad' }}>
         {selectedRole} REGISTRATION
+        
+        {successMessage && (
+            <Alert variant="filled" severity="success" style={{ marginTop: 10 }}>
+              {successMessage}
+            </Alert>
+          )}
+          {errorMessage && (
+            <Alert variant="filled" severity="error" style={{ marginTop: 10 }}>
+              {errorMessage}
+            </Alert>
+          )}
         </Typography>
         <Form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
@@ -309,16 +320,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
               />
             </Grid>
           </Grid>
-          {successMessage && (
-            <Alert variant="outlined" severity="success" style={{ marginTop: 10 }}>
-              {successMessage}
-            </Alert>
-          )}
-          {errorMessage && (
-            <Alert variant="outlined" severity="error" style={{ marginTop: 10 }}>
-              {errorMessage}
-            </Alert>
-          )}
+         
         </Form>
         <Grid container justifyContent="flex-end" alignItems="center" style={{ marginTop: 10 }}>
           <Grid item>
