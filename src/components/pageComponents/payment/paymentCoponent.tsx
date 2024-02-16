@@ -196,8 +196,8 @@ setTimeout(() => {
                   sx={{
                     cursor: 'pointer',
                     '&:hover': {
-                      borderColor: '#1c9fef',
-                      boxShadow: '0px 0px 5px 2px #1c9fef',
+                      borderColor: '#00b0ad',
+                      boxShadow: '0px 0px 5px 2px #00b0ad',
                     },
                   }}
                   onClick={() => handlePayment(method.id,method.name,method.image)}

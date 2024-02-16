@@ -218,6 +218,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
             <Controls.Input 
                 name="companyName"
                 label="Company Name"
+                placeholder="ABC Company"
                 value={values.companyName}
                 onChange={handleInputChange}
                 error={errors.companyName}
@@ -255,6 +256,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
               <Controls.Input
                 name="firstName"
                 label="First Name"
+                placeholder="Jhon"
                 value={values.firstName}
                 onChange={handleInputChange}
                 error={errors.firstName}
@@ -271,6 +273,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
               <Controls.Input
                 name="lastName"
                 label="Last Name"
+                placeholder="Doe"
                 value={values.lastName}
                 onChange={handleInputChange}
                 error={errors.lastName}
@@ -284,6 +287,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 label="Username"
                 value={values.username}
                 onChange={handleInputChange}
+                placeholder="yosis"
                 error={errors.username}
                 fullWidth // Make input full width
                 icon={<AccountCircle />}
@@ -296,6 +300,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
             name="phoneNumber"
             label="PhoneNumber"
             value={values.phoneNumber}
+            placeholder="0973316377"
             onChange={handleInputChange}
             error={errors.phoneNumber}
             fullWidth // Make input full width
@@ -309,6 +314,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 name="email"
                 label="Email"
                 value={values.email}
+                placeholder="example@example.com"
                 onChange={handleInputChange}
                 error={errors.email}
                 fullWidth // Make input full width
@@ -322,6 +328,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                 <Controls.Input
   name="password"
   label="Password"
+  placeholder="********"
   value={values.password}
   onChange={handleInputChange}
   error={errors.password}
