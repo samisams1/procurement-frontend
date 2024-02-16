@@ -49,6 +49,7 @@ import About from './pages/home/About';
 import Home from './pages/home/home';
 import LandingPage from './pages/home/samissm';
 import SendRfq from './pages/Quotation/sendRfq';
+import SentEmail from './pages/account/SentEmail';
 export default function RoutePage() {
 
     return useRoutes([
@@ -111,6 +112,7 @@ export default function RoutePage() {
               { path:  'roleselection', element:<RoleSelection />},
               { path:  '/forgot-password', element:<ForgotPassword />},
               { path:  '/verify', element:<VerifyUser />},
+              { path:  '/sentEmail/:email', element:<SentEmail />},
               { path:  '/acountCreated/:email', element:<AccountCreation />},
               { path:  '/reset-password', element:<ResetPasswordForm />},
 

@@ -1,12 +1,10 @@
 import { gql, useMutation } from '@apollo/client';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-
-interface ResetPasswordData {
-  resetPassword: {
-    id: string;
-  };
-}
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { styled, Container, Grid } from '@mui/material';
+import PageHeader from '../../components/PageHeader';
 
 const RESET_PASSWORD_MUTATION = gql`
   mutation ResetPassword($input: ResetPasswordInput!) {
@@ -16,10 +14,21 @@ const RESET_PASSWORD_MUTATION = gql`
   }
 `;
 
-const ResetPasswordForm: React.FC = () => {
-  const [resetPassword, { loading, error }] = useMutation<ResetPasswordData>(
-    RESET_PASSWORD_MUTATION
-  );
+const FormContainer = styled(Container)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+`;
+
+const FormTextField = styled(TextField)`
+  margin-bottom: 20px;
+  width: 100%;
+`;
+
+const ResetPasswordForm = () => {
+  const [resetPassword, { loading }] = useMutation(RESET_PASSWORD_MUTATION);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -29,20 +38,24 @@ const ResetPasswordForm: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
- const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    setErrorMessage('');
   };
 
   const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(e.target.value);
+    setErrorMessage('');
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      console.error('Passwords do not match');
+      setErrorMessage('Passwords do not match');
       return;
     }
 
@@ -59,43 +72,46 @@ const ResetPasswordForm: React.FC = () => {
 
       setSuccessMessage('Password reset successful');
       setTimeout(() => {
-        navigate('/home'); // Replace '/success' with the desired success page route
-      }, 2000); // 2 seconds in milliseconds
-    } catch (error: any) {
-      console.error('Failed to reset password:', error.message);
-      // Handle the error and display an appropriate message to the user
+        navigate('/home');
+      }, 2000);
+    } catch (error) {
+      setErrorMessage('Failed to reset password');
     }
   };
 
   return (
-    <div className="reset-password-form">
+    <Grid> 
+      <PageHeader
+      title="Change Password"
+      subTitle="please change password"
+      />
+    <FormContainer>
       {loading && <div className="spinner">Loading...</div>}
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
       {successMessage && <div className="success-message">{successMessage}</div>}
-      {error && <div className="error-message">Error: {error.message}</div>}
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="password">New Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={handlePasswordChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="confirmPassword">Confirm Password:</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={handleConfirmPasswordChange}
-            required
-          />
-        </div>
-        <button type="submit">Reset Password</button>
+        <FormTextField
+          type="password"
+          id="password"
+          label="New Password"
+          value={password}
+          onChange={handlePasswordChange}
+          required
+        />
+        <FormTextField
+          type="password"
+          id="confirmPassword"
+          label="Confirm Password"
+          value={confirmPassword}
+          onChange={handleConfirmPasswordChange}
+          required
+        />
+        <Button variant="contained" color="primary" type="submit">
+          Reset Password
+        </Button>
       </form>
-    </div>
+    </FormContainer>
+    </Grid>
   );
 };
 
