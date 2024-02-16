@@ -24,6 +24,7 @@
     "chart.js": "^4.4.1",
     "crypto-js": "^4.2.0",
     "currency.js": "^2.0.4",
+    "firebase": "^10.8.0",
     "formik": "^2.4.5",
     "framer-motion": "^11.0.3",
     "install": "^0.13.0",

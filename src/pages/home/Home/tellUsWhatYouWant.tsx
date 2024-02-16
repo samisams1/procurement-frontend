@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { styled } from '@mui/system';
 import { Typography, Button } from '@mui/material';
 import Popup from '../../../components/Popup';
 import Login from '../../login/Login';
+import { UserContext } from '../../../auth/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 const TellUsWhatYouWantContainer = styled('div')({
   backgroundColor: '#ffffff',
@@ -45,9 +47,16 @@ const StyledButton = styled(Button)({
 });
 
 const TellUsWhatYouWant = () => {
+  const { currentUser } = useContext(UserContext);
+  const navigate = useNavigate();
   const [openPopup, setOpenPopup] = useState(false);
   const handleClick = () => {
-    setOpenPopup(true);
+    if(currentUser){
+      navigate('/newRequest');
+    }else{
+      setOpenPopup(true);
+    }
+   
   };
 
   return (
@@ -57,8 +66,9 @@ const TellUsWhatYouWant = () => {
         Let us know the items or services you need, and we'll take care of the rest.
       </Description>
       <ButtonContainer>
-        <StyledButton variant="contained" onClick={handleClick}>
-          Request Now
+        <StyledButton variant="contained"
+         onClick={handleClick}>
+          Request Now 
         </StyledButton>
       </ButtonContainer>
       <Popup title="Login" openPopup={openPopup} setOpenPopup={setOpenPopup}>
