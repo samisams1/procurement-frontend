@@ -1,7 +1,16 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, gql } from '@apollo/client';
-import { Typography, Box, Button } from '@mui/material';
+import { Typography, Box, Button, Paper, Grid } from '@mui/material';
+import { styled } from '@mui/system';
+import PageHeader from '../../PageHeader';
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  border: `1px solid #ccc`,
+  borderRadius: theme.spacing(1),
+  backgroundColor: '#f4f4f4',
+}));
 
 interface PaymentData {
   id: number;
@@ -60,33 +69,52 @@ const PaymentConfirmation: React.FC = () => {
   };
 
   return (
-    <Box maxWidth={500} margin="auto" padding={3}>
+    <Grid container spacing={3}>
+    <Grid item xs={12} sm={12}>
+       <PageHeader
+      title="Payment Confirmation"
+      subTitle="Payment Confirmation "
+      />
+    <StyledPaper>
+     
       <Button variant="contained" onClick={handlePrint} sx={{ marginBottom: 3 }}>
         Print
       </Button>
 
-      <Typography variant="h5" component="h2" gutterBottom>
+      <Typography variant="h5" component="h2" align="center" gutterBottom>
         Payment Confirmation
       </Typography>
 
       {payment ? (
         <React.Fragment>
           <Box marginBottom={2}>
-            <Typography variant="h6">Thank you for your payment!</Typography>
+            <Typography variant="h6" align="center">
+              Thank you for your payment!
+            </Typography>
             <Typography variant="body1">
               We are pleased to inform you that your payment has been successfully processed.
             </Typography>
           </Box>
 
           <Box marginBottom={2}>
-            <Typography variant="h6">Transaction Details:</Typography>
-            <Typography variant="body1">Transaction ID: {payment.id}</Typography>
-            <Typography variant="body1">Payment Method: {payment.paymentMethod}</Typography>
+            <Typography variant="h6" align="center">
+              Transaction Details:
+            </Typography>
+            <Typography variant="body1" align="center">
+              Transaction ID: {payment.id}
+            </Typography>
+            <Typography variant="body1" align="center">
+              Payment Method: {payment.paymentMethod}
+            </Typography>
           </Box>
 
           <Box marginBottom={2}>
-            <Typography variant="h6">Invoice Reference:</Typography>
-            <Typography variant="body1">Invoice Number: {payment.referenceNumber}</Typography>
+            <Typography variant="h6" align="center">
+              Invoice Reference:
+            </Typography>
+            <Typography variant="body1" align="center">
+              Invoice Number: {payment.referenceNumber}
+            </Typography>
           </Box>
 
           <Box marginBottom={2}>
@@ -97,20 +125,22 @@ const PaymentConfirmation: React.FC = () => {
             </Typography>
           </Box>
 
-          <Typography variant="body1" align="center">
+          <Typography variant="body1" align="center" fontWeight="bold">
             Thank you for your business!
           </Typography>
 
           <Typography variant="body1" align="center" fontStyle="italic">
             Best regards,
             <br />
-            Your Company Name
+            Nile Soft Company
           </Typography>
         </React.Fragment>
       ) : (
         <div>No payment found for the provided ID.</div>
       )}
-    </Box>
+    </StyledPaper>
+    </Grid>
+    </Grid>
   );
 };
 
