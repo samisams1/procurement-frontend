@@ -198,9 +198,16 @@ const Detail = () => {
   const tax = subtotal * 0.15;
   const grandTotal = subtotal + tax + (order?.shippingCost ?? 0);
   const amountInWords = numberToWords.toWords(grandTotal);
-  const handlePayment = () => {
+ /* const handlePayment = () => {
     navigate(`/payment/${1}`);
+  };*/
+
+  const handlePayment = () => {
+    const paymentId = id;
+    const userId = currentUser.id;
+    navigate(`/payment?id=${paymentId}&total=${grandTotal}&userId=${userId}`);
   };
+
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 

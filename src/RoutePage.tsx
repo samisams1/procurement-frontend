@@ -86,7 +86,7 @@ export default function RoutePage() {
               { path: '/paymentConfirmation/:id', element: <ProtectedRoute  element={<PaymentConfirmation />} /> },
               { path: '/result', element: <ProtectedRoute  element={<Result />} /> },
 
-              { path: '/payment/:id', element: <ProtectedRoute  element={<Payment />} /> },
+              { path: '/payment', element: <ProtectedRoute  element={<Payment />} /> },
               { path: '/sidemeu', element: <ProtectedRoute  element={<SideMenu />} /> },
               { path: '/paymentReports', element: <ProtectedRoute  element={<PaymentReports />} /> },
               { path: '/makePayment', element: <ProtectedRoute  element={<MakePaymentComponent />} /> },

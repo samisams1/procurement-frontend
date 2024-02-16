@@ -4,8 +4,8 @@ import PageHeader from '../../PageHeader';
 import { NumbersTwoTone, Payment, People } from '@mui/icons-material';
 import Popup from '../../Popup';
 import Button from '../../Button';
-import { gql, useMutation, useQuery } from '@apollo/client';
-import { useNavigate, useParams } from 'react-router-dom';
+import { gql, useMutation, } from '@apollo/client';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { styled } from '@mui/material/styles';
@@ -31,21 +31,12 @@ const paymentMethods: PaymentMethod[] = [
     image:'cbe.jpeg'
 
   },
-  // Add more payment methods as needed
 ];
-
 interface CreatePaymentData {
   createPayment: {
     id: string;
   };
 }
-
-/*interface PaymentCreateInput {
-  invoiceId: number;
-  amount: number;
-  userId: number;
-}
-*/
 const FullNameInput = styled(InputBase)(({ theme }) => ({
   flex: 1,
   padding: theme.spacing(0.5, 1),
@@ -60,30 +51,20 @@ const FullNameInput = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
-
-const GET_ORDER_QUERY = gql`
-query GetOrderById($id: Int!) {
-  getOrderById(id: $id) {
+const CREATE_PAYMENT_MUTATION = gql`
+mutation CreatePayment($input: CreatePaymentInput!) {
+  createPayment(input: $input) {
     id
-    customerId
-    totalPrice
-    tax
-    referenceNumber
-    customer {
-      username
-    }
   }
 }
 `;
-
-const CREATE_PAYMENT_MUTATION = gql`
-  mutation CreatePayment($input: PaymentCreateInput!) {
-    createPayment(input: $input) {
-      id
-    }
-  }
-`;
 const PaymentComponent: React.FC = () => {
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const paymentId = queryParams.get('id');
+  const grandTotal = queryParams.get('total');
+  const userId = queryParams.get('userId');
   const [selectedMethod, setSelectedMethod] = useState('');
   const [openPopup, setOpenPopup] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -94,59 +75,35 @@ const PaymentComponent: React.FC = () => {
   const [fullName,setFullName] = useState('');
   const [referenceNumber,setReferenceNumber] =useState('');
 
-  const { id } = useParams<{ id?: string }>();
   const [createPaymentMutation] = useMutation<CreatePaymentData>(CREATE_PAYMENT_MUTATION);
   const navigate = useNavigate();
-
-  const { loading, error, data } = useQuery(GET_ORDER_QUERY, {
-    variables: { id: Number(id) },
-  });
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>Error: {error.message}</p>;
-  }
-
- // const order = data?.getOrderById;
-//  const customerId = order.customerId;
-  //const totalPrice = order?.totalPrice;
-  //const tax = order.tax;
-console.log(data)
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const paymentData:any = {
-        fullName:fullName,
-        referenceNumber:referenceNumber,
-      //  amount: totalPrice + tax,
-       // userId: Number(customerId),
-        paymentMethod:paymentMethod,
-        status:'paid',
-        orderId:Number(id)
-      };
+      const { data } = await createPaymentMutation({
+        variables: {
+          input: {
+            amount: Number(grandTotal),
+            paidAt: "2024",
+            paymentMethod: paymentMethod,
+            userId: Number(userId),
+            orderId:Number(paymentId),
+            status: 'paid',
+            referenceNumber: referenceNumber,
+            fullName: fullName,
+          },
+        },
+      });
 
-      // Call the createPayment mutation
-      const { data } = await createPaymentMutation({ variables: { input: paymentData } });
-
+      console.log('Created payment:', data?.createPayment);
       // Payment successful, perform any necessary actions
       console.log('Payment successfully created!', data?.createPayment.id);
       setSuccessMessage('Payment successfully created!');
       setOpenSnackbar(true); // Open the snackbar to show the success message
       setOpenPopup(false); // Close the popup
-      // Delay navigation to the invoice page after 2 seconds
-    /*   setTimeout(() => {
-        navigate('/paymentConfirmation');
-        // Replace '/invoice' with the actual path of your invoice page
-      }, 3000); */
-
-
 setTimeout(() => {
   navigate(`/paymentConfirmation/${data?.createPayment.id}`);
   // Replace '/paymentConfirmation' with the actual path of your payment confirmation page
@@ -268,7 +225,7 @@ setTimeout(() => {
     </div>
 
     <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
-      <Typography variant="body1" style={{ marginRight: '10px' }}>Grand Total:</Typography>
+      <Typography variant="body1" style={{ marginRight: '10px' }}>Grand Total:{grandTotal}</Typography>
    
     </div>
 
