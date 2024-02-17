@@ -11,6 +11,7 @@ import { AccountCircle, EmailTwoTone, Lock, PhoneEnabledTwoTone } from '@mui/ico
 import ReactFlagsSelect from "react-flags-select";
 import { countryPhoneCodes } from '../../common/countryPhoneCodes';
 import { cities } from '../../common/countryCitiesCodes';
+import Spinner from '../../Spinner';
 
 interface Category {
   id: string;
@@ -51,6 +52,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate =  useNavigate();
   const [selected, setSelected] = useState('');
+  const [loadingSpinner, setLoading] = useState(false);
 
 
     const handleCountrySelect = (value: string) => {
@@ -143,22 +145,25 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     console.log(values);
     if (validate()) {
       try {
+        setLoading(true); // Set loading to true while the form is being submitted
+
         await createProfile({
-          variables: { input: values }, // Provide the "input" variable with the form values
+          variables: { input: values },
         });
-  
+
         setSuccessMessage('User created successfully!');
         resetForm();
         setTimeout(() => {
           setSuccessMessage('');
-          // setLoading(false);
+          setLoading(false); // Set loading to false when the success message is displayed
           navigate(`/acountCreated/${values.email}`);
-        }, 5000); // Remove success message after 5 seconds
-      } catch (error:any) {
+        }, 5000);
+      } catch (error: any) {
         setErrorMessage(error.message);
         setTimeout(() => {
           setErrorMessage('');
-        }, 5000); // Remove error message after 5 seconds
+          setLoading(false); // Set loading to false when the error message is displayed
+        }, 5000);
       }
     }
   };
@@ -170,69 +175,54 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     return <div>Error: {error.message}</div>;
   }
   return (
-     <div> 
-        <Typography variant="h6" style={{ color: '#00b0ad' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      {loadingSpinner &&<Spinner/>}
+      <Typography variant="h6" style={{ color: '#00b0ad' }}>
         {selectedRole} REGISTRATION
-        
-        {successMessage && (
-            <Alert variant="filled" severity="success" style={{ marginTop: 10 }}>
-              {successMessage}
-            </Alert>
-          )}
-          {errorMessage && (
-            <Alert variant="filled" severity="error" style={{ marginTop: 10 }}>
-              {errorMessage}
-            </Alert>
-          )}
-        </Typography>
-        <Form onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-  
+      </Typography>
+      <Form onSubmit={handleSubmit}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
             <div>
-  <ReactFlagsSelect selected={selected} onSelect={handleCountrySelect} />
-  {selected && cities[selected] && (
-<FormControl fullWidth style={{ marginBottom: '1rem' }}>
+              <ReactFlagsSelect selected={selected} searchable onSelect={handleCountrySelect} />
+         
+              {selected && cities[selected] && (
+                <FormControl fullWidth style={{ marginBottom: '1rem' }}>
                   <InputLabel id="Country-label">City</InputLabel>
-                 
                   <Select
-      label="City"
-      id="city"
-      name="city"
-      value={values.City}
-      onChange={handleInputChange}
-      error={errors.City}
-    >
-        {cities[selected].map((city: string) => (
-         <MenuItem key={city} value={city}>
-         {city}
-       </MenuItem>
-      ))}
+                    label="City"
+                    id="city"
+                    name="city"
+                    value={values.City}
+                    onChange={handleInputChange}
+                    error={errors.City}
+                  >
+                    {cities[selected].map((city: string) => (
+                      <MenuItem key={city} value={city}>
+                        {city}
+                      </MenuItem>
+                    ))}
                   </Select>
-                
                   {errors.country && <Alert severity="error">{errors.country}</Alert>}
-                  
                 </FormControl>
-                )}
-</div>
-            <Controls.Input 
-                name="companyName"
-                label="Company Name"
-                placeholder="ABC Company"
-                value={values.companyName}
-                onChange={handleInputChange}
-                error={errors.companyName}
-                fullWidth 
-                style={{ marginBottom: '1rem' }}
-              />
-
-          {selectedRole ==="SUPPLIER" &&(
-          <div>
-           
-             <FormControl fullWidth>
-                  <InputLabel id="category-label">Business  Types</InputLabel>
+              )}
+            </div>
+            <Controls.Input
+              name="companyName"
+              label="Company Name"
+              placeholder="Please enter your company name"
+              value={values.companyName}
+              onChange={handleInputChange}
+              error={errors.companyName}
+              fullWidth
+              style={{ marginBottom: '1rem' }}
+            />
+            {selectedRole === 'SUPPLIER' && (
+              <div>
+                <FormControl fullWidth>
+                  <InputLabel id="category-label">Business Types</InputLabel>
                   <Select
-                    label="business  Types"
+                    label="business Types"
                     id="category"
                     name="category"
                     value={values.category}
@@ -247,120 +237,117 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
                   </Select>
                   {errors.category && <Alert severity="error">{errors.category}</Alert>}
                 </FormControl>
-
-              <Typography>User Information</Typography>
-          </div>
-        
-
-          )}
-              <Controls.Input
-                name="firstName"
-                label="First Name"
-                placeholder="Jhon"
-                value={values.firstName}
-                onChange={handleInputChange}
-                error={errors.firstName}
-                fullWidth 
-                icon={<AccountCircle />} // Add icon for the field
-                sx={{
-                  width: '100%',
-                  marginTop: '1rem',
-                  marginBottom: '1rem',
-                  paddingBottom: '0.5rem',
-                }}
-                style={{ marginBottom: '1rem' }}
-              />
-              <Controls.Input
-                name="lastName"
-                label="Last Name"
-                placeholder="Doe"
-                value={values.lastName}
-                onChange={handleInputChange}
-                error={errors.lastName}
-                fullWidth // Make input full width
-                icon={<AccountCircle />}
-                style={{ marginBottom: '1rem' }}
-              />
-
-                   <Controls.Input
-                name="username"
-                label="Username"
-                value={values.username}
-                onChange={handleInputChange}
-                placeholder="yosis"
-                error={errors.username}
-                fullWidth // Make input full width
-                icon={<AccountCircle />}
-                style={{ marginBottom: '1rem' }}
-                inputProps={{ autoComplete: 'off' }}
-              />
-              {selected && (
-         <div>
-          <Controls.Input
-            name="phoneNumber"
-            label="PhoneNumber"
-            value={values.phoneNumber}
-            placeholder="0973316377"
-            onChange={handleInputChange}
-            error={errors.phoneNumber}
-            fullWidth // Make input full width
-            icon={<PhoneEnabledTwoTone />}
-            style={{ marginBottom: '1rem' }}
-            secondField={countryPhoneCodes[selected]}
-          />
-        </div>
-      )}
-              <Controls.Input
-                name="email"
-                label="Email"
-                value={values.email}
-                placeholder="example@example.com"
-                onChange={handleInputChange}
-                error={errors.email}
-                fullWidth // Make input full width
-                icon={<EmailTwoTone />}
-                style={{ marginBottom: '1rem' }}
-                inputProps={{
-                  autoComplete: 'email' // Set the autocomplete attribute to 'email'
-                }}
-              />
-            
+                <Typography>User Information</Typography>
+              </div>
+            )}
+            <Controls.Input
+              name="firstName"
+              label="First Name"
+              placeholder="Please enter your first name"
+              value={values.firstName}
+              onChange={handleInputChange}
+              error={errors.firstName}
+              fullWidth
+              icon={<AccountCircle />}
+              sx={{
+                width: '100%',
+                marginTop: '1rem',
+                marginBottom: '1rem',
+                paddingBottom: '0.5rem',
+              }}
+              style={{ marginBottom: '1rem' }}
+            />
+            <Controls.Input
+              name="lastName"
+              label="Last Name"
+              placeholder="Please enter your last name "
+              value={values.lastName}
+              onChange={handleInputChange}
+              error={errors.lastName}
+              fullWidth
+              icon={<AccountCircle />}
+              style={{ marginBottom: '1rem' }}
+            />
+            <Controls.Input
+              name="username"
+              label="Username"
+              value={values.username}
+              onChange={handleInputChange}
+              placeholder="Please enter your user name"
+              error={errors.username}
+              fullWidth
+              icon={<AccountCircle />}
+              style={{ marginBottom: '1rem' }}
+              inputProps={{ autoComplete: 'off' }}
+            />
+            {selected && (
+              <div>
                 <Controls.Input
-  name="password"
-  label="Password"
-  placeholder="********"
-  value={values.password}
-  onChange={handleInputChange}
-  error={errors.password}
-  fullWidth
-  icon={<Lock />}
-
-  style={{ marginBottom: '1rem' }}
-  type="password" // Set the istartnput type to "password"
-  inputProps={{ autoComplete: 'off' }}
-/>
- </Grid>
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                text="Submit"
-                fullWidth
-              />
-              <Button
-                text="Reset"
-                onClick={resetForm}
-                fullWidth
-                style={{ backgroundColor: '#ccc', color: '#000', marginTop: 10 }}
-              />
-            </Grid>
+                  name="phoneNumber"
+                  label="PhoneNumber"
+                  value={values.phoneNumber}
+                  placeholder="0973316377"
+                  onChange={handleInputChange}
+                  error={errors.phoneNumber}
+                  fullWidth
+                  icon={<PhoneEnabledTwoTone />}
+                  style={{ marginBottom: '1rem' }}
+                  secondField={countryPhoneCodes[selected]}
+                />
+              </div>
+            )}
+            <Controls.Input
+              name="email"
+              label="Email"
+              value={values.email}
+              placeholder="example@example.com"
+              onChange={handleInputChange}
+              error={errors.email}
+              fullWidth
+              icon={<EmailTwoTone />}
+              style={{ marginBottom: '1rem' }}
+              inputProps={{
+                autoComplete: 'email',
+              }}
+            />
+            <Controls.Input
+              name="password"
+              label="Password"
+              placeholder="********"
+              value={values.password}
+              onChange={handleInputChange}
+              error={errors.password}
+              fullWidth
+              icon={<Lock />}
+              style={{ marginBottom: '1rem' }}
+              type="password"
+              inputProps={{ autoComplete: 'off' }}
+            />
           </Grid>
-         
-        </Form>
-        <Grid container justifyContent="flex-end" alignItems="center" style={{ marginTop: 10 }}>
-          <Grid item>
-
-          </Grid>  
+          <Grid item xs={12}>
+          {successMessage && (
+        <Alert variant="filled" severity="success" style={{ marginTop: 10 }}>
+          {successMessage}
+        </Alert>
+      )}
+      {errorMessage && (
+        <Alert variant="filled" severity="error" style={{ marginTop: 10 }}>
+          {errorMessage}
+        </Alert>
+      )}
+            <Button type="submit" text="Submit" fullWidth />
+            <Button
+              text="Reset"
+              onClick={resetForm}
+              fullWidth
+              style={{ backgroundColor: '#ccc', color: '#000', marginTop: 10 }}
+            />
+          </Grid>
         </Grid>
-      </div>
+      </Form>
+      <Grid container justifyContent="flex-end" alignItems="center" style={{ marginTop: 10 }}>
+        <Grid item></Grid>
+      </Grid>
+    </div>
   );
 };
