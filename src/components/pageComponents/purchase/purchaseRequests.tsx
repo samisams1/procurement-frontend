@@ -26,7 +26,7 @@ interface PurchaseRequestVars {
 
 const PURCHASE_REQUEST_BY_SUPPLIER_QUERY = gql`
   query PurchaseRequestBYSupplierId($userId: Int!) {
-    purchaseRequestBYSupplierId(userId: $usTypographyerId) {
+    purchaseRequestBYSupplierId(userId: $userId) {
       id
       userId
       status

@@ -212,7 +212,7 @@ const Detail = () => {
     e.preventDefault();
 
     try {
-      const { data } = await updateOrder({ variables: { id:id, input:"comformed" } });
+      const { data } = await updateOrder({ variables: { id:4, input:"comformed" } });
       console.log('Order updated:', data.updateOrder);
     } catch (updateError) {
       console.error('Failed to update order:', updateError);

@@ -3,6 +3,7 @@ import { UserContext } from '../../auth/UserContext';
 import Spinner from '../../components/Spinner';
 import Suppliers from '../../components/pageComponents/supplier/suppliers';
 import SuppliersProfile from './suppliersProfile';
+import Notification from '../notification/notificatio';
 export default function Supplier() {
   const { currentUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +33,7 @@ export default function Supplier() {
     return (
       <div>
         <SuppliersProfile />
+        <Notification/>
       </div>
     );
   } else {

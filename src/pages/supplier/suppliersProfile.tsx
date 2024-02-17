@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import {  Dashboard } from '@mui/icons-material';import PageHeader from '../../components/PageHeader';
 import { SupplierProfile } from '../../components/pageComponents/supplier/supplierProfile';
 import { SuppllierProfileDetails } from '../../components/pageComponents/supplier/SupplierProfileDetails';
+import Notification from '../notification/notificatio';
 
 const SectionTitle = styled(Paper)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -14,12 +15,14 @@ const SuppliersProfile = () => {
  
   return (
     <Grid container spacing={3}>
+      <Notification/>
       <Grid item xs={12}>
         <SectionTitle variant="outlined" square>
          <PageHeader
          title="Supplier Profile"
         icon={<Dashboard/>}  
          />
+
         </SectionTitle>
       </Grid>
       <Grid item xs={12} sm={6} md={6}>
