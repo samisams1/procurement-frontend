@@ -22,3 +22,9 @@ query{
     }
   }
 `;
+
+export const COUNT_QUOTATIONS_QUERY = gql`
+  query CountQuotations($status: String!, $supplierId: Int!) {
+    countGetQuotationByStatus(status: $status, supplierId: $supplierId)
+  }
+`;

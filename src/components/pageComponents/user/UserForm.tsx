@@ -11,7 +11,6 @@ import { AccountCircle, EmailTwoTone, Lock, PhoneEnabledTwoTone } from '@mui/ico
 import ReactFlagsSelect from "react-flags-select";
 import { countryPhoneCodes } from '../../common/countryPhoneCodes';
 import { cities } from '../../common/countryCitiesCodes';
-import Spinner from '../../Spinner';
 
 interface Category {
   id: string;
@@ -52,7 +51,6 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate =  useNavigate();
   const [selected, setSelected] = useState('');
-  const [loadingSpinner, setLoading] = useState(false);
 
 
     const handleCountrySelect = (value: string) => {
@@ -145,25 +143,22 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     console.log(values);
     if (validate()) {
       try {
-        setLoading(true); // Set loading to true while the form is being submitted
-
         await createProfile({
-          variables: { input: values },
+          variables: { input: values }, // Provide the "input" variable with the form values
         });
-
+  
         setSuccessMessage('User created successfully!');
         resetForm();
         setTimeout(() => {
           setSuccessMessage('');
-          setLoading(false); // Set loading to false when the success message is displayed
+          // setLoading(false);
           navigate(`/acountCreated/${values.email}`);
-        }, 5000);
-      } catch (error: any) {
+        }, 5000); // Remove success message after 5 seconds
+      } catch (error:any) {
         setErrorMessage(error.message);
         setTimeout(() => {
           setErrorMessage('');
-          setLoading(false); // Set loading to false when the error message is displayed
-        }, 5000);
+        }, 5000); // Remove error message after 5 seconds
       }
     }
   };
@@ -176,7 +171,6 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   }
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      {loadingSpinner &&<Spinner/>}
       <Typography variant="h6" style={{ color: '#00b0ad' }}>
         {selectedRole} REGISTRATION
       </Typography>
@@ -273,7 +267,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
               label="Username"
               value={values.username}
               onChange={handleInputChange}
-              placeholder="Please enter your user name"
+              placeholder="Please enter your user "
               error={errors.username}
               fullWidth
               icon={<AccountCircle />}

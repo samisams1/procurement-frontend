@@ -1,15 +1,10 @@
 import React from 'react';
 import { Grid, Paper, Typography, Box, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { ShoppingCart, CheckCircle, Warning, LocalShipping, MonetizationOn, Dashboard } from '@mui/icons-material';
+import { ShoppingCart, CheckCircle, Warning, LocalShipping, Dashboard } from '@mui/icons-material';
 import PageHeader from '../../../components/PageHeader';
-import OrderByStatus from '../../../components/pageComponents/dashboard/customer/orderByStatus';
-import RequestByStatus from '../../../components/pageComponents/dashboard/customer/requestByStatus';
-
-const SectionTitle = styled(Paper)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-  padding: theme.spacing(2),
-}));
+import RequestByStatus from '../../../components/pageComponents/dashboard/supplier/TotalPurchaseRequest';
+import OrderCount from '../../../components/pageComponents/dashboard/supplier/OrderCount';
 
 const MetricContainer = styled(Paper)(({ theme, color }) => ({
   display: 'flex',
@@ -48,12 +43,10 @@ const SupplierDashboard = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <SectionTitle variant="outlined" square>
          <PageHeader
          title="Dashboard"
         icon={<Dashboard/>}  
          />
-        </SectionTitle>
       </Grid>
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#F44336">
@@ -69,7 +62,7 @@ const SupplierDashboard = () => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#9C27B0">
           <Box>
-            <MetricValue variant="h4"><RequestByStatus status="pending" /></MetricValue>
+            <MetricValue variant="h4"><RequestByStatus status="pending" supplierId={2}/></MetricValue>
             <MetricLabel variant="subtitle2">Pending Requests</MetricLabel>
           </Box>
           <IconButton color="inherit">
@@ -80,7 +73,7 @@ const SupplierDashboard = () => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#4CAF50">
           <Box>
-            <MetricValue variant="h4"><OrderByStatus status="pending" /></MetricValue>
+            <MetricValue variant="h4"><OrderCount status="pending" supplierId={2}/></MetricValue>
             <MetricLabel variant="subtitle2">Pending Orders</MetricLabel>
           </Box>
           <IconButton color="inherit">
@@ -91,7 +84,7 @@ const SupplierDashboard = () => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#FFC107">
           <Box>
-            <MetricValue variant="h4"><OrderByStatus status="coformed" /></MetricValue>
+            <MetricValue variant="h4"><OrderCount status="comformed" supplierId={2}/></MetricValue>
             <MetricLabel variant="subtitle2">Comformed Orders </MetricLabel>
           </Box>
           <IconButton color="inherit">
@@ -103,22 +96,12 @@ const SupplierDashboard = () => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#2196F3">
           <Box>
-            <MetricValue variant="h4"><OrderByStatus status="approved" /></MetricValue>
-            <MetricLabel variant="subtitle2">Approved Orders</MetricLabel>
+          <MetricLabel variant="h3">Approved Orders </MetricLabel>
+            <MetricValue variant="h4"><OrderCount status="approved" supplierId={2}/></MetricValue>
+            <MetricLabel variant="subtitle2"> Payment Pending</MetricLabel>
           </Box>
           <IconButton color="inherit">
             <ShoppingCart />
-          </IconButton>
-        </MetricContainer>
-      </Grid>
-      <Grid item xs={12} sm={6} md={4}>
-        <MetricContainer elevation={3} color="#FF5722">
-          <Box>
-            <MetricValue variant="h4">50</MetricValue>
-            <MetricLabel variant="subtitle2">Payment Pending</MetricLabel>
-          </Box>
-          <IconButton color="inherit">
-            <MonetizationOn />
           </IconButton>
         </MetricContainer>
       </Grid>

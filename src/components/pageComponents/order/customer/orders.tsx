@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
-import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
+import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../../Button';
 import { UserContext } from '../../../../auth/UserContext';
@@ -53,10 +53,19 @@ const Orders: React.FC = () => {
   const columns = [
     { name: 'SN', options: { filter: false, sort: false } },
     'ID',
-    'Reference Number',
-    'User',
-    'Suppliers',
-    'Status',
+    {
+      name: 'Reference Number',
+      options: {
+        display: true,
+      },
+    },
+   
+    {
+      name: 'Status',
+      options: {
+        display: true,
+      },
+    },
     'Date',
     {
       name: 'Action',
@@ -66,48 +75,52 @@ const Orders: React.FC = () => {
         customBodyRender: (value: any, tableMeta: any) => {
           const id = tableMeta.rowData[1];
           return (
+        
+
             <Button
-              text="View Details"
-              onClick={() => {
-                navigate(`/orderDetail/${id}`);
-              }}
-              style={{ cursor: 'pointer' }}
-            />
+            variant="outlined"
+            onClick={() => {
+              navigate(`/orderDetail/${id}`);
+            }}
+            style={{ whiteSpace: 'nowrap' }}
+          text="View Detail"  
+          />
+           
+
           );
         },
       },
     },
   ];
-
-  const tableData = data.getOrderByUserId.map(
-    (order: any, index: number) => [
+  const tableData = data.getOrderByUserId.map((order: any, index: number) => {
+    const createdAtDate = new Date(order.createdAt);
+    const formattedDate = createdAtDate.toLocaleString();
+  
+    return [
       index + 1,
       order.id,
-      order.customerId,
-      order.supplierId,
-      order.totalPrice,
+      order.referenceNumber,
       order.status === 'pending' ? (
         <span style={{ color: 'red' }}>{order.status}</span>
       ) : (
         <span style={{ color: 'green' }}>{order.status}</span>
       ),
-      order.createdAt,
+      formattedDate,
       '',
-    ]
-  );
+    ];
+  });
 
   const options: MUIDataTableOptions = {
     filter: true,
     download: true,
     print: true,
     search: true,
-    selectableRows: 'none',
-    responsive: 'standard' as Responsive,
+    selectableRows: 'none', // or 'single' for single row selection
+    responsive: 'standard',
     viewColumns: true,
     rowsPerPage: 10,
     rowsPerPageOptions: [10, 25, 50],
   };
-
   const theme = createTheme({
     components: {
       MUIDataTableHeadCell: {

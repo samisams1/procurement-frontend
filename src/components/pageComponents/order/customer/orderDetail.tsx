@@ -212,7 +212,17 @@ const Detail = () => {
     e.preventDefault();
 
     try {
-      const { data } = await updateOrder({ variables: { id:4, input:"comformed" } });
+      const { data } = await updateOrder({ variables: { id:Number(id), input:"comformed" } });
+      console.log('Order updated:', data.updateOrder);
+    } catch (updateError) {
+      console.error('Failed to update order:', updateError);
+    }
+  };
+  const handleUpdateAdmin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const { data } = await updateOrder({ variables: { id:Number(id), input:"approved" } });
       console.log('Order updated:', data.updateOrder);
     } catch (updateError) {
       console.error('Failed to update order:', updateError);
@@ -284,7 +294,7 @@ const Detail = () => {
         <Button
           variant="contained"
           color="secondary"
-          onClick={handleUpdate}
+          onClick={handleUpdateAdmin}
           text="Approve Order"
         />
       )}

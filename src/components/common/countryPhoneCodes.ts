@@ -47,3 +47,17 @@ export const countryPhoneCodes: { [key: string]: string } = {
   VN: '+84', // Vietnam
   // Add more country codes and phone codes as needed
 };
+/*
+import { Country, alpha2 } from 'iso-3166-1';
+
+interface CountryCodeMap {
+  [key: string]: string;
+}
+
+const countryCodes: CountryCodeMap = {};
+
+Object.values(alpha2).forEach((country: Country) => {
+  countryCodes[country.alpha2] = country.countryCallingCodes[0];
+});
+
+console.log(countryCodes);*/

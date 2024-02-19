@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
-import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box } from '@mui/material';
 import { UserContext } from '../../auth/UserContext';
 import Spinner from '../../components/Spinner';
-import AllOrderList from '../../components/pageComponents/order/admin/allOrderList';
 import Orders from '../../components/pageComponents/order/customer/orders';
 import { Helmet } from 'react-helmet';
 import PageHeader from '../../components/PageHeader';
-import { PeopleAltTwoTone } from '@mui/icons-material';
+import { CarRentalTwoTone } from '@mui/icons-material';
 import { OrderSupplier } from './orderSupplier';
+import { OrderAdmin } from './orderAdmin';
 export default function Order() {
   const { currentUser } = useContext(UserContext);
   if (!currentUser) {
@@ -15,7 +15,7 @@ export default function Order() {
   }
   const { role } = currentUser;
   if (role === 'ADMIN') {
-    return(<div><AllOrderList/></div>);
+    return(<div><OrderAdmin/></div>);
   } else if (role === 'SUPPLIER') {
     return(<div><OrderSupplier/></div>);
   } else if (role === 'CUSTOMER') {
@@ -32,26 +32,12 @@ export default function Order() {
         py: 8
       }}
     >
-      <Container maxWidth="xl">
-        <Grid
-          container
-          spacing={3}
-        >
-          <Grid
-            xs={12}
-            md={12}
-            lg={12}
-          >
-         <PageHeader
-            title="Order"
-            subTitle="orders"
-            icon={<PeopleAltTwoTone fontSize="large" />}
-        /> 
-      
-      <Orders/>
-      </Grid>
-      </Grid>
-      </Container>
+      <PageHeader
+      title="Order"
+      subTitle="orders"
+      icon ={<CarRentalTwoTone/>}
+      />
+       <Orders/>
       </Box>
       </div>);
   } else {

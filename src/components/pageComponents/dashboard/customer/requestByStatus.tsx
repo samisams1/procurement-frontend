@@ -16,7 +16,7 @@ interface RequestByStatusProps {
 }
 
 const RequestByStatus: React.FC<RequestByStatusProps> = ({ status }) => {
-  const userId = 3;
+  const userId = 2;
 
   const { loading, error, data, refetch } = useQuery<CountRequestData, CountRequestVariables>(COUNT_REQUEST_BY_STATUS, {
     variables: { status, userId },
