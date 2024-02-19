@@ -30,6 +30,11 @@ export const NavConfig = [
       icon: getIcon('foundation:burst-sale'),
     },
     {
+      title: 'Notification',
+      path: 'notificaations',
+      icon: getIcon('uiw:notification'),
+    },
+    {
       title: 'Payment',
       icon: getIcon('ri:product-hunt-fill'),
       items: [

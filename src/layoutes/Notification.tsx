@@ -2,25 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconButton, Badge, Popover, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { Notifications, } from '@mui/icons-material';
-import useCountOrders from '../components/pageComponents/dashboard/countedOrder';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Spinner from '../components/Spinner';
 
 interface Notification {
-  id:number;
-  recipientId: string;
+  id: string;
   message: string;
-  type: string;
+  createdAt: string;
 }
-const ORDER_QUERY = gql`
-query Notifications {
-  notifications {
-     id
-    recipientId
-    message
-    type
+
+interface NotificationsInfo {
+  notifications: Notification[];
+  count: number;
+}
+
+const GET_NOTIFICATIONS_INFO = gql`
+  query {
+    notificationsInfo {
+      notifications {
+        id
+        message
+        createdAt
+      }
+      count
+    }
   }
-}
 `;
 const UPDATE_NOTIFICATION_MUTATION = gql`
 mutation UpdateNotification($id: Float!) {
@@ -34,7 +40,10 @@ const NotificationComponent = () => {
   const [maxHeight, setMaxHeight] = useState<number>(0);
   const [updateNotification] = useMutation(UPDATE_NOTIFICATION_MUTATION);
 
-  const { loading, error, data } = useQuery(ORDER_QUERY);
+  //const { loading, error, data } = useQuery(NOTIFICATION_COUNT);
+  const { loading, data } = useQuery<{ notificationsInfo: NotificationsInfo }>(
+    GET_NOTIFICATIONS_INFO
+  );
   const navigate = useNavigate();
   useEffect(() => {
     const handleResize = () => {
@@ -61,16 +70,16 @@ const NotificationComponent = () => {
   const open = Boolean(anchorEl);
   const id = open ? 'notification-popover' : undefined;
 
-  const countOrders = useCountOrders(); // Call the hook to get the countOrders value
 
   if (loading) return <Spinner />;
-  if (error) return <p>{error.message}</p>;
- const notifications = data.notitfications;
+
+  const { notifications, count } = data?.notificationsInfo || {};
+
  const handleNotificationClick = async (notification: Notification) => {
   // Determine the page to navigate based on the notification type
   let route = '';
 
-  switch (notification.type) {
+  switch (notification.message) {
     case 'order':
       route = '/order';
       break;
@@ -105,13 +114,13 @@ const NotificationComponent = () => {
         color="inherit"
         onClick={handleClick}
         sx={{
-          backgroundColor: 'black',
+          backgroundColor: '#00b0ad',
           '&:hover': {
-            backgroundColor: 'blue',
+            backgroundColor: '#b9e5e5',
           },
         }}
       >
-        <Badge badgeContent={countOrders.count} color="error">
+        <Badge badgeContent={count} color="error">
           <Notifications />
         </Badge>
       </IconButton>
@@ -144,14 +153,14 @@ const NotificationComponent = () => {
           </ListItem>
           <div>
       {notifications?.map((notification:Notification) => (
-      <ListItem key={notification.recipientId} onClick={() => handleNotificationClick(notification)}>
+      <ListItem key={notification.message} onClick={() => handleNotificationClick(notification)}>
       <ListItemText
         primary={notification.message}
-        secondary={`Recipient ID: ${notification.recipientId}`}
+        secondary={`Recipient ID: ${notification.message}`}
         secondaryTypographyProps={{ color: 'textSecondary' }}
       />
       <Typography variant="body2" color="textSecondary">
-        Type: {notification.type}
+        Type: {notification.message}
       </Typography>
     </ListItem>
       ))}

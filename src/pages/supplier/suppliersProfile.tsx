@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import {  Dashboard } from '@mui/icons-material';import PageHeader from '../../components/PageHeader';
 import { SupplierProfile } from '../../components/pageComponents/supplier/supplierProfile';
 import { SuppllierProfileDetails } from '../../components/pageComponents/supplier/SupplierProfileDetails';
-import Notification from '../notification/notificatio';
+import Notification from '../notification/notification';
 
 const SectionTitle = styled(Paper)(({ theme }) => ({
   marginBottom: theme.spacing(2),

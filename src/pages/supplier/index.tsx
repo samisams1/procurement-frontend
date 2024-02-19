@@ -3,7 +3,7 @@ import { UserContext } from '../../auth/UserContext';
 import Spinner from '../../components/Spinner';
 import Suppliers from '../../components/pageComponents/supplier/suppliers';
 import SuppliersProfile from './suppliersProfile';
-import Notification from '../notification/notificatio';
+import Notification from '../notification/notification';
 export default function Supplier() {
   const { currentUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);

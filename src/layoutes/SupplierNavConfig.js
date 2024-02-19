@@ -24,6 +24,11 @@ export const SupplierNavConfig = [
       icon: getIcon('icon-park-solid:transaction-order'),
     },
     {
+      title: 'Notification',
+      path: 'notificaations',
+      icon: getIcon('uiw:notification'),
+    },
+    {
       title: 'Payment',
       icon: getIcon('ri:product-hunt-fill'),
       items: [
