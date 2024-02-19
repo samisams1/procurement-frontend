@@ -1,36 +1,14 @@
 import React, { useContext } from 'react';
-import { Grid } from '@mui/material';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client';
+import { Grid, createTheme, ThemeProvider } from '@mui/material';
+import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
 import { useNavigate } from 'react-router-dom';
-import Spinner from '../../Spinner';
-import MUIDataTable from 'mui-datatables';
 import { UserContext } from '../../../auth/UserContext';
-
-interface Order {
-  id: string;
-  customerId: string;
-  supplierId: string;
-  totalPrice: number;
-  tax: number;
-  shippingCost: number;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  referenceNumber: string;
-  purchaseRequestId: string;
-}
-
-interface GetApprovedOrdersData {
-  getApprovedOrderByCustomerId: Order[];
-}
-
-interface GetApprovedOrdersVariables {
-  customerId: number;
-}
-
+import Spinner from '../../Spinner';
+import Button from '../../Button';
 const ORDER_QUERY = gql`
-  query GetApprovedOrderByCustomerId($customerId: Int!) {
-    getApprovedOrderByCustomerId(customerId: $customerId) {
+  query GetApprovedOrderByCustomerId($getOrderByUserId: Int!) {
+    getApprovedOrderByCustomerId(id: $getOrderByUserId) {
       id
       customerId
       supplierId
@@ -42,79 +20,138 @@ const ORDER_QUERY = gql`
       updatedAt
       referenceNumber
       purchaseRequestId
+      supplier {
+        name
+      }
+      customer {
+        username
+      }
     }
   }
 `;
 
-const List: React.FC<{ id: number; navigate: any }> = ({ id, navigate }) => {
- // const [openPopup, setOpenPopup] = useState(false);
-  const { loading, error, data } = useQuery<GetApprovedOrdersData, GetApprovedOrdersVariables>(ORDER_QUERY, {
-    variables: { customerId: 1 },
+const List: React.FC<{ id: number }> = ({ id }) => {
+  const navigate = useNavigate();
+  const { loading, error, data } = useQuery(ORDER_QUERY, {
+    variables: { getOrderByUserId: 1 }, // Specify the userId here
   });
+  const { currentUser } = useContext(UserContext);
 
-  if (loading) return <Spinner />;
-  if (error) return <p>Error: {error.message}</p>;
-
-  const orderData = data?.getApprovedOrderByCustomerId || [];
-
-  // Add a check to ensure orderData is an array
-  if (!Array.isArray(orderData)) {
-    return <p>No order data available</p>;
+  if (!currentUser) {
+    return <Spinner />;
   }
 
-  const productList = orderData.map((row: Order) => [
-    row.id,
-    row.customerId,
-    row.supplierId,
-    row.totalPrice,
-    row.createdAt,
-    row.status,
-  ]);
+  if (loading) {
+    return <Spinner />;
+  }
+
+  if (error) {
+    return <p>{error.message}</p>;
+  }
 
   const columns = [
+    { name: 'SN', options: { filter: false, sort: false } },
+    'ID',
     {
-      name: '#Order Id',
+      name: 'Reference Number',
       options: {
-        filter: true,
+        display: true,
       },
     },
+   
     {
-      name: 'Customer',
+      name: 'Status',
       options: {
-        filter: true,
+        display: true,
+      },
+    },
+    'Date',
+    {
+      name: 'Action',
+      options: {
+        filter: false,
         sort: false,
-      },
-    },
-    {
-      name: 'Supplier',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'Total Price',
-      options: {
-        filter: true,
-      },
-    },
-    {
-      name: 'Date',
-      options: {
-        filter: true,
-        sort: false,
+        customBodyRender: (value: any, tableMeta: any) => {
+          const id = tableMeta.rowData[1];
+          return (
+        
+
+            <Button
+            variant="outlined"
+            onClick={() => {
+              navigate(`/orderDetail/${id}`);
+            }}
+            style={{ whiteSpace: 'nowrap' }}
+          text="View Detail"  
+          />
+           
+
+          );
+        },
       },
     },
   ];
+  const tableData = data.getApprovedOrderByCustomerId.map((order: any, index: number) => {
+    const createdAtDate = new Date(order.createdAt);
+    const formattedDate = createdAtDate.toLocaleString();
+  
+    return [
+      index + 1,
+      order.id,
+      order.referenceNumber,
+      order.status === 'pending' ? (
+        <span style={{ color: 'red' }}>{order.status}</span>
+      ) : (
+        <span style={{ color: 'green' }}>{order.status}</span>
+      ),
+      formattedDate,
+      '',
+    ];
+  });
 
-  /*const handleClick = (id: string) => {
-    navigate(`/orderDetail/${id}`);
-  };*/
+  const options: MUIDataTableOptions = {
+    filter: true,
+    download: true,
+    print: true,
+    search: true,
+    selectableRows: 'none', // or 'single' for single row selection
+    responsive: 'standard',
+    viewColumns: true,
+    rowsPerPage: 10,
+    rowsPerPageOptions: [10, 25, 50],
+  };
+  const theme = createTheme({
+    components: {
+      MUIDataTableHeadCell: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#00b0ad',
+            color: 'white',
+          },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        },
+      },
+    },
+  });
 
   return (
-    <Grid container>
+    <Grid container spacing={3}>
       <Grid item xs={12}>
-        <MUIDataTable title="Order" data={productList} columns={columns} />
+        <ThemeProvider theme={theme}>
+          <MUIDataTable
+            title="List Of Order Ready For Payments"
+            data={tableData}
+            columns={columns}
+            options={options}
+          />
+        </ThemeProvider>
       </Grid>
     </Grid>
   );
@@ -122,15 +159,13 @@ const List: React.FC<{ id: number; navigate: any }> = ({ id, navigate }) => {
 
 const MakePaymentComponent: React.FC = () => {
   const { currentUser } = useContext(UserContext);
-  const navigate = useNavigate();
-
   if (!currentUser) {
     return <Spinner />;
   }
 
   const id = currentUser.id as number;
 
-  return <List id={id} navigate={navigate} />;
+  return <List id={id}  />;
 };
 
 export default MakePaymentComponent;

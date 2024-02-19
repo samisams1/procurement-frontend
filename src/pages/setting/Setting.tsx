@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, Stack } from '@mui/material';
+import { Box } from '@mui/material';
 import ChangePassword from '../account/ChangePassword';
 import { Helmet } from 'react-helmet';
 
@@ -17,11 +17,7 @@ const Setting = () => (
         py: 8
       }}
     >
-      <Container maxWidth="lg">
-        <Stack spacing={3}>
-         <ChangePassword/>
-        </Stack>
-      </Container>
+       <ChangePassword/>
     </Box>
   </>
 );

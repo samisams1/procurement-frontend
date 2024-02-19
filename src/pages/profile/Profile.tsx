@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, Stack, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Stack, Unstable_Grid2 as Grid } from '@mui/material';
 import { Helmet } from 'react-helmet';
 import PageHeader from '../../components/PageHeader';
 import { PeopleOutlineTwoTone } from '@mui/icons-material';
@@ -21,17 +21,7 @@ export const Profile = () => (
       }}
     >
   
-      <Container maxWidth="xl">
-        <Grid
-          container
-          spacing={3}
-        >
-          <Grid
-            xs={12}
-            md={12}
-            lg={12}
-          >
-           <PageHeader
+  <PageHeader
       title = {"My Profile "}
       subTitle ={"this is your profile page "}
       icon={<PeopleOutlineTwoTone fontSize='large'/>}
@@ -57,9 +47,6 @@ export const Profile = () => (
               </Grid>
             </Grid>
         </Stack>
-          </Grid>
-        </Grid>
-      </Container>
     </Box>
   </>
 );

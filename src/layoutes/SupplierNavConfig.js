@@ -24,6 +24,27 @@ export const SupplierNavConfig = [
       icon: getIcon('icon-park-solid:transaction-order'),
     },
     {
+      title: 'Payment',
+      icon: getIcon('ri:product-hunt-fill'),
+      items: [
+        {
+          title: 'Payment',
+          path: 'payment',
+          icon: getIcon('mdi:report-areaspline-variant'),
+        },
+        {
+          title: 'Invoices',
+          path: 'invoices',
+          icon: getIcon('ri:product-hunt-fill'),
+        },
+      ],
+    },
+    {
+      title: 'Shipping',
+      path: 'shipping',
+      icon: getIcon('mdi:report-areaspline-variant'),
+    },
+    {
       title: 'Setting',
       path: 'setting',
       icon: getIcon('uiw:setting'),
