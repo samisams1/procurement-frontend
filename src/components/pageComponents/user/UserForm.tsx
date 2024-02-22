@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Alert, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { Alert, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Form, useForm } from '../../useForm';
-import Button from '../../Button';
 import Controls from '../../Controls';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { userInterface } from '../../../interface/interfaces';
@@ -52,7 +51,7 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   const navigate =  useNavigate();
   const [selected, setSelected] = useState('');
 
-
+  const [loadingRegister, setLoadingRgister] = useState(false);
     const handleCountrySelect = (value: string) => {
     setSelected(value);
   };
@@ -143,19 +142,22 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     console.log(values);
     if (validate()) {
       try {
+        setLoadingRgister(true);
         await createProfile({
           variables: { input: values }, // Provide the "input" variable with the form values
         });
   
         setSuccessMessage('User created successfully!');
+         setLoadingRgister(false);
         resetForm();
         setTimeout(() => {
           setSuccessMessage('');
-          // setLoading(false);
+          
           navigate(`/acountCreated/${values.email}`);
         }, 5000); // Remove success message after 5 seconds
       } catch (error:any) {
         setErrorMessage(error.message);
+        setLoadingRgister(false);
         setTimeout(() => {
           setErrorMessage('');
         }, 5000); // Remove error message after 5 seconds
@@ -170,6 +172,8 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     return <div>Error: {error.message}</div>;
   }
   return (
+    <div>
+ 
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Typography variant="h6" style={{ color: '#00b0ad' }}>
         {selectedRole} REGISTRATION
@@ -329,19 +333,38 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
           {errorMessage}
         </Alert>
       )}
-            <Button type="submit" text="Submit" fullWidth />
-            <Button
-              text="Reset"
-              onClick={resetForm}
-              fullWidth
-              style={{ backgroundColor: '#ccc', color: '#000', marginTop: 10 }}
-            />
+          
+          <Button
+        type="submit"
+        fullWidth
+        disabled={loadingRegister}
+        style={{
+          color: loadingRegister ? 'red' : '#00b0ad',
+          marginTop: 10,
+        }}
+      >
+        {loadingRegister ? (
+          <CircularProgress size={24} style={{ color: 'red' }} />
+        ) : (
+          'Submit'
+        )}
+      </Button>
+
+      <Button
+        onClick={resetForm}
+        fullWidth
+        disabled={loadingRegister}
+        style={{ backgroundColor: '#ccc', color: '#ffffff', marginTop: 10 }}
+      >
+        Reset
+      </Button>
           </Grid>
         </Grid>
       </Form>
       <Grid container justifyContent="flex-end" alignItems="center" style={{ marginTop: 10 }}>
         <Grid item></Grid>
       </Grid>
+    </div>
     </div>
   );
 };
