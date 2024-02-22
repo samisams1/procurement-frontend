@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useQuery } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
@@ -8,6 +8,8 @@ import Button from '../../Button';
 import { useNavigate } from 'react-router-dom';
 import { SectionTitle } from '../../Section';
 import { PURCHASE_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
+import Spinner from '../../Spinner';
+import { UserContext } from '../../../auth/UserContext';
 
 interface PurchaseRequestData {
   purchaseRequestByUserId: {
@@ -31,8 +33,18 @@ interface PurchaseRequestData {
 }
 
 const Requisitions: React.FC = () => {
+  const { currentUser } = useContext(UserContext);
+
+  if (!currentUser) {
+    return <Spinner />;
+  }
+
+  return <PurchaseRequisitions userId={currentUser.id} />;
+};
+
+const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
   const { loading, error, data } = useQuery<PurchaseRequestData>(PURCHASE_REQUESTS_BY_USER_ID, {
-    variables: { userId:2 },
+    variables: { userId: Number(userId) },
   });
 
   const navigate = useNavigate();
@@ -89,7 +101,7 @@ const Requisitions: React.FC = () => {
     ) : (
       <span style={{ color: 'green' }}>{purchaseRequest.status}</span>
     ),
-   '',
+    new Date(purchaseRequest.createdAt).toLocaleString(),
     '',
   ]);
 
