@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import { ShoppingCart, CheckCircle, Warning, MonetizationOn, Dashboard } from '@mui/icons-material';
 import PageHeader from '../../../components/PageHeader';
 import NewRfq from '../../../components/pageComponents/dashboard/customer/countNewRfq';
-import CountAllRequestStatus from '../../../components/pageComponents/dashboard/customer/countAllRequestsBystatus';
+import CountAllRequestStatus from '../../../components/pageComponents/dashboard/customer/countRequestsByStatus';
 import CountAllOrderStatus from '../../../components/pageComponents/dashboard/customer/countAllOrdersBystatus';
 import CountAllPaymentByStatus from '../../../components/pageComponents/dashboard/customer/countAllPaymentBystatus';
 
@@ -53,7 +53,7 @@ const AdminDashboard = () => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#F44336">
           <Box>
-            <MetricValue variant="h4">{<NewRfq/>}</MetricValue>
+            <MetricValue variant="h4">{77}</MetricValue>
             <MetricLabel variant="subtitle2">Total RFQs</MetricLabel>
           </Box>
           <IconButton color="inherit">
@@ -64,7 +64,7 @@ const AdminDashboard = () => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#9C27B0">
           <Box>
-            <MetricValue variant="h4"><CountAllRequestStatus status = "pending" /></MetricValue>
+            <MetricValue variant="h4">samisams</MetricValue>
             <MetricLabel variant="subtitle2">Pending Requests</MetricLabel>
           </Box>
           <IconButton color="inherit">

@@ -1,36 +1,36 @@
-import React, { useEffect } from 'react';
-import { useQuery } from '@apollo/client';
-import { COUNT_ORDER_BY_STATUS } from '../../../../graphql/Order';
+import React from 'react';
+import { useQuery, gql } from '@apollo/client';
 
+interface CountOrder {
+  customerId: number;
+  status: string;
+}
 interface CountOrderData {
   countOrderBystatus: number;
 }
 
-interface CountOrderVariables {
-  status: string;
-  userId: number;
+const COUNT_ORDERS_QUERY = gql`
+query Query($data: CountOrder!) {
+  countOrderBystatus(data: $data)
 }
+`;
 
-interface OrderByStatusProps {
-  status: string;
-}
-
-const OrderByStatus: React.FC<OrderByStatusProps> = ({ status }) => {
-  const userId = 3;
-
-  const { loading, error, data, refetch } = useQuery<CountOrderData, CountOrderVariables>(COUNT_ORDER_BY_STATUS, {
-    variables: { status, userId },
+const OrderByStatus: React.FC<CountOrder> = ({ customerId, status }) => {
+  const { loading, error, data } = useQuery<CountOrderData>(COUNT_ORDERS_QUERY, {
+    variables: { data: { customerId, status } },
   });
 
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
 
-  return <div>{data?.countOrderBystatus
-  }</div>;
+  const count = data?.countOrderBystatus;
+
+  return <p>{count}</p>;
 };
 
 export default OrderByStatus;

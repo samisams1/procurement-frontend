@@ -1,32 +1,24 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
 
-interface OrderCountData {
+
+interface OrderBySupplierIdData {
   countOrderBySupplierId: number;
 }
-
-interface OrderCountVariables {
-  status: string;
+interface OrderBySupplierId {
   supplierId: number;
+  status: string;
 }
-
 const COUNT_ORDERS_QUERY = gql`
-  query CountOrders($status: String!, $supplierId: Int!) {
-    countOrderBySupplierId(status: $status, supplierId: $supplierId)
-  }
+query GetOrderCountBySupplierId($data: orderBySupplierId!) {
+  countOrderBySupplierId(data: $data)
+}
 `;
 
-const OrderCount: React.FC<{ status: string; supplierId: number }> = ({
-  status,
-  supplierId,
-}) => {
-  const { loading, error, data } = useQuery<OrderCountData, OrderCountVariables>(
-    COUNT_ORDERS_QUERY,
-    {
-      variables: { status, supplierId },
-    }
-  );
-
+const OrderCount: React.FC<OrderBySupplierId> = ({ supplierId, status }) => {
+  const { loading, error, data } = useQuery<OrderBySupplierIdData>(COUNT_ORDERS_QUERY, {
+    variables: { data: { supplierId ,status} },
+  });
   if (loading) {
     return <p>Loading...</p>;
   }

@@ -3,27 +3,54 @@ import { useQuery } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
 import PageHeader from '../../PageHeader';
-import {RequestPageOutlined } from '@mui/icons-material';
+import { RequestPageOutlined } from '@mui/icons-material';
 import Button from '../../Button';
 import { useNavigate } from 'react-router-dom';
 import { SectionTitle } from '../../Section';
-import { PURCHASE_REQUESTS } from '../../../graphql/rquest';
-// Define your GraphQL query
+import { PURCHASE_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
+
+interface PurchaseRequestData {
+  purchaseRequestByUserId: {
+    id: string;
+    userId: number;
+    status: string;
+    remark: string;
+    addressDetail: string;
+    estimatedDelivery: string;
+    referenceNumber: string;
+    createdAt: string;
+    user: {
+      username: string;
+    };
+    suppliers: {
+      user: {
+        username: string;
+      };
+    }[];
+  }[];
+}
+
 const Requisitions: React.FC = () => {
+  const { loading, error, data } = useQuery<PurchaseRequestData>(PURCHASE_REQUESTS_BY_USER_ID, {
+    variables: { userId:2 },
+  });
+
   const navigate = useNavigate();
-  const { loading, error, data } = useQuery(PURCHASE_REQUESTS);
+
   if (loading) {
     return <div>Loading...</div>;
   }
+
   if (error) {
     return <div>Error: {error.message}</div>;
   }
-  // Access the data returned by the query
-  const purchaseRequests = data.allPurchaseRequests;
-  // Render your component using the data
+
+  const purchaseRequests = data?.purchaseRequestByUserId || [];
+
   const handleClick = (id: string) => {
     navigate(`/purchaseRequest/${id}`);
   };
+
   const columns = [
     { name: 'SN', options: { filter: false, sort: false } },
     'ID',
@@ -51,16 +78,18 @@ const Requisitions: React.FC = () => {
     },
   ];
 
-  const tableData = purchaseRequests.map((purchaseRequest: any, index: number) => [
+  const tableData = purchaseRequests.map((purchaseRequest, index) => [
     index + 1,
     purchaseRequest.id,
     purchaseRequest.referenceNumber,
     purchaseRequest.user.username,
-    purchaseRequest.suppliers.map((supplier: any) => supplier.user.username).join(', '),
-    purchaseRequest.status ==="pending" ?
-    <span style={{ color: 'red' }}>{purchaseRequest.status}</span>:
-    <span style={{ color: 'green' }}>{purchaseRequest.status}</span>,
-    purchaseRequest.createdAt,
+    purchaseRequest.suppliers.map((supplier) => supplier.user.username).join(', '),
+    purchaseRequest.status === 'pending' ? (
+      <span style={{ color: 'red' }}>{purchaseRequest.status}</span>
+    ) : (
+      <span style={{ color: 'green' }}>{purchaseRequest.status}</span>
+    ),
+   '',
     '',
   ]);
 
@@ -81,7 +110,7 @@ const Requisitions: React.FC = () => {
       MUIDataTableHeadCell: {
         styleOverrides: {
           root: {
-            backgroundColor: '#1976d2',
+            backgroundColor: '#00b0ad',
             color: 'white',
           },
         },
@@ -106,12 +135,7 @@ const Requisitions: React.FC = () => {
       </Grid>
       <Grid item xs={12}>
         <ThemeProvider theme={theme}>
-          <MUIDataTable
-            title="Requests"
-            data={tableData}
-            columns={columns}
-            options={options}
-          />
+          <MUIDataTable title="Requests" data={tableData} columns={columns} options={options} />
         </ThemeProvider>
       </Grid>
     </Grid>

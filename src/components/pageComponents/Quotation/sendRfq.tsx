@@ -16,7 +16,6 @@ interface Product {
 interface Quotation {
   purchaseRequestId: string;
 }
-
 interface ProductPrice {
   id: number;
   createdAt: string;

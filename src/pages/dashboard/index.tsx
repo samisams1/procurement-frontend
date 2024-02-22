@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Spinner from '../../components/Spinner';
 import { UserContext } from '../../auth/UserContext';
-import ProcurementDashboard from './customer';
 import AdminDashboard from './admin';
 import SupplierDashboard from './supplier';
+import CustomerDashboard from './customer';
 
 const Dashboard = () => {
   const { currentUser } = useContext(UserContext);
@@ -30,9 +30,9 @@ const Dashboard = () => {
   if (currentUser === null) {
     dashboardComponent = <div>No user data found</div>;
   } else if (currentUser.role === 'SUPPLIER') {
-    dashboardComponent = <SupplierDashboard />;
+    dashboardComponent = <SupplierDashboard  supplierId={currentUser.id}/>;
   } else if (currentUser.role === 'CUSTOMER') {
-    dashboardComponent = <ProcurementDashboard />;
+    dashboardComponent = <CustomerDashboard  userId={currentUser.id}/>;
   } else if (currentUser.role === 'ADMIN') {
     dashboardComponent = <AdminDashboard />;
   }

@@ -33,7 +33,7 @@ const ORDER_QUERY = gql`
 const List: React.FC<{ id: number }> = ({ id }) => {
   const navigate = useNavigate();
   const { loading, error, data } = useQuery(ORDER_QUERY, {
-    variables: { getOrderByUserId: 1 }, // Specify the userId here
+    variables: { getOrderByUserId: Number(id) }, // Specify the userId here
   });
   const { currentUser } = useContext(UserContext);
 

@@ -11,6 +11,7 @@ const GET_NOTIFICATIONS_INFO = gql`
       notifications {
         id
         message
+        specificid
         type
         createdAt
       }
@@ -23,6 +24,7 @@ interface Notification {
   id: string;
   message: string;
   type: string;
+  specificid:number;
   createdAt: string;
 }
 
@@ -97,7 +99,7 @@ const Notifications: React.FC = () => {
                     Date : {notification.createdAt}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      type <span style={{ color: 'red' }}>: {notification.type}</span>
+                  {notification.specificid}    type <span style={{ color: 'red' }}>: {notification.type}</span>
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
                       Message   : {notification.message}

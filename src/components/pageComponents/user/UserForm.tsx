@@ -88,12 +88,12 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
     if ('role' in fieldValues) temp.role = fieldValues.role ? '' : 'This field is required.';
     if ('phoneNumber' in fieldValues && fieldValues.phoneNumber?.trim()) {
       const phoneNumber = fieldValues.phoneNumber.trim();
-      const phoneNumberRegex = /^[0-9]{10}$/; // Assumes a 10-digit phone number format
-      
+      const phoneNumberRegex = /^0[0-9]{9}$|^[1-9][0-9]{8}$/; // Regex pattern for 10-digit number starting with 0 or 9-digit number starting with a non-zero digit
+    
       if (phoneNumber === '') {
         temp.phoneNumber = 'This field is required.';
       } else if (!phoneNumberRegex.test(phoneNumber)) {
-        temp.phoneNumber = 'Invalid phone number. Please enter a 10-digit number.';
+        temp.phoneNumber = 'Invalid phone number. Please enter a 10-digit number starting with 0 or a 9-digit number starting with a non-zero digit.';
       } else {
         temp.phoneNumber = '';
       }

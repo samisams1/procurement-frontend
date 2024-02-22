@@ -1,14 +1,16 @@
 import { Button, Typography, Box } from '@mui/material';
 import React from 'react';
-import {  useParams } from 'react-router-dom';
+import {  useNavigate, useParams } from 'react-router-dom';
 
 const AccountCreation: React.FC = () => {
   const { email } = useParams<{ email?: string }>();
-  
-  const handleVerifyClick = () => {
+   const navigate = useNavigate();
+  /*const handleVerifyClick = () => {
     window.location.href = 'https://mail.google.com/';
-  };
-
+  }; */
+const handleClick=()=>{
+  navigate('/');
+}
   return (
     <Box
       display="flex"
@@ -23,8 +25,8 @@ const AccountCreation: React.FC = () => {
       <Typography variant="body1" gutterBottom>
         Please check your email ({email}) to verify your account.
       </Typography>
-      <Button variant="contained" color="primary" onClick={handleVerifyClick}>
-        Verify Account
+      <Button variant="contained" color="primary" onClick={handleClick}>
+        Go Home
       </Button>
     </Box>
   );

@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 export const COUNT_RFQ = gql`
-query{
-    countRfq
+query Query($data: countQuotation!) {
+  countGetQuotationByStatus(data: $data)
 }
 `
 export const QUOTATIONS = gql`

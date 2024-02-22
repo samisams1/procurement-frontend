@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import { useQuery } from '@apollo/client';
-import { Grid, Paper, Typography, styled } from '@mui/material';
+import { Grid,createTheme, Paper,ThemeProvider,Typography, styled } from '@mui/material';
 import { gql } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
 import PageHeader from '../../PageHeader';
-import MUIDataTable, { MUIDataTableColumnDef } from 'mui-datatables';
-
+import MUIDataTable, {MUIDataTableOptions, Responsive } from 'mui-datatables';
+import { SectionTitle } from '../../Section';
+import { RequestPageOutlined } from '@mui/icons-material';
 const GET_PURCHASE_REQUEST_BY_ID = gql`
   query PurchaseRequestById($id: Int!) {
     purchaseRequestById(id: $id) {
@@ -92,7 +93,7 @@ function Detail() {
     window.print();
   };
 
-  const columns: MUIDataTableColumnDef[] = [
+  const columns = [
     {
       name: 'id',
       label: 'Requested Detail',
@@ -102,20 +103,84 @@ function Detail() {
       label: 'Title',
     },
     {
+      name: 'uom',
+      label: 'uom',
+    },
+    {
+      name: 'partNumber',
+      label: 'partNumber',
+    },
+    {
+      name: 'model',
+      label: 'model',
+    },
+    {
+      name: 'manufacture',
+      label: 'manufacture',
+    },
+    {
+      name: 'code',
+      label: 'code',
+    },
+    {
+      name: 'Description',
+      label: 'Description',
+    },
+    {
       name: 'quantity',
       label: 'Quantity',
-    },
+    }
   ];
 
   const tableData = orderDetail?.products.map((product) => ({
     id: product.id,
     title: product.title,
     quantity: product.quantity,
+    code: product.code,
+    manufacture: product.manufacture,
+    partNumber: product.partNumber,
+    model: product.model,
+    uom: product.uom,
   }));
 
+  const options: MUIDataTableOptions = {
+    filter: true,
+    download: true,
+    print: true,
+    search: true,
+    selectableRows: 'none', // or 'single' for single row selection
+    responsive: 'standard' as Responsive,
+    viewColumns: true,
+    rowsPerPage: 10,
+    rowsPerPageOptions: [10, 25, 50],
+  };
+  const theme = createTheme({
+    components: {
+      MUIDataTableHeadCell: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#00b0ad',
+            color: 'white',
+          },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        },
+      },
+    },
+  });
   return (
-    <div>
-      <PageHeader title="Purchase Request" subTitle="Purchase Request" />
+    <Grid container spacing={2}>
+    <Grid item xs={12}>
+     
+      <SectionTitle variant="outlined" square>
+          <PageHeader title="Purchase Request" subTitle="Purchase Request" icon={<RequestPageOutlined />} />
+       </SectionTitle>
       <MobileGrid container spacing={2}>
         {/* Order By */}
         <Grid item xs={12} sm={4}>
@@ -143,21 +208,18 @@ function Detail() {
           </Paper>
         </Grid>
       </MobileGrid>
-
+      <ThemeProvider theme={theme}>
       <MUIDataTable
-        title="Product Table"
+        title="Created Products"
         data={tableData || []}
         columns={columns}
-        options={{
-          selectableRows: 'none',
-          print: false,
-          download: false,
-          viewColumns: false,
-          search: false,
-        }}
+        options={options}
       />
+        </ThemeProvider>
       <button onClick={handlePrint}>Print</button>
-    </div>
+    
+    </Grid>
+    </Grid>
   );
 }
 

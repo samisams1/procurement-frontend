@@ -32,12 +32,6 @@ interface Quotation {
   supplierId: number;
   shippingPrice: number;
   status: string;
-  customer:{
-    firstName:string;
-  }
-  supplier:{
-    name:string;
-  }
 }
 
 
@@ -116,6 +110,7 @@ type QuotationDetailProps = {
 
 const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId }) => {
   const [createOrder] = useMutation(CREATE_ORDER_MUTATION);
+  const [selectedItemId, setSelectedItemId] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const { loading, error, data,refetch } = useQuery<GetAllProductPricesResponse>(GET_ALL_PRODUCT_PRICES, {
@@ -143,6 +138,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId }) => {
   const quotationGroups: { [key: string]: ProductPrice[] } = {};
   data?.quotationByRequestId.forEach((productPrice) => {
     const quotationId = productPrice.quotationId;
+    
     if (quotationGroups[quotationId]) {
       quotationGroups[quotationId].push(productPrice);
     } else {
@@ -154,7 +150,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId }) => {
     event.preventDefault();
 
     const selectedProducts = data?.quotationByRequestId.filter(
-      (productPrice) => selectedItems[productPrice.productId]
+      (productPrice) => selectedItems[productPrice.id]
     );
 
     const totalPrice = selectedProducts?.reduce(
@@ -180,7 +176,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId }) => {
       }))
     : [];
     const input: CreateOrderInput = {
-      customerId: 8,
+      customerId: 1,
       supplierId: 1,
       orderDetails,
       productPriceIds: productPriceIds, // Include productPriceIds in the input object
@@ -189,14 +185,14 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId }) => {
       status: 'pending',
       shippingCost: shippingCost,
     };
-console.log(productPriceIds)
+console.log(input)
   try {
-       await createOrder({ variables: { input } });
+      /* await createOrder({ variables: { input } });
       refetch(); 
       setSuccessMessage('Order created successfully!');
       setTimeout(() => {
         setSuccessMessage('');
-      }, 5000); 
+      }, 5000);  */
     } catch (error:any) {
       setErrorMessage(error.message);
         setTimeout(() => {
@@ -217,32 +213,35 @@ console.log(productPriceIds)
               {errorMessage}
             </Alert>
           )}
-        {
-    
-     
-        Object.entries(quotationGroups).map(([quotationId, productPrices]) => (
-          
+         <Grid  item xs={12}>
+      
+        {Object.entries(quotationGroups).map(([quotationId, productPrices]) => (
           <Grid item xs={12} key={quotationId}>
-     <Paper>
-              <h1>Quotation - {quotationId}</h1>
-
+            <Paper>
+            samisas
               <Table>
                 <TableHead>
-                  <TableRow>
-                    <TableCell>#</TableCell>
-                    <TableCell>Select</TableCell>
+                  <TableRow sx={{ backgroundColor: '#00b0ad' }}>
+                    <TableCell sx={{ padding: '4px', height: '32px' }}>#</TableCell>
+                    <TableCell sx={{ padding: '4px', height: '32px' }}>Select</TableCell>
                     <TableCell>Title</TableCell>
-                    <TableCell>Quantity</TableCell>
-                    {/* Add the remaining table headers */}
+                    <TableCell sx={{ padding: '4px', height: '32px' }}>Item Code</TableCell>
+                    <TableCell sx={{ padding: '4px', height: '32px' }}>Manufacturer</TableCell>
+                    <TableCell sx={{ padding: '4px', height: '32px' }}>Model</TableCell>
+                    <TableCell sx={{ padding: '4px', height: '32px' }}>Part Number</TableCell>
+                    <TableCell sx={{ padding: '4px', height: '32px' }}>Quantity</TableCell>
+                    <TableCell sx={{ padding: '4px', height: '32px' }}>UOM</TableCell>
+                    <TableCell sx={{ padding: '4px', height: '32px' }}>Price</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {productPrices.map((productPrice: ProductPrice, index: number) => {
-                    const { product, id, status } = productPrice;
-                    const isOrdered = status === 'ordered';
-
+                  {productPrices.map((productPrice, index) => {
+                    const { product, price,id,status } = productPrice;
+                    const isChecked = selectedItems[id] || false;
+                    const isOrdered = status === "ordered";
+                    const isDisabled = selectedItemId !== null && product.id !== selectedItemId && isChecked;
                     return (
-                      <TableRow key={id}>
+                      <TableRow key={product.id}>
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>
                           <Checkbox
@@ -251,9 +250,14 @@ console.log(productPriceIds)
                             disabled={isOrdered}
                           />
                         </TableCell>
-                        <TableCell>{product.title}</TableCell>
+                        <TableCell>{product.title }<span>{status} {id}</span> <span style={{color:'red'}}>{quotationId}</span>{product.id}</TableCell>
+                        <TableCell>{product.code}</TableCell>
+                        <TableCell>{product.manufacture}</TableCell>
+                        <TableCell>{product.model}</TableCell>
+                        <TableCell>{product.partNumber}</TableCell>
                         <TableCell>{product.quantity}</TableCell>
-                        {/* Add the remaining table cells */}
+                        <TableCell>{product.uom}</TableCell>
+                        <TableCell>{price}</TableCell>
                       </TableRow>
                     );
                   })}
@@ -262,6 +266,7 @@ console.log(productPriceIds)
             </Paper>
           </Grid>
         ))}
+        </Grid>
       </Grid>
       <form onSubmit={handleSubmit}>
         <Button type="submit" variant="contained" color="primary">

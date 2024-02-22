@@ -53,7 +53,7 @@ export interface AdditionalData {
   onSubmit: (selectedType: string, selectedValue: string[]) => void;
 }*/
 interface RequestFormProps {
-  onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string) => Promise<void>;
+  onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string,categoryId:string) => Promise<void>;
 }
 const GET_CATEGORIES = gql`
  query GetCategories {
@@ -65,12 +65,12 @@ const GET_CATEGORIES = gql`
 `;
 
 const GET_SUPPLIERS_BY_CATEGORY_ID = gql`
-  query GetSuppliersByCategoryId($categoryId: Int!) {
-    suppliersByCategoryId(categoryId: $categoryId) {
-      id
-      name
-    }
+query SuppliersByCategoryId($categoryId: Int!) {
+  suppliersByCategoryId(categoryId: $categoryId) {
+    id
+    name
   }
+}
 `;
 const GET_SUPPLIERS = gql`
 query Suppliers {
@@ -105,7 +105,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
 
   const [selectedValue, setSelectedValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [categoryId, setCategoryId] = useState<string | undefined>(undefined);
+  const [categoryId, setCategoryId] = useState<string>('');
   const [supplierIds, setSupplierIds] = useState<string[]>([]);
 
   const [selectedType, setSelectedType] = useState('');
@@ -114,20 +114,21 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const {  data } = useQuery(GET_CATEGORIES);
-  const { loading: loadingSuppliers, data: supplierData } = useQuery(
-    GET_SUPPLIERS_BY_CATEGORY_ID,
-    {
-      variables: { categoryId: categoryId || '' },
-    }
-  );
+  const { loading: loadingSuppliers, data: supplierData } = useQuery(GET_SUPPLIERS_BY_CATEGORY_ID, {
+    variables: { categoryId: parseInt(categoryId) },
+  });
 
+  
   useEffect(() => {
     if (categoryId && supplierData && supplierData.suppliersByCategoryId) {
       const suppliers = supplierData.suppliersByCategoryId;
-      const supplierIds = suppliers.map((supplier: Supplier) => supplier.id);
+      const supplierIds = suppliers.map((supplier: any) => supplier.id);
       setSupplierIds(supplierIds);
     }
   }, [categoryId, supplierData]);
+  console.log(supplierIds)
+  console.log("samisams")
+  console.log(categoryId)
   const { data: supData } = useQuery(GET_SUPPLIERS);
 
   useEffect(() => {
@@ -140,6 +141,9 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
     const selectedCategoryId = event.target.value as string;
     setSelectedValue(selectedCategoryId);
     setCategoryId(selectedCategoryId);
+    if (supplierData && supplierData.refetch) {
+      supplierData.refetch({ categoryId: parseInt(selectedCategoryId) });
+    }
   };
 
   const handleTitleChange = (index: number, value: string) => {
@@ -373,16 +377,17 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
 
     let supplierNewId: string[] = [];
     if (selectedType === 'supplier') {
-      supplierNewId = ['1','2'];
-   //   onSubmit(selectedType, supplierNewId);
+  //    supplierNewId = ['1','2'];
+      supplierNewId = supplierIds;
+   //  onSubmit(selectedType, supplierNewId);
    console.log(supplierIds)
 console.log(supplierIds)
-      onSubmit(products, supplierNewId,additional,selectedType);
+      onSubmit(products, supplierNewId,additional,selectedType,categoryId);
 
     } else if (selectedType === 'agent' || selectedType === 'x-company') {
       supplierNewId = [selectedValue];
      // onSubmit(selectedType, supplierNewId);
-     onSubmit(products, supplierNewId,additional,selectedType);
+     onSubmit(products, supplierNewId,additional,selectedType,categoryId);
 
      
 
@@ -472,7 +477,9 @@ return(
                 </Grid>
               )}
           {selectedOptions.includes('agent') && (
-                <Grid item xs={12}>
+             <Grid container spacing={2}>
+                  <Grid item lg={4} md={8} xs={12}></Grid>
+                 <Grid item lg={4} md={8} xs={12} >
                   <FormControl fullWidth>
                     <InputLabel>Agent</InputLabel>
                     <Select value={selectedValue} onChange={handleAgentChange}  label="Agent">
@@ -483,9 +490,40 @@ return(
                       ))}
                     </Select>
                   </FormControl>
+                  </Grid>
+                  <Grid item lg={4} md={8} xs={6}>
+<FormControl fullWidth>
+<InputLabel>Category</InputLabel>
+<Select value={selectedValue} onChange={handleChange} label="Category">
+{data &&
+  data.getCategories.map((category: Category) => (
+    <MenuItem key={category.id} value={category.id}>
+      {category.name}
+    </MenuItem>
+  ))}
+</Select>
+</FormControl>
+    </Grid>
                 </Grid>
+                
               )}
-{selectedOptions.includes('x-company')}
+{selectedOptions.includes('x-company') && (
+    <Grid item xs={12}>
+<FormControl fullWidth>
+<InputLabel>Category</InputLabel>
+<Select value={selectedValue} onChange={handleChange} label="Category">
+{data &&
+  data.getCategories.map((category: Category) => (
+    <MenuItem key={category.id} value={category.id}>
+      {category.name}
+    </MenuItem>
+  ))}
+</Select>
+</FormControl>
+    </Grid>
+  )
+
+}
               
             </Grid>
           </Paper>

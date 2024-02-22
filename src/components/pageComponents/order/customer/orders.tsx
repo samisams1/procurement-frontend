@@ -30,11 +30,10 @@ const ORDER_QUERY = gql`
     }
   }
 `;
-
-const Orders: React.FC = () => {
+const Orders: React.FC<{userId: number}> = ({userId}) => {
   const navigate = useNavigate();
   const { loading, error, data } = useQuery(ORDER_QUERY, {
-    variables: { getOrderByUserIdId: 1 }, // Specify the userId here
+    variables: { getOrderByUserIdId: Number(userId)  }, // Specify the userId here
   });
   const { currentUser } = useContext(UserContext);
 
@@ -75,8 +74,6 @@ const Orders: React.FC = () => {
         customBodyRender: (value: any, tableMeta: any) => {
           const id = tableMeta.rowData[1];
           return (
-        
-
             <Button
             variant="outlined"
             onClick={() => {
@@ -85,8 +82,6 @@ const Orders: React.FC = () => {
             style={{ whiteSpace: 'nowrap' }}
           text="View Detail"  
           />
-           
-
           );
         },
       },

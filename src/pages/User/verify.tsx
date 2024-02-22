@@ -2,19 +2,24 @@ import { gql, useMutation } from '@apollo/client';
 import { Box, Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Popup from '../../components/Popup';
+import Login from '../login/Login';
 
 const VERIFY_USER_MUTATION = gql`
-  mutation VerifyUser($token: String!) {
-    verifyUser(token: $token)
+mutation VerifyUser($token: String!) {
+  verifyUser(token: $token) {
+    isVerified
   }
+}
 `;
+
 
 const VerifyUser: React.FC = () => {
   const location = useLocation();
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [openRegisterPopup, setOpenRegisterPopup] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState<'initial' | 'success' | 'error'>('initial');
   const [verifyUser] = useMutation(VERIFY_USER_MUTATION);
-  const navigate = useNavigate();
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const token = searchParams.get('token');
@@ -43,18 +48,31 @@ const VerifyUser: React.FC = () => {
     }
   }, [location.search, verifyUser]);
   const handleLogin = () => {
-    navigate('/login');
+    setOpenRegisterPopup(true); // Open the register popup
+
+  };
+  const handleHome = () => {
+    navigate('/');
+
   };
   if (verificationStatus === 'success') {
   // navigate('/login')
       return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <Box textAlign="center">
-          <Typography variant="h6">User verification successful!</Typography>
-          <Button variant="contained" color="primary" onClick={handleLogin}>
-            Login
-          </Button>
-        </Box>
+           <Box textAlign="center">
+  <Typography variant="h6">User verification successful!</Typography>
+  <Box display="flex" justifyContent="center" mt={4}>
+    <Button variant="contained" color="primary" onClick={handleLogin} style={{ marginRight: '10px' }}>
+      Login
+    </Button>
+    <Button variant="contained" color="primary" onClick={handleHome} style={{ marginLeft: '10px' }}>
+      Home
+    </Button>
+  </Box>
+</Box>
+        <Popup title="Choose your Account" openPopup={openRegisterPopup} setOpenPopup={setOpenRegisterPopup}>
+        <Login />
+      </Popup>
       </Box>
     );
   } else if (verificationStatus === 'error') {

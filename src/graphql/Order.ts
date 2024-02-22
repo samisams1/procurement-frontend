@@ -90,8 +90,8 @@ query CountOrderByStatus($status: String!, $userId: Int!) {
 }
 `
 export const COUNT_REQUEST_BY_STATUS = gql`
-query CountPurchaseRequestBystatus($status: String!, $userId: Float!) {
-  countPurchaseRequestBystatus(status: $status, userId: $userId)
+query Query($data: countPurchase!) {
+  countPurchaseRequestBystatus(data: $data)
 }
 `
 export const COUNT_ALL_REQUEST_BY_STATUS = gql`

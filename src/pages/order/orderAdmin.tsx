@@ -24,7 +24,7 @@ export const OrderAdmin = () => (
             subTitle="orders"
             icon={<PeopleAltTwoTone fontSize="large" />}
         /> 
-           <Orders/> 
+           <Orders userId= {1}/>
     </Box>
   </>
 );

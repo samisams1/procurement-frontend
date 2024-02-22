@@ -23,7 +23,7 @@ export const OrderSupplier = () => (
       subTitle="orders"
       icon ={<PeopleAltTwoTone/>}
       />
-       <Orders/>
+       <Orders userId= {1}/>
     </Box>
   </>
 );

@@ -180,7 +180,7 @@ const PurchaseRequests: React.FC = () => {
     request.id,
     request.referenceNumber,
     request.status,
-    request.createdAt,
+    new Date(request.createdAt).toLocaleString(),
   ]);
 
   const options: MUIDataTableOptions = {

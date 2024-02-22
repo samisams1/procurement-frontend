@@ -1,11 +1,11 @@
 import React from 'react';
 import { Grid, Paper, Typography, Box, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { ShoppingCart, CheckCircle, Warning, LocalShipping, MonetizationOn, Dashboard } from '@mui/icons-material';
+import { ShoppingCart, CheckCircle, Warning, LocalShipping, Add } from '@mui/icons-material';
 import PageHeader from '../../../components/PageHeader';
-//import OrderByStatus from '../../../components/pageComponents/dashboard/customer/orderByStatus';
-//import RequestByStatus from '../../../components/pageComponents/dashboard/customer/requestByStatus';
-
+import OrderByStatus from '../../../components/pageComponents/dashboard/customer/orderByStatus';
+import CountRequestStatus from '../../../components/pageComponents/dashboard/customer/countRequestsByStatus';
+import NewRfq from '../../../components/pageComponents/dashboard/customer/countNewRfq';
 const SectionTitle = styled(Paper)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   padding: theme.spacing(2),
@@ -36,8 +36,11 @@ const MetricLabel = styled(Typography)(({ theme }) => ({
 const ContentContainer = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
 }));
+interface CustomerDashboardProps {
+  userId: number;
+}
 
-const ProcurementDashboard = () => {
+const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ userId }) => {
   // Sample data for recent orders
   const recentOrders = [
     { id: 1, product: 'Widget A', quantity: 5, status: 'Delivered' },
@@ -52,14 +55,14 @@ const ProcurementDashboard = () => {
          <PageHeader
          title="Dashboard"
          subTitle='dashboard'
-        icon={<Dashboard/>}  
+        icon={<Add/>}  
          />
         </SectionTitle>
       </Grid>
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#F44336">
           <Box>
-            <MetricValue variant="h4">235</MetricValue>
+            <MetricValue variant="h4"><NewRfq status="pending" customerId={Number(userId) }/></MetricValue>
             <MetricLabel variant="subtitle2">Total RFQs</MetricLabel>
           </Box>
           <IconButton color="inherit">
@@ -70,7 +73,7 @@ const ProcurementDashboard = () => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#9C27B0">
           <Box>
-            <MetricValue variant="h4">85</MetricValue>
+            <MetricValue variant="h4"><CountRequestStatus status="pending" userId={Number(userId) }/></MetricValue>
             <MetricLabel variant="subtitle2">Pending Requests</MetricLabel>
           </Box>
           <IconButton color="inherit">
@@ -81,7 +84,7 @@ const ProcurementDashboard = () => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#4CAF50">
           <Box>
-            <MetricValue variant="h4">12</MetricValue>
+            <MetricValue variant="h4"><OrderByStatus status="pending" customerId={Number(userId) }/></MetricValue>
             <MetricLabel variant="subtitle2">Pending Orders</MetricLabel>
           </Box>
           <IconButton color="inherit">
@@ -92,7 +95,7 @@ const ProcurementDashboard = () => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#FFC107">
           <Box>
-            <MetricValue variant="h4">41</MetricValue>
+            <MetricValue variant="h4"><OrderByStatus status="comformed"  customerId={Number(userId) }/></MetricValue>
             <MetricLabel variant="subtitle2">Comformed Orders </MetricLabel>
           </Box>
           <IconButton color="inherit">
@@ -104,22 +107,11 @@ const ProcurementDashboard = () => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#2196F3">
           <Box>
-            <MetricValue variant="h4">85</MetricValue>
-            <MetricLabel variant="subtitle2">Approved Orders</MetricLabel>
+            <MetricValue variant="h4"><OrderByStatus status="approved" customerId={Number(userId) }/></MetricValue>
+            <MetricLabel variant="subtitle2">Approved Orders / Payment Pending</MetricLabel>
           </Box>
           <IconButton color="inherit">
             <ShoppingCart />
-          </IconButton>
-        </MetricContainer>
-      </Grid>
-      <Grid item xs={12} sm={6} md={4}>
-        <MetricContainer elevation={3} color="#FF5722">
-          <Box>
-            <MetricValue variant="h4">50</MetricValue>
-            <MetricLabel variant="subtitle2">Payment Pending</MetricLabel>
-          </Box>
-          <IconButton color="inherit">
-            <MonetizationOn />
           </IconButton>
         </MetricContainer>
       </Grid>
@@ -154,4 +146,4 @@ const ProcurementDashboard = () => {
   );
 };
 
-export default ProcurementDashboard;
+export default CustomerDashboard;

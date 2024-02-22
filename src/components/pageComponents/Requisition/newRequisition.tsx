@@ -68,7 +68,8 @@ const NewRequisitionComponent: React.FC = () => {
     products: SaleInput[],
     supplierNewId: string[],
     additional: AdditionalData,
-    selectedType: string
+    selectedType: string,
+    categoryId:string,
   ): Promise<void> => {
     try {
       if (selectedType !== 'supplier' && selectedType !== 'agent' && selectedType !== 'x-company') {
@@ -76,23 +77,25 @@ const NewRequisitionComponent: React.FC = () => {
       }
       const validProducts = products.filter((product) => product.productTitle.trim() !== '');
       const input = {
+       
+        purchaseRequest : {
         userId:  Number(userId),
         status: 'pending',
         remark: additional.remark,
         addressDetail: additional.addressDetail,
         estimatedDelivery: additional.estimatedDelivery,
         selectedType: selectedType,
-
-      //  suppliers: supplierNewId.map((supplierId) => ({ id: supplierId })),
-      suppliers: [
-        {
-          "id": 1
-        }
-      ],
-      products: validProducts.map((product) => ({
+        categoryId:Number(categoryId),
+        },
+        suppliers: supplierNewId.map((supplierId) => ({ id: supplierId })),
+        products: validProducts.map((product) => ({
         title: product.productTitle,
         quantity: product.quantity,
         Description: product.description,
+        code:product.code,
+        manufacturer: product.manufacturer,
+        partNumber: product.partNumber,
+        model:product.model,
       })),
 
       };

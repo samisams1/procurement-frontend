@@ -54,11 +54,16 @@ query GetQuotes {
 }
 `;
 export const PURCHASE_REQUESTS_BY_USER_ID = gql`
-query PurchaseRequestsByUserId($userId: Float!) {
-  purchaseRequestsByUSerId(userId: $userId) {
-     id
-    referenceNumber
+query PurchaseRequestByUserId($userId: Int!) {
+  purchaseRequestByUserId(userId: $userId) {
+    id
+    userId
     status
+    remark
+    addressDetail
+    estimatedDelivery
+    status
+    referenceNumber
     createdAt
   }
 }
