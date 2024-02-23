@@ -244,7 +244,7 @@ const ManageRequisitionComponent: React.FC = () => {
       MUIDataTableHeadCell: {
         styleOverrides: {
           root: {
-            backgroundColor: '#00b0ad',
+            backgroundColor: 'red',
             color: 'white',
           },
         },
