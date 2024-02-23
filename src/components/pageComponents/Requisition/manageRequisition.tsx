@@ -135,7 +135,7 @@ const ManageRequisitionComponent: React.FC = () => {
 };
 
 export default ManageRequisitionComponent; */
-import React from 'react';
+import React, { useContext } from 'react';
 import { useQuery } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
@@ -145,6 +145,8 @@ import Button from '../../Button';
 import { useNavigate } from 'react-router-dom';
 import { SectionTitle } from '../../Section';
 import { PURCHASE_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
+import { UserContext } from '../../../auth/UserContext';
+import Spinner from '../../Spinner';
 
 interface PurchaseRequestData {
   purchaseRequestByUserId: {
@@ -166,10 +168,17 @@ interface PurchaseRequestData {
     }[];
   }[];
 }
-
 const ManageRequisitionComponent: React.FC = () => {
+  const { currentUser } = useContext(UserContext);
+
+  if (!currentUser) {
+    return <Spinner />;
+  }
+
+  return <RequisitionComponent userId={currentUser.id} />;
+};const RequisitionComponent: React.FC<{ userId: number }> = ({ userId }) => {
   const { loading, error, data } = useQuery<PurchaseRequestData>(PURCHASE_REQUESTS_BY_USER_ID, {
-    variables: { userId:1 },
+    variables: { userId:Number(userId) },
   });
 
   const navigate = useNavigate();
@@ -244,7 +253,7 @@ const ManageRequisitionComponent: React.FC = () => {
       MUIDataTableHeadCell: {
         styleOverrides: {
           root: {
-            backgroundColor: 'red',
+            backgroundColor: '#00b0ad',
             color: 'white',
           },
         },
