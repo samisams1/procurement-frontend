@@ -46,16 +46,15 @@ const Notifications: React.FC = () => {
   }
 
   const { notifications, count } = data?.notificationsInfo || {};
-
-  const handleNotificationClick = (type: string) => {
+  const handleNotificationClick = (notification:any) => {
     let route = '';
 
-    switch (type) {
+    switch (notification.type) {
       case 'order':
         route = '/order';
         break;
       case 'purchaseRequest':
-        route = '/requisitions';
+        route = `/purchaseRequest/${notification.id}`;
         break;
       case 'rfq':
         route = '/rfq';
@@ -84,7 +83,7 @@ const Notifications: React.FC = () => {
               alignItems="flex-start"
               disableGutters={!isMobile}
               divider
-              onClick={() => handleNotificationClick(notification.type)}
+              onClick={() => handleNotificationClick(notification)}
               style={{ cursor: 'pointer' }}
             >
               <ListItemText

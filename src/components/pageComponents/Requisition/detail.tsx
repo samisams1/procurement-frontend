@@ -9,6 +9,22 @@ import PageHeader from '../../PageHeader';
 import MUIDataTable, {MUIDataTableOptions, Responsive } from 'mui-datatables';
 import { SectionTitle } from '../../Section';
 import { RequestPageOutlined } from '@mui/icons-material';
+const paperStyle = {
+  padding: '1rem',
+  borderRadius: '8px',
+  transition: 'border-color 0.3s ease',
+  border: '2px solid #ffffff',
+
+};
+
+const paperHoverStyle = {
+  borderColor: '#00b0ad',
+};
+
+const typographyStyle = {
+  marginBottom: '0.5rem',
+  fontWeight: 'bold',
+};
 const GET_PURCHASE_REQUEST_BY_ID = gql`
   query PurchaseRequestById($id: Int!) {
     purchaseRequestById(id: $id) {
@@ -76,6 +92,8 @@ const MobileGrid = styled(Grid)(({ theme }) => ({
 
 function Detail() {
   const { id } = useParams<{ id?: string }>();
+  const [isHovered, setIsHovered] = React.useState(false);
+
   const { loading, error, data } = useQuery<OrderDetailData, OrderDetailVariables>(GET_PURCHASE_REQUEST_BY_ID, {
     variables: { id: Number(id) },
   });
@@ -174,6 +192,31 @@ function Detail() {
       },
     },
   });
+  const createdDate = orderDetail?.createdAt ? new Date(orderDetail.createdAt) : null;
+  const formattedDate = createdDate?.toLocaleString('en-US', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const getPaperStyle = () => {
+    if (isHovered) {
+      return { ...paperStyle, ...paperHoverStyle };
+    }
+    return paperStyle;
+  };
+
   return (
     <Grid container spacing={2}>
     <Grid item xs={12}>
@@ -184,17 +227,33 @@ function Detail() {
       <MobileGrid container spacing={2}>
         {/* Order By */}
         <Grid item xs={12} sm={4}>
-          <Paper>
-            <Typography variant="h6">Requested By</Typography>
-            <Typography variant="body1">Customer Name: {orderDetail?.userId}</Typography>
-            <Typography variant="body1">Reference Number: {orderDetail?.referenceNumber}</Typography>
-            <Typography variant="body1">Created At: {orderDetail?.createdAt}</Typography>
-          </Paper>
+        <Paper
+      style={getPaperStyle()}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <Typography variant="h6" style={typographyStyle}>
+        Requested By
+      </Typography>
+      <Typography variant="body1">
+        Customer Name: {orderDetail?.userId}
+      </Typography>
+      <Typography variant="body1">
+        Reference Number: {orderDetail?.referenceNumber}
+      </Typography>
+      <Typography variant="body1">
+        Created Date: {formattedDate}
+      </Typography>
+    </Paper>
         </Grid>
 
         {/* Order To */}
         <Grid item xs={12} sm={4}>
-          <Paper>
+        <Paper
+      style={getPaperStyle()}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
             <Typography variant="h6">Requested To</Typography>
             <Typography variant="body1">Supplier Name: {orderDetail?.addressDetail}</Typography>
           </Paper>
@@ -202,7 +261,11 @@ function Detail() {
 
         {/* More */}
         <Grid item xs={12} sm={4}>
-          <Paper>
+        <Paper
+      style={getPaperStyle()}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
             <Typography variant="h6">More</Typography>
             <Typography variant="body1">Status: {orderDetail?.status}</Typography>
           </Paper>
