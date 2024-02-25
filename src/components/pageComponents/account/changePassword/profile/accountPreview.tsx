@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+/*import React, { useContext, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -101,4 +101,15 @@ export const AccountProfile = () => {
       </CardActions>
     </Card>
   );
-};
+};*/
+import React from 'react'
+
+const accountPreview = () => {
+  return (
+    <div>
+      samisams
+    </div>
+  )
+}
+
+export default accountPreview

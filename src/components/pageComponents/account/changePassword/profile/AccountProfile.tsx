@@ -1,4 +1,4 @@
-  import React, { useContext, useState } from 'react';
+  import React, { useContext } from 'react';
   import { Avatar, Box, Button, Card, CardActions, CardContent, Divider, Typography } from '@mui/material';
   import { gql, useMutation } from '@apollo/client';
   import { UserContext, CurrentUser } from '../../../../../auth/UserContext';
@@ -15,7 +15,7 @@
   `;
   
   export const AccountProfile = () => {
-    const [previewImage, setPreviewImage] = useState<string | ArrayBuffer | null>(null);
+ //   const [previewImage, setPreviewImage] = useState<string | ArrayBuffer | null>(null);
     const { currentUser } = useContext(UserContext);
     const [uploadProfilePictureMutation] = useMutation(UPLOAD_PROFILE_PICTURE_MUTATION);
   

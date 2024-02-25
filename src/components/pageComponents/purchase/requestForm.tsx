@@ -22,6 +22,7 @@ import {
 import { Add, DeleteOutlineTwoTone, RequestPageOutlined, RequestPageTwoTone } from '@mui/icons-material';
 import PageHeader from '../../PageHeader';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
+import { SectionTitle } from '../../Section';
 interface Category {
   id: string;
   name: string;
@@ -417,13 +418,16 @@ const handleAgentChange = (event: SelectChangeEvent) => {
 return(
   <ThemeProvider theme={theme}>
      <form onSubmit={handleSubmit} onReset={handleReset}>
-      <Grid container spacing={2}>
+      <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
+          <SectionTitle>
           <PageHeader
             title="NEW REQUISITION FORM"
             subTitle="Create new requisition"
             icon={<RequestPageTwoTone fontSize="large" />}
           />
+          </SectionTitle>
+         
           <Paper elevation={3} style={{ padding: '20px' }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
@@ -535,7 +539,7 @@ return(
           </Typography>
         </Grid>
         )}
-       
+        {!isMobile ? (  
         <Grid item xs={12} sm={12}>
         <Paper elevation={3} sx={{ padding: '20px' }}>
             <div style={{
@@ -557,7 +561,9 @@ return(
 </div>
 </Paper>
         </Grid>
+        ):''}
         {isMobile ? (  
+          <div>
         <TableBody>
     {productTitles.map((title, index) => (
      <Grid item xs={12} key={index} sx={{  marginLeft:'1rem', padding: '8px', border: '1px solid #ddd' }}>
@@ -799,6 +805,27 @@ return(
   </Grid>
 </Grid>
 <Grid>
+<Grid item xs={12} sm={12}>
+        <Paper elevation={3} sx={{ padding: '20px' }}>
+            <div style={{
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: '10px',
+}}>
+  
+  <Button
+    variant="outlined"
+    color="primary"
+    startIcon={<Add />}
+    onClick={handleAddTitle}
+    style={{ whiteSpace: 'nowrap' }}
+  >
+    Add Item
+  </Button>
+</div>
+</Paper>
+        </Grid>
       <Button
           variant="contained"
           color="primary"
@@ -811,7 +838,9 @@ return(
 </Paper>
    </Grid>
   </TableBody>
+
   
+  </div>
   ):(
     <Grid container spacing={2}>
     <Paper elevation={3} sx={{ padding: '20px' }}>
