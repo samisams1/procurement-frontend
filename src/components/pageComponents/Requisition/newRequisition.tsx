@@ -22,12 +22,13 @@ mutation CreatePurchaseRequest($input: CreatePurchaseRequestInput!) {
       id
       Description
       code
-      manufacture
+      manufacturer
       model
       partNumber
       quantity
       title
       uom
+      mark
     }
   }
 }
@@ -91,6 +92,8 @@ const NewRequisitionComponent: React.FC = () => {
         products: validProducts.map((product) => ({
         title: product.productTitle,
         quantity: product.quantity,
+        mark:product.mark,
+        uom:product.uom,
         Description: product.description,
         code:product.code,
         manufacturer: product.manufacturer,

@@ -86,7 +86,6 @@ const GET_ALL_PRODUCT_PRICES = gql`
         id
         Description
         code
-        manufacture
         model
         partNumber
         quantity
@@ -112,9 +111,10 @@ const CREATE_ORDER_MUTATION = gql`
 `;
 type QuotationDetailProps = {
   qId: number;
+  customerId:number;
+  supplierId:number;
 };
-
-const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId }) => {
+const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,supplierId }) => {
   const [createOrder] = useMutation(CREATE_ORDER_MUTATION);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -167,7 +167,6 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId }) => {
     };*/
 
     const shippingCost = 0; // Provide the appropriate value for shipping cost
-
     const productPriceIds: number[] = selectedProducts
   ? selectedProducts.map(({ id }) => Number(id))
   : [];
@@ -180,8 +179,8 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId }) => {
       }))
     : [];
     const input: CreateOrderInput = {
-      customerId: 8,
-      supplierId: 1,
+      customerId: Number(customerId),
+      supplierId: Number(supplierId),
       orderDetails,
       productPriceIds: productPriceIds, // Include productPriceIds in the input object
       totalPrice: totalPrice || 0,

@@ -40,12 +40,18 @@ const GET_PURCHASE_REQUEST_BY_ID = gql`
         id
         Description
         code
-        manufacture
         model
         partNumber
+        mark
         quantity
         title
+        manufacturer
         uom
+        imageurl
+      }
+      user {
+        firstName
+        lastName
       }
     }
   }
@@ -55,14 +61,19 @@ interface Product {
   id: string;
   Description: string;
   code: string;
-  manufacture: string;
+  manufacturer: string;
   model: string;
   partNumber: string;
   quantity: number;
   title: string;
   uom: string;
+  mark:string;
+  imageurl:string;
 }
-
+interface User {
+  firstName:string;
+  lastName:string;
+}
 interface PurchaseRequest {
   id: string;
   userId: string;
@@ -73,6 +84,7 @@ interface PurchaseRequest {
   referenceNumber: string;
   createdAt: string;
   products: Product[];
+  user: User;
 }
 
 interface OrderDetailData {
@@ -114,8 +126,26 @@ function Detail() {
   const columns = [
     {
       name: 'id',
-      label: 'Requested Detail',
+      label: '#',
     },
+    {
+      name: "imageurl",
+      label: "Image",
+      options: {
+        display: false,
+        customBodyRender: (value:string) => {
+          const imageUrl = value;
+          return (
+            <img
+              src={imageUrl}
+              alt="Product"
+              style={{ width: "50px", height: "auto" }}
+            />
+          );
+        },
+      },
+    },
+    
     {
       name: 'title',
       label: 'Title',
@@ -123,42 +153,74 @@ function Detail() {
     {
       name: 'uom',
       label: 'uom',
+      options: {
+        display: false,
+      }
     },
     {
       name: 'partNumber',
       label: 'partNumber',
+      options: {
+        display: false,
+      }
     },
     {
       name: 'model',
       label: 'model',
+      options: {
+        display: false,
+      }
     },
     {
-      name: 'manufacture',
+      name: 'manufacturer',
       label: 'manufacture',
+      options: {
+        display: false,
+      }
+    },
+    {
+      name: 'mark',
+      label: 'mark',
+      options: {
+        display: false,
+      }
     },
     {
       name: 'code',
       label: 'code',
+      options: {
+        display: false,
+      }
     },
     {
       name: 'Description',
       label: 'Description',
+      options: {
+        display: false,
+      }
     },
     {
       name: 'quantity',
       label: 'Quantity',
+      options: {
+        display: true,
+      }
     }
   ];
 
-  const tableData = orderDetail?.products.map((product) => ({
-    id: product.id,
+  const tableData = orderDetail?.products.map((product, index) => ({
+    id: index + 1,
+    imageurl: `http://localhost:4000/graphql/uploads/1708721484772-kotari.jpeg`,
+    
     title: product.title,
     quantity: product.quantity,
     code: product.code,
-    manufacture: product.manufacture,
+    manufacturer: product.manufacturer,
     partNumber: product.partNumber,
+    Description: product.Description,
     model: product.model,
     uom: product.uom,
+    mark: product.mark,
   }));
 
   const options: MUIDataTableOptions = {
@@ -236,7 +298,7 @@ function Detail() {
         Requested By
       </Typography>
       <Typography variant="body1">
-        Customer Name: {orderDetail?.userId}
+        Customer Name: {orderDetail?.user.firstName  + " " +   orderDetail?.user.lastName   }
       </Typography>
       <Typography variant="body1">
         Reference Number: {orderDetail?.referenceNumber}
@@ -246,7 +308,6 @@ function Detail() {
       </Typography>
     </Paper>
         </Grid>
-
         {/* Order To */}
         <Grid item xs={12} sm={4}>
         <Paper
@@ -267,7 +328,7 @@ function Detail() {
       onMouseLeave={handleMouseLeave}
     >
             <Typography variant="h6">More</Typography>
-            <Typography variant="body1">Status: {orderDetail?.status}</Typography>
+            <Typography variant="body1">Status: <span style={{color:"red"}}>{orderDetail?.status}</span></Typography>
           </Paper>
         </Grid>
       </MobileGrid>

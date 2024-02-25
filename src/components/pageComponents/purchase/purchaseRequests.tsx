@@ -1,146 +1,78 @@
-import React, { useEffect, useState } from "react";
-import { gql, useLazyQuery } from "@apollo/client";
-import { ThemeProvider, useTheme } from '@mui/material/styles';
-//import useMediaQuery from '@mui/material/useMediaQuery';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import {Button} from "@mui/material";
-import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
-import PageHeader from "../../PageHeader";
-interface PurchaseRequest {
-  id: number;
-  userId: number;
-  status: string;
-  remark: string;
-  addressDetail: string;
-  estimatedDelivery: string;
-  referenceNumber: string;
-  createdAt: string;
-  user: {
-    firstName: string;
-  };
-  products: {
-    id: number;
-    Description: string;
-    title: string;
-  }[];
-}
+import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
+import { useQuery, gql } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
+import PageHeader from '../../PageHeader';
+import { ShoppingCart } from '@mui/icons-material';
+import { SectionTitle } from '../../Section';
 
-interface PurchaseRequestData {
-  purchaseRequestBYSupplierId: PurchaseRequest[];
-}
-
-interface FilterInput {
-  field: string;
-  value: string;
-}
-
-interface Variables {
-  userId: number;
-  orderBy?: string;
-  filter?: FilterInput;
-  page?: number;
-  pageSize?: number;
-  search?: string;
-}
-
-const GET_PURCHASE_REQUESTS = gql`
-  query PurchaseRequests(
-    $userId: Int!
-    $search: String
-    $filter: FilterInput
-    $page: Int
-    $pageSize: Int
-    $orderBy: String
-  ) {
-    purchaseRequestBYSupplierId(
-      userId: $userId
-      search: $search
-      filter: $filter
-      page: $page
-      pageSize: $pageSize
-      orderBy: $orderBy
-    ) {
+const GET_QUOTATION = gql`
+query QuotationBydSupplierId($suplierId: Int!) {
+  quotationBydSupplierId(suplierId: $suplierId) {
       id
-      userId
+      purchaseRequestId
       status
-      remark
-      addressDetail
-      estimatedDelivery
-      referenceNumber
-      createdAt
-      user {
+      customer {
         firstName
+        lastName
       }
-      products {
-        id
-        Description
-        title
+      supplier {
+        name
       }
+      purchaseRequest {
+        referenceNumber
+      }
+      createdAt
     }
   }
 `;
 
-const PurchaseRequests: React.FC = () => {
-  const [purchaseRequests, setPurchaseRequests] = useState<PurchaseRequest[]>([]);
-  const [searchValue] = useState('');
-  const [filterValue] = useState('');
-  const [orderByValue] = useState('');
-  const [page] = useState(1);
-  const [pageSize] = useState(10);
-
-  const navigate = useNavigate();
-  const [getPurchaseRequests, { loading, error, data }] = useLazyQuery<PurchaseRequestData, Variables>(
-    GET_PURCHASE_REQUESTS
-  );
-
-  useEffect(() => {
-    getPurchaseRequests({
-      variables: {
-        userId: 1,
-        orderBy: orderByValue || undefined,
-        filter: filterValue
-          ? { field: "referenceNumber", value: filterValue }
-          : undefined,
-        page,
-        pageSize,
-        search: searchValue || undefined,
+const theme = createTheme({
+  components: {
+    MUIDataTableHeadCell: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#00b0ad',
+          color: 'white',
+        },
       },
-    });
-  }, [getPurchaseRequests, searchValue, filterValue, orderByValue, page, pageSize]);
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          paddingTop: 0,
+          paddingBottom: 0,
+        },
+      },
+    },
+  },
+});
 
-  useEffect(() => {
-    if (data) {
-      setPurchaseRequests(data.purchaseRequestBYSupplierId);
-    }
-  }, [data]);
+const options: MUIDataTableOptions = {
+  filter: true,
+  download: true,
+  print: true,
+  search: true,
+  selectableRows: 'none', // or 'single' for single row selection
+  responsive: 'standard' as Responsive,
+  viewColumns: true,
+  rowsPerPage: 10,
+  rowsPerPageOptions: [10, 25, 50],
+};
+interface purchaseRequestId {
+  supplierId:number;
+  }
 
-  const theme = useTheme();
-  //const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  /*const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value);
-  };
-
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterValue(event.target.value);
-  };
-
-  const handleOrderByChange = (event: SelectChangeEvent) => {
-    setOrderByValue(event.target.value as string);
-  };
-
-  const handlePageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPage(parseInt(event.target.value, 10));
-  };
-
-  const handlePageSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPageSize(parseInt(event.target.value, 10));
-  }; */
-
+const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
+  const navigate = useNavigate()
+  const { loading, error, data } = useQuery(GET_QUOTATION, {
+    variables: { suplierId:Number(supplierId)},
+  });
   const handleListItemClick = (id: number) => {
-    navigate('/sendRfq', { state: { id } });
+    navigate('/sendRfq', { state: { id,supplierId} });
   };
-
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -148,19 +80,59 @@ const PurchaseRequests: React.FC = () => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
+
+  const { quotationBydSupplierId } = data;
+
+  const tableData = quotationBydSupplierId.map((quotation: any) => ({
+    id: quotation.purchaseRequestId,
+    status: quotation.status,
+    customerName: `${quotation.customer.firstName} ${quotation.customer.lastName}`,
+    supplierName: quotation.supplier.name,
+    referenceNumber: quotation.purchaseRequest.referenceNumber,
+    createdAt: quotation.createdAt,
+  }));
+
   const columns = [
-    '#',
-    'ID',
-    'Reference Number',
-    'Status',
-    'Created At',
+    {
+      name: 'id',
+      label: 'ID',
+    },
+    {
+      name: 'status',
+      label: 'Status',
+      options: {
+        customBodyRender: (value: any, tableMeta: any) => {
+          const status = tableMeta.rowData[1]; // Assuming the status is located in the second column
+  
+          return (
+            <span style={{ color: 'red' }}>{status}</span>
+          );
+        },
+      },
+    },
+    {
+      name: 'customerName',
+      label: 'Customer Name',
+    },
+    {
+      name: 'supplierName',
+      label: 'Supplier Name',
+    },
+    {
+      name: 'referenceNumber',
+      label: 'Reference Number',
+    },
+    {
+      name: 'createdAt',
+      label: 'Created At',
+    },
     {
       name: 'Action',
       options: {
         filter: false,
         sort: false,
         customBodyRender: (value: any, tableMeta: any) => {
-          const id = tableMeta.rowData[1];
+          const id = tableMeta.rowData[0];
           return (
             <Button
               variant="outlined"
@@ -175,31 +147,22 @@ const PurchaseRequests: React.FC = () => {
     },
   ];
 
-  const dataTable = purchaseRequests.map((request, index) => [
-    index + 1,
-    request.id,
-    request.referenceNumber,
-    request.status,
-    new Date(request.createdAt).toLocaleString(),
-  ]);
-
-  const options: MUIDataTableOptions = {
-    //responsive: Responsive.MultipleBreakpoints,
-    selectableRows: 'none',
-  };
-
   return (
-    <ThemeProvider theme={theme}>
+    <Grid container spacing={3}>
+    
+      <Grid item xs={12}>
+      <SectionTitle variant="outlined" square>
       <PageHeader
-      title="Purchase Requests"
+      Title="Purchase Requests"
+      icon={<ShoppingCart/>}
+      subTitle="list of all purchase Requests"
       />
-    <MUIDataTable
-      title="Purchase Requests"
-      data={dataTable}
-      columns={columns}
-      options={options}
-    />
-  </ThemeProvider>
+       </SectionTitle>
+        <ThemeProvider theme={theme}>
+          <MUIDataTable title="Requests" data={tableData} columns={columns} options={options} />
+        </ThemeProvider>
+      </Grid>
+    </Grid>
   );
 };
 

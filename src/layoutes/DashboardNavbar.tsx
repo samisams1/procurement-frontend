@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import { Menu as MenuIcon, Search as SearchIcon } from '@mui/icons-material';
 import LanguageSelector from './LanguageSelector';
-import AccountPopover from './AccountPopover';
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import NotificationComponent from './Notification';
@@ -145,7 +144,7 @@ export default function DashboardNavbar({
         <ActionWrapper>
           <LanguageSelector />
           <NotificationComponent />
-          <AccountPopover />
+
         </ActionWrapper>
       </ToolbarStyle>
     </RootStyle>

@@ -30,7 +30,6 @@
     "install": "^0.13.0",
     "iso-3166-1": "^2.1.1",
     "mui-datatables": "^4.3.0",
-    "npm": "^10.2.0",
     "number-to-words": "^1.2.4",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
@@ -84,6 +83,9 @@
     "@types/mui-datatables": "^4.3.6",
     "@types/number-to-words": "^1.2.3",
     "@types/react-helmet": "^6.1.7",
-    "@types/react-swipeable": "^5.2.0"
+    "@types/react-swipeable": "^5.2.0",
+    "@types/react-virtualized": "^9.21.29",
+    "i": "^0.3.7",
+    "npm": "^10.4.0"
   }
 }

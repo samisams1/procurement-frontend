@@ -8,6 +8,7 @@ export interface CurrentUser {
   role:string;
   email:string;
   address:string;
+  profilePictureUrl:string;
 }
 
 export interface UserContextProps {

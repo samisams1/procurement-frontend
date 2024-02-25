@@ -21,6 +21,8 @@ interface Quotation {
   shippingPrice: number;
   purchaseRequestId:string;
   status: string;
+  customerId:number;
+  supplierId:number;
 }
 
 interface ProductPrice {
@@ -53,7 +55,6 @@ const GET_ALL_PRODUCT_PRICES = gql`
         id
         Description
         code
-        manufacture
         model
         partNumber
         quantity
@@ -64,6 +65,8 @@ const GET_ALL_PRODUCT_PRICES = gql`
         shippingPrice
         status
         purchaseRequestId
+        supplierId
+        customerId
       }
     }
   }
@@ -82,10 +85,9 @@ const RfqComponent: React.FC = () => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
-  const handleClick = (productId: string) => {
-    navigate(`/manageRfq/${productId}`);
+  const handleClick = (productId: string,customerId:number,supplierId:number) => {
+  navigate('/manageRfq', { state: { productId,customerId,supplierId} });
   };
-
   return (
     <ThemeProvider theme={theme}>
       <List>
@@ -95,7 +97,7 @@ const RfqComponent: React.FC = () => {
             alignItems="flex-start"
             disableGutters={!isMobile}
             divider
-            onClick={() => handleClick(productPrice.quotation.purchaseRequestId)}
+            onClick={() => handleClick(productPrice.quotation.purchaseRequestId,productPrice.quotation.customerId,productPrice.quotation.supplierId)}
             style={{ cursor: 'pointer' }}
           >
             <ListItemText

@@ -80,11 +80,11 @@ const SendRfqComponent: React.FC<Props> = ({ id, status, customerId, supplierId 
   const [shippingCost, setShippingCost] = useState<number>(0);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');  
-  const { loading, error, data } = useQuery<
+  const { loading, error, data,refetch } = useQuery<
     QuotationByRequestIdAdSupplierIdData,
     QuotationByRequestIdAdSupplierIdVariables
   >(GET_QUOTATION_QUERY, {
-    variables: { id, supplierId },
+    variables: { id,  supplierId },
   });
   const [updateQuotation] = useMutation(UPDATE_QUOTATION_MUTATION);
  
@@ -125,7 +125,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     const input = {
-      status: "confirmed",
+      status: "quoted",
       shippingPrice: shippingCost,
       productPrices: Object.keys(prices).map((key) => ({
         id: parseInt(key),
@@ -139,7 +139,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
       console.log('Quotation:', quotation);
       setSuccessMessage('Quotation updated successfully!');
       setErrorMessage('');
-  
+      await refetch();
       setTimeout(() => {
         setSuccessMessage('');
       }, 5000);

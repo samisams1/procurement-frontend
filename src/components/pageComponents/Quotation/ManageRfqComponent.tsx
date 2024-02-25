@@ -1,15 +1,18 @@
 import React from 'react';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import QuotationDetail from './Detail';
-import { useParams } from 'react-router-dom';
-const ManageRfqComponent: React.FC = () => {
-  const { id } = useParams<{ id?: string }>();
+ interface interfaceRfq {
+   id:number;
+   customerId:number;
+   supplierId:number;
+}
+const ManageRfqComponent: React.FC<interfaceRfq> = ({id,customerId,supplierId,}) => {
   const theme = useTheme();
  
   return (
     <ThemeProvider theme={theme}>
-      <QuotationDetail qId= {Number(id)}/>
-  
+      <QuotationDetail qId= {Number(id)} customerId  ={customerId} supplierId={supplierId} />
+ 
     </ThemeProvider>
   );
 };

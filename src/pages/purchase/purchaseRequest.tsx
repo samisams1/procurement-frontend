@@ -1,12 +1,32 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext,useEffect, useState } from 'react';
 import { UserContext } from '../../auth/UserContext';
-import Spinner from '../../components/Spinner';
+import { useQuery, gql } from '@apollo/client';
 import PurchaseRequests from '../../components/pageComponents/purchase/purchaseRequests';
+import Spinner from '../../components/Spinner';
+const GET_SUPPLIER_ID = gql`
+  query SupplierIdByUserId($userId: Int!) {
+    supplierIdByUserId(userId: $userId) {
+      id
+    }
+  }
+`;
 
-export default function PurchaseRequest() {
-  const { currentUser } = useContext(UserContext);
+const PurchaseRequest: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const { currentUser } = useContext(UserContext);
+  const userId = currentUser?.id ?? '';
+  const role = currentUser?.role ?? '';
+  const { loading, error, data } = useQuery(GET_SUPPLIER_ID, {
+    variables: { userId:Number(userId) },
+  });
 
+  useEffect(() => {
+    if (data && data.supplierIdByUserId) {
+      // Perform any logic with the supplier ID here
+      const supplierId = data.supplierIdByUserId.id;
+      console.log('Supplier ID:', supplierId);
+    }
+  }, [data]);
   useEffect(() => {
     // Simulating API call delay
     const delay = setTimeout(() => {
@@ -20,15 +40,26 @@ export default function PurchaseRequest() {
     return <Spinner />;
   }
 
-  if (!currentUser) {
-    return null; // Render null if currentUser is not available
+  if (loading) {
+    return <p>Loading...</p>;
   }
 
-  const { role } = currentUser;
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
 
   if (role === 'SUPPLIER') {
-    return <PurchaseRequests />;
+    if (data && data.supplierIdByUserId) {
+      const supplierId = data.supplierIdByUserId.id;
+      return <PurchaseRequests  supplierId= {supplierId}/>;;
+    }
   } else {
     return null;
   }
-}
+
+  
+
+  return <p>Supplier not available</p>;
+};
+
+export default PurchaseRequest;

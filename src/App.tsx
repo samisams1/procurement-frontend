@@ -35,6 +35,7 @@ const App: React.FC = () => {
     };
   });
  // https://test.nilesoftdemo.com/graphql
+//const httpLink = new HttpLink({ uri: 'https://54.172.139.217/graphql' });
 //const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
 const httpLink = new HttpLink({ uri: 'https://test.nilesoftdemo.com/graphql' });
   const wsLink = new WebSocketLink({

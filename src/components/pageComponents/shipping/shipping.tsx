@@ -1,168 +1,62 @@
 import React, { useContext } from 'react';
-import { useQuery, gql } from '@apollo/client';
-import { Grid, createTheme, ThemeProvider } from '@mui/material';
-import MUIDataTable, { MUIDataTableOptions,MUIDataTableColumn, Responsive } from 'mui-datatables';
-//import { useNavigate } from 'react-router-dom';
-import { RequestPageOutlined } from '@mui/icons-material';
-import Button from '../../Button';
-import { SectionTitle } from '../../Section';
-import PageHeader from '../../PageHeader';
+import { useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
+import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
 import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
-interface ShippingInt {
-  id: number;
-  address: string;
-  status:string;
-  user:{
-    firstName:string;
-    lastName:string;
-  }
-  order: {
-    id: number;
-    referenceNumber: string;
-    supplier:{
-      name:string
-    };
-  };
-  
-}
-export const SHIPPINGS = gql`
-query ShippingsByUserId($userId: Float!) {
-  shippingsByUserId(userId: $userId) {
-    id
-    address
-    status
-    user{
-      firstName
-      lastName
-    }
-    order{
+import { SectionTitle } from '../../Section';
+import PageHeader from '../../PageHeader';
+import { ShoppingCart } from '@mui/icons-material';
+import { Grid, createTheme, ThemeProvider } from '@mui/material';
+const GET_SHIPPING_BY_USER_ID = gql`
+  query ShippingByUserId($userId: Int!) {
+    shippingByUserId(userId: $userId) {
       id
-      referenceNumber
+      orderId
+      address
+      userId
+      status
+      createdAt
+      updatedAt
     }
   }
-}
 `;
 
-// Define your GraphQL query
 const ViewShipping: React.FC = () => {
   const { currentUser } = useContext(UserContext);
-  if (!currentUser) {
-    return <Spinner />;
-  }
 
-  const id = currentUser.id as number; // Type assertion
+  const userId = currentUser?.id ?? '';
 
-  return <Shipping id={id}  />;
-};
-  const Shipping: React.FC<{ id: number }> = ({ id }) => {
-//  const navigate = useNavigate();
-  const { currentUser } = useContext(UserContext);
-  const { loading, error, data } = useQuery<{ shippingsByUserId: ShippingInt[] }>(SHIPPINGS,{
-    variables: {
-      userId: id,
-    },
+  const { loading, error, data } = useQuery(GET_SHIPPING_BY_USER_ID, {
+    variables: { userId:Number(userId) },
   });
-  if (!currentUser) {
+
+  if (loading) {
     return <Spinner />;
   }
 
-  
-  if (loading) {
-    return <div>Loading...</div>;
-  }
   if (error) {
+    // Handle the error state
     return <div>Error: {error.message}</div>;
   }
-  const { shippingsByUserId } = data!;
-  /*const handleClick = (id: string) => {
-    navigate(`/manageRfq/${id}`);
-  };*/
-  const columns: MUIDataTableColumn[] = [
-    {
-      name: 'SN',
-      options: {
-        customBodyRenderLite: (dataIndex) => {
-          return (
-            <div>
-              {dataIndex + 1}
-            </div>
-          );
-        },
-      },
-    },
-    {
-      name: 'Customer',
-      options: {
-        customBodyRenderLite: (dataIndex) => {
-          return shippingsByUserId[dataIndex].user.firstName;
-        },
-      },
-    },
-    {
-      name: 'Status',
-      options: {
-        customBodyRenderLite: (dataIndex) => {
-          return shippingsByUserId[dataIndex].status;
-        },
-      },
-    },
-    {
-      name: 'Reference Number',
-      options: {
-        customBodyRenderLite: (dataIndex) => {
-          return shippingsByUserId[dataIndex].order.referenceNumber;
-        },
-      },
-    },
-    {
-      name: 'Address',
-      options: {
-        customBodyRenderLite: (dataIndex) => {
-          return shippingsByUserId[dataIndex].address;
-        },
-      },
-    },
-    {
-      name: 'Action',
-      options: {
-        filter: false,
-        sort: false,
-        customBodyRenderLite: (dataIndex) => {
-          return (
-            <Button
-              text="View Details"
-             // onClick={() => handleClick(shippings[dataIndex].id)}
-              style={{ cursor: 'pointer' }}
-            />
-          );
-        },
-      },
-    },
+
+  const tableData = data?.shippingByUserId || [];
+  const columns = [
+    // Define your table columns here
+    { name: 'id', label: 'ID' },
+    { name: 'orderId', label: 'Order ID' },
+    { name: 'address', label: 'Address' },
+    { name: 'userId', label: 'User ID' },
+    { name: 'status', label: 'Status' },
+    { name: 'createdAt', label: 'Created At' },
+    { name: 'updatedAt', label: 'Updated At' },
   ];
-
-  const tableData = shippingsByUserId.map((shipping) => [
- 
-  ]);
-
-  const options: MUIDataTableOptions = {
-    filter: true,
-    download: true,
-    print: true,
-    search: true,
-    selectableRows: 'none', // or 'single' for single row selection
-    responsive: 'standard' as Responsive,
-    viewColumns: true,
-    rowsPerPage: 10,
-    rowsPerPageOptions: [10, 25, 50],
-  };
-
   const theme = createTheme({
     components: {
       MUIDataTableHeadCell: {
         styleOverrides: {
           root: {
-            backgroundColor: '#1976d2',
+            backgroundColor: '#00b0ad',
             color: 'white',
           },
         },
@@ -177,15 +71,29 @@ const ViewShipping: React.FC = () => {
       },
     },
   });
+  
+  const options: MUIDataTableOptions = {
+    filter: true,
+    download: true,
+    print: true,
+    search: true,
+    selectableRows: 'none', // or 'single' for single row selection
+    responsive: 'standard' as Responsive,
+    viewColumns: true,
+    rowsPerPage: 10,
+    rowsPerPageOptions: [10, 25, 50],
+  };
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <SectionTitle variant="outlined" square>
-          <PageHeader title="Shippings" icon={<RequestPageOutlined />} />
+          <PageHeader
+            Title="Shippings"
+            icon={<ShoppingCart />}
+            subTitle="List of all Shippigs "
+          />
         </SectionTitle>
-      </Grid>
-      <Grid item xs={12}>
         <ThemeProvider theme={theme}>
           <MUIDataTable
             title="Shippings"

@@ -1,11 +1,7 @@
 import React, { useRef, useState, useContext } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-// @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Button } from '@mui/material';
-// components
-// mocks_
-// ----------------------------------------------------------------------
 import MenuPopover from './MenuPopover';
 import Spinner from '../components/Spinner';
 import { UserContext } from '../auth/UserContext';
@@ -17,14 +13,13 @@ const MENU_OPTIONS = [
     linkTo: 'profile',
   },
 ];
-// ----------------------------------------------------------------------
+
 export default function AccountPopover() {
-  const navgate = useNavigate();
+  const navigate = useNavigate();
   const anchorRef = useRef<HTMLButtonElement>(null);
- // const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
   const [open, setOpen] = useState<HTMLButtonElement | null>(null);
-  //const currentUser = AuthService.getCurrentUser();
+
   if (!currentUser) {
     return <Spinner />;
   }
@@ -36,10 +31,11 @@ export default function AccountPopover() {
   const handleClose = () => {
     setOpen(null);
   };
+
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("currentUser");
-    navgate('home');
+    localStorage.removeItem('token');
+    localStorage.removeItem('currentUser');
+    navigate('/home');
   };
 
   return (
@@ -96,11 +92,9 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem>
+        <MenuItem onClick={handleLogout}>
           <Button>
-            <a href="/home" onClick={handleLogout}>
-              LogOut
-            </a>
+            Log Out
           </Button>
         </MenuItem>
       </MenuPopover>

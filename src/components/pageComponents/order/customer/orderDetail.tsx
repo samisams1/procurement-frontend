@@ -75,7 +75,7 @@ const GET_ORDER_DETAIL_BY_ORDER_ID = gql`
         id
         Description
         code
-        manufacture
+        manufacturer
         model
         partNumber
         quantity

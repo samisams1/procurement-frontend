@@ -79,7 +79,7 @@ export default function RoutePage() {
               { path:'/purchaseRequestDetail/:id', element: <ProtectedRoute  element={<PurchaseRequestDetail />} /> },
               { path:'/rfq', element: <ProtectedRoute  element={<Rfq />} /> },
 
-              { path:'/manageRfq/:id', element: <ProtectedRoute  element={<ManageRfq />} /> },
+              { path:'/manageRfq', element: <ProtectedRoute  element={<ManageRfq />} /> },
               { path:'/quotationDetail/:id', element: <ProtectedRoute  element={<QuotationDetail />} /> },
               { path:'/notificationDetail/:id', element: <ProtectedRoute  element={<NotificationDetail />} /> },
                
