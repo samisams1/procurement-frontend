@@ -64,16 +64,6 @@ export const NavConfig = [
           path: 'user',
           icon: getIcon('mdi:report-areaspline-variant'),
         },
-        {
-          title: 'Supplier',
-          path: 'suppliers',
-          icon: getIcon('mdi:report-areaspline-variant'),
-        },
-        {
-          title: ' Manage  Status ',
-          path: 'access',
-          icon: getIcon('ri:product-hunt-fill'),
-        },
       ],
     },
     {

@@ -95,17 +95,17 @@ query Query($data: countPurchase!) {
 }
 `
 export const COUNT_ALL_REQUEST_BY_STATUS = gql`
-query CountAllRequestByStatus($status: String!) {
-  countAllRequestBystatus(status: $status)
+query Query($status: String!) {
+  countAllRequestByStatus(status: $status)
 }
 `
 export const COUNT_ALL_ORDER_BY_STATUS = gql`
-query CountOAllrderByStatus($status: String!) {
-  countOAllrderByStatus(status: $status)
+query Query($status: String!) {
+  countAllrderByStatus(status: $status)
 }
 `
 export const COUNT_ALL_PAYMENT_BY_STATUS = gql`
-query countPaymentBystatus($status: String!) {
-  countPaymentBystatus(status: $status)
+query Query($status: String!) {
+  countPaymentSatus(status: $status)
 }
 `

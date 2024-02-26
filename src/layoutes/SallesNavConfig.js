@@ -33,30 +33,14 @@ const SallesNavConfig = () => {
       icon: getIcon('iconamoon:profile-fill'),
     },
     {
-      title: 'Requisition',
-      icon: getIcon('ri:product-hunt-fill'),
-      items: [
-        {
-          title: 'New Requisition',
-          path: 'newRequest',
-          icon: getIcon('mdi:report-areaspline-variant'),
-        },
-        {
-          title: 'Requisitions',
-          path: 'requisitions',
-          icon: getIcon('ri:product-hunt-fill'),
-        },
-      ],
-    },
-    {
-      title: 'RFQ',
-      path: 'rfq',
-      icon: getIcon('foundation:burst-sale'),
+      title: 'Requests',
+      path: 'purchaseRequests',
+      icon: getIcon('fluent-mdl2:review-request-solid'),
     },
     {
       title: 'Order',
       path: 'order',
-      icon: getIcon('foundation:burst-sale'),
+      icon: getIcon('icon-park-solid:transaction-order'),
     },
     {
       title: 'Notification',
@@ -68,8 +52,8 @@ const SallesNavConfig = () => {
       icon: getIcon('ri:product-hunt-fill'),
       items: [
         {
-          title: 'Make Payment',
-          path: 'makePayment',
+          title: 'Payment',
+          path: 'payment',
           icon: getIcon('mdi:report-areaspline-variant'),
         },
         {
@@ -85,14 +69,19 @@ const SallesNavConfig = () => {
       icon: getIcon('mdi:report-areaspline-variant'),
     },
     {
-      title: 'Report',
-      path: 'report',
-      icon: getIcon('mdi:report-areaspline-variant'),
-    },
-    {
       title: 'Setting',
       path: 'setting',
       icon: getIcon('uiw:setting'),
+    },
+    {
+      title: 'Supplier Profile',
+      path: 'supplier',
+      icon: getIcon('mdi:report-areaspline-variant'),
+    },
+    {
+      title: 'Report',
+      path: 'report',
+      icon: getIcon('mdi:report-areaspline-variant'),
     },
     {
       title: 'Logout',

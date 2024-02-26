@@ -5,7 +5,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Spinner from '../components/Spinner';
 import { UserContext } from '../auth/UserContext';
-import { SupplierNavConfig } from './SupplierNavConfig';
+import  SupplierNavConfig  from './SupplierNavConfig';
 import { NavConfig } from './NavConfig';
 import SallesNavConfig from './SallesNavConfig';
 
@@ -58,7 +58,6 @@ export default function NavSection() {
       </Collapse>
     );
   };
-
   const listItemsCustomer = SallesNavConfig().map((mainItem, index) => {
     return (
       <List
@@ -124,7 +123,72 @@ export default function NavSection() {
       </List>
     );
   });
-  const listItemsSupplier = SupplierNavConfig.map((mainItem, index) => (
+  const listItemsSupplier = SupplierNavConfig().map((mainItem, index) => {
+    return (
+      <List
+        sx={{
+          width: '240px',
+          bgcolor: 'background.paper',
+          borderRadius: '8px',
+          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+          '& .MuiListItemButton-root': {
+            '&:hover': {
+              backgroundColor: '#E3F2FD',
+            },
+          },
+        }}
+        key={mainItem.title}
+        onClick={mainItem.onClick}
+      >
+        {mainItem.items ? (
+          <ListItemButton
+            onClick={() => toggleOpenItems(index)}
+            sx={{
+              paddingLeft: '12px',
+              paddingTop: '8px',
+              paddingBottom: '8px',
+              '&:hover': {
+                backgroundColor: '#E3F2FD',
+              },
+            }}
+          >
+            <ListItemIcon>{mainItem.icon}</ListItemIcon>
+            <ListItemText>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                {mainItem.title}
+              </Typography>
+            </ListItemText>
+            {openItems.includes(index) ? (
+              <ExpandMoreIcon fontSize="small" sx={{ marginLeft: 'auto' }} />
+            ) : (
+              <ChevronRightIcon fontSize="small" sx={{ marginLeft: 'auto' }} />
+            )}
+          </ListItemButton>
+        ) : (
+          <ListItemButton
+            onClick={() => handleItemClick(mainItem.path)}
+            sx={{
+              paddingLeft: '12px',
+              paddingTop: '8px',
+              paddingBottom: '8px',
+              '&:hover': {
+                backgroundColor: '#E3F2FD',
+              },
+            }}
+          >
+            <ListItemIcon>{mainItem.icon}</ListItemIcon>
+            <ListItemText>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                {mainItem.title}
+              </Typography>
+            </ListItemText>
+          </ListItemButton>
+        )}
+        {mainItem.items && renderNestedItems(mainItem.items, index)}
+      </List>
+    );
+  });
+  /*const listItemsSupplier1 = SupplierNavConfig.map((mainItem, index) => { 
     <List
       sx={{
         width: '240px',
@@ -187,7 +251,7 @@ export default function NavSection() {
       )}
       {mainItem.items && renderNestedItems(mainItem.items, index)}
     </List>
-  ));
+});*/
   const listItemsAdmin = NavConfig.map((mainItem, index) => (
     <List
       sx={{
@@ -255,9 +319,9 @@ export default function NavSection() {
   //return <div>{listItemsCustomer}</div>;
 
     if (role === 'CUSTOMER') {
-    return <ul>{listItemsCustomer}</ul>;
-  }else if (role === 'SUPPLIER') {
     return <ul>{listItemsSupplier}</ul>;
+  }else if (role === 'SUPPLIER') {
+    return <ul>{listItemsCustomer}</ul>;
   }else if (role === 'ADMIN') {
     return <ul>{listItemsAdmin}</ul>;
   }

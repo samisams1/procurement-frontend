@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconButton, Badge, Popover, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { Notifications, } from '@mui/icons-material';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Spinner from '../components/Spinner';
+import { UserContext } from '../auth/UserContext';
 
 interface Notification {
   id: string;
@@ -17,9 +18,10 @@ interface NotificationsInfo {
 }
 
 const GET_NOTIFICATIONS_INFO = gql`
-  query {
-    notificationsInfo {
-      notifications {
+query NotificationsByUserIdInfo($recipientId: Int!) {
+  notificationsByUserIdInfo(recipientId: $recipientId) {
+    count
+    notifications {
         id
         message
         createdAt
@@ -38,11 +40,15 @@ mutation UpdateNotification($id: Float!) {
 const NotificationComponent = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [maxHeight, setMaxHeight] = useState<number>(0);
-  const [updateNotification] = useMutation(UPDATE_NOTIFICATION_MUTATION);
+  const { currentUser } = useContext(UserContext);
+  const userId = currentUser?.id ?? '';
+  const [updateNotification] = useMutation(UPDATE_NOTIFICATION_MUTATION,{
+    variables:{recipientId:1}
+  });
 
   //const { loading, error, data } = useQuery(NOTIFICATION_COUNT);
-  const { loading, data } = useQuery<{ notificationsInfo: NotificationsInfo }>(
-    GET_NOTIFICATIONS_INFO
+  const { loading, data } = useQuery<{ notificationsByUserIdInfo: NotificationsInfo }>(
+    GET_NOTIFICATIONS_INFO,{variables:{ recipientId: Number(userId)}}
   );
   const navigate = useNavigate();
   useEffect(() => {
@@ -73,7 +79,7 @@ const NotificationComponent = () => {
 
   if (loading) return <Spinner />;
 
-  const { notifications, count } = data?.notificationsInfo || {};
+  const { notifications, count } = data?.notificationsByUserIdInfo || {};
 
  const handleNotificationClick = async (notification: Notification) => {
   // Determine the page to navigate based on the notification type

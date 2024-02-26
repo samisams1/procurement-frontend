@@ -1,16 +1,29 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useMutation } from '@apollo/client';
+import {  useMutation } from '@apollo/client';
 import { LOGIN_MUTATION } from '../../../graphql/Login';
 import { UserContext } from '../../../auth/UserContext';
 import { useNavigate } from 'react-router-dom';
 import {  InputAdornment } from '@mui/material';
 import { AccountCircle, Lock } from '@mui/icons-material';
+import GoogleButton from 'react-google-button';
 
 import { TextField, Button, CircularProgress, Typography, Grid } from '@mui/material';
 import Popup from '../../Popup';
 import Register from '../../../pages/account/Register';
 import PasswordResetForm from '../../../pages/account/ForgotPassword';
 import Alert from '@mui/material/Alert';
+/*const LOGIN_WITH_GOOGLE = gql`
+  mutation LoginWithGoogle($input: String!) {
+    loginWithGoogle(input: $input) {
+      token
+    }
+  }
+`;
+
+interface GoogleResponse {
+  tokenId: string;
+  // Add other properties from the Google Sign-In response if necessary
+}*/
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -25,6 +38,7 @@ const Login: React.FC = () => {
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [backendError, setBackendError] = useState('');
+ // const [loginWithGoogle] = useMutation(LOGIN_WITH_GOOGLE);
 
   useEffect(() => {
     const handleResize = () => {
@@ -82,7 +96,26 @@ const Login: React.FC = () => {
     setOpenRegisterPopup(false); // Open the register popup
     setForgotPassword(true);
   };
+  /*const handleGoogleLogin = async (googleResponse:GoogleResponse) => {
+    try {
+      const { tokenId } = googleResponse;
+      
+      // Send the token ID to the loginWithGoogle mutation
+      const { data } = await loginWithGoogle({ variables: { input: tokenId } });
 
+      // Assuming the loginWithGoogle mutation returns a token upon successful login
+      const token = data.loginWithGoogle.token;
+
+      // Store the token securely (e.g., in local storage or a secure HTTP-only cookie)
+
+      // Redirect the user to the authenticated page or perform any other actions
+      // For example, you can use React Router to navigate to a different page
+     // nnavigate('/dashboard');
+    } catch (error) {
+      console.error('Google login failed', error);
+      // Handle error scenarios (e.g., display an error message to the user)
+    }
+  };*/
   return (
     <div className={isMobile ? 'full-screen' : ''}>
       <Grid container spacing={3}>
@@ -159,14 +192,17 @@ const Login: React.FC = () => {
               Forgot your password?
             </span>
           </Typography>
-
+        
+          <GoogleButton  />
           <Typography variant="body2" style={{ marginTop: '1rem', textAlign: 'center' }}>
             Don't have an account?{' '}
             <span onClick={handleClick} style={{ color: '#00b0ad', cursor: 'pointer' }}>
               Please Register now
             </span>
           </Typography>
+       
         </Grid>
+        
       </Grid>
 
       <Popup title="Choose your Account" openPopup={openRegisterPopup} setOpenPopup={setOpenRegisterPopup}>

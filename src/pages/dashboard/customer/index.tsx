@@ -84,7 +84,7 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ userId }) => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#4CAF50">
           <Box>
-            <MetricValue variant="h4"><OrderByStatus status="pending" customerId={Number(userId) }/></MetricValue>
+            <MetricValue variant="h4"><OrderByStatus status="pending" customerId={Number(1) }/></MetricValue>
             <MetricLabel variant="subtitle2">Pending Orders</MetricLabel>
           </Box>
           <IconButton color="inherit">

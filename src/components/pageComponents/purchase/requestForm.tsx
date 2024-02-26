@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql, useMutation } from '@apollo/client';
 import {
   SelectChangeEvent,
 
@@ -81,6 +81,15 @@ query Suppliers {
   }
 }
 `;
+const UPLOAD_PROFILE_PICTURE_MUTATION = gql`
+mutation UploadProfilePicture($file: Upload!) {
+  uploadProfilePicture(file: $file) {
+    filename
+    mimetype
+    encoding
+  }
+}
+`;
 const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
 
   const [productTitles, setProductTitles] = useState<string[]>(['']);
@@ -114,6 +123,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [expanded, setExpanded] = useState<string | false>(false);
 
+  const [uploadProfilePictureMutation] = useMutation(UPLOAD_PROFILE_PICTURE_MUTATION);
   const {  data } = useQuery(GET_CATEGORIES);
   const { loading: loadingSuppliers, data: supplierData } = useQuery(GET_SUPPLIERS_BY_CATEGORY_ID, {
     variables: { categoryId: parseInt(categoryId) },
@@ -415,6 +425,31 @@ const handleAgentChange = (event: SelectChangeEvent) => {
   const supNewData: Supplier[] = supData?.suppliers;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+  
+    if (file) {
+      try {
+        const { data } = await uploadProfilePictureMutation({
+          variables: {
+            file: {
+              createReadStream: () => file,
+              filename: file.name,
+              mimetype: file.type,
+              encoding: '',
+            },
+          },
+        });
+  
+        const { filename, mimetype, encoding } = data.uploadProfilePicture;
+        console.log('Profile picture uploaded:', filename, mimetype, encoding);
+  
+        // You can update the preview image or trigger a refresh of the user's profile picture here
+      } catch (error) {
+        console.error('Error uploading profile picture:', error);
+      }
+    }
+  };
 return(
   <ThemeProvider theme={theme}>
      <form onSubmit={handleSubmit} onReset={handleReset}>
@@ -589,17 +624,24 @@ return(
               />
               <label htmlFor="attachment-input">
                
-                <Button
-                  variant="outlined"
-                  style={{
-                    textTransform: 'none',
-                    fontSize: '14px',
-                    color: '#00b0ad',
-                    borderColor: '##00b0ad',
-                  }}
+                
+                <Button  variant="text" component="label" htmlFor="upload-input"
+                 style={{
+                  textTransform: 'none',
+                  fontSize: '14px',
+                  color: '#00b0ad',
+                  borderColor: '##00b0ad',
+                }}
                 >
-                  Browse
-                </Button>
+            Upload picture
+            <input
+              accept="image/*"
+              style={{ display: 'none' }}
+              id="upload-input"
+              type="file"
+              onChange={handleUpload}
+            />
+          </Button>
               </label>
             </div>
           </FormControl>
@@ -760,16 +802,22 @@ return(
           >
             Attache a file
           </span>
-          <Button
-            variant="outlined"
-            style={{
-              textTransform: 'none',
-              fontSize: '14px',
-              color: '#00b0ad',
-              borderColor: '##00b0ad',
-            }}
-          >
-            Browse
+          <Button  variant="text" component="label" htmlFor="upload-input"
+                 style={{
+                  textTransform: 'none',
+                  fontSize: '14px',
+                  color: '#00b0ad',
+                  borderColor: '##00b0ad',
+                }}
+                >
+            Upload 
+            <input
+              accept="image/*"
+              style={{ display: 'none' }}
+              id="upload-input"
+              type="file"
+              onChange={handleUpload}
+            />
           </Button>
         </label>
       </div>
@@ -882,17 +930,23 @@ return(
               />
               <label htmlFor="attachment-input">
                
-                <Button
-                  variant="outlined"
-                  style={{
-                    textTransform: 'none',
-                    fontSize: '14px',
-                    color: '#00b0ad',
-                    borderColor: '##00b0ad',
-                  }}
+              <Button  variant="text" component="label" htmlFor="upload-input"
+                 style={{
+                  textTransform: 'none',
+                  fontSize: '14px',
+                  color: '#00b0ad',
+                  borderColor: '##00b0ad',
+                }}
                 >
-                  Browse
-                </Button>
+            Upload picture
+            <input
+              accept="image/*"
+              style={{ display: 'none' }}
+              id="upload-input"
+              type="file"
+              onChange={handleUpload}
+            />
+          </Button>
               </label>
             </div>
           </FormControl>
@@ -1050,16 +1104,22 @@ placeholder="Item Name"
           >
             Attache a file
           </span>
-          <Button
-            variant="outlined"
-            style={{
-              textTransform: 'none',
-              fontSize: '14px',
-              color: '#00b0ad',
-              borderColor: '##00b0ad',
-            }}
-          >
-            Browse
+          <Button  variant="text" component="label" htmlFor="upload-input"
+                 style={{
+                  textTransform: 'none',
+                  fontSize: '14px',
+                  color: '#00b0ad',
+                  borderColor: '##00b0ad',
+                }}
+                >
+            Upload 
+            <input
+              accept="image/*"
+              style={{ display: 'none' }}
+              id="upload-input"
+              type="file"
+              onChange={handleUpload}
+            />
           </Button>
         </label>
       </div>

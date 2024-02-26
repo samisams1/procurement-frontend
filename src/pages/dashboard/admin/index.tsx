@@ -4,7 +4,8 @@ import { styled } from '@mui/material/styles';
 import { ShoppingCart, CheckCircle, Warning, MonetizationOn, Dashboard } from '@mui/icons-material';
 import PageHeader from '../../../components/PageHeader';
 import CountAllOrderStatus from '../../../components/pageComponents/dashboard/customer/countAllOrdersBystatus';
-import CountAllPaymentByStatus from '../../../components/pageComponents/dashboard/customer/countAllPaymentBystatus';
+import CountRequest from '../../../components/pageComponents/dashboard/admin/request';
+import CountPayment from '../../../components/pageComponents/dashboard/admin/payment';
 
 const SectionTitle = styled(Paper)(({ theme }) => ({
   marginBottom: theme.spacing(2),
@@ -62,7 +63,7 @@ const AdminDashboard = () => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#9C27B0">
           <Box>
-            <MetricValue variant="h4">samisams</MetricValue>
+          <MetricValue variant="h4"><CountRequest status="pending" /></MetricValue>
             <MetricLabel variant="subtitle2">Pending Requests</MetricLabel>
           </Box>
           <IconButton color="inherit">
@@ -107,7 +108,7 @@ const AdminDashboard = () => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#FF5722">
           <Box>
-            <MetricValue variant="h4"><CountAllPaymentByStatus status='paid'/></MetricValue>
+            <MetricValue variant="h4"><CountPayment status='paid'/></MetricValue>
             <MetricLabel variant="subtitle2">Payment Paid</MetricLabel>
           </Box>
           <IconButton color="inherit">

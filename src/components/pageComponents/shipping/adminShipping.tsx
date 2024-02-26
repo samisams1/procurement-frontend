@@ -31,14 +31,7 @@ query{
     id
     address
     status
-    user{
-      firstName
-      lastName
-    }
-    order{
-      id
-      referenceNumber
-    }
+  
   }
 }
 `
@@ -70,26 +63,10 @@ const AdminShipping: React.FC = () => {
       },
     },
     {
-      name: 'Customer',
-      options: {
-        customBodyRenderLite: (dataIndex) => {
-          return shippings[dataIndex].user.firstName;
-        },
-      },
-    },
-    {
       name: 'Status',
       options: {
         customBodyRenderLite: (dataIndex) => {
           return shippings[dataIndex].status;
-        },
-      },
-    },
-    {
-      name: 'Reference Number',
-      options: {
-        customBodyRenderLite: (dataIndex) => {
-          return shippings[dataIndex].order.referenceNumber;
         },
       },
     },

@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client';
 import { COUNT_ALL_ORDER_BY_STATUS } from '../../../../graphql/Order';
 
 interface CountRequestData {
-    countOAllrderByStatus: number;
+  countAllrderByStatus: number;
 }
 
 interface CountRequestVariables {
@@ -34,7 +34,7 @@ const CountAllOrderStatus: React.FC<RequestByStatusProps> = ({ status }) => {
     return <p>Error: {error.message}</p>;
   }
 
-  return <p>{data?.countOAllrderByStatus}</p>;
+  return <p>{data?.countAllrderByStatus}</p>;
 };
 
 export default CountAllOrderStatus;

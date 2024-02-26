@@ -1,14 +1,20 @@
 import gql from "graphql-tag"
 export const USER_QUERY = gql`
-query{
-  users{
+query Users {
+  users {
     id
     username
     email
+    password
     firstName
     lastName
     role
-    status
+    address
+    phonenumber
+    createdAt
+    updatedAt
+
+    isVerified
   }
 }
 `

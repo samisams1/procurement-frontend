@@ -1,17 +1,18 @@
 import { gql, useQuery } from '@apollo/client';
-import React from 'react';
+import React, { useContext } from 'react';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import { List, ListItem, ListItemText, Typography, useMediaQuery } from '@mui/material';
 import PageHeader from '../../components/PageHeader';
 import {  useNavigate } from 'react-router-dom';
+import { UserContext } from '../../auth/UserContext';
 
 const GET_NOTIFICATIONS_INFO = gql`
-  query {
-    notificationsInfo {
-      notifications {
+query NotificationsByUserIdInfo($recipientId: Int!) {
+  notificationsByUserIdInfo(recipientId: $recipientId) {
+    count
+    notifications {
         id
         message
-        specificid
         type
         createdAt
       }
@@ -19,7 +20,6 @@ const GET_NOTIFICATIONS_INFO = gql`
     }
   }
 `;
-
 interface Notification {
   id: string;
   message: string;
@@ -34,8 +34,10 @@ interface NotificationsInfo {
 }
 
 const Notifications: React.FC = () => {
-  const { loading, data } = useQuery<{ notificationsInfo: NotificationsInfo }>(
-    GET_NOTIFICATIONS_INFO
+  const { currentUser } = useContext(UserContext);
+  const userId = currentUser?.id ?? '';
+  const { loading, data } = useQuery<{ notificationsByUserIdInfo: NotificationsInfo }>(
+    GET_NOTIFICATIONS_INFO,{variables:{ recipientId: Number(userId)}}
   );
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -45,7 +47,7 @@ const Notifications: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  const { notifications, count } = data?.notificationsInfo || {};
+  const { notifications, count } = data?.notificationsByUserIdInfo || {};
   const handleNotificationClick = (notification:any) => {
     let route = '';
 
