@@ -52,14 +52,14 @@ interface ProductPrice {
   product: Product;
   quotation: Quotation;
 }
-/*interface OrderDetail {
+interface OrderDetail {
   title: string;
   productId: number;
   price: number;
   quantity: number;
-}*/
+}
 
-/*interface CreateOrderInput {
+interface CreateOrderInput {
   customerId: number;
   supplierId: number;
   orderDetails?: OrderDetail[];
@@ -68,7 +68,7 @@ interface ProductPrice {
   tax: number;
   status: string;
   shippingCost: number;
-}*/
+}
 interface GetAllProductPricesResponse {
   quotationByRequestId: ProductPrice[];
 }
@@ -103,12 +103,11 @@ const GET_ALL_PRODUCT_PRICES = gql`
 `;
 // Define the mutation
 const CREATE_ORDER_MUTATION = gql`
-mutation CreateOrder($input: [CreateOrderInput]!) {
-  createOrder(input: $input) {
-    id
-   
+  mutation CreateOrder($input: CreateOrderInput!) {
+    createOrder(input: $input) {
+      id
+    }
   }
-}
 `;
 type QuotationDetailProps = {
   qId: number;
@@ -153,8 +152,61 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
   const productPrices = data?.quotationByRequestId || [];
 
    // Calculate total price for selected products
-   const selectedProducts = productPrices.filter(productPrice => selectedItems[productPrice.id]);
+   const selectedProducts = productPrices.filter(productPrice => selectedItems[productPrice.productId]);
+   const totalPrice = selectedProducts.reduce((total, productPrice) => total + productPrice.price * productPrice.product.quantity, 0);
+ 
+   // Calculate total with tax and shipping price
+   const totalTax = totalPrice * 0.11;
+   const shippingPrice = data?.quotationByRequestId[0].quotation?.shippingPrice || 0; // Assuming shipping price is the same for all products
 
+ /* const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const selectedProducts = data?.quotationByRequestId.filter(
+      (productPrice) => selectedItems[productPrice.productId]
+    );
+
+    const totalPrice = selectedProducts?.reduce(
+      (total, productPrice) => total + productPrice.price * productPrice.product.quantity,
+      0
+    );
+    const shippingCost = 0; // Provide the appropriate value for shipping cost
+    const productPriceIds: number[] = selectedProducts
+  ? selectedProducts.map(({ id }) => Number(id))
+  : [];
+    const orderDetails: OrderDetail[] = selectedProducts
+    ? selectedProducts.map(({ product, price,id }) => ({
+        title: product.title,
+        productId: parseInt(product.id),
+        price,
+        quantity: Number(product.quantity),
+      }))
+    : [];
+    const input: CreateOrderInput = {
+      customerId: Number(customerId),
+      supplierId: Number(supplierId),
+      orderDetails,
+      productPriceIds: productPriceIds, // Include productPriceIds in the input object
+      totalPrice: totalPrice || 0,
+      tax:11,
+      status: 'pending',
+      shippingCost: shippingCost,
+    };
+console.log(input)
+};*/
+ /* try {
+       await createOrder({ variables: { input } });
+      refetch(); 
+      setSuccessMessage('Order created successfully!');
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 5000); 
+    } catch (error:any) {
+      setErrorMessage(error.message);
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 5000); 
+    } */
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
     
@@ -169,47 +221,93 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
     
         selectedProductsBySupplier[supplierId].push(productPrice);
       }
-   
+    
       const orders = Object.entries(selectedProductsBySupplier).map(([supplierId, productsForSupplier]) => {
-        let totalPrice = 0;
-        let shippingCost = 500;
-
-        const orderDetails = productsForSupplier.map((product) => ({
-          title: product.product.title,
-          productId: parseInt(product.product.id),
-          price: product.price,
-          quantity: Number(product.product.quantity),
-        }));
-            // Calculate totalPrice and totalTax based on orderDetails
-   orderDetails.forEach((product:any) => {
-      totalPrice += product.price * product.quantity; // Calculate total price
-    });
-
-    // Calculate shipping cost based on the number of products
-        return   {
-          customerId: Number(customerId),
-          supplierId: Number(supplierId),
-          totalPrice: totalPrice,
-          tax: totalPrice  * 0.15,
-           orderDetails:orderDetails,
-          shippingCost: shippingCost,
-          status: 'pending',
+        const totalPrice = 333;
+        const totalTax = 233;
+        const shippingCost = 222;
+    
+        return {
+          customerId: "3",
+          supplierId,
+          orderDetails: productsForSupplier.map((product) => ({
+            title: product.product.title,
+            productId: parseInt(product.product.id),
+            price: product.price,
+            quantity: product.product.quantity,
+          })),
           productPriceIds: productsForSupplier.map((product) => Number(product.id)),
+          totalPrice,
+          tax: totalTax,
+          status: "pending",
+          shippingCost,
         };
       });
-    console.log(orders)
+    
+      console.log(orders); // Display the input data for all suppliers
+    
       try {
-        const { data } = await createOrder({ variables: { input: orders } });
-        console.log('Created orders:', data.createOrder);
+       // await createOrder({ variables: { input: { orders } });
         refetch();
         setSuccessMessage(`Orders created successfully for all suppliers!`);
-        // Handle successful creation
+        setTimeout(() => {
+          setSuccessMessage('');
+        }, 5000);
       } catch (error: any) {
         setErrorMessage(error.message);
-        console.error('Failed to create orders:', error);
-        // Handle error
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 5000);
       }
     };
+    
+    
+   /* const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+    
+      const selectedProducts = data?.quotationByRequestId.filter((productPrice) => selectedItems[productPrice.id]) || [];
+    
+      for (const productPrice of selectedProducts) {
+        const totalPrice = productPrice.price * productPrice.product.quantity;
+        const totalTax = totalPrice * 0.11;
+        const shippingPrice = productPrice.quotation?.shippingPrice || 0;
+        const grandTotal = totalPrice + totalTax + shippingPrice;
+    
+        const productPriceIds: number[] = [Number(productPrice.id)];
+    
+        const orderDetail: OrderDetail = {
+          title: productPrice.product.title,
+          productId: parseInt(productPrice.product.id),
+          price: productPrice.price,
+          quantity: productPrice.product.quantity,
+        };
+    
+        const input: CreateOrderInput = {
+          customerId,
+          supplierId: productPrice.quotation?.supplierId || 0, // Use supplierId from the quotation
+          orderDetails: [orderDetail],
+          productPriceIds,
+          totalPrice,
+          tax: totalTax,
+          status: 'pending',
+          shippingCost: shippingPrice,
+        };
+        try {
+          await createOrder({ variables: { input } });
+         refetch(); 
+         setSuccessMessage('Order created successfully!');
+         setTimeout(() => {
+           setSuccessMessage('');
+         }, 5000); 
+       } catch (error:any) {
+         setErrorMessage(error.message);
+           setTimeout(() => {
+             setErrorMessage('');
+           }, 5000); 
+       }
+        console.log(input); // Log the input data for each selected product
+      }
+    };*/
   const options: MUIDataTableOptions = {
     filter: true,
     download: true,
@@ -301,8 +399,8 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
                       disabled={isOrdered}
                     />,
                     product.title ,
-                    product.quantity,
-                    productPrice.price ,
+                    product.quantity + " " + "Birr",
+                    productPrice.price + " " + "Birr",
                   ];
                 })}
                 columns={[
@@ -312,7 +410,10 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
                   'Quantity',
                   'Price',
                   // Add the remaining columns
-                ]}          
+                ]}
+                
+
+                
               />
             </Paper>
           </Grid>
