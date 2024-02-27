@@ -97,7 +97,7 @@ const RfqComponent: React.FC = () => {
             alignItems="flex-start"
             disableGutters={!isMobile}
             divider
-            onClick={() => handleClick(productPrice.quotation.purchaseRequestId,productPrice.quotation.customerId,productPrice.quotation.supplierId)}
+            onClick={() => handleClick(productPrice.id,productPrice.quotation.customerId,productPrice.quotation.supplierId)}
             style={{ cursor: 'pointer' }}
           >
             <ListItemText
@@ -105,6 +105,7 @@ const RfqComponent: React.FC = () => {
                 <Typography variant="h6" color="primary">
                   Request ID: {productPrice.id}
                 </Typography>
+               
               }
               secondary={
                 <>
