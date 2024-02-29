@@ -51,6 +51,7 @@ import LandingPage from './pages/home/samissm';
 import SendRfq from './pages/Quotation/sendRfq';
 import SentEmail from './pages/account/SentEmail';
 import Notification from './pages/notification/notification';
+import Draft from './pages/draft/drafts';
 export default function RoutePage() {
 
     return useRoutes([
@@ -106,6 +107,8 @@ export default function RoutePage() {
 
               { path: '/notificaations', element: <ProtectedRoute  element={<Notification />} /> },
               
+              { path: '/drafts', element: <ProtectedRoute  element={<Draft />} /> },
+
             ],
           },
           {

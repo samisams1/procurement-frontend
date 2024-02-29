@@ -19,7 +19,7 @@ import {
   Table, TableHead, TableRow, TableCell, TableBody, Input,Accordion, AccordionSummary, AccordionDetails, 
   Checkbox,
 } from '@mui/material';
-import { Add, DeleteOutlineTwoTone, RequestPageOutlined, RequestPageTwoTone } from '@mui/icons-material';
+import { Add, DeleteOutlineTwoTone, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save, Send } from '@mui/icons-material';
 import PageHeader from '../../PageHeader';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import { SectionTitle } from '../../Section';
@@ -272,9 +272,20 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   const handleAddressChange = (value: string) => {
     setAddressDetail(value);
   };
-
-  const handleReset = () => {
+    const handleReset = () => {
+    setAddressDetail('');
+    setEstimatedDelivery('');
+    setItemCodes(['']);
+    setManufacturers(['']);
+    setModels(['']);
+    setPartNumbers(['']);
+    setProductTitles(['']);
+    setQuantities(['']);
+    setUoms(['']);
     setSelectedValue('');
+    setSupplierIds(['']);
+    setDescriptions(['']);
+    setRemark('');
   };
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -291,7 +302,121 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
     }
     return options;
   };
+  
   const handleSubmit = () => {
+    if (selectedOptions.length === 0) {
+      setErrorMessage('Please select an option');
+      return;
+    }
+  
+    if (selectedOptions.includes('supplier') && (!selectedValue || !categoryId)) {
+      setErrorMessage('Please select a category');
+      return;
+    }
+  
+    if (selectedOptions.includes('agent') && !selectedValue) {
+      setErrorMessage('Please select an agent');
+      return;
+    }
+  
+    if (selectedOptions.includes('x-company') && !selectedValue) {
+      setErrorMessage('Please select an X-company');
+      return;
+    }
+    const updatedTitleErrors = productTitles.map((title) => {
+      if (title.trim() === '') {
+        return 'Please enter a valid item name.';
+      }
+      return '';
+    });
+    setTitleErrors(updatedTitleErrors);
+
+    if (updatedTitleErrors.some((error) => error !== '')) {
+      return;
+    }
+    const updateItemCodeErrors = itemCodes.map((code) => {
+      if (code.trim() === '') {
+        return 'Please enter a valid item itemCodes.';
+      }
+      return '';
+    });
+    setItemCodeErrors(updateItemCodeErrors);
+
+    if (updateItemCodeErrors.some((error) => error !== '')) {
+      return;
+    }
+    const updatePartNumberErrors = partNumbers.map((partNumber) => {
+      if (partNumber.trim() === '') {
+        return 'Please enter a valid item partNumbers.';
+      }
+      return '';
+    });
+    setPartNumberErrors(updatePartNumberErrors);
+
+    if (updatePartNumberErrors.some((error) => error !== '')) {
+      return;
+    }
+    const updateUomsErrors = uoms.map((uom) => {
+      if (uom.trim() === '') {
+        return 'Please enter a valid item uom.';
+      }
+      return '';
+    });
+    setUomErrors(updateUomsErrors);
+
+    if (updateUomsErrors.some((error) => error !== '')) {
+      return;
+    }
+    const updateQuantitieErrors = quantities.map((quantitie) => {
+      if (quantitie.trim() === '') {
+        return 'Please enter a valid item quantities.';
+      }
+      return '';
+    });
+    setQuantityErrors(updateQuantitieErrors);
+    if (updateQuantitieErrors.some((error) => error !== '')) {
+      return;
+    }
+
+    // Create an array of SaleInput objects from the productTitles array
+    const products: SaleInput[] = productTitles.map((title,index) => ({ 
+      productTitle: title, 
+      code: itemCodes[index],
+      partNumber: partNumbers[index],
+      uom: uoms[index],
+      quantity: Number(quantities[index]), // Convert the quantity value
+      mark: marks[index],
+      model: models[index],
+      description: descriptions[index],
+      manufacturer:manufacturers[index],
+    }));
+
+    const additional = {
+      remark:remark,
+      addressDetail:addressDetail,
+      estimatedDelivery:estimatedDelivery
+    }
+    setErrorMessage('');
+
+    let supplierNewId: string[] = [];
+    if (selectedType === 'supplier') {
+  //    supplierNewId = ['1','2'];
+      supplierNewId = supplierIds;
+   //  onSubmit(selectedType, supplierNewId);
+   console.log(supplierIds)
+console.log(supplierIds)
+      onSubmit(products, supplierNewId,additional,selectedType,categoryId);
+
+    } else if (selectedType === 'agent' || selectedType === 'x-company') {
+      supplierNewId = [selectedValue];
+     // onSubmit(selectedType, supplierNewId);
+     onSubmit(products, supplierNewId,additional,selectedType,categoryId);
+
+     
+
+    }
+  };
+  const handleSave = () => {
     if (selectedOptions.length === 0) {
       setErrorMessage('Please select an option');
       return;
@@ -682,6 +807,7 @@ return(
      style={{ marginBottom: '1rem' }}
     /> 
     <TextField
+    type="number"
       label="Qty"
       variant="outlined"
       fullWidth
@@ -854,6 +980,8 @@ return(
 </Grid>
 <Grid>
 <Grid item xs={12} sm={12}>
+
+
         <Paper elevation={3} sx={{ padding: '20px' }}>
             <div style={{
   display: 'flex',
@@ -874,14 +1002,48 @@ return(
 </div>
 </Paper>
         </Grid>
+
+        <Grid item xs={12} sm={12}>
+  <Paper elevation={3} sx={{ padding: '20px' }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: '10px',
+      }}
+    >
       <Button
-          variant="contained"
-          color="primary"
-          startIcon={<RequestPageOutlined />}
-          onClick={handleSubmit}
-        >
-          Submit
-        </Button>
+        variant="outlined"
+        color="primary"
+        startIcon={<Send />}
+        onClick={handleSubmit}
+        style={{ whiteSpace: 'nowrap' }}
+      >
+        Send
+      </Button>
+      <Button
+        variant="outlined"
+        color="primary"
+        startIcon={<Save />}
+        onClick={handleSave}
+        style={{ whiteSpace: 'nowrap' }}
+      >
+        Save
+      </Button>
+      <Button
+        variant="outlined"
+        color="primary"
+        startIcon={<RestoreFromTrash />}
+        onClick={handleReset}
+        style={{whiteSpace: 'nowrap'}}
+      >
+        Reset
+      </Button>
+    </div>
+  </Paper>
+</Grid>
+
       </Grid>
 </Paper>
    </Grid>
@@ -890,8 +1052,15 @@ return(
   
   </div>
   ):(
-    <Grid container spacing={2}>
+
+    <Grid item xs={12} sm={12}>
     <Paper elevation={3} sx={{ padding: '20px' }}>
+        <div style={{
+display: 'flex',
+alignItems: 'center',
+justifyContent: 'space-between',
+marginBottom: '10px',
+}}>
     <Table>
   <TableHead>
     <TableRow sx={{ backgroundColor: '#00b0ad' }}>
@@ -990,12 +1159,11 @@ placeholder="Item Name"
 />
         </TableCell>
         <TableCell sx={{ padding: '0px', height: '24px' }}>
-        <Input
+  <Input
+  type="number"
   placeholder="Qty"
   value={quantities[index]}
-  //onChange={(e) => handleQuantityChange(index, e.target.value)}
   onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
-
   error={quantityErrors[index] !== ''}
   fullWidth
 />
@@ -1060,7 +1228,8 @@ placeholder="Item Name"
       </TableRow>
     ))}
   </TableBody>
-</Table>
+    </Table>
+    </div>
 <Grid item xs={12} sm={12}>
             <Paper elevation={3} sx={{ padding: '20px' }}>
 <Grid container spacing={2}>
@@ -1154,16 +1323,30 @@ placeholder="Item Name"
     />
   </Grid>
 </Grid>
-<Grid>
-      <Button
+<Grid container spacing={2} alignItems="center" justifyContent="center" style={{ paddingTop: '20px' }}>
+      <Grid item xs={6} sm={6}>
+        <Button
           variant="contained"
           color="primary"
           startIcon={<RequestPageOutlined />}
           onClick={handleSubmit}
+          fullWidth
         >
-          Send Requestion
+          Send Request
         </Button>
       </Grid>
+      <Grid item xs={6} sm={6}>
+        <Button
+          variant="contained"
+          style={{ backgroundColor: '#ccc', color: '#ffffff' }}
+          fullWidth
+          onClick={handleReset}
+        >
+          Reset
+        </Button>
+      </Grid>
+</Grid>
+
 </Paper>
    </Grid>
    </Paper>

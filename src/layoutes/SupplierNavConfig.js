@@ -112,6 +112,11 @@ const SupplierNavConfig = () => {
           path: 'requisitions',
           icon: getIcon('ri:product-hunt-fill'),
         },
+        {
+          title: 'Saved Drafts',
+          path: 'drafts',
+          icon: getIcon('mdi:report-areaspline-variant'),
+        }
       ],
     },
     {

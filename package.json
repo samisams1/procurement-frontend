@@ -81,6 +81,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/crypto-js": "^4.2.1",
+    "@types/graphql-upload": "^16.0.7",
     "@types/mui-datatables": "^4.3.6",
     "@types/number-to-words": "^1.2.3",
     "@types/react-helmet": "^6.1.7",
