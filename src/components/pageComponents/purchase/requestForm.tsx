@@ -736,10 +736,14 @@ return(
         ):''}
         {isMobile ? (  
           <div>
+            <Typography variant="h5">Fill your form</Typography>
         <TableBody>
     {productTitles.map((title, index) => (
-     <Grid item xs={12} key={index} sx={{  marginLeft:'1rem', padding: '8px', border: '1px solid #ddd' }}>
      
+     <Grid item xs={12} key={index} sx={{  marginLeft:'1rem', padding: '8px', border: '1px solid #ddd' }}>
+
+
+<Typography variant="h6">Item Number #{index + 1}</Typography>
           <FormControl style={{ flex: 1, marginBottom: '1rem'  }} >
             <div
               style={{
@@ -786,6 +790,7 @@ return(
       label="Item Name"
       variant="outlined"
       fullWidth
+      required
       value={title}
       onChange={(e) => handleTitleChange(index, e.target.value)}
       error={titleErrors[index] !== ''}
@@ -795,6 +800,7 @@ return(
       label="Item Code"
       variant="outlined"
       fullWidth
+      required
       value={itemCodes[index]}
       onChange={(e) => handleItemCodeChange(index, e.target.value)}
       error={itemCodeErrors[index] !== ''}
@@ -804,6 +810,7 @@ return(
       label="Part Number"
       variant="outlined"
       fullWidth
+      required
       value={partNumbers[index]}
       onChange={(e) => handlePartNumberChange(index, e.target.value)}
       error={partNumberErrors[index] !== ''}
@@ -811,6 +818,7 @@ return(
     />
        <TextField
       label="UOM"
+      required
       variant="outlined"
       fullWidth
       value={uoms[index]}
@@ -821,6 +829,7 @@ return(
     <TextField
     type="number"
       label="Qty"
+      required
       variant="outlined"
       fullWidth
       value={quantities[index]}
@@ -1176,6 +1185,7 @@ placeholder="Item Name"
   <Input
   type="number"
   placeholder="Qty"
+  required
   value={quantities[index]}
   onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
   error={quantityErrors[index] !== ''}
