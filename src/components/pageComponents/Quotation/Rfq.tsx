@@ -18,11 +18,12 @@ interface Product {
 }
 
 interface Quotation {
+  id:number
   shippingPrice: number;
-  purchaseRequestId:string;
+  purchaseRequestId: string;
   status: string;
-  customerId:number;
-  supplierId:number;
+  customerId: number;
+  supplierId: number;
 }
 
 interface ProductPrice {
@@ -62,6 +63,7 @@ const GET_ALL_PRODUCT_PRICES = gql`
         uom
       }
       quotation {
+        id
         shippingPrice
         status
         purchaseRequestId
@@ -85,51 +87,70 @@ const RfqComponent: React.FC = () => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
-  const handleClick = (productId: string,customerId:number,supplierId:number) => {
-  navigate('/manageRfq', { state: { productId,customerId,supplierId} });
+
+  // Get unique purchaseRequestId values
+  const uniquePurchaseRequestIds = Array.from(
+    new Set(data?.getAllProductPrices.map((productPrice) => productPrice.quotation.purchaseRequestId))
+  );
+
+  const handleClick = (productId: string, customerId: number, supplierId: number) => {
+    navigate('/manageRfq', { state: { productId, customerId, supplierId } });
   };
+
   return (
     <ThemeProvider theme={theme}>
       <List>
-        {data?.getAllProductPrices.map((productPrice) => (
-          <ListItem
-            key={productPrice.id}
-            alignItems="flex-start"
-            disableGutters={!isMobile}
-            divider
-            onClick={() => handleClick(productPrice.id,productPrice.quotation.customerId,productPrice.quotation.supplierId)}
-            style={{ cursor: 'pointer' }}
-          >
-            <ListItemText
-              primary={
+        {uniquePurchaseRequestIds.map((purchaseRequestId) => {
+          const productPrice = data?.getAllProductPrices.find(
+            (productPrice) => productPrice.quotation.purchaseRequestId === purchaseRequestId
+          );
+          if (!productPrice) return null;
+
+          return (
+            <ListItem
+              key={productPrice.id}
+              alignItems="flex-start"
+              disableGutters={!isMobile}
+              divider
+              onClick={() =>
+                handleClick(
+                  productPrice.quotation.purchaseRequestId,
+                  productPrice.quotation.customerId,
+                  productPrice.quotation.supplierId
+                )
+              }
+              style={{ cursor: 'pointer' }}
+            >
+              <ListItemText
+                primary={
+                  <Typography variant="h6" color="primary">
+                    Request ID: {productPrice.id}
+                  </Typography>
+                }
+                secondary={
+                  <>
+                    <Typography variant="body2" color="textSecondary">
+                      Created At: {productPrice.createdAt}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Status <span style={{ color: 'red' }}>: {productPrice.status}</span>
+                    </Typography>
+                  </>
+                }
+              />
+              <div>
                 <Typography variant="h6" color="primary">
-                  Request ID: {productPrice.id}
+                  Products:
                 </Typography>
-               
-              }
-              secondary={
-                <>
-                  <Typography variant="body2" color="textSecondary">
-                    Created At: {productPrice.createdAt}
+                {productPrice.quotation && (
+                  <Typography variant="body2">
+                    - Shipping Price: {productPrice.quotation.shippingPrice}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                  Status  <span style={{ color: 'red' }}>: {productPrice.status}</span>
-                  </Typography>
-                </>
-              }
-            />
-            <div>
-              <Typography variant="h6" color="primary">
-                Products:
-              </Typography>
-              {productPrice.quotation && (
-                <Typography variant="body2">
-                  - Shipping Price: {productPrice.quotation.shippingPrice}
-                </Typography>
-              )}
-            </div>
-          </ListItem>
-        ))}
+                )}
+              </div>
+            </ListItem>
+          );
+        })}
       </List>
     </ThemeProvider>
   );
