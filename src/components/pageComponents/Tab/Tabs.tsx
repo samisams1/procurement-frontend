@@ -5,6 +5,7 @@ import YearReportChart from '../../report/year/YearReportChart';
 import YearReprtByTable from '../../report/year/YearReportTable';
 import MonthReportChart from '../../report/month/MonthCharts';
 import DailyReportChart from '../../report/daily/dailyReportCharts';
+import TodayReprtByTable from '../../report/daily/TodayReprtTable';
 
 export default function LabTabs() {
   const [value, setValue] = useState('1');
@@ -25,6 +26,7 @@ export default function LabTabs() {
         </Box>
         <TabPanel value="1">
           {/* Content for Daily Report */}
+          <TodayReprtByTable/>
           <DailyReportChart />
         </TabPanel>
         <TabPanel value="2">

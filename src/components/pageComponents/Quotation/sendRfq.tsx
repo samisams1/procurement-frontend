@@ -6,6 +6,7 @@ import { Form, useForm } from '../../useForm';
 import Button from '../../Button';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
+import { useNavigate } from 'react-router-dom';
 interface Product {
   id: number;
   uom: string | null;
@@ -70,16 +71,18 @@ const UPDATE_QUOTATION_MUTATION = gql`
 `;
 interface Props {
   id: number;
+  qId: number;
   supplierId: number;
   status: string;
   customerId: string;
 }
 
-const SendRfqComponent: React.FC<Props> = ({ id, status, customerId, supplierId }) => {
+const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplierId }) => {
   const [prices, setPrices] = useState<{ [key: string]: string }>({});
   const [shippingCost, setShippingCost] = useState<number>(0);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');  
+  const navigate = useNavigate();
   const { loading, error, data,refetch } = useQuery<
     QuotationByRequestIdAdSupplierIdData,
     QuotationByRequestIdAdSupplierIdVariables
@@ -134,15 +137,16 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
     };
     console.log('Quotation:', input);
     try {
-      const response = await updateQuotation({ variables: { id, input } });
+      const response = await updateQuotation({ variables: { id:qId, input } });
       const quotation = response.data;
       console.log('Quotation:', quotation);
-      setSuccessMessage('Quotation updated successfully!');
+      setSuccessMessage('Quotation send successfully!');
       setErrorMessage('');
       await refetch();
       setTimeout(() => {
         setSuccessMessage('');
       }, 5000);
+      navigate('/purchaseRequests')
     } catch (error) {
       console.error('Mutation error:', error);
       setErrorMessage('Failed to update the quotation.');
@@ -293,7 +297,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
   return (
     <ThemeProvider theme={theme}> 
     <Grid container spacing={3}>
-     
+    
       <Grid item xs={12}>
       <Grid>
       {successMessage && (
@@ -313,8 +317,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
             columns={columns}
             options={options}
           />
-           
-           <Box mt={2}>
+       <Box mt={2}>
   <Form onSubmit={handleSubmit}>
     <Grid container spacing={2} justifyContent="center">
       <Grid item xs={12} md={6}>

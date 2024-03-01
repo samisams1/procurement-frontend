@@ -3,7 +3,7 @@ import { Box} from '@mui/material';
 import { Helmet } from 'react-helmet';
 import PageHeader from '../../components/PageHeader';
 import { PeopleAltTwoTone } from '@mui/icons-material';
-import Orders from '../../components/pageComponents/order/customer/orders';
+import Orders from '../../components/pageComponents/order/admin/allOrders';
 
 export const OrderAdmin = () => (
   <>
@@ -24,7 +24,7 @@ export const OrderAdmin = () => (
             subTitle="orders"
             icon={<PeopleAltTwoTone fontSize="large" />}
         /> 
-           <Orders userId= {1}/>
+           <Orders/>
     </Box>
   </>
 );

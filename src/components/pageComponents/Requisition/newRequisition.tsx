@@ -71,6 +71,7 @@ const NewRequisitionComponent: React.FC = () => {
     additional: AdditionalData,
     selectedType: string,
     categoryId:string,
+    buttonType:string,
   ): Promise<void> => {
     try {
       if (selectedType !== 'supplier' && selectedType !== 'agent' && selectedType !== 'x-company') {
@@ -103,22 +104,25 @@ const NewRequisitionComponent: React.FC = () => {
 
       };
       console.log(input)
-      const response = await createPurchaseRequest({ variables: { input } });
+      if(buttonType ==="save"){
+        alert("Saving will done soon wait")
+      }if(buttonType==="send"){
+        const response = await createPurchaseRequest({ variables: { input } });
 
-      console.log('Mutation response:', response);
-
-      setFlashMessage('Purchase request created successfully');
-      setOpenSnackbar(true);
-
-      setTimeout(() => {
-        if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
-          navigate(`/purchaseRequest/${response.data.createPurchaseRequest.id}`);
-        } else {
-          console.error('Invalid response data');
-          // Handle the case when the response data is not as expected
-        }
-      }, 2000);
-
+        console.log('Mutation response:', response);
+  
+        setFlashMessage('Purchase request created successfully');
+        setOpenSnackbar(true);
+  
+        setTimeout(() => {
+          if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
+            navigate(`/purchaseRequest/${response.data.createPurchaseRequest.id}`);
+          } else {
+            console.error('Invalid response data');
+            // Handle the case when the response data is not as expected
+          }
+        }, 2000); 
+      }
     } catch (error: any) {
       console.error('Error creating purchase request:', error);
       setFlashMessage(error.message);

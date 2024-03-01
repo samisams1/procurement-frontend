@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import {
   SelectChangeEvent,
@@ -54,7 +54,7 @@ export interface AdditionalData {
   onSubmit: (selectedType: string, selectedValue: string[]) => void;
 }*/
 interface RequestFormProps {
-  onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string,categoryId:string) => Promise<void>;
+  onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string,categoryId:string,buttonType:string) => Promise<void>;
 }
 const GET_CATEGORIES = gql`
  query GetCategories {
@@ -112,6 +112,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   const [estimatedDelivery, setEstimatedDelivery] = useState('');
   const [titleErrors, setTitleErrors] = useState<string[]>(['']);
 
+  const saveButtonRef = useRef<HTMLButtonElement>(null);
 
   const [selectedValue, setSelectedValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -304,6 +305,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   };
   
   const handleSubmit = () => {
+    const  buttonType = "send";
     if (selectedOptions.length === 0) {
       setErrorMessage('Please select an option');
       return;
@@ -405,18 +407,28 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
    //  onSubmit(selectedType, supplierNewId);
    console.log(supplierIds)
 console.log(supplierIds)
-      onSubmit(products, supplierNewId,additional,selectedType,categoryId);
+      onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
 
     } else if (selectedType === 'agent' || selectedType === 'x-company') {
       supplierNewId = [selectedValue];
+   
      // onSubmit(selectedType, supplierNewId);
-     onSubmit(products, supplierNewId,additional,selectedType,categoryId);
+     onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
 
      
 
     }
   };
-  const handleSave = () => {
+  const handleSave = (buttonType: 'save' | 'send') => {
+   /* if (buttonType === 'save') {
+      // Save button was clicked
+      console.log('Save button clicked');
+      // Perform save functionality
+    } else if (buttonType === 'send') {
+      // Send button was clicked
+      console.log('Send button clicked');
+      // Perform send functionality
+    }*/
     if (selectedOptions.length === 0) {
       setErrorMessage('Please select an option');
       return;
@@ -518,12 +530,12 @@ console.log(supplierIds)
    //  onSubmit(selectedType, supplierNewId);
    console.log(supplierIds)
 console.log(supplierIds)
-      onSubmit(products, supplierNewId,additional,selectedType,categoryId);
+      onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
 
     } else if (selectedType === 'agent' || selectedType === 'x-company') {
       supplierNewId = [selectedValue];
      // onSubmit(selectedType, supplierNewId);
-     onSubmit(products, supplierNewId,additional,selectedType,categoryId);
+     onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
 
      
 
@@ -1019,6 +1031,7 @@ return(
         startIcon={<Send />}
         onClick={handleSubmit}
         style={{ whiteSpace: 'nowrap' }}
+        ref={saveButtonRef}
       >
         Send
       </Button>
@@ -1026,8 +1039,9 @@ return(
         variant="outlined"
         color="primary"
         startIcon={<Save />}
-        onClick={handleSave}
+        onClick={() => handleSave('save')}
         style={{ whiteSpace: 'nowrap' }}
+        ref={saveButtonRef}
       >
         Save
       </Button>

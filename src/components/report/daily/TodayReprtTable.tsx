@@ -5,24 +5,37 @@ import { useQuery } from "@apollo/client";
 import Spinner from "../../Spinner";
 import { DAY_REPORT_QUERY } from "../../../graphql/Report";
 
-export default function TodayReprtByTable() {
-const {loading,error,data} = useQuery(DAY_REPORT_QUERY);
-console.log(data)
-console.log("haben");
-if(loading) return <Spinner/>
-if (error) return <p>{error.message}</p>
-const saleData = data.dailyReport.map((row:any)=>(
-            [row.id,row.grossAmount
-            ]
-        ));
+interface DailyReport {
+  date: string;
+  totalAmount: number;
+}
+
+interface DailyReportQueryData {
+  dailyReport: DailyReport[];
+}
+
+interface DailyReportQueryVariables {
+  dailyReportId: number;
+}
+
+export default function TodayReportByTable() {
+  const { data, loading, error } = useQuery<DailyReportQueryData, DailyReportQueryVariables>(DAY_REPORT_QUERY, {
+    variables: { dailyReportId: 1 },
+  });
+
+  if (loading) return <Spinner />;
+  if (error) return <p>{error.message}</p>;
+
+  const saleData = data?.dailyReport.map((row: DailyReport) => [row.date, row.totalAmount]);
+
   return (
     <>
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <MUIDataTable
-            title="Today Daily Report of Salled Products"
-            data={saleData}
-            columns={["id","Gross Amount"]}
+            title="Today Daily Report of Sold Products"
+            data={saleData || []}
+            columns={["Date", "Total Amount"]}
             options={{
               filterType: "checkbox",
             }}

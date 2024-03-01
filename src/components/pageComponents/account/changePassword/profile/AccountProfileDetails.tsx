@@ -10,14 +10,15 @@ import {
 import { UserContext, CurrentUser } from '../../../../../auth/UserContext';
 export const AccountProfileDetails = () => {
   const { currentUser } = useContext(UserContext);
-  const { firstName, lastName, role, email, username,address } = currentUser as CurrentUser;
+  const { firstName, lastName, role, email, username,address,phoneNumber } = currentUser as CurrentUser;
   const [values] = useState({
     firstName: firstName,
     lastName: lastName,
     email: email,
     role: role,
     username: username,
-    country: address
+    country: address,
+    phoneNumber:phoneNumber
   });
   const handleSubmit = () => {
     alert('samisams');
@@ -49,10 +50,13 @@ export const AccountProfileDetails = () => {
                 <TextField fullWidth label="Role" name="role" type="text" value={values.role} />
               </Grid>
               <Grid xs={12} md={6}>
-                <TextField fullWidth label="Country" name="country" required value={values.country} />
+                <TextField fullWidth label="Address" name="country" required value={values.country} />
               </Grid>
               <Grid xs={12} md={6}>
                 <TextField fullWidth label="username" name="username" required value={username} />
+              </Grid>
+              <Grid xs={12} md={6}>
+                <TextField fullWidth label="phoneNumber" name="phoneNumber" required value={phoneNumber} />
               </Grid>
             </Grid>
           </Box>

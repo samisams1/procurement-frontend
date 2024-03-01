@@ -6,8 +6,8 @@ import Orders from '../../components/pageComponents/order/customer/orders';
 import { Helmet } from 'react-helmet';
 import PageHeader from '../../components/PageHeader';
 import { CarRentalTwoTone } from '@mui/icons-material';
-import { OrderSupplier } from './orderSupplier';
 import { OrderAdmin } from './orderAdmin';
+import OrderSupplier from './orderSupplier';
 export default function Order() {
   const { currentUser } = useContext(UserContext);
   if (!currentUser) {

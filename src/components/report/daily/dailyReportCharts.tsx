@@ -3,24 +3,32 @@ import Chart from 'react-apexcharts';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 
-interface MonthlyReport {
-  month: string;
-  amount: number;
+interface DailyReport {
+  date: string;
+  totalAmount: number;
 }
 
-const GET_MONTHLY_REPORT = gql`
-  query MonthlyReport {
-    monthlyReport {
-      month
-      amount
+interface DailyReportQueryData {
+  dailyReport: DailyReport[];
+}
+
+interface DailyReportQueryVariables {
+  dailyReportId: number;
+}
+
+const GET_DAILY_REPORT = gql`
+  query DailyReport($dailyReportId: Int!) {
+    dailyReport(id: $dailyReportId) {
+      date
+      totalAmount
     }
   }
 `;
 
 const DailyReportChart: React.FC = () => {
-  // Sample data
-
-  const { data, loading, error } = useQuery<{ monthlyReport: MonthlyReport[] }>(GET_MONTHLY_REPORT);
+  const { data, loading, error } = useQuery<DailyReportQueryData, DailyReportQueryVariables>(GET_DAILY_REPORT, {
+    variables: { dailyReportId: 1 },
+  });
 
   if (loading) {
     return <div>Loading...</div>;
@@ -30,34 +38,33 @@ const DailyReportChart: React.FC = () => {
     return <div>Error: {error.message}</div>;
   }
 
-  const monthlyReportData = data?.monthlyReport || [];
-
-  
-
+  const monthlyReportData = data?.dailyReport || [];
 
   // Prepare chart series for the pie chart
-  const pieChartSeries = monthlyReportData.map((monthlyReportData) => monthlyReportData.amount);
+  const pieChartSeries = monthlyReportData.map((monthlyReportData) => monthlyReportData.totalAmount);
 
   // Prepare chart options for the pie chart
   const pieChartOptions = {
-    // Chart options configuration here...
+    labels: monthlyReportData.map((point) => point.date),
   };
 
   // Prepare chart options for the bar chart
   const barChartOptions = {
-    // Chart options configuration here...
+    xaxis: {
+      categories: monthlyReportData.map((point) => point.date),
+    },
   };
 
   // Prepare chart series for the bar chart
   const barChartSeries = [
     {
       name: 'Amount',
-      data: monthlyReportData.map((point) => point.amount),
+      data: monthlyReportData.map((point) => point.totalAmount),
     },
   ];
 
   // Calculate total amount
-  const totalAmount = monthlyReportData.reduce((sum, point) => sum + point.amount, 0);
+  const totalAmount = monthlyReportData.reduce((sum, point) => sum + point.totalAmount, 0);
 
   return (
     <div>
@@ -78,25 +85,21 @@ const DailyReportChart: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Day</TableCell>
+              <TableCell>Date</TableCell>
               <TableCell>Amount</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {monthlyReportData.map((point, index) => (
               <TableRow key={index}>
-                <TableCell>{point.month}</TableCell>
-                <TableCell>{point.amount}</TableCell>
+                <TableCell>{point.date}</TableCell>
+                <TableCell>{point.totalAmount}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-
       <p>Total Amount: {totalAmount}</p>
-
-      <p>Analysis:</p>
-      <p>Add your own analysis based on the data here...</p>
     </div>
   );
 };

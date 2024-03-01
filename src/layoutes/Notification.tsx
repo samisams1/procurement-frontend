@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconButton, Badge, Popover, List, ListItem, ListItemText, Typography } from '@mui/material';
-import { Notifications, } from '@mui/icons-material';
+import { IconButton, Badge, Popover, List, ListItem, ListItemText,Chip, Typography } from '@mui/material';
+import { Notifications } from '@mui/icons-material';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Spinner from '../components/Spinner';
 import { UserContext } from '../auth/UserContext';
+import {  CheckCircle, Error } from '@mui/icons-material';
 
 interface Notification {
   id: string;
   message: string;
+  status:string;
+  type :string;
   createdAt: string;
 }
 
@@ -18,39 +21,54 @@ interface NotificationsInfo {
 }
 
 const GET_NOTIFICATIONS_INFO = gql`
-query NotificationsByUserIdInfo($recipientId: Int!) {
-  notificationsByUserIdInfo(recipientId: $recipientId) {
-    count
-    notifications {
+  query NotificationsByUserIdInfo($recipientId: Int!) {
+    notificationsByUserIdInfo(recipientId: $recipientId) {
+      count
+      notifications {
         id
+        status
+        type
         message
         createdAt
       }
-      count
     }
   }
 `;
+
 const UPDATE_NOTIFICATION_MUTATION = gql`
-mutation UpdateNotification($id: Float!) {
-  updateNotification(id: $id) {
+mutation UpdateNotification($updateNotificationId: Int!) {
+  updateNotification(id: $updateNotificationId) {
     status
   }
 }
 `;
+
 const NotificationComponent = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [maxHeight, setMaxHeight] = useState<number>(0);
   const { currentUser } = useContext(UserContext);
   const userId = currentUser?.id ?? '';
-  const [updateNotification] = useMutation(UPDATE_NOTIFICATION_MUTATION,{
-    variables:{recipientId:1}
+  const [updateNotification] = useMutation(UPDATE_NOTIFICATION_MUTATION, {
+    variables: { recipientId: 1 },
   });
-
-  //const { loading, error, data } = useQuery(NOTIFICATION_COUNT);
-  const { loading, data } = useQuery<{ notificationsByUserIdInfo: NotificationsInfo }>(
-    GET_NOTIFICATIONS_INFO,{variables:{ recipientId: Number(userId)}}
+  const { loading, data, refetch } = useQuery<{ notificationsByUserIdInfo: NotificationsInfo }>(
+    GET_NOTIFICATIONS_INFO,
+    { variables: { recipientId: Number(userId) } }
   );
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchNotifications = () => {
+      refetch(); // Fetch the latest notifications
+    };
+
+    const interval = setInterval(fetchNotifications, 10000); // Fetch every 10 seconds
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [refetch]);
+
   useEffect(() => {
     const handleResize = () => {
       setMaxHeight(window.innerHeight * 0.7); // Adjust the percentage as needed
@@ -76,44 +94,47 @@ const NotificationComponent = () => {
   const open = Boolean(anchorEl);
   const id = open ? 'notification-popover' : undefined;
 
-
   if (loading) return <Spinner />;
 
   const { notifications, count } = data?.notificationsByUserIdInfo || {};
 
- const handleNotificationClick = async (notification: Notification) => {
-  // Determine the page to navigate based on the notification type
-  let route = '';
+  const handleNotificationClick = async (notification: Notification) => {
+    // Determine the page to navigate based on the notification type
+    let route = '';
 
-  switch (notification.message) {
-    case 'order':
-      route = '/order';
-      break;
-    case 'request':
-      route = '/request';
-      break;
-    case 'rfq':
+    switch (notification.message) {
+      case 'order':
+        route = '/order';
+        break;
+      case 'request':
+        route = '/request';
+        break;
+      case 'rfq':
         route = '/rfq';
         break;
-    // Add more cases as needed for different notification types
+      // Add more cases as needed for different notification types
 
-    default:
-      // Handle the default case or unknown types
-      return;
-  }
-  const notificationId =notification.id ;
-  try {
-    const { data } = await updateNotification({
-      variables: { id: Number(notificationId) }, // Parse id to an integer if needed
-    });
+      default:
+        // Handle the default case or unknown types
+        return;
+    }
 
-    console.log('Notification updated:', data.updateNotification);
-  } catch (error) {
-    console.error('Failed to update notification:', error);
-  }
-  // Navigate to the corresponding page
-  navigate(route);
-};
+    const notificationId = notification.id;
+
+    try {
+      const { data } = await updateNotification({
+        variables: { id: Number(notificationId) }, // Parse id to an integer if needed
+      });
+
+      console.log('Notification updated:', data.updateNotification);
+    } catch (error) {
+      console.error('Failed to update notification:', error);
+    }
+
+    // Navigate to the corresponding page
+    navigate(route);
+  };
+
   return (
     <>
       <IconButton
@@ -159,16 +180,65 @@ const NotificationComponent = () => {
           </ListItem>
           <div>
       {notifications?.map((notification:Notification) => (
-      <ListItem key={notification.message} onClick={() => handleNotificationClick(notification)}>
-      <ListItemText
-        primary={notification.message}
-        secondary={`Recipient ID: ${notification.message}`}
-        secondaryTypographyProps={{ color: 'textSecondary' }}
-      />
-      <Typography variant="body2" color="textSecondary">
-        Type: {notification.message}
-      </Typography>
-    </ListItem>
+    <ListItem
+    key={notification.message}
+    onClick={() => handleNotificationClick(notification)}
+    alignItems="flex-start"
+    sx={{
+      borderRadius: 8,
+      '&:hover': {
+        backgroundColor: '#f5f5f5',
+      },
+    }}
+  >
+    <ListItemText
+      primary={
+        <Typography
+          component="div"
+          variant="subtitle1"
+          fontWeight="bold"
+          sx={{ display: 'flex', alignItems: 'center' }}
+        >
+          <Notifications sx={{ marginRight: '8px', fontSize: '1.2rem' }} />
+          {notification.type}
+        </Typography>
+      }
+      secondary={notification.message}
+      secondaryTypographyProps={{ sx: { color: 'text.secondary' } }}
+    />
+    <div>
+      {notification.status === 'read' ? (
+        <Chip
+          icon={<CheckCircle />}
+          label="Read"
+          color="primary"
+          size="small"
+          sx={{ backgroundColor: '#e0f2f1', color: '#009688' }}
+        />
+      ) : (
+        <Chip
+          icon={<Error />}
+          label="Unread"
+          color="secondary"
+          size="small"
+          sx={{ backgroundColor: '#fce4ec', color: '#f50057' }}
+        />
+      )}
+    </div>
+    <IconButton
+      aria-label="Mark as read"
+      size="small"
+      sx={{
+        ml: 'auto',
+        '&:hover': {
+          backgroundColor: 'transparent',
+          color: '#009688',
+        },
+      }}
+    >
+      <CheckCircle fontSize="small" />
+    </IconButton>
+  </ListItem>
       ))}
     </div>
         </List>

@@ -10,7 +10,7 @@ query Users {
     lastName
     role
     address
-    phonenumber
+    phoneNumber
     createdAt
     updatedAt
 

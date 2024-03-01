@@ -70,8 +70,8 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
   const { loading, error, data } = useQuery(GET_QUOTATION, {
     variables: { suplierId:Number(supplierId)},
   });
-  const handleListItemClick = (id: number) => {
-    navigate('/sendRfq', { state: { id,supplierId} });
+  const handleListItemClick = (id: number,qId:number) => {
+    navigate('/sendRfq', { state: { id,qId,supplierId} });
   };
   if (loading) {
     return <p>Loading...</p>;
@@ -85,6 +85,7 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
 
   const tableData = quotationBydSupplierId.map((quotation: any) => ({
     id: quotation.purchaseRequestId,
+    qId:quotation.id,
     status: quotation.status,
     customerName: `${quotation.customer.firstName} ${quotation.customer.lastName}`,
     supplierName: quotation.supplier.name,
@@ -98,11 +99,15 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
       label: 'ID',
     },
     {
+      name: 'qId',
+      label: 'QId',
+    },
+    {
       name: 'status',
       label: 'Status',
       options: {
         customBodyRender: (value: any, tableMeta: any) => {
-          const status = tableMeta.rowData[1]; // Assuming the status is located in the second column
+          const status = tableMeta.rowData[2]; // Assuming the status is located in the second column
   
           return (
             <span style={{ color: 'red' }}>{status}</span>
@@ -133,10 +138,12 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
         sort: false,
         customBodyRender: (value: any, tableMeta: any) => {
           const id = tableMeta.rowData[0];
+          const qId = tableMeta.rowData[1];
+
           return (
             <Button
               variant="outlined"
-              onClick={() => handleListItemClick(id)}
+              onClick={() => handleListItemClick(id,qId)}
               style={{ whiteSpace: 'nowrap' }}
             >
               View Detail
