@@ -735,9 +735,13 @@ return(
         </Grid>
         ):''}
         {isMobile ? (  
-          <div>
-            <Typography variant="h5">Fill your form</Typography>
+        <Grid item xs={12}>
+<Typography variant="h5" style={{ textAlign: 'center', color: '#333', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px' }}>
+  Fill your form
+</Typography>
+            
         <TableBody>
+       
     {productTitles.map((title, index) => (
      
      <Grid item xs={12} key={index} sx={{  marginLeft:'1rem', padding: '8px', border: '1px solid #ddd' }}>
@@ -906,6 +910,29 @@ return(
           </Button>
       </Grid>
     ))}
+    <Grid item xs={12} sm={12}>
+
+
+<Paper elevation={3} sx={{ padding: '20px' }}>
+    <div style={{
+display: 'flex',
+alignItems: 'center',
+justifyContent: 'space-between',
+marginBottom: '10px',
+}}>
+
+<Button
+variant="outlined"
+color="primary"
+startIcon={<Add />}
+onClick={handleAddTitle}
+style={{ whiteSpace: 'nowrap' }}
+>
+Add Item
+</Button>
+</div>
+</Paper>
+</Grid>
               <Grid item xs={12} sm={12}>
             <Paper elevation={3} sx={{ padding: '20px' }}>
 <Grid container spacing={2}>
@@ -999,30 +1026,9 @@ return(
     />
   </Grid>
 </Grid>
+
 <Grid>
-<Grid item xs={12} sm={12}>
 
-
-        <Paper elevation={3} sx={{ padding: '20px' }}>
-            <div style={{
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  marginBottom: '10px',
-}}>
-  
-  <Button
-    variant="outlined"
-    color="primary"
-    startIcon={<Add />}
-    onClick={handleAddTitle}
-    style={{ whiteSpace: 'nowrap' }}
-  >
-    Add Item
-  </Button>
-</div>
-</Paper>
-        </Grid>
 
         <Grid item xs={12} sm={12}>
   <Paper elevation={3} sx={{ padding: '20px' }}>
@@ -1070,10 +1076,8 @@ return(
       </Grid>
 </Paper>
    </Grid>
-  </TableBody>
-
-  
-  </div>
+  </TableBody>  
+  </Grid>
   ):(
 
     <Grid item xs={12} sm={12}>
