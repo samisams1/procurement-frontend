@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { Grid,createTheme, Paper,ThemeProvider,Typography, styled, Button } from '@mui/material';
 import { gql } from '@apollo/client';
@@ -10,6 +10,7 @@ import MUIDataTable, {MUIDataTableOptions, Responsive } from 'mui-datatables';
 import { SectionTitle } from '../../Section';
 import { Print, RequestPageOutlined } from '@mui/icons-material';
 import PageFooter from '../../PageFooter';
+import Popup from '../../Popup';
 const paperStyle = {
   padding: '1rem',
   borderRadius: '8px',
@@ -112,11 +113,15 @@ const MobileGrid = styled(Grid)(({ theme }) => ({
 function Detail() {
   const { id } = useParams<{ id?: string }>();
   const [isHovered, setIsHovered] = React.useState(false);
+  const [openPopup, setOpenPopup] = useState(false);
 
   const { loading, error, data } = useQuery<OrderDetailData, OrderDetailVariables>(GET_PURCHASE_REQUEST_BY_ID, {
     variables: { id: Number(id) },
   });
   const { currentUser } = useContext(UserContext);
+  const openModal = () => {
+    setOpenPopup(true);
+  };
 
   if (!currentUser || loading) {
     return <Spinner />;
@@ -137,6 +142,7 @@ function Detail() {
     {
       name: "imageurl",
       label: "Image",
+      
       options: {
         customBodyRender: (value:string) => {
           return (
@@ -144,6 +150,7 @@ function Detail() {
               src={require(`../../../assets/car.jpg`)}  
               alt="Product"
               style={{ width: "50px", height: "auto" }}
+              onClick={openModal}
             />
           );
         },
@@ -351,6 +358,13 @@ function Detail() {
         columns={columns}
         options={options}
       />
+      <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
+      <Image
+              src={require(`../../../assets/car.jpg`)}  
+              alt="Product"
+              style={{ width: "500px", height: "auto" }}
+            />
+      </Popup>
         </ThemeProvider>
      
     <PageFooter/>
