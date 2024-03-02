@@ -3,11 +3,13 @@ import { UserContext } from '../../auth/UserContext';
 import Spinner from '../../components/Spinner';
 import RfqComponent from '../../components/pageComponents/Quotation/Rfq';
 import Rfqs from '../../components/pageComponents/Quotation/admin/rfq';
+import { ThemeProvider, useTheme } from '@mui/material/styles';
+import PageHeader from '../../components/PageHeader';
 
 export default function Rfq() {
   const { currentUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
-
+  const theme = useTheme();
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
@@ -18,11 +20,23 @@ export default function Rfq() {
     return <Spinner />;
   }
 
+  const userId = currentUser.id;
   const { role } = currentUser;
+ 
+
   if (role === 'CUSTOMER') {
-    return <div><RfqComponent/></div>;
+    return (
+      <ThemeProvider theme={theme}>
+      
+          <PageHeader
+          title="Rfq"
+          subTitle="list of rfq "
+          />
+        <RfqComponent userId={Number(userId)} />
+      </ThemeProvider>
+    );
   } else if (role === 'ADMIN') {
-    return <div><Rfqs/></div>;
+    return <Rfqs />;
   } else {
     return null;
   }

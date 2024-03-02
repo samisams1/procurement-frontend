@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
-import { Grid, Paper, Typography } from '@mui/material';
+import { Button, Grid, Paper, Typography } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, MUIDataTableMeta } from 'mui-datatables';
 import PageHeader from '../../../PageHeader';
 import numberToWords from 'number-to-words';
-import Button from '../../../Button';
 import Spinner from '../../../Spinner';
 import { UserContext } from '../../../../auth/UserContext';
 import { useNavigate, useParams } from 'react-router-dom';
+import PageFooter from '../../../PageFooter';
+import { Add, Print } from '@mui/icons-material';
 
 interface Product {
   id: number;
@@ -112,6 +113,7 @@ mutation UpdateOrder($id: Int!, $input: String!) {
   }
 }
 `;
+
 const Detail = () => {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
@@ -169,7 +171,6 @@ const Detail = () => {
   const productsArray: Product[] = products ? [products] : [];
 
   const options: MUIDataTableOptions = {
-    responsive: 'vertical',
     selectableRows: 'none',
     customFooter: () => {
       return (
@@ -218,6 +219,16 @@ const Detail = () => {
       console.error('Failed to update order:', updateError);
     }
   };
+  const handleUpdateReject = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const { data } = await updateOrder({ variables: { id:Number(id), input:"reject" } });
+      console.log('Order updated:', data.updateOrder);
+    } catch (updateError) {
+      console.error('Failed to update order:', updateError);
+    }
+  };
   const handleUpdateAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -228,6 +239,9 @@ const Detail = () => {
       console.error('Failed to update order:', updateError);
     }
   };
+  const handlePrint = () => {
+    window.print();
+  };
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -235,7 +249,17 @@ const Detail = () => {
         <PageHeader
       title="Purchas Order"
       subTitle ="pircase Order"
+      imageSrc="tra.jpg"
       />
+        <Button
+        variant="outlined"
+        color="primary"
+        startIcon={<Print />}
+        onClick={handlePrint}
+        style={{ whiteSpace: 'nowrap' }}
+      >
+        Print Page
+      </Button>
     <Grid container spacing={2}>
       {/* Order By */}
       <Grid item xs={4}>
@@ -292,11 +316,14 @@ const Detail = () => {
       )}
       {currentUser.role === "ADMIN" && (
         <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleUpdateAdmin}
-          text="Approve Order"
-        />
+        variant="outlined"
+        color="primary"
+        startIcon={<Add />}
+        onClick={handleUpdateAdmin}
+        style={{ whiteSpace: 'nowrap' }}
+      >
+        Approve Order
+      </Button>
       )}
     </div>
   )}
@@ -308,17 +335,33 @@ const Detail = () => {
         </h1>
       )}
       {currentUser.role === "SUPPLIER" && (
-        <div>
-          <h4 style={{ color: 'green', marginRight: '10px' }}>
-            Please confirm the order.
-          </h4>
-          <Button
-            variant="contained"
-            color="secondary"
-           onClick={handleUpdate}
-            text="Confirm Order"
-          />
-        </div>
+        <Grid container alignItems="center" spacing={2}>
+        
+        <Grid item xs={12} sm={6}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={handleUpdate}
+              >
+                Confirm Order
+              </Button>
+            </Grid>
+            <Grid item>
+        <Button
+        variant="outlined"
+        color="primary"
+        startIcon={<Add />}
+        onClick={handleUpdateReject}
+        style={{ whiteSpace: 'nowrap' }}
+      >
+        Reject Order
+      </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
       )}
       
     </div>
@@ -335,16 +378,22 @@ const Detail = () => {
           <h4>
             Please make the payment for the order.
           </h4>
+         
           <Button
-            variant="contained"
-           onClick={handlePayment}
-            text="Make Payment"
-          />
+        variant="outlined"
+        color="primary"
+        startIcon={<Add />}
+        onClick={handlePayment}
+        style={{ whiteSpace: 'nowrap' }}
+      >
+        Make Payment
+      </Button>
         </div>
       )}
       
     </div>
   )}
+  <PageFooter/>
         </Grid>
       </Grid>
     </Grid>

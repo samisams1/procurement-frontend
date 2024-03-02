@@ -24,10 +24,12 @@ const GET_DAILY_REPORT = gql`
     }
   }
 `;
-
-const DailyReportChart: React.FC = () => {
+interface userIdInterface {
+  userId :number
+}
+const DailyReportChart: React.FC<userIdInterface> = ({ userId }) => {
   const { data, loading, error } = useQuery<DailyReportQueryData, DailyReportQueryVariables>(GET_DAILY_REPORT, {
-    variables: { dailyReportId: 1 },
+    variables: { dailyReportId: userId },
   });
 
   if (loading) {

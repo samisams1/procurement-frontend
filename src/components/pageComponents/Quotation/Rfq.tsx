@@ -2,8 +2,12 @@ import React from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Grid, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+
+interface RfqComponentProps {
+  userId: number;
+}
 
 interface Product {
   id: string;
@@ -18,7 +22,7 @@ interface Product {
 }
 
 interface Quotation {
-  id:number
+  id: number;
   shippingPrice: number;
   purchaseRequestId: string;
   status: string;
@@ -43,8 +47,8 @@ interface GetAllProductPricesResponse {
 }
 
 const GET_ALL_PRODUCT_PRICES = gql`
-  query GetAllProductPrices {
-    getAllProductPrices {
+  query GetAllProductPrices($id: Int!) {
+    getAllProductPrices(id: $id) {
       id
       productId
       price
@@ -74,12 +78,15 @@ const GET_ALL_PRODUCT_PRICES = gql`
   }
 `;
 
-const RfqComponent: React.FC = () => {
-  const { loading, error, data } = useQuery<GetAllProductPricesResponse>(GET_ALL_PRODUCT_PRICES);
+const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
+  const { loading, error, data } = useQuery<GetAllProductPricesResponse>(GET_ALL_PRODUCT_PRICES, {
+    variables: { id: userId },
+  });
   const theme = useTheme();
   const navigate = useNavigate();
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -88,7 +95,6 @@ const RfqComponent: React.FC = () => {
     return <p>Error: {error.message}</p>;
   }
 
-  // Get unique purchaseRequestId values
   const uniquePurchaseRequestIds = Array.from(
     new Set(data?.getAllProductPrices.map((productPrice) => productPrice.quotation.purchaseRequestId))
   );
@@ -97,6 +103,12 @@ const RfqComponent: React.FC = () => {
     navigate('/manageRfq', { state: { productId, customerId, supplierId } });
   };
 
+  if (uniquePurchaseRequestIds.length === 0) {
+    return  <Grid container justifyContent="center" alignItems="center">
+       <Typography variant="h6"> <Typography>Sorry, no matching records found</Typography></Typography></Grid>
+    
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <List>
@@ -104,7 +116,10 @@ const RfqComponent: React.FC = () => {
           const productPrice = data?.getAllProductPrices.find(
             (productPrice) => productPrice.quotation.purchaseRequestId === purchaseRequestId
           );
-          if (!productPrice) return null;
+
+          if (!productPrice) {
+            return null;
+          }
 
           return (
             <ListItem
@@ -133,21 +148,13 @@ const RfqComponent: React.FC = () => {
                       Created At: {productPrice.createdAt}
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      Status <span style={{ color: 'red' }}>: {productPrice.status}</span>
+                      Status:{' '}
+                      <span style={{ color: 'red' }}>{productPrice.status}</span>
                     </Typography>
                   </>
                 }
               />
-              <div>
-                <Typography variant="h6" color="primary">
-                  Products:
-                </Typography>
-                {productPrice.quotation && (
-                  <Typography variant="body2">
-                    - Shipping Price: {productPrice.quotation.shippingPrice}
-                  </Typography>
-                )}
-              </div>
+            
             </ListItem>
           );
         })}

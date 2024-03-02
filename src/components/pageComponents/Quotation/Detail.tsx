@@ -323,6 +323,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
           Send Order
         </Button>
       </form>
+      samisams
     </ThemeProvider>
   );
 };

@@ -17,16 +17,18 @@ interface DailyReportQueryData {
 interface DailyReportQueryVariables {
   dailyReportId: number;
 }
-
-export default function TodayReportByTable() {
+interface userIdInterface {
+  userId: number;
+}
+const TodayReportByTable: React.FC<userIdInterface> = ({ userId }) => {
   const { data, loading, error } = useQuery<DailyReportQueryData, DailyReportQueryVariables>(DAY_REPORT_QUERY, {
-    variables: { dailyReportId: 1 },
+    variables: { dailyReportId: Number(userId) },
   });
 
   if (loading) return <Spinner />;
   if (error) return <p>{error.message}</p>;
 
-  const saleData = data?.dailyReport.map((row: DailyReport) => [row.date, row.totalAmount]);
+  const saleData = data?.dailyReport.map((row: DailyReport) => [row.date, row.totalAmount + " Birr"]);
 
   return (
     <>
@@ -45,3 +47,4 @@ export default function TodayReportByTable() {
     </>
   );
 }
+export default TodayReportByTable

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useQuery } from '@apollo/client';
-import { Grid,createTheme, Paper,ThemeProvider,Typography, styled } from '@mui/material';
+import { Grid,createTheme, Paper,ThemeProvider,Typography, styled, Button } from '@mui/material';
 import { gql } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../../../auth/UserContext';
@@ -8,7 +8,8 @@ import Spinner from '../../Spinner';
 import PageHeader from '../../PageHeader';
 import MUIDataTable, {MUIDataTableOptions, Responsive } from 'mui-datatables';
 import { SectionTitle } from '../../Section';
-import { RequestPageOutlined } from '@mui/icons-material';
+import { Print, RequestPageOutlined } from '@mui/icons-material';
+import PageFooter from '../../PageFooter';
 const paperStyle = {
   padding: '1rem',
   borderRadius: '8px',
@@ -122,7 +123,6 @@ function Detail() {
   const handlePrint = () => {
     window.print();
   };
-
   const columns = [
     {
       name: 'id',
@@ -284,7 +284,16 @@ function Detail() {
     <Grid item xs={12}>
      
       <SectionTitle variant="outlined" square>
-          <PageHeader title="Purchase Request" subTitle="Purchase Request" icon={<RequestPageOutlined />} />
+          <PageHeader title="Purchase Request" imageSrc="pro.png" subTitle="Purchase Request" icon={<RequestPageOutlined />} />
+          <Button
+        variant="outlined"
+        color="primary"
+        startIcon={<Print />}
+        onClick={handlePrint}
+        style={{ whiteSpace: 'nowrap' }}
+      >
+        Print Page
+      </Button>
        </SectionTitle>
       <MobileGrid container spacing={2}>
         {/* Order By */}
@@ -340,11 +349,25 @@ function Detail() {
         options={options}
       />
         </ThemeProvider>
-      <button onClick={handlePrint}>Print</button>
-    
+     
+    <PageFooter/>
     </Grid>
     </Grid>
   );
 }
 
 export default Detail;
+// CSS media query
+const styles = `
+  @media print {
+    button {
+      display: none !important;
+    }
+  }
+`;
+
+// Add the CSS styles to the bottom of your code
+const styleElement = document.createElement('style');
+styleElement.type = 'text/css';
+styleElement.appendChild(document.createTextNode(styles));
+document.head.appendChild(styleElement);

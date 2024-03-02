@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Box, Tab } from '@mui/material';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
 import YearReportChart from '../../report/year/YearReportChart';
@@ -6,6 +6,8 @@ import YearReprtByTable from '../../report/year/YearReportTable';
 import MonthReportChart from '../../report/month/MonthCharts';
 import DailyReportChart from '../../report/daily/dailyReportCharts';
 import TodayReprtByTable from '../../report/daily/TodayReprtTable';
+import MonthReportByTable from '../../report/month/MonthReportTable';
+import { UserContext } from '../../../auth/UserContext';
 
 export default function LabTabs() {
   const [value, setValue] = useState('1');
@@ -13,7 +15,8 @@ export default function LabTabs() {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
-
+const {currentUser} = useContext(UserContext);
+const userId = currentUser?.id ?? '';
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
       <TabContext value={value}>
@@ -26,18 +29,18 @@ export default function LabTabs() {
         </Box>
         <TabPanel value="1">
           {/* Content for Daily Report */}
-          <TodayReprtByTable/>
-          <DailyReportChart />
+          <TodayReprtByTable userId = {Number(userId) }/>
+          <DailyReportChart  userId = {Number(userId) }/>
         </TabPanel>
         <TabPanel value="2">
           {/* Content for Monthly Report */}
-          <MonthReportChart />
-          <MonthReportChart />
+          <MonthReportByTable userId = {Number(userId) }/>
+          <MonthReportChart   userId = {Number(userId) }/>
         </TabPanel>
         <TabPanel value="3">
           {/* Content for Yearly Report */}
-          <YearReprtByTable />
-          <YearReportChart />
+          <YearReprtByTable  userId = {Number(userId) }/>
+          <YearReportChart   userId = {Number(userId) }/>
         </TabPanel>
       </TabContext>
     </Box>

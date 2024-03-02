@@ -3,6 +3,7 @@ import { useQuery, gql, useMutation } from '@apollo/client';
 import { Typography, Box, TextField, Grid, Input } from '@mui/material';
 import Button from '../../Button';
 import { Form, useForm } from '../../useForm';
+import PageHeader from '../../PageHeader';
 interface Product {
   title: string;
   quantity: number;
@@ -261,7 +262,8 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
               <Grid item xs={12}>
               <Button type="submit" text="Send Quotation" />
             </Grid>
-          </Form>    
+          </Form>  
+          <PageHeader/>  
         </Box>
          
     </div>

@@ -3,24 +3,34 @@ import Chart from 'react-apexcharts';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 
-interface MonthlyReport {
+interface YearlyReport {
   month: string;
-  amount: number;
+  totalAmount: number;
 }
 
-const GET_MONTHLY_REPORT = gql`
-  query MonthlyReport {
-    monthlyReport {
-      month
-      amount
-    }
+interface MonthlyReportQueryData {
+  monthlyReport: YearlyReport[];
+}
+
+interface MonthlyReportQueryVariables {
+  id: number;
+}
+
+const GET_MONTH_REPORT = gql`
+query MonthlyReport($id: Int!) {
+  monthlyReport(id: $id) {
+    month
+    totalAmount
   }
+}
 `;
-
-const MonthReportChart: React.FC = () => {
-  // Sample data
-
-  const { data, loading, error } = useQuery<{ monthlyReport: MonthlyReport[] }>(GET_MONTHLY_REPORT);
+interface userIdInterface {
+  userId :number
+}
+const MonthReportChart: React.FC<userIdInterface> = ({userId}) => {
+  const { data, loading, error } = useQuery<MonthlyReportQueryData, MonthlyReportQueryVariables>(GET_MONTH_REPORT, {
+    variables: { id: userId },
+  });
 
   if (loading) {
     return <div>Loading...</div>;
@@ -30,38 +40,37 @@ const MonthReportChart: React.FC = () => {
     return <div>Error: {error.message}</div>;
   }
 
-  const monthlyReportData = data?.monthlyReport || [];
-
-  
-
+  const monthReportData: YearlyReport[] = data?.monthlyReport || [];
 
   // Prepare chart series for the pie chart
-  const pieChartSeries = monthlyReportData.map((monthlyReportData) => monthlyReportData.amount);
+  const pieChartSeries: number[] = monthReportData.map((report) => report.totalAmount);
 
   // Prepare chart options for the pie chart
   const pieChartOptions = {
-    // Chart options configuration here...
+    labels: monthReportData.map((report) => report.month),
   };
 
   // Prepare chart options for the bar chart
   const barChartOptions = {
-    // Chart options configuration here...
+    xaxis: {
+      categories: monthReportData.map((report) => report.month),
+    },
   };
 
   // Prepare chart series for the bar chart
   const barChartSeries = [
     {
       name: 'Amount',
-      data: monthlyReportData.map((point) => point.amount),
+      data: monthReportData.map((report) => report.totalAmount),
     },
   ];
 
   // Calculate total amount
-  const totalAmount = monthlyReportData.reduce((sum, point) => sum + point.amount, 0);
+  const totalAmount: number = monthReportData.reduce((sum, report) => sum + report.totalAmount, 0);
 
   return (
     <div>
-      <h2>Payment Reports</h2>
+      <h2>Yearly Reports</h2>
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div style={{ width: '50%' }}>
@@ -78,25 +87,21 @@ const MonthReportChart: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Day</TableCell>
-              <TableCell>Amount</TableCell>
+              <TableCell>Year</TableCell>
+              <TableCell>Total Amount</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {monthlyReportData.map((point, index) => (
-              <TableRow key={index}>
-                <TableCell>{point.month}</TableCell>
-                <TableCell>{point.amount}</TableCell>
+            {monthReportData.map((report) => (
+              <TableRow key={report.month}>
+                <TableCell>{report.month}</TableCell>
+                <TableCell>{report.totalAmount}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-
       <p>Total Amount: {totalAmount}</p>
-
-      <p>Analysis:</p>
-      <p>Add your own analysis based on the data here...</p>
     </div>
   );
 };

@@ -3,26 +3,41 @@ import MUIDataTable from "mui-datatables";
 import { Grid } from "@mui/material";
 import { useQuery } from "@apollo/client";
 import Spinner from "../../Spinner";
-import { DAY_REPORT_QUERY } from "../../../graphql/Report";
+import { YEAR_REPORT_QUERY } from "../../../graphql/Report";
 
-export default function YearReprtByTable() {
-const {loading,error,data} = useQuery(DAY_REPORT_QUERY);
-console.log(data)
-console.log("haben");
-if(loading) return <Spinner/>
-if (error) return <p>{error.message}</p>
-const saleData = data.dailyReport.map((row:any)=>(
-            [row.id,row.grossAmount
-            ]
-        ));
+interface DailyReport {
+  year: string;
+  totalAmount: number;
+}
+
+interface YearReportQueryData {
+  yearlyReport: DailyReport[];
+}
+
+interface YearReportQueryVariables {
+  id: number;
+}
+interface userIdInterface {
+  userId :number
+}
+const TodayReportByTable: React.FC<userIdInterface> = ({userId}) => {
+  const { data, loading, error } = useQuery<YearReportQueryData, YearReportQueryVariables>(YEAR_REPORT_QUERY, {
+    variables: { id: userId },
+  });
+
+  if (loading) return <Spinner />;
+  if (error) return <p>{error.message}</p>;
+
+  const saleData = data?.yearlyReport.map((row: DailyReport) => [row.year, row.totalAmount + " Birr"]);
+
   return (
     <>
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <MUIDataTable
-            title="Year Report of Selled Products"
-            data={saleData}
-            columns={["id","Gross Amount"]}
+            title="Yearly Reports"
+            data={saleData || []}
+            columns={["Date", "Total Amount"]}
             options={{
               filterType: "checkbox",
             }}
@@ -32,3 +47,4 @@ const saleData = data.dailyReport.map((row:any)=>(
     </>
   );
 }
+export default  TodayReportByTable;

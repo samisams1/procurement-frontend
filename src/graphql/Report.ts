@@ -7,28 +7,17 @@ query DailyReport($dailyReportId: Int!) {
   }
 }`;
   export const MONTH_REPORT_QUERY = gql`
-  query {
-      dailyReport{
-        id
-        saleDetail{
-          product{
-            name
-          }
-        }
-        grossAmount
-        
-      }
-    }`;
+  query MonthlyReport($id: Int!) {
+    monthlyReport(id: $id) {
+      month
+      totalAmount
+    }
+  }`;
     export const YEAR_REPORT_QUERY = gql`
-    query {
-        dailyReport{
-          id
-          saleDetail{
-            product{
-              name
-            }
-          }
-          grossAmount
-          
-        }
-      }`;
+    query YearlyReport($id: Int!) {
+      yearlyReport(id: $id) {
+        year
+        totalAmount
+      }
+    }
+    `;
