@@ -26,6 +26,12 @@ const typographyStyle = {
   marginBottom: '0.5rem',
   fontWeight: 'bold',
 };
+const Image = styled('img')({
+  marginLeft: 'auto',
+  width: '2000px', // Adjust the width as needed
+  height: '2000px',
+});
+
 const GET_PURCHASE_REQUEST_BY_ID = gql`
   query PurchaseRequestById($id: Int!) {
     purchaseRequestById(id: $id) {
@@ -132,12 +138,10 @@ function Detail() {
       name: "imageurl",
       label: "Image",
       options: {
-        display: false,
         customBodyRender: (value:string) => {
-          const imageUrl = value;
           return (
-            <img
-              src={imageUrl}
+            <Image
+              src={require(`../../../assets/car.jpg`)}  
               alt="Product"
               style={{ width: "50px", height: "auto" }}
             />
@@ -210,8 +214,7 @@ function Detail() {
 
   const tableData = orderDetail?.products.map((product, index) => ({
     id: index + 1,
-    imageurl: `http://localhost:4000/graphql/uploads/1708721484772-kotari.jpeg`,
-    
+    imageurl: <Image   src={require(`../../../assets/car.jpg`)}   alt="Header Image" />,
     title: product.title,
     quantity: product.quantity,
     code: product.code,
