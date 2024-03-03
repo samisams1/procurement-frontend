@@ -17,7 +17,6 @@ import Invoice from './pages/invoice';
 //import PurchaseRequestList from './pages/purchase/purchaseRequestList';
 import PurchaseRequestDetail from './pages/purchase/purchaseRequestDetail';
 import QuotationDetail from './pages/Quotation/QuotationDetail';
-import { Profile } from './pages/profile/Profile';
 import PurchaseRequest from './pages/purchase/purchaseRequest';
 import Order from './pages/order';
 import NotificationDetail from './pages/notification';
@@ -52,6 +51,7 @@ import SendRfq from './pages/Quotation/sendRfq';
 import SentEmail from './pages/account/SentEmail';
 import Notification from './pages/notification/notification';
 import Draft from './pages/draft/drafts';
+import Profile from './pages/profile/Profile';
 export default function RoutePage() {
 
     return useRoutes([

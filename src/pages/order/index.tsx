@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+/*import React, { useContext } from 'react';
 import { Box } from '@mui/material';
 import { UserContext } from '../../auth/UserContext';
 import Spinner from '../../components/Spinner';
@@ -32,15 +32,53 @@ export default function Order() {
         py: 8
       }}
     >
-      <PageHeader
-      title="Order"
-      subTitle="orders"
-      icon ={<CarRentalTwoTone/>}
-      />
       <Orders userId= {currentUser.id}/>
       </Box>
       </div>);
   } else {
     return null;
   }
-}
+}*/
+import React, { useContext, useEffect, useState } from 'react';
+import Spinner from '../../components/Spinner';
+import { UserContext } from '../../auth/UserContext';
+import { OrderAdmin } from './orderAdmin';
+import OrderSupplier from './orderSupplier';
+import OrderCustomer from './orderCustomer';
+
+const Dashboard = () => {
+  const { currentUser } = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div>
+        <Spinner />
+        <p>Loading user data...</p>
+      </div>
+    );
+  }
+
+  let dashboardComponent;
+
+  if (currentUser === null) {
+    dashboardComponent = <div>No user data found</div>;
+  } else if (currentUser.role === 'SUPPLIER') {
+    dashboardComponent = <OrderSupplier/>;
+  } else if (currentUser.role === 'CUSTOMER') {
+    dashboardComponent = <OrderCustomer/>;
+  } else if (currentUser.role === 'ADMIN') {
+    dashboardComponent = <OrderAdmin />;
+  }
+
+  return <div>{dashboardComponent}</div>;
+};
+
+export default Dashboard;

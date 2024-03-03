@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Input from '../../Input';
-import { Alert, Box, TextField, Typography } from '@mui/material';
+import { Alert, Box, MenuItem, TextField, Typography } from '@mui/material';
 import { Form, useForm } from '../../useForm';
 import Button from '../../Button';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
@@ -24,6 +24,7 @@ interface ProductPrice {
   status: string;
   product: Product;
   quotation: Quotation;
+  disCountPrice: number;
 }
 
 interface QuotationByRequestIdAdSupplierIdData {
@@ -37,6 +38,8 @@ interface QuotationByRequestIdAdSupplierIdVariables {
 interface QuotationInterface {
   price: string;
   shippingPrice: string;
+  discountPrices:string;
+  otherPayment:string;
 }
 const GET_QUOTATION_QUERY = gql`
   query QuotationByRequestIdAdSupplierId($id: Int!, $supplierId: Int!) {
@@ -79,7 +82,10 @@ interface Props {
 
 const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplierId }) => {
   const [prices, setPrices] = useState<{ [key: string]: string }>({});
+  const [disCountPrice, setDisCountPrices] = useState<{ [key: string]: string }>({});
   const [shippingCost, setShippingCost] = useState<number>(0);
+  const [estimatedDelivery, setEstimatedDelivery] = useState('');
+  const [otherPayment,setOtherPayment] =useState<number>(0);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');  
   const navigate = useNavigate();
@@ -96,8 +102,20 @@ const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplie
   const initialFormValues: QuotationInterface = {
     price: '0',
     shippingPrice: '0',
+    discountPrices:'0',
+    otherPayment:'0',
   };
-
+  const renderDateOptions = () => {
+    const options = [];
+    for (let i = 1; i <= 30; i++) {
+      options.push(
+        <MenuItem key={i} value={i.toString()}>
+         The price is valide for    {" " + i} {i===1? "day":"days"}
+       </MenuItem>
+      );
+    }
+    return options;
+  };
 const validate = (fieldValues: QuotationInterface = values): boolean => {
     let tempErrors: Partial<QuotationInterface> = { ...errors };
     if ('price' in fieldValues) {
@@ -106,7 +124,12 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
     if ('shippingPrice' in fieldValues) {
       tempErrors.shippingPrice = fieldValues.shippingPrice !== '0' ? '' : 'This field is required.';
     }
-  
+    if ('discountPrices' in fieldValues) {
+      tempErrors.discountPrices = fieldValues.discountPrices !== '0' ? '' : 'This field is required.';
+    }
+    if ('otherPayment' in fieldValues) {
+      tempErrors.otherPayment = fieldValues.otherPayment !== '0' ? '' : 'This field is required.';
+    }
     setErrors({
       ...tempErrors,
     });
@@ -125,6 +148,16 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
       [productId]: value,
     }));
   };
+  const handlePriceDiscountChange = (productId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setDisCountPrices((prevPrices) => ({
+      ...prevPrices,
+      [productId]: value,
+    }));
+  };
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEstimatedDelivery(event.target.value);
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     const input = {
@@ -133,7 +166,10 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
       productPrices: Object.keys(prices).map((key) => ({
         id: parseInt(key),
         price: parseFloat(prices[key]),
+        disCountPrice: parseFloat(disCountPrice[key]),
       })),
+      estimatedDelivery:estimatedDelivery,
+      otherPayment:otherPayment,
     };
     console.log('Quotation:', input);
     try {
@@ -213,6 +249,12 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
       },
     },
     {
+      name: 'Discount',
+      options: {
+        display: true,
+      },
+    },
+    {
       name: 'Quantity',
       options: {
         display: true,
@@ -247,6 +289,14 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
           value={prices[quotation.id.toString()] || ''}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handlePriceChange(quotation.id.toString(), e)
+          }
+        />,
+        <Input
+          type="number"
+          placeholder="Please Enter discount"
+          value={disCountPrice[quotation.id.toString()] || ''}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handlePriceDiscountChange(quotation.id.toString(), e)
           }
         />,
         quotation.product.quantity,
@@ -319,44 +369,63 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
           />
        <Box mt={2}>
   <Form onSubmit={handleSubmit}>
-    <Grid container spacing={2} justifyContent="center">
-      <Grid item xs={12} md={6}>
-        <Typography variant="subtitle1" align="right" fontWeight="bold">Shipping Cost:</Typography>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <TextField
-          type="number"
-          label="Shipping Cost"
-          placeholder="Enter Shipping Cost"
-          value={shippingCost.toString()}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setShippingCost(parseFloat(e.target.value))
-          }
-          fullWidth
-        />
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <Typography variant="subtitle1" align="right" fontWeight="bold">Tax:</Typography>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <Typography fontWeight="bold">{tax} Birr</Typography>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <Typography variant="subtitle1" align="right" fontWeight="bold"> Subtotal:</Typography>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <Typography fontWeight="bold">{calculateSubtotal()} Birr</Typography>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <Typography variant="subtitle1" align="right" fontWeight="bold">Grand Total:</Typography>
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <Typography fontWeight="bold">{grandTotal} Birr</Typography>
-      </Grid>
-      <Grid item xs={12} textAlign="center">
-      {!successMessage && !errorMessage &&   <Button variant="contained" type="submit" size="large"  Send text=  "Quotation"/>}
-      </Grid>
+  <Grid container spacing={2} justifyContent="center">
+  <Grid item xs={12} md={6}>
+  <Grid container spacing={2}>
+    <Grid item xs={12}>
+      <TextField
+        type="number"
+        label="Shipping Cost"
+        placeholder="Enter Shipping Cost"
+        value={shippingCost.toString()}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setShippingCost(parseFloat(e.target.value))
+        }
+        fullWidth
+        sx={{ paddingTop: '10px',paddingBottom: '10px',}}
+      />
+      <TextField
+        type="number"
+        label="Other Payment"
+        placeholder="Enter Other Payment"
+        value={otherPayment.toString()}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setOtherPayment(parseFloat(e.target.value))
+        }
+        fullWidth
+        sx={{ paddingTop: '10px',paddingBottom: '10px',}}
+      />
+      <TextField
+        select
+        required
+        label="Availability Date of Price"
+        value={estimatedDelivery}
+        onChange={handleDateChange}
+        fullWidth
+        sx={{ paddingTop: '20px' }}
+      >
+        {renderDateOptions()}
+      </TextField>
+      <Typography variant="subtitle1" align="right" fontWeight="bold">
+        Tax: {tax} Birr
+      </Typography>
+      <Typography variant="subtitle1" align="right" fontWeight="bold">
+        Subtotal: {calculateSubtotal()} Birr
+      </Typography>
+      <Typography variant="subtitle1" align="right" fontWeight="bold">
+        Grand Total: {grandTotal} Birr
+      </Typography>
     </Grid>
+  </Grid>
+</Grid>
+  <Grid item xs={12} textAlign="center">
+    {!successMessage && !errorMessage && (
+      <Button variant="contained" type="submit" size="large"  text= "  Send Quotation">
+        Send Quotation
+      </Button>
+    )}
+  </Grid>
+</Grid>
   </Form>
 </Box>
 </Grid>

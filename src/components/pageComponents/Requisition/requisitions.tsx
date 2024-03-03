@@ -142,7 +142,11 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <SectionTitle variant="outlined" square>
-          <PageHeader title="Request" icon={<RequestPageOutlined />} />
+          <PageHeader
+           title="Request"
+           icon={<RequestPageOutlined />} 
+           subTitle="this page is your request "
+           />
         </SectionTitle>
       </Grid>
       <Grid item xs={12}>

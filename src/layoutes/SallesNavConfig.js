@@ -33,7 +33,7 @@ const SallesNavConfig = () => {
       icon: getIcon('iconamoon:profile-fill'),
     },
     {
-      title: 'Requests',
+      title: 'Incoming Requests',
       path: 'purchaseRequests',
       icon: getIcon('fluent-mdl2:review-request-solid'),
     },
@@ -72,11 +72,6 @@ const SallesNavConfig = () => {
       title: 'Setting',
       path: 'setting',
       icon: getIcon('uiw:setting'),
-    },
-    {
-      title: 'Supplier Profile',
-      path: 'supplier',
-      icon: getIcon('mdi:report-areaspline-variant'),
     },
     {
       title: 'Report',

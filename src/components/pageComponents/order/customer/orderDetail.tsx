@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
-import { Button, Grid, Paper, Typography } from '@mui/material';
+import { Button, Grid, Paper, Table, TableCell, TableRow, Typography,TableHead, TableBody } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, MUIDataTableMeta } from 'mui-datatables';
 import PageHeader from '../../../PageHeader';
 import numberToWords from 'number-to-words';
@@ -9,7 +9,7 @@ import { UserContext } from '../../../../auth/UserContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import PageFooter from '../../../PageFooter';
 import { Add, Print } from '@mui/icons-material';
-
+import { styled } from '@mui/system';
 interface Product {
   id: number;
   Description: string | null;
@@ -45,10 +45,15 @@ interface OrderDetail {
     referenceNumber: string;
     purchaseRequestId: string;
     supplier: {
-      name: string | null;
+      name: string;
+      address:string;
+      category: {
+        name: string;
+      };
     };
     customer: {
       username: string | null;
+      address:string;
     };
   };
 }
@@ -60,7 +65,11 @@ interface GetOrderDetailByOrderIdResponse {
 interface GetOrderDetailByOrderIdVariables {
   getOrderDetailByOrderIdId: number;
 }
-
+const StyledTableHeadCell = styled(TableCell)`
+  background-color: #00b0ad;
+  font-size: 15px;
+  color:#ffffff;
+`;
 const GET_ORDER_DETAIL_BY_ORDER_ID = gql`
   query GetOrderDetailByOrderId($getOrderDetailByOrderIdId: Int!) {
     getOrderDetailByOrderId(id: $getOrderDetailByOrderIdId) {
@@ -95,10 +104,16 @@ const GET_ORDER_DETAIL_BY_ORDER_ID = gql`
         updatedAt
         referenceNumber
         purchaseRequestId
+        
         supplier {
           name
+          address
+          category {
+            name
+          }
         }
         customer {
+          address
           username
         }
       }
@@ -174,6 +189,29 @@ const Detail = () => {
     selectableRows: 'none',
     customFooter: () => {
       return (
+        <Grid container spacing={3}>
+        <Grid item xs={6}>
+          <Typography>Invoice total i words</Typography>
+        <Grid><h3><span style={{color:"red"}}>{amountInWords}</span> Birr</h3></Grid>
+        <Typography>Payments</Typography>
+        <Table>
+  <TableHead>
+    <TableRow>
+      <StyledTableHeadCell>Date</StyledTableHeadCell>
+      <StyledTableHeadCell>Amount</StyledTableHeadCell>
+      <StyledTableHeadCell>Status</StyledTableHeadCell>
+    </TableRow>
+  </TableHead>
+  <TableBody>
+    <TableRow>
+      <TableCell>samisams</TableCell>
+      <TableCell>2024</TableCell>
+      <span style={{background:"green",color:"#ffffff"}}><TableCell>active</TableCell></span> 
+    </TableRow>
+  </TableBody>
+</Table>
+        </Grid>
+        <Grid item xs={6}>
         <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '16px' }}>
           <div style={{ marginRight: 'auto' }}>
              <Typography variant="h6" align="right">Subtotal:&nbsp;</Typography>
@@ -182,12 +220,14 @@ const Detail = () => {
             <Typography variant="h6" align="right">Grand Total:</Typography>
           </div>
           <div style={{ marginLeft: 'auto' }}>
-            <Typography variant="h6" align="left">{subtotal} Birr</Typography>
-            <Typography variant="h6" align="left">{order?.shippingCost} Birr</Typography>
-            <Typography variant="h6" align="left">{tax} Birr</Typography>
-            <Typography variant="h6" align="left">{grandTotal} Birr</Typography>
+            <Typography variant="h6" align="left">{subtotal.toLocaleString()} Birr</Typography>
+            <Typography variant="h6" align="left">{order?.shippingCost.toLocaleString()} Birr</Typography>
+            <Typography variant="h6" align="left">{tax.toLocaleString()} Birr</Typography>
+            <Typography variant="h6" align="left">{grandTotal.toLocaleString()} Birr</Typography>
           </div>
         </div>
+        </Grid>
+      </Grid>
       );
     },
   };
@@ -242,6 +282,17 @@ const Detail = () => {
   const handlePrint = () => {
     window.print();
   };
+  const createdDate = orderDetail?.order.createdAt ? new Date(orderDetail.createdAt) : null;
+  const formattedDate = createdDate?.toLocaleString('en-US', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+  
+  
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -266,13 +317,17 @@ const Detail = () => {
         <Paper>
           <Typography variant="h6">Order By</Typography>
           <Typography variant="body1">
-          <p>Customer Name: {orderDetail?.order?.customer?.username}</p>
+          Customer Name: {orderDetail?.order?.customer?.username}
           </Typography>
           <Typography variant="body1">
             Reference Number: {orderDetail?.order?.referenceNumber}
           </Typography>
           <Typography variant="body1">
-            Created At: {orderDetail?.order?.createdAt}
+            Requested Date: {formattedDate?.toString()}
+         
+          </Typography>
+          <Typography variant="body1">
+            Address: {orderDetail?.order?.customer?.address}
           </Typography>
         </Paper>
       </Grid>
@@ -283,7 +338,10 @@ const Detail = () => {
             Supplier Name: {orderDetail?.order?.supplier.name}
           </Typography>
           <Typography variant="body1">
-            Shipping Cost: {orderDetail?.order?.shippingCost}
+            Category: {orderDetail?.order?.supplier?.category?.name}
+          </Typography>
+          <Typography variant="body1">
+            Address: {orderDetail?.order?.supplier.address}
           </Typography>
         </Paper>
       </Grid>
@@ -305,7 +363,7 @@ const Detail = () => {
           columns={columns}
           options={options}
         />
-        <Grid><h3>In words<span style={{color:"red"}}>{amountInWords}</span> Birr</h3></Grid>
+       
         <Grid>
         {orderDetail?.order?.status === "comformed" && (
     <div style={{ display: 'flex', alignItems: 'center' }}>

@@ -60,6 +60,10 @@ const GET_PURCHASE_REQUEST_BY_ID = gql`
       user {
         firstName
         lastName
+        address
+      }
+      category {
+        name
       }
     }
   }
@@ -81,6 +85,10 @@ interface Product {
 interface User {
   firstName:string;
   lastName:string;
+  address:string;
+}
+interface Category {
+  name:string
 }
 interface PurchaseRequest {
   id: string;
@@ -93,6 +101,7 @@ interface PurchaseRequest {
   createdAt: string;
   products: Product[];
   user: User;
+  category: Category;
 }
 
 interface OrderDetailData {
@@ -325,6 +334,9 @@ function Detail() {
       <Typography variant="body1">
         Created Date: {formattedDate}
       </Typography>
+      <Typography variant="body1">
+        Customer Name: {orderDetail?.user?.address}
+      </Typography>
     </Paper>
         </Grid>
         {/* Order To */}
@@ -335,7 +347,7 @@ function Detail() {
       onMouseLeave={handleMouseLeave}
     >
             <Typography variant="h6">Requested To</Typography>
-            <Typography variant="body1">Supplier Name: {orderDetail?.addressDetail}</Typography>
+            <Typography variant="body1">Category : {orderDetail?.category.name}</Typography>
           </Paper>
         </Grid>
 
@@ -348,6 +360,8 @@ function Detail() {
     >
             <Typography variant="h6">More</Typography>
             <Typography variant="body1">Status: <span style={{color:"red"}}>{orderDetail?.status}</span></Typography>
+            <Typography variant="body1">Estimated Delivery Date: <span style={{color:"red"}}>{orderDetail?.estimatedDelivery}</span></Typography>
+            <Typography variant="body1">Remark: <span style={{color:"green"}}>{orderDetail?.remark}</span></Typography>
           </Paper>
         </Grid>
       </MobileGrid>

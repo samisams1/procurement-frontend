@@ -18,14 +18,16 @@ const Image = styled('img')({
   width: '100px', // Adjust the width as needed
   height: 'auto',
 });
-
+const Icon = styled('div')({
+  color: '#ffffff', // Set the icon color to white
+});
 export default function PageHeader(props: any) {
   const { title, subTitle, icon, imageSrc } = props;
 
   return (
     <StyledPageHeader elevation={0} square>
       <RowContainer>
-        {icon}
+      <Icon>{icon}</Icon>  
         <div>
           <Typography variant="h6" component="div" style={{ color: '#ffffff' }}>
             {title}
