@@ -168,8 +168,8 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
         price: parseFloat(prices[key]),
         disCountPrice: parseFloat(disCountPrice[key]),
       })),
-      estimatedDelivery:estimatedDelivery,
       otherPayment:otherPayment,
+      availabilityDate:Number(estimatedDelivery),
     };
     console.log('Quotation:', input);
     try {

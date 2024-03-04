@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
+import { TableFooter as MuiTableFooter } from '@mui/material';
 import {
   ThemeProvider,
   TableCell,
@@ -14,7 +15,7 @@ import {
 } from '@mui/material';
 import { SectionTitle } from '../../Section';
 import PageHeader from '../../PageHeader';
-import { QuizTwoTone } from '@mui/icons-material';
+import { QuizTwoTone, Send } from '@mui/icons-material';
 interface Product {
   id: string;
   Description: string;
@@ -32,12 +33,16 @@ interface Quotation {
   supplierId: number;
   shippingPrice: number;
   status: string;
+  otherPayment :number;
+  availabilityDate :number;
   customer:{
     firstName:string;
+    lastName:string;
   }
   supplier:{
     name:string;
   }
+  createdAt:string;
 }
 
 
@@ -45,6 +50,7 @@ interface ProductPrice {
   id: string;
   productId: string;
   price: number;
+  disCountPrice:number;
   quotationId: string;
   status: string;
   createdAt: string;
@@ -78,6 +84,7 @@ const GET_ALL_PRODUCT_PRICES = gql`
       id
       productId
       price
+      disCountPrice
       quotationId
       status
       createdAt
@@ -97,6 +104,16 @@ const GET_ALL_PRODUCT_PRICES = gql`
         supplierId
         shippingPrice
         status
+        createdAt
+        otherPayment
+        availabilityDate
+        supplier {
+          name
+        }
+        customer {
+          firstName
+          lastName
+        }
       }
     }
   }
@@ -156,59 +173,64 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
    const selectedProducts = productPrices.filter(productPrice => selectedItems[productPrice.id]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
+      
+      const confirmed = window.confirm('Are you sure you want to send the order?');
+      if (confirmed) {
+        const selectedProductsBySupplier: { [supplierId: string]: ProductPrice[] } = {};
     
-      const selectedProductsBySupplier: { [supplierId: string]: ProductPrice[] } = {};
-    
-      for (const productPrice of selectedProducts) {
-        const supplierId = productPrice.quotation?.supplierId.toString();
-    
-        if (!selectedProductsBySupplier[supplierId]) {
-          selectedProductsBySupplier[supplierId] = [];
+        for (const productPrice of selectedProducts) {
+          const supplierId = productPrice.quotation?.supplierId.toString();
+      
+          if (!selectedProductsBySupplier[supplierId]) {
+            selectedProductsBySupplier[supplierId] = [];
+          }
+      
+          selectedProductsBySupplier[supplierId].push(productPrice);
         }
-    
-        selectedProductsBySupplier[supplierId].push(productPrice);
-      }
-   
-      const orders = Object.entries(selectedProductsBySupplier).map(([supplierId, productsForSupplier]) => {
-        let totalPrice = 0;
-        let shippingCost = 500;
-
-        const orderDetails = productsForSupplier.map((product) => ({
-          title: product.product.title,
-          productId: parseInt(product.product.id),
-          price: product.price,
-          quantity: Number(product.product.quantity),
-        }));
-            // Calculate totalPrice and totalTax based on orderDetails
-   orderDetails.forEach((product:any) => {
-      totalPrice += product.price * product.quantity; // Calculate total price
-    });
-
-    // Calculate shipping cost based on the number of products
-        return   {
-          customerId: Number(customerId),
-          supplierId: Number(supplierId),
-          totalPrice: totalPrice,
-          tax: totalPrice  * 0.15,
-           orderDetails:orderDetails,
-          shippingCost: shippingCost,
-          status: 'pending',
-          productPriceIds: productsForSupplier.map((product) => Number(product.id)),
-        };
+     
+        const orders = Object.entries(selectedProductsBySupplier).map(([supplierId, productsForSupplier]) => {
+          let totalPrice = 0;
+          let shippingCost = 500;
+  
+          const orderDetails = productsForSupplier.map((product) => ({
+            title: product.product.title,
+            productId: parseInt(product.product.id),
+            price: product.price,
+            quantity: Number(product.product.quantity),
+          }));
+              // Calculate totalPrice and totalTax based on orderDetails
+     orderDetails.forEach((product:any) => {
+        totalPrice += product.price * product.quantity; // Calculate total price
       });
-    console.log(orders)
-      try {
-        const { data } = await createOrder({ variables: { input: orders } });
-        console.log('Created orders:', data.createOrder);
-        refetch();
-        setSuccessMessage(`Orders created successfully for all suppliers!`);
-        // Handle successful creation
-      } catch (error: any) {
-        setErrorMessage(error.message);
-        console.error('Failed to create orders:', error);
-        // Handle error
+  
+      // Calculate shipping cost based on the number of products
+          return   {
+            customerId: Number(customerId),
+            supplierId: Number(supplierId),
+            totalPrice: totalPrice,
+            tax: totalPrice  * 0.15,
+             orderDetails:orderDetails,
+            shippingCost: shippingCost,
+            status: 'pending',
+            productPriceIds: productsForSupplier.map((product) => Number(product.id)),
+          };
+        });
+      console.log(orders)
+        try {
+          const { data } = await createOrder({ variables: { input: orders } });
+          console.log('Created orders:', data.createOrder);
+          refetch();
+          setSuccessMessage(`Orders created successfully for all suppliers!`);
+          // Handle successful creation
+        } catch (error: any) {
+          setErrorMessage(error.message);
+          console.error('Failed to create orders:', error);
+          // Handle error
+        }
+      } else {
+        event.preventDefault();
       }
+     
     };
   const options: MUIDataTableOptions = {
     filter: true,
@@ -242,7 +264,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
     },
   });
   return (
-    <ThemeProvider theme={theme}>
+    <div>
      <Grid container spacing={2}>
         {successMessage && (
           <Alert variant="filled" severity="success" style={{ marginTop: 10 }}>
@@ -268,25 +290,24 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
             <Paper>
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={4}>
-                  <p>Requested By: samisams</p>
-                  <p>Requested Date: 2024/25</p>
+                  <p>Requested By   - {productPrices[0].quotation?.customer.firstName + " " + productPrices[0].quotation?.customer.lastName }</p>
+                  <p>Requested Date - {data?.quotationByRequestId[0]?.quotation.createdAt}</p>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <p>Quotation - {quotationId}</p>
-                  <p>Quotation By Supplier - {productPrices[0].quotation?.supplierId}</p>
-                  <p>Created Date - {data?.quotationByRequestId[0]?.createdAt}</p>
+                  <p >Quotation By Supplier - <span style={{color:'#00b0ad'}}>{productPrices[0].quotation?.supplier.name}</span></p>
+                  <p>Quotation Created Date - {data?.quotationByRequestId[0]?.createdAt}</p>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <p>Status - {productPrices[0].quotation?.status}</p>
+                  <p >This Price is Avalabile for  - <span style={{color:'red'}}></span> days</p>
                 </Grid>
               </Grid>
+              <ThemeProvider theme={theme}>
               <MUIDataTable
                 title={
                    <TableRow>
-                    <TableCell>Total Price:</TableCell>
-                    <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
-                   <span style={{color:"red"}}>{productPrices.reduce((sum, productPrice) => sum + productPrice.price * productPrice.product.quantity, 0).toFixed(2)}</span> Birr
-                    </TableCell>
+                    <TableCell>Please Select the Item and Send us order:</TableCell>
+                   
                   </TableRow>
                 }
                 options={options}
@@ -303,6 +324,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
                     product.title ,
                     product.quantity,
                     productPrice.price ,
+                    productPrice.disCountPrice ,
                   ];
                 })}
                 columns={[
@@ -311,20 +333,65 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
                   'Title',
                   'Quantity',
                   'Price',
-                  // Add the remaining columns
-                ]}          
-              />
+                  'Discount'
+                ]}
+                components={{
+                  TableFooter: () => (
+                    <MuiTableFooter >
+                        <TableRow>
+                      <TableCell >Shipping Price:</TableCell> 
+                    <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
+                    <span style={{color:'black'}}>{Number(productPrices[0].quotation?.shippingPrice).toLocaleString()}</span> Birr
+                    </TableCell>
+                      </TableRow>
+                      <TableRow>
+                      <TableCell>Other payment:</TableCell> 
+                    <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
+                    <span style={{color:'black'}}>{Number(productPrices[0].quotation?.otherPayment).toLocaleString()}</span> Birr
+                    </TableCell>
+                      </TableRow>
+                      <TableRow>
+                      <TableCell> Before Discount Price:</TableCell>
+                    <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
+                    <span style={{color:"black"}}>{Number((productPrices[0].quotation?.shippingPrice) + Number(productPrices[0].quotation?.otherPayment) +  Number(productPrices.reduce((sum, productPrice) => sum + productPrice.price * productPrice.product.quantity, 0).toFixed(2))).toLocaleString()}  </span> Birr
+                     </TableCell>
+                      </TableRow>
+                      <TableRow>
+                      <TableCell>Discount:</TableCell>
+                    <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
+                   <span style={{color:"black"}}>{Number(productPrices.reduce((sum, productPrice) => sum + productPrice.disCountPrice * 
+                   productPrice.product.quantity, 0).toFixed(2)).toLocaleString()}</span> Birr
+                    </TableCell>
+                      </TableRow><TableRow>
+                      <TableCell>Net to Pay after discount  Price:</TableCell>
+                    <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
+                    <span style={{color:"black"}}>{(Number(productPrices[0].quotation?.shippingPrice) + Number(productPrices[0].quotation?.otherPayment) +  Number(productPrices.reduce((sum, productPrice) => sum + productPrice.price * productPrice.product.quantity, 0).toFixed(2))- Number(productPrices.reduce((sum, productPrice) => sum + productPrice.disCountPrice * productPrice.product.quantity, 0).toFixed(2))).toLocaleString()}</span> Birr
+                    </TableCell>
+                      </TableRow>
+                      
+                    </MuiTableFooter>
+                  ),
+                }}     
+                  />
+             </ThemeProvider>
             </Paper>
           </Grid>
         ))}
       </Grid>
       <form onSubmit={handleSubmit}>
-        <Button type="submit" variant="contained" color="primary">
-          Send Order
-        </Button>
+      <Paper elevation={3} style={{ padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+  <Button
+    type="submit"
+    variant="outlined"
+    color="primary"
+    style={{ whiteSpace: 'nowrap' }}
+  >
+    <Send /> Send Order
+  </Button>
+</Paper>
+       
       </form>
-      samisams
-    </ThemeProvider>
+    </div>
   );
 };
 
