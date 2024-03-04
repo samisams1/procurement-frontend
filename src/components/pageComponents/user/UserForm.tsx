@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { Checkbox,FormControlLabel,Alert, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Form, useForm } from '../../useForm';
 import Controls from '../../Controls';
@@ -48,6 +48,8 @@ interface UserFormProps {
 export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
+  //const [agreeMessage, setAgreeMessage] = useState('');
   const navigate =  useNavigate();
   const [selected, setSelected] = useState('');
 
@@ -137,8 +139,16 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   };
 
   const { values, errors, setErrors, handleInputChange, resetForm }: any = useForm(initialFValues, true, validate);
+ 
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsChecked(event.target.checked);
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    if (!isChecked) {
+    //  setAgreeMessage('Please agree to the terms and conditions');
+    }
     e.preventDefault();
+   
     console.log(values);
     if (validate()) {
       try {
@@ -333,13 +343,17 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
           {errorMessage}
         </Alert>
       )}
-          
+         <FormControlLabel
+          control={<Checkbox checked={isChecked} onChange={handleCheckboxChange} />}
+          label="I agree to the terms and conditions"
+        /> 
           <Button
         type="submit"
         fullWidth
         disabled={loadingRegister}
         style={{
-          color: loadingRegister ? 'red' : '#00b0ad',
+          color: loadingRegister ? 'red' : '#ffffff',
+          backgroundColor: '#00b0ad',
           marginTop: 10,
         }}
       >

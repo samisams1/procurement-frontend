@@ -111,7 +111,7 @@ const NewRequisitionComponent: React.FC = () => {
 
         console.log('Mutation response:', response);
   
-        setFlashMessage('Purchase request created successfully');
+        setFlashMessage('Your request are sent successfully');
         setOpenSnackbar(true);
   
         setTimeout(() => {

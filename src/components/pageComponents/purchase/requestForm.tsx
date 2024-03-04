@@ -603,7 +603,7 @@ return(
           <Paper elevation={3} style={{ padding: '20px' }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <Typography>Select Your Source</Typography>
+                <Typography>Your buying source</Typography>
               </Grid>
               
               <Grid item xs={4} sm={4}>
@@ -634,7 +634,7 @@ return(
       disabled={selectedOptions.length === 1 && !selectedOptions.includes('x-company')}
     />
     {selectedOptions.includes('x-company') ? <span></span> : null}
-    <Typography>Nile Soft</Typography>
+    <Typography>Etproforma</Typography>
   </Box>
 </Grid>
               {selectedOptions.includes('supplier') && (
