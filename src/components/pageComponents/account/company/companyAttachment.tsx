@@ -20,8 +20,11 @@ const UPLOAD_IMAGE_MUTATION = gql`
     }
   }
 `;
+interface CompanyDetailProps {
+  onProfileCompletion: (completion: number) => void;
+}
 
-export const CompanyAttachment = () => {
+export const CompanyAttachment: React.FC<CompanyDetailProps> = ({ onProfileCompletion }) => {
   const [previewImage, setPreviewImage] = useState<string | ArrayBuffer | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string>('');
   const { currentUser } = useContext(UserContext);
