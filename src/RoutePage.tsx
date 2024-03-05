@@ -52,6 +52,7 @@ import SentEmail from './pages/account/SentEmail';
 import Notification from './pages/notification/notification';
 import Draft from './pages/draft/drafts';
 import Profile from './pages/profile/Profile';
+import ShippingDetail from './components/pageComponents/shipping/shippingDetail';
 export default function RoutePage() {
 
     return useRoutes([
@@ -102,12 +103,14 @@ export default function RoutePage() {
               { path: '/suppliers', element: <ProtectedRoute  element={<Supplier />} /> },
               { path: '/supplier', element: <ProtectedRoute  element={<SuppliersProfile />} /> },
               
-
+              
               { path: '/sendRfq', element: <ProtectedRoute  element={<SendRfq />} /> },
 
               { path: '/notificaations', element: <ProtectedRoute  element={<Notification />} /> },
               
               { path: '/drafts', element: <ProtectedRoute  element={<Draft />} /> },
+
+              { path: '/shippingDetail/:id', element: <ProtectedRoute  element={<ShippingDetail />} /> },
 
             ],
           },

@@ -173,9 +173,9 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
    const selectedProducts = productPrices.filter(productPrice => selectedItems[productPrice.id]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-      
-      const confirmed = window.confirm('Are you sure you want to send the order?');
-      if (confirmed) {
+      event.preventDefault();
+     // const confirmed = window.confirm('Are you sure you want to send the order?');
+     // if (confirmed) {
         const selectedProductsBySupplier: { [supplierId: string]: ProductPrice[] } = {};
     
         for (const productPrice of selectedProducts) {
@@ -227,9 +227,9 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
           console.error('Failed to create orders:', error);
           // Handle error
         }
-      } else {
+      /*} else {
         event.preventDefault();
-      }
+      }*/
      
     };
   const options: MUIDataTableOptions = {

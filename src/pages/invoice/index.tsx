@@ -28,7 +28,7 @@ export default function Invoice() {
   if (role === 'CUSTOMER') {
     return (
       <div>
-        <InvoiceComponent />
+        <InvoiceComponent userId = {Number(currentUser.id) } />
       </div>
     );
   } else if (role === 'ADMIN') {

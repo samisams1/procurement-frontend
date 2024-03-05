@@ -2,14 +2,15 @@ import React, { useContext } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { Button, Grid, Paper, Table, TableCell,TableRow, Typography,TableHead, TableBody } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, MUIDataTableMeta } from 'mui-datatables';
-import PageHeader from '../../../PageHeader';
 import numberToWords from 'number-to-words';
-import Spinner from '../../../Spinner';
-import { UserContext } from '../../../../auth/UserContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import PageFooter from '../../../PageFooter';
-import { Add, Print, Send } from '@mui/icons-material';
+
+import { Add, LocalShipping, Print, Send } from '@mui/icons-material';
 import { styled } from '@mui/system';
+import PageFooter from '../../PageFooter';
+import { UserContext } from '../../../auth/UserContext';
+import Spinner from '../../Spinner';
+import PageHeader from '../../PageHeader';
 interface Product {
   id: number;
   Description: string | null;
@@ -129,7 +130,7 @@ mutation UpdateOrder($id: Int!, $input: String!) {
 }
 `;
 
-const Detail = () => {
+const ShippingDetail = () => {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
   const [updateOrder] = useMutation(UPDATE_ORDER);
@@ -298,7 +299,8 @@ const Detail = () => {
       <Grid item xs={12}>
         <Grid>
         <PageHeader
-      title="Purchas Order"
+      icon={<LocalShipping/>}
+      title="Shipping  Detail"
       subTitle ="pircase Order"
       imageSrc="tra.jpg"
       />
@@ -456,4 +458,4 @@ const Detail = () => {
   );
 };
 
-export default Detail;
+export default ShippingDetail;

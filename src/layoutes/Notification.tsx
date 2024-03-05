@@ -36,8 +36,8 @@ const GET_NOTIFICATIONS_INFO = gql`
 `;
 
 const UPDATE_NOTIFICATION_MUTATION = gql`
-mutation UpdateNotification($updateNotificationId: Int!) {
-  updateNotification(id: $updateNotificationId) {
+mutation UpdateNotification($id: Int!) {
+  updateNotification(id: $id) {
     status
   }
 }
@@ -48,9 +48,7 @@ const NotificationComponent = () => {
   const [maxHeight, setMaxHeight] = useState<number>(0);
   const { currentUser } = useContext(UserContext);
   const userId = currentUser?.id ?? '';
-  const [updateNotification] = useMutation(UPDATE_NOTIFICATION_MUTATION, {
-    variables: { recipientId: 1 },
-  });
+  const [updateNotification] = useMutation(UPDATE_NOTIFICATION_MUTATION);
   const { loading, data, refetch } = useQuery<{ notificationsByUserIdInfo: NotificationsInfo }>(
     GET_NOTIFICATIONS_INFO,
     { variables: { recipientId: Number(userId) } }
@@ -101,13 +99,15 @@ const NotificationComponent = () => {
   const handleNotificationClick = async (notification: Notification) => {
     // Determine the page to navigate based on the notification type
     let route = '';
-
-    switch (notification.message) {
-      case 'order':
-        route = '/order';
+    switch (notification.type) {
+      case 'updateOrder':
+        route = `/orderDetail/${notification.id}`;
         break;
-      case 'request':
-        route = '/request';
+      case 'order':
+          route = `/orderDetail/${notification.id}`;
+          break;
+      case 'purchaseRequest':
+        route = `/purchaseRequest/${notification.id}`;
         break;
       case 'rfq':
         route = '/rfq';
@@ -118,7 +118,6 @@ const NotificationComponent = () => {
         // Handle the default case or unknown types
         return;
     }
-
     const notificationId = notification.id;
 
     try {
@@ -194,6 +193,7 @@ const NotificationComponent = () => {
     <ListItemText
       primary={
         <Typography
+          key={notification.message}
           component="div"
           variant="subtitle1"
           fontWeight="bold"
@@ -205,6 +205,7 @@ const NotificationComponent = () => {
       }
       secondary={notification.message}
       secondaryTypographyProps={{ sx: { color: 'text.secondary' } }}
+      onClick={() => handleNotificationClick(notification)}
     />
     <div>
       {notification.status === 'read' ? (

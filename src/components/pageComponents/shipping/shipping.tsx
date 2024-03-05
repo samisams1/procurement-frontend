@@ -6,8 +6,9 @@ import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
 import { SectionTitle } from '../../Section';
 import PageHeader from '../../PageHeader';
-import { ShoppingCart } from '@mui/icons-material';
-import { Grid, createTheme, ThemeProvider } from '@mui/material';
+import { Details, ShoppingCart } from '@mui/icons-material';
+import { Grid, createTheme, ThemeProvider, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 const GET_SHIPPING_BY_USER_ID = gql`
   query ShippingByUserId($userId: Int!) {
     shippingByUserId(userId: $userId) {
@@ -24,7 +25,7 @@ const GET_SHIPPING_BY_USER_ID = gql`
 
 const ViewShipping: React.FC = () => {
   const { currentUser } = useContext(UserContext);
-
+  const navigate = useNavigate();
   const userId = currentUser?.id ?? '';
 
   const { loading, error, data } = useQuery(GET_SHIPPING_BY_USER_ID, {
@@ -50,6 +51,29 @@ const ViewShipping: React.FC = () => {
     { name: 'status', label: 'Status' },
     { name: 'createdAt', label: 'Created At' },
     { name: 'updatedAt', label: 'Updated At' },
+    {
+      name: 'Action',
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value: any, tableMeta: any) => {
+          const id = tableMeta.rowData[1];
+          return (
+            <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<Details />}
+            onClick={() => {
+              navigate(`/shippingDetail/${id}`);
+            }}
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            Print Page
+          </Button>
+           );
+        },
+      },
+    },
   ];
   const theme = createTheme({
     components: {
