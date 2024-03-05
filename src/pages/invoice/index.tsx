@@ -3,6 +3,7 @@ import { UserContext } from '../../auth/UserContext';
 import Spinner from '../../components/Spinner';
 import InvoiceComponent from '../../components/pageComponents/invoice/invoiceComponent';
 import InvoiceAdmin from '../../components/pageComponents/invoice/invoiceAdmin';
+import SupplierInvoice from '../../components/pageComponents/invoice/supplierInvoice';
 
 export default function Invoice() {
   const { currentUser } = useContext(UserContext);
@@ -35,6 +36,12 @@ export default function Invoice() {
     return (
       <div>
         <InvoiceAdmin />
+      </div>
+    );
+  }else if (role === 'SUPPLIER') {
+    return (
+      <div>
+       <SupplierInvoice  userId = {Number(currentUser.id) } />
       </div>
     );
   } else {

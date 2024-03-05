@@ -426,7 +426,7 @@ const ShippingDetail = () => {
       
     </div>
   )}
-   {orderDetail?.order?.status === "approved" && (
+   {orderDetail?.order?.status === "paid" && (
     <div style={{ display: 'flex', alignItems: 'center' }}>
        {currentUser.role !== "CUSTOMER" && (
         <h4 style={{ color: 'green', marginRight: '10px' }}>
@@ -436,7 +436,7 @@ const ShippingDetail = () => {
         {currentUser.role === "CUSTOMER" && (
     
   <Paper elevation={3} style={{ padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-    <Typography> Please make the payment for the order.</Typography>
+    <Typography> Please make greement you accept.</Typography>
   <Button
     type="submit"
     variant="outlined"
@@ -444,7 +444,7 @@ const ShippingDetail = () => {
     style={{ whiteSpace: 'nowrap' }}
     onClick={handlePayment}
   >
-    <Send /> Make Payment
+    <Send />Delever
   </Button>
 </Paper>
       )}

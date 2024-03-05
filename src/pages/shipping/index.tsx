@@ -3,6 +3,7 @@ import { UserContext } from '../../auth/UserContext';
 import Spinner from '../../components/Spinner';
 import ViewShipping from '../../components/pageComponents/shipping/shipping';
 import AdminShipping from '../../components/pageComponents/shipping/adminShipping';
+import SupplierShipping from '../../components/pageComponents/shipping/supplierShipping';
 export default function Shipping() {
   const { currentUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,10 +30,16 @@ export default function Shipping() {
         <ViewShipping />
       </div>
     );
-  } else if (role === 'ADMIN') {
+  }else if (role === 'ADMIN') {
     return (
       <div>
         <AdminShipping />
+      </div>
+    );
+  } else if (role === 'SUPPLIER') {
+    return (
+      <div>
+        <SupplierShipping />
       </div>
     );
   }else {
