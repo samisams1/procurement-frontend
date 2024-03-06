@@ -10,8 +10,8 @@ import { GET_QUOTES } from '../../../graphql/rquest';
 import { useNavigate } from 'react-router-dom';
 
 const CREATE_PURCHASE_REQUEST_MUTATION = gql`
-mutation CreateDraftequest($input: CreatePurchaseRequestInput) {
-  createDraftequest(input: $input) {
+mutation CreatePurchaseRequest($input: CreatePurchaseRequestInput!) {
+  createPurchaseRequest(input: $input) {
     id
     userId
     status
