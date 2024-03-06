@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Box,
   Card,
@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import ConfirmationDialog from '../../../ConfirmationDialog';
+import { UserContext } from '../../../../auth/UserContext';
 interface Supplier {
   id:number;
   name: string;
@@ -78,10 +79,10 @@ interface CompanyDetailProps {
 }
 
 export const CompanyDetailUser: React.FC<CompanyDetailProps> = ({ onProfileCompletion }) => {
-  //const { currentUser } = useContext(UserContext);
- // const userId = currentUser?.id || '';
+  const { currentUser } = useContext(UserContext);
+  const userId = currentUser?.id || '';
   const { error, data,refetch } = useQuery<GetSupplierIdByUserIdData>(GET_CUSTOMER_ID_BY_USER_ID, {
-    variables: { userId: Number(5) },
+    variables: { userId: Number(userId) },
   });
   const [updateSupplier] = useMutation<UpdateSupplierMutationData>(UPDATE_COMPANY);
   const [name,setName] = useState(data?.companyByUserId?.name || '');
