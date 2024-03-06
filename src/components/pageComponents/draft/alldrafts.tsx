@@ -60,7 +60,7 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
   const purchaseRequests = data?.savedRequestByUserId || [];
 
   const handleClick = (id: string) => {
-    navigate(`/purchaseRequest/${id}`);
+    navigate(`/newRequest}`);
   };
 
   const columns = [

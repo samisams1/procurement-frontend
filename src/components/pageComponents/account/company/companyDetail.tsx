@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   Box,
   Card,
@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 //import { UserContext } from '../../../../auth/UserContext';
 import { gql, useQuery, useMutation } from '@apollo/client';
+import { UserContext } from '../../../../auth/UserContext';
 
 interface Supplier {
   id: number;
@@ -60,10 +61,10 @@ interface CompanyDetailProps {
 }
 
 export const CompanyDetail: React.FC<CompanyDetailProps> = ({ onProfileCompletion }) => {
-  //const { currentUser } = useContext(UserContext);
- // const userId = currentUser?.id || '';
+  const { currentUser } = useContext(UserContext);
+  const userId = currentUser?.id || '';
   const { error, data } = useQuery<GetSupplierIdByUserIdData>(GET_SUPPLIER_ID_BY_USER_ID, {
-    variables: { userId: Number(1) },
+    variables: { userId: Number() },
   });
   const [updateSupplier] = useMutation<UpdateSupplierMutationData>(UPDATE_SUPPLIER);
  /* useEffect(() => {

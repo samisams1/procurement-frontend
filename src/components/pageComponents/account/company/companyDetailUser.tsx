@@ -81,7 +81,7 @@ export const CompanyDetailUser: React.FC<CompanyDetailProps> = ({ onProfileCompl
   //const { currentUser } = useContext(UserContext);
  // const userId = currentUser?.id || '';
   const { error, data,refetch } = useQuery<GetSupplierIdByUserIdData>(GET_CUSTOMER_ID_BY_USER_ID, {
-    variables: { userId: Number(4) },
+    variables: { userId: Number(5) },
   });
   const [updateSupplier] = useMutation<UpdateSupplierMutationData>(UPDATE_COMPANY);
   const [name,setName] = useState(data?.companyByUserId?.name || '');
