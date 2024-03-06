@@ -44,7 +44,7 @@ const AllDrafts: React.FC = () => {
 
 const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
   const { loading, error, data } = useQuery<PurchaseRequestData>(SAVED_REQUESTS_BY_USER_ID, {
-    variables: { userId: Number(4) },
+    variables: { userId: Number(userId) },
   });
 
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
   const purchaseRequests = data?.savedRequestByUserId || [];
 
   const handleClick = (id: string) => {
-    navigate(`/newRequest}`);
+    navigate(`/newRequest`);
   };
 
   const columns = [
