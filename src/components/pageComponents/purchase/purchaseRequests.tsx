@@ -167,7 +167,6 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
        </SectionTitle>
         <ThemeProvider theme={theme}>
           <MUIDataTable title="Requests" data={tableData} columns={columns} options={options} />
-          samiams
         </ThemeProvider>
       </Grid>
     </Grid>

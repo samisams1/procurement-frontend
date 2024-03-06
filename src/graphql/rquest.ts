@@ -68,3 +68,19 @@ query PurchaseRequestByUserId($userId: Int!) {
   }
 }
 `;
+export const SAVED_REQUESTS_BY_USER_ID = gql`
+query SavedRequestByUserId($userId: Int!) {
+  savedRequestByUserId(userId: $userId) {
+    id
+    userId
+    status
+    remark
+    imageUrl
+    addressDetail
+    estimatedDelivery
+    referenceNumber
+    createdAt
+    
+  }
+}
+`;

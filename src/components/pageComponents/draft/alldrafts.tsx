@@ -1,155 +1,155 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useQuery } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
-import {Button} from "@mui/material";
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
-import { useQuery, gql } from '@apollo/client';
-import { useNavigate } from 'react-router-dom';
 import PageHeader from '../../PageHeader';
-import { ShoppingCart } from '@mui/icons-material';
+import { RequestPageOutlined } from '@mui/icons-material';
+import Button from '../../Button';
+import { useNavigate } from 'react-router-dom';
 import { SectionTitle } from '../../Section';
+import { SAVED_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
 import Spinner from '../../Spinner';
+import { UserContext } from '../../../auth/UserContext';
 
-const GET_QUOTATION = gql`
-query QuotationBydSupplierId($suplierId: Int!) {
-  quotationBydSupplierId(suplierId: $suplierId) {
-      id
-      purchaseRequestId
-      status
-      customer {
-        firstName
-        lastName
-      }
-      supplier {
-        name
-      }
-      purchaseRequest {
-        referenceNumber
-      }
-      createdAt
-    }
-  }
-`;
-
-const theme = createTheme({
-  components: {
-    MUIDataTableHeadCell: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#00b0ad',
-          color: 'white',
-        },
-      },
-    },
-    MuiTableCell: {
-      styleOverrides: {
-        root: {
-          paddingTop: 0,
-          paddingBottom: 0,
-        },
-      },
-    },
-  },
-});
-
-const options: MUIDataTableOptions = {
-  filter: true,
-  download: true,
-  print: true,
-  search: true,
-  selectableRows: 'none', // or 'single' for single row selection
-  responsive: 'standard' as Responsive,
-  viewColumns: true,
-  rowsPerPage: 10,
-  rowsPerPageOptions: [10, 25, 50],
-};
+interface PurchaseRequestData {
+  savedRequestByUserId: {
+    id: string;
+    userId: number;
+    status: string;
+    remark: string;
+    addressDetail: string;
+    estimatedDelivery: string;
+    referenceNumber: string;
+    createdAt: string;
+    user: {
+      username: string;
+    };
+    suppliers: {
+      user: {
+        username: string;
+      };
+    }[];
+  }[];
+}
 
 const AllDrafts: React.FC = () => {
-  const navigate = useNavigate()
-  const { loading, error, data } = useQuery(GET_QUOTATION, {
-    variables: { suplierId:Number(1)},
+  const { currentUser } = useContext(UserContext);
+
+  if (!currentUser) {
+    return <Spinner />;
+  }
+
+  return <PurchaseRequisitions userId={currentUser.id} />;
+};
+
+const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
+  const { loading, error, data } = useQuery<PurchaseRequestData>(SAVED_REQUESTS_BY_USER_ID, {
+    variables: { userId: Number(4) },
   });
-  const handleListItemClick = (id: number) => {
-    navigate('/sendRfq', { state: { id} });
-  };
+
+  const navigate = useNavigate();
+
   if (loading) {
-    return <Spinner/>;
+    return <div>Loading...</div>;
   }
 
   if (error) {
-    return <p>Error: {error.message}</p>;
+    return <div>Error: {error.message}</div>;
   }
 
-  const { quotationBydSupplierId } = data;
+  const purchaseRequests = data?.savedRequestByUserId || [];
 
-  const tableData = quotationBydSupplierId.map((quotation: any) => ({
-    
-    id: quotation.purchaseRequestId,
-    status: quotation.status,
-    customerName: `${quotation.customer.firstName} ${quotation.customer.lastName}`,
-    supplierName: quotation.supplier.name,
-    referenceNumber: quotation.purchaseRequest.referenceNumber,
-    createdAt: quotation.createdAt,
-  }));
+  const handleClick = (id: string) => {
+    navigate(`/purchaseRequest/${id}`);
+  };
 
   const columns = [
-    {
-      name: 'id',
-      label: 'ID',
-    },
-    {
-      name: 'status',
-      label: 'Status',
-      options: {
-        customBodyRender: (value: any, tableMeta: any) => {
-          const status = tableMeta.rowData[1]; // Assuming the status is located in the second column
-  
-          return (
-            <span style={{ color: 'red' }}>{status}</span>
-          );
-        },
-      },
-    },
-    {
-      name: 'referenceNumber',
-      label: 'Reference Number',
-    },
-    {
-      name: 'createdAt',
-      label: 'Created At',
-    },
+    { name: 'SN', options: { filter: false, sort: false } },
+    'ID',
+    'Reference Number',
+    'User',
+    'Suppliers',
+    'Status',
+    'Date',
     {
       name: 'Action',
       options: {
         filter: false,
         sort: false,
         customBodyRender: (value: any, tableMeta: any) => {
-          const id = tableMeta.rowData[0];
+          const purchaseRequestId = tableMeta.rowData[1];
           return (
             <Button
-            color='primary'
-              variant="outlined"
-              onClick={() => handleListItemClick(id)}
-              style={{ whiteSpace: 'nowrap' }}
-            >
-              Detail
-            </Button>
+              text="Revise and Send"
+              onClick={() => handleClick(purchaseRequestId)}
+              style={{ cursor: 'pointer' }}
+            />
           );
         },
       },
     },
   ];
 
+  const tableData = purchaseRequests?.map((purchaseRequest, index) => [
+    index + 1,
+    purchaseRequest.id,
+    purchaseRequest.referenceNumber,
+    purchaseRequest?.user?.username,
+    purchaseRequest?.suppliers?.map((supplier) => supplier.user.username).join(', '),
+    purchaseRequest?.status === 'pending' ? (
+      <span style={{ color: 'red' }}>{purchaseRequest.status}</span>
+    ) : (
+      <span style={{ color: 'green' }}>{purchaseRequest.status}</span>
+    ),
+    new Date(purchaseRequest.createdAt).toLocaleString(),
+    '',
+  ]);
+
+  const options: MUIDataTableOptions = {
+    filter: true,
+    download: true,
+    print: true,
+    search: true,
+    selectableRows: 'none', // or 'single' for single row selection
+    responsive: 'standard' as Responsive,
+    viewColumns: true,
+    rowsPerPage: 10,
+    rowsPerPageOptions: [10, 25, 50],
+  };
+
+  const theme = createTheme({
+    components: {
+      MUIDataTableHeadCell: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#00b0ad',
+            color: 'white',
+          },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        },
+      },
+    },
+  });
+
   return (
     <Grid container spacing={3}>
-    
       <Grid item xs={12}>
-      <SectionTitle variant="outlined" square>
-      <PageHeader
-      Title="Purchase Requests"
-      icon={<ShoppingCart/>}
-      subTitle="list of all purchase Requests"
-      />
-       </SectionTitle>
+        <SectionTitle variant="outlined" square>
+          <PageHeader
+           title="Saved Request"
+           icon={<RequestPageOutlined />} 
+           subTitle="this page is your saved Request You can re Send as you need"
+           />
+        </SectionTitle>
+      </Grid>
+      <Grid item xs={12}>
         <ThemeProvider theme={theme}>
           <MUIDataTable title="Requests" data={tableData} columns={columns} options={options} />
         </ThemeProvider>

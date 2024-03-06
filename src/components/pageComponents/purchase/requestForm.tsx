@@ -603,7 +603,7 @@ return(
           <Paper elevation={3} style={{ padding: '20px' }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <Typography>Your buying source</Typography>
+                <Typography>Select Your Source</Typography>
               </Grid>
               
               <Grid item xs={4} sm={4}>

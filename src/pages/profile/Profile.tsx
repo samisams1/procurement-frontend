@@ -6,10 +6,11 @@ import { PeopleOutlineTwoTone } from '@mui/icons-material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { SectionTitle } from '../../components/Section';
 import { CompanyAttachment } from '../../components/pageComponents/account/company/companyAttachment';
-import { CompanyDetail } from '../../components/pageComponents/account/company/companyDetail';
+//import { CompanyDetail } from '../../components/pageComponents/account/company/companyDetail';
 import Map from '../../components/pageComponents/account/address/map';
 import { AccountProfile } from '../../components/pageComponents/account/changePassword/profile/AccountProfile';
 import { AccountProfileDetails } from '../../components/pageComponents/account/changePassword/profile/AccountProfileDetails';
+import { CompanyDetailUser } from '../../components/pageComponents/account/company/companyDetailUser';
 
 const Profile: React.FC = () => {
   const [profileCompletion, setProfileCompletion] = useState<number>(80); // Set the initial profile completion percentage
@@ -76,7 +77,7 @@ const Profile: React.FC = () => {
          <CompanyAttachment  onProfileCompletion={handleProfileCompletion}/>
         </Grid>
         <Grid item xs={12} md={6} lg={8}>
-       <CompanyDetail onProfileCompletion={handleProfileCompletion}/>
+       <CompanyDetailUser onProfileCompletion={handleProfileCompletion}/>
         </Grid>
         <Grid item xs={12}>
           <Map latitude={51.505} longitude={-0.09} />
