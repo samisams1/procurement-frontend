@@ -87,8 +87,8 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
     id: quotation.purchaseRequestId,
     qId:quotation.id,
     status: quotation.status,
-    customerName: `${quotation.customer.firstName} ${quotation.customer.lastName}`,
-    supplierName: quotation.supplier.name,
+    customerName: `${quotation?.customer?.firstName} ${quotation.customer.lastName}`,
+    supplierName: quotation?.supplier?.name,
     referenceNumber: quotation.purchaseRequest.referenceNumber,
     createdAt: quotation.createdAt,
   }));
