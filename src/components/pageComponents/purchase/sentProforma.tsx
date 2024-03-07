@@ -10,7 +10,7 @@ import { SectionTitle } from '../../Section';
 
 const GET_QUOTATION = gql`
 query QuotationBydSupplierId($suplierId: Int!, $status: String!) {
-  quotationBydSupplierId(suplierId: $suplierId, status: $status) {
+    quotationBydSupplierId(suplierId: $suplierId, status: $status) {
       id
       purchaseRequestId
       status
@@ -65,10 +65,10 @@ interface purchaseRequestId {
   supplierId:number;
   }
 
-const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
+const SentProformaComponent: React.FC<purchaseRequestId> = ({supplierId }) => {
   const navigate = useNavigate()
   const { loading, error, data } = useQuery(GET_QUOTATION, {
-    variables: { suplierId:Number(supplierId),status:"pending"},
+    variables: { suplierId:Number(supplierId),status:"quoted"},
   });
   const handleListItemClick = (id: number,qId:number) => {
     navigate('/sendRfq', { state: { id,qId,supplierId} });
@@ -173,4 +173,4 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
   );
 };
 
-export default PurchaseRequests;
+export default SentProformaComponent;

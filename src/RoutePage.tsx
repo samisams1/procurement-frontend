@@ -53,6 +53,7 @@ import Notification from './pages/notification/notification';
 import Draft from './pages/draft/drafts';
 import Profile from './pages/profile/Profile';
 import ShippingDetail from './components/pageComponents/shipping/shippingDetail';
+import SentProforma from './pages/purchase/sentProforma';
 export default function RoutePage() {
 
     return useRoutes([
@@ -73,6 +74,8 @@ export default function RoutePage() {
               { path: '/invoices', element: <ProtectedRoute  element={<Invoice />} /> },
 
               { path: '/purchaseRequests', element: <ProtectedRoute  element={<PurchaseRequest />} /> },
+              { path: '/sentProformaInvoice', element: <ProtectedRoute  element={<SentProforma />} /> },
+              
               { path:'/purchaseRequest/:id', element: <ProtectedRoute  element={<Detail />} /> },
               
            //   { path: '/verify', element: <ProtectedRoute  element={<VerifyUser />} /> },
@@ -112,7 +115,7 @@ export default function RoutePage() {
 
               { path: '/shippingDetail/:id', element: <ProtectedRoute  element={<ShippingDetail />} /> },
 
-              { path: '/sentProformaInvoice', element: <ProtectedRoute  element={<PurchaseRequest />} /> },
+            
               {
                 path: '/incomingOrder',
                 element: <ProtectedRoute element={<Order state={{ orderType: "incoming" }} />} />

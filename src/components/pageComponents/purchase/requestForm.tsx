@@ -19,6 +19,7 @@ import {
   Table, TableHead, TableRow, TableCell, TableBody, Input,Accordion, AccordionSummary, AccordionDetails, 
   Checkbox,
 } from '@mui/material';
+import RemoveIcon from '@mui/icons-material/Remove';
 import { Add, DeleteOutlineTwoTone, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save, Send } from '@mui/icons-material';
 import PageHeader from '../../PageHeader';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
@@ -96,7 +97,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   const [itemCodes, setItemCodes] = useState<string[]>(['']);
   const [itemCodeErrors, setItemCodeErrors] = useState<string[]>(['']);
   const [partNumbers, setPartNumbers] = useState<string[]>(['']);
-  const [partNumberErrors, setPartNumberErrors] = useState<string[]>(['']);
+ // const [partNumberErrors, setPartNumberErrors] = useState<string[]>(['']);
   const [uoms, setUoms] = useState<string[]>(['']);
   const [uomErrors, setUomErrors] = useState<string[]>(['']);
   const [quantities, setQuantities] = useState<string[]>([]);
@@ -194,13 +195,13 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
     updatedPartNumbers[index] = value;
     setPartNumbers(updatedPartNumbers);
 
-    const updatedPartNumberErrors = [...partNumberErrors];
+   /* const updatedPartNumberErrors = [...partNumberErrors];
     if (value.trim() === '') {
       updatedPartNumberErrors[index] = 'Please enter a valid part number.';
     } else {
       updatedPartNumberErrors[index] = '';
     }
-    setPartNumberErrors(updatedPartNumberErrors);
+    setPartNumberErrors(updatedPartNumberErrors);*/
   };
 
   const handleUomChange = (index: number, value: string) => {
@@ -347,17 +348,17 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
     if (updateItemCodeErrors.some((error) => error !== '')) {
       return;
     }
-    const updatePartNumberErrors = partNumbers.map((partNumber) => {
+    /*const updatePartNumberErrors = partNumbers.map((partNumber) => {
       if (partNumber.trim() === '') {
         return 'Please enter a valid item partNumbers.';
       }
       return '';
-    });
-    setPartNumberErrors(updatePartNumberErrors);
+    });*/
+    //setPartNumberErrors(updatePartNumberErrors);
 
-    if (updatePartNumberErrors.some((error) => error !== '')) {
+   /* if (updatePartNumberErrors.some((error) => error !== '')) {
       return;
-    }
+    }*/
     const updateUomsErrors = uoms.map((uom) => {
       if (uom.trim() === '') {
         return 'Please enter a valid item uom.';
@@ -476,7 +477,7 @@ console.log(supplierIds)
       }
       return '';
     });
-    setPartNumberErrors(updatePartNumberErrors);
+   // setPartNumberErrors(updatePartNumberErrors);
 
     if (updatePartNumberErrors.some((error) => error !== '')) {
       return;
@@ -817,7 +818,7 @@ return(
       required
       value={partNumbers[index]}
       onChange={(e) => handlePartNumberChange(index, e.target.value)}
-      error={partNumberErrors[index] !== ''}
+   //   error={partNumberErrors[index] !== ''}
      style={{ marginBottom: '1rem' }}
     />
        <TextField
@@ -848,7 +849,12 @@ return(
     expanded={expanded === `panel${index}`}
     onChange={handleAccordionChange(`panel${index}`)}
   >
-        <AccordionSummary expandIcon={<Add />} aria-controls="panel1bh-content" id="panel1bh-header">
+
+<AccordionSummary
+  expandIcon={expanded ? <RemoveIcon /> : <Add />}
+  aria-controls="panel1bh-content"
+  id="panel1bh-header"
+>
           <Typography>Add More</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -936,6 +942,7 @@ Add Item
               <Grid item xs={12} sm={12}>
             <Paper elevation={3} sx={{ padding: '20px' }}>
 <Grid container spacing={2}>
+  
 <Grid item xs={12} sm={6}>
     <TextField
       label="Address details"
@@ -1027,7 +1034,7 @@ Add Item
   </Grid>
 </Grid>
 
-<Grid>
+
 
 
         <Grid item xs={12} sm={12}>
@@ -1073,7 +1080,7 @@ Add Item
   </Paper>
 </Grid>
 
-      </Grid>
+    
 </Paper>
    </Grid>
   </TableBody>  
@@ -1172,7 +1179,7 @@ placeholder="Item Name"
           placeholder="Part Number"
           value={partNumbers[index]}
           onChange={(e) => handlePartNumberChange(index, e.target.value)}
-          error={partNumberErrors[index] !== ''}
+        // /  error={partNumberErrors[index] !== ''}
           fullWidth
         />
         </TableCell>
@@ -1260,8 +1267,8 @@ placeholder="Item Name"
     </div>
 <Grid item xs={12} sm={12}>
             <Paper elevation={3} sx={{ padding: '20px' }}>
-<Grid container spacing={2}>
-<Grid item xs={12} sm={6}>
+            <Grid container spacing={2}>
+  <Grid item xs={12} sm={6} md={3}>
     <TextField
       label="Address details"
       variant="outlined"
@@ -1271,7 +1278,7 @@ placeholder="Item Name"
      // error={remarkErrors !== ''}
     />
   </Grid>
-  <Grid item xs={12} sm={6} md={4}>
+  <Grid item xs={12} sm={6} md={3}>
     <FormControl variant="outlined" fullWidth>
       <div
         style={{
@@ -1299,16 +1306,19 @@ placeholder="Item Name"
               marginRight: '10px',
             }}
           >
-            Attache a file
+            Attach a file
           </span>
-          <Button  variant="text" component="label" htmlFor="upload-input"
-                 style={{
-                  textTransform: 'none',
-                  fontSize: '14px',
-                  color: '#00b0ad',
-                  borderColor: '##00b0ad',
-                }}
-                >
+          <Button
+            variant="text"
+            component="label"
+            htmlFor="upload-input"
+            style={{
+              textTransform: 'none',
+              fontSize: '14px',
+              color: '#00b0ad',
+              borderColor: '##00b0ad',
+            }}
+          >
             Upload 
             <input
               accept="image/*"
@@ -1322,32 +1332,52 @@ placeholder="Item Name"
       </div>
     </FormControl>
   </Grid>
-
-  <Grid item xs={12} sm={6} md={4}>
-    <Grid item xs={12}>
-          <TextField
-            select
-            required
-            label="Estimated Delivery Date"
-            value={estimatedDelivery}
-            onChange={handleDateChange}
-            fullWidth
-          >
-            {renderDateOptions()}
-          </TextField>
-        </Grid>
-
+  <Grid item xs={12} sm={6} md={3}>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <TextField
+          select
+          required
+          label="Estimated Delivery Date"
+          value={estimatedDelivery}
+          onChange={handleDateChange}
+          fullWidth
+        >
+          {renderDateOptions()}
+        </TextField>
+      </Grid>
+    </Grid>
   </Grid>
-
-  <Grid item xs={12} sm={6}>
+  <Grid item xs={12} sm={6} md={3}>
     <TextField
       label="Remark"
       variant="outlined"
       value={remark}
       onChange={(e) => handleRemarkChange(e.target.value)}
-     // error={remarkErrors !== ''}
+      // error={remarkErrors !== ''}
       fullWidth
-
+    />
+  </Grid>
+</Grid>
+<Grid container spacing={2} style={{ paddingTop: '10px' }}>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      label="Requested By"
+      variant="outlined"
+      fullWidth
+     // value={requestedBy}
+    //  onChange={(e) => handleRequestedByChange(e.target.value)}
+      // error={requestedByError !== ''}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      label="Approved By"
+      variant="outlined"
+      fullWidth
+    //  value={approvedBy}
+    //  onChange={(e) => handleApprovedByChange(e.target.value)}
+      // error={approvedByError !== ''}
     />
   </Grid>
 </Grid>
