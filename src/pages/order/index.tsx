@@ -46,7 +46,15 @@ import { OrderAdmin } from './orderAdmin';
 import OrderSupplier from './orderSupplier';
 import OrderCustomer from './orderCustomer';
 
-const Dashboard = () => {
+//const Order = () => {
+  type OrderProps = {
+    state: {
+      orderType: string;
+    };
+  };
+  
+  const Order: React.FC<OrderProps> = ({ state }) => {
+  const { orderType } = state;
   const { currentUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -71,7 +79,7 @@ const Dashboard = () => {
   if (currentUser === null) {
     dashboardComponent = <div>No user data found</div>;
   } else if (currentUser.role === 'SUPPLIER') {
-    dashboardComponent = <OrderSupplier/>;
+    dashboardComponent = <OrderSupplier type = {orderType}/>;
   } else if (currentUser.role === 'CUSTOMER') {
     dashboardComponent = <OrderCustomer/>;
   } else if (currentUser.role === 'ADMIN') {
@@ -81,4 +89,4 @@ const Dashboard = () => {
   return <div>{dashboardComponent}</div>;
 };
 
-export default Dashboard;
+export default Order;

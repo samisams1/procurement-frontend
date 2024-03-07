@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import {
   SelectChangeEvent,
-
   Box,
   useMediaQuery,
 } from '@mui/material';
@@ -54,6 +53,12 @@ export interface AdditionalData {
   onSubmit: (selectedType: string, selectedValue: string[]) => void;
 }*/
 interface RequestFormProps {
+    purchaseRequestId:number;
+    estimatedDate:string;
+    remarkData:string;
+    addressData:string;
+    categoryIdData:number;
+    sourceType:string;
   onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string,categoryId:string,buttonType:string) => Promise<void>;
 }
 const GET_CATEGORIES = gql`
@@ -90,16 +95,16 @@ mutation UploadProfilePicture($file: Upload!) {
   }
 }
 `;
-const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
+const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,remarkData,categoryIdData,addressData,estimatedDate,sourceType }) => {
 
-  const [productTitles, setProductTitles] = useState<string[]>(['']);
+  const [productTitles, setProductTitles] = useState<string[]>(['Title 1', 'Title 2', 'Title 3']);
   const [itemCodes, setItemCodes] = useState<string[]>(['']);
   const [itemCodeErrors, setItemCodeErrors] = useState<string[]>(['']);
   const [partNumbers, setPartNumbers] = useState<string[]>(['']);
   const [partNumberErrors, setPartNumberErrors] = useState<string[]>(['']);
   const [uoms, setUoms] = useState<string[]>(['']);
   const [uomErrors, setUomErrors] = useState<string[]>(['']);
-  const [quantities, setQuantities] = useState<string[]>([]);
+  const [quantities, setQuantities] = useState<string[]>(['4500','1500','2000',]);
   const [quantityErrors, setQuantityErrors] = useState<string[]>(['']);
   
   const [manufacturers, setManufacturers] = useState<string[]>(['']);
@@ -107,21 +112,21 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   const [marks, setMarks] = useState<string[]>(['']);
   const [models, setModels] = useState<string[]>(['']);
 
-  const [remark, setRemark] = useState('');
-  const [addressDetail, setAddressDetail] = useState('');
-  const [estimatedDelivery, setEstimatedDelivery] = useState('');
+  const [remark, setRemark] = useState(remarkData);
+  const [addressDetail, setAddressDetail] = useState(addressData);
+  const [estimatedDelivery, setEstimatedDelivery] = useState(estimatedDate);
   const [titleErrors, setTitleErrors] = useState<string[]>(['']);
 
   const saveButtonRef = useRef<HTMLButtonElement>(null);
 
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState('1');
   const [errorMessage, setErrorMessage] = useState('');
-  const [categoryId, setCategoryId] = useState<string>('');
+  const [categoryId, setCategoryId] = useState<string>('1');
   const [supplierIds, setSupplierIds] = useState<string[]>([]);
 
   const [selectedType, setSelectedType] = useState('');
 
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([sourceType]);
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const [uploadProfilePictureMutation] = useMutation(UPLOAD_PROFILE_PICTURE_MUTATION);
@@ -594,8 +599,8 @@ return(
         <Grid item xs={12} sm={12}>
           <SectionTitle>
           <PageHeader
-            title="NEW REQUISITION FORM"
-            subTitle="Create new requisition"
+            title="Saved  Requestion"
+            subTitle="This is Your save  requisition yo can send it whee ever you need"
             icon={<RequestPageTwoTone fontSize="large" />}
           />
           </SectionTitle>
@@ -1354,28 +1359,14 @@ placeholder="Item Name"
 <Grid container spacing={2} alignItems="center" justifyContent="center" style={{ paddingTop: '20px' }}>
       <Grid item xs={6} sm={6}>
         <Button
-          variant="outlined"
+          variant="contained"
           color="primary"
           startIcon={<RequestPageOutlined />}
           onClick={handleSubmit}
-          ref={saveButtonRef}
           fullWidth
         >
           Send Request
         </Button>
-      </Grid>
-      <Grid item xs={6} sm={6}>
-      <Button
-      variant="outlined"
-      color="primary"
-      startIcon={<Save />}
-      onClick={() => handleSave('save')}
-      style={{ whiteSpace: 'nowrap' }}
-      ref={saveButtonRef}
-      fullWidth
-    >
-      Save
-    </Button>
       </Grid>
       <Grid item xs={6} sm={6}>
         <Button
@@ -1407,4 +1398,4 @@ placeholder="Item Name"
 )
 };
 
-export default RequestForm;
+export default SavedForm;

@@ -109,3 +109,26 @@ query Query($status: String!) {
   countPaymentSatus(status: $status)
 }
 `
+export const GET_ORDER_BY_SUPPLIER_ID_QUERY = gql`
+query GetOrderBySupplierId($id: Int!, $status: String) {
+  getOrderBySupplierId(id: $id, status: $status) {
+        id
+        customerId
+        supplierId
+        totalPrice
+        tax
+        shippingCost
+        status
+        createdAt
+        updatedAt
+        referenceNumber
+        purchaseRequestId
+        supplier {
+          name
+        }
+        customer {
+          username
+        }
+    }
+  }
+`;

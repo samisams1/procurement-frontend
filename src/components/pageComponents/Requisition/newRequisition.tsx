@@ -7,7 +7,8 @@ import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
 import RequestForm, { SaleInput } from '../purchase/requestForm';
 import { GET_QUOTES } from '../../../graphql/rquest';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import SavedForm from '../purchase/savedForm';
 
 const CREATE_PURCHASE_REQUEST_MUTATION = gql`
 mutation CreatePurchaseRequest($input: CreatePurchaseRequestInput!) {
@@ -61,6 +62,14 @@ export interface AdditionalData {
   addressDetail: string;
 }
 const NewRequisitionComponent: React.FC = () => {
+  const location = useLocation();
+  const id = location.state?.id;
+  const samis =location.state?.estimatedDelivery;
+  const address =  location.state?.addressDetail;
+  const remark =  location.state?.remark;
+  const categoryId =  location.state?.categoryId;
+  const sourceType = location.state?.sourceType;
+  
   const navigate = useNavigate();
   const [flashMessage, setFlashMessage] = useState('');
   const [createPurchaseRequest] = useMutation(CREATE_PURCHASE_REQUEST_MUTATION, {
@@ -200,7 +209,7 @@ const handleSubmit = async (
         remark: additional.remark,
         addressDetail: additional.addressDetail,
         estimatedDelivery: additional.estimatedDelivery,
-        selectedType: selectedType,
+        sourceType: selectedType,
         categoryId: Number(categoryId),
       },
       suppliers: supplierNewId.map((supplierId) => ({ id: supplierId })),
@@ -224,9 +233,20 @@ const handleSubmit = async (
         addressDetail: additional.addressDetail,
         estimatedDelivery: additional.estimatedDelivery,
         referenceNumber: "samisam",
-        selectedType: selectedType,
+        sourceType: selectedType,
         categoryId: Number(categoryId),
-      }
+      },
+      products: validProducts.map((product) => ({
+        title: product.productTitle,
+        quantity: product.quantity,
+        mark: product.mark,
+        uom: product.uom,
+        Description: product.description,
+        code: product.code,
+        manufacturer: product.manufacturer,
+        partNumber: product.partNumber,
+        model: product.model,
+      })),
     };
     console.log(input);
     if (buttonType === "save") {
@@ -273,7 +293,11 @@ const handleSubmit = async (
           {flashMessage}
         </Alert>
       </Snackbar>
-      <RequestForm onSubmit={handleSubmit} />
+      {
+        id ?<SavedForm onSubmit={handleSubmit} purchaseRequestId={id} estimatedDate={samis} 
+        addressData={address} remarkData={remark} categoryIdData =  {categoryId} sourceType= {sourceType}/>:
+        <RequestForm onSubmit={handleSubmit}/>
+      }
     </>
   );
 };

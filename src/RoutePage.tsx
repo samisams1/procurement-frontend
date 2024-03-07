@@ -61,7 +61,7 @@ export default function RoutePage() {
             element: <DashboardLayout />,
             children: [
               { path: '/', element: <ProtectedRoute  element={<Dashboard />} /> },
-              { path: '/order', element: <ProtectedRoute  element={<Order />} /> },
+              { path: '/order', element: <ProtectedRoute  element={<Order state={{ orderType: "incoming" }} />} /> },
               { path: '/request', element: <ProtectedRoute element={<Request />} /> },
               { path: '/category', element: <ProtectedRoute element={<Category />} /> },
               { path: '/user', element: <ProtectedRoute  element={<User />} /> },
@@ -112,6 +112,14 @@ export default function RoutePage() {
 
               { path: '/shippingDetail/:id', element: <ProtectedRoute  element={<ShippingDetail />} /> },
 
+              { path: '/sentProformaInvoice', element: <ProtectedRoute  element={<PurchaseRequest />} /> },
+              {
+                path: '/incomingOrder',
+                element: <ProtectedRoute element={<Order state={{ orderType: "incoming" }} />} />
+              },
+              { path: '/comfirmedOrder', element: <ProtectedRoute  element={<Order state={{ orderType: "confirmed" }} />} /> },
+              { path: '/approvedOrder', element: <ProtectedRoute  element={<Order state={{ orderType: "approved" }}/>} /> },
+              { path: '/rejectedOrder', element: <ProtectedRoute  element={<Order state={{ orderType: "rejected" }}/>} /> },
             ],
           },
           {

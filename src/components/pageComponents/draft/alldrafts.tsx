@@ -58,9 +58,8 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
   }
 
   const purchaseRequests = data?.savedRequestByUserId || [];
-
-  const handleClick = (id: string) => {
-    navigate(`/newRequest`);
+  const handleClick = (id: string,estimatedDelivery:number,remark:string,addressDetail:string,categoryId:number,sourceType:string) => {
+    navigate('/newRequest', { state: { id,estimatedDelivery,remark,addressDetail,categoryId,sourceType } });
   };
 
   const columns = [
@@ -78,10 +77,15 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
         sort: false,
         customBodyRender: (value: any, tableMeta: any) => {
           const purchaseRequestId = tableMeta.rowData[1];
+          const estimatedDelivery = 13;
+          const remark = "ok";
+          const addressDetail = "Addis"
+          const categoryId = 1;
+          const sourceType ="supplier";
           return (
             <Button
               text="Revise and Send"
-              onClick={() => handleClick(purchaseRequestId)}
+              onClick={() => handleClick(purchaseRequestId,estimatedDelivery,remark,addressDetail,categoryId,sourceType)}
               style={{ cursor: 'pointer' }}
             />
           );

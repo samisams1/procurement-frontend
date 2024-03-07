@@ -33,14 +33,46 @@ const SallesNavConfig = () => {
       icon: getIcon('iconamoon:profile-fill'),
     },
     {
-      title: 'Incoming Requests',
-      path: 'purchaseRequests',
-      icon: getIcon('fluent-mdl2:review-request-solid'),
+      title: 'Requests',
+      icon: getIcon('ri:product-hunt-fill'),
+      items: [
+        {
+          title: 'Incoming Requests',
+          path: 'purchaseRequests',
+          icon: getIcon('fluent-mdl2:review-request-solid'),
+        },
+        {
+          title: 'Sent Proforma invoice',
+          path: 'sentProformaInvoice',
+          icon: getIcon('ri:product-hunt-fill'),
+        },
+      ],
     },
     {
       title: 'Order',
-      path: 'order',
-      icon: getIcon('icon-park-solid:transaction-order'),
+      icon: getIcon('ri:product-hunt-fill'),
+      items: [
+        {
+          title: 'Incoming Order',
+          path: 'incomingOrder',
+          icon: getIcon('fluent-mdl2:review-request-solid'),
+        },
+        {
+          title: 'comfirmedOrder',
+          path: 'comfirmedOrder',
+          icon: getIcon('ri:product-hunt-fill'),
+        },
+        {
+          title: 'approvedOrder',
+          path: 'approvedOrder',
+          icon: getIcon('ri:product-hunt-fill'),
+        },
+        {
+          title: 'rejectedOrder',
+          path: 'rejectedOrder',
+          icon: getIcon('ri:product-hunt-fill'),
+        },
+      ],
     },
     {
       title: 'Notification',
