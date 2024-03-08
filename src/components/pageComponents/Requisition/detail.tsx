@@ -43,6 +43,8 @@ const GET_PURCHASE_REQUEST_BY_ID = gql`
       addressDetail
       estimatedDelivery
       referenceNumber
+      requestedBy
+      approvedBy
       createdAt
       products {
         id
@@ -97,6 +99,8 @@ interface PurchaseRequest {
   remark: string;
   addressDetail: string;
   estimatedDelivery: string;
+  approvedBy:string;
+  requestedBy:string;
   referenceNumber: string;
   createdAt: string;
   products: Product[];
@@ -242,17 +246,19 @@ function Detail() {
     mark: product.mark,
   }));
 
-  const options: MUIDataTableOptions = {
-    filter: true,
-    download: true,
-    print: true,
-    search: true,
-    selectableRows: 'none', // or 'single' for single row selection
-    responsive: 'standard' as Responsive,
-    viewColumns: true,
-    rowsPerPage: 10,
-    rowsPerPageOptions: [10, 25, 50],
-  };
+  // Table Options
+const options: MUIDataTableOptions = {
+  filter: true,
+  download: true,
+  print: true,
+  search: true,
+  selectableRows: 'none', // or 'single' for single row selection
+  responsive: 'standard' as Responsive,
+  viewColumns: true,
+  rowsPerPage: 10,
+  rowsPerPageOptions: [10, 25, 50],
+  customFooter: () => <CustomFooter />,
+};
   const theme = createTheme({
     components: {
       MUIDataTableHeadCell: {
@@ -297,6 +303,30 @@ function Detail() {
     }
     return paperStyle;
   };
+// Custom Footer Component
+const CustomFooter = () => {
+  return (
+    <tfoot>
+    <tr>
+      <td colSpan={3}>
+        <Typography
+          variant="body1"
+          style={{
+            fontWeight: 'bold',
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '8px', // Add padding here
+          }}
+        >
+          <span>Requested By: {orderDetail?.requestedBy}</span>
+          <span>Approved By: {orderDetail?.approvedBy}</span>
+        </Typography>
+      </td>
+    </tr>
+  </tfoot>
+
+  );
+};
 
   return (
     <Grid container spacing={2}>
@@ -372,6 +402,8 @@ function Detail() {
         columns={columns}
         options={options}
       />
+ 
+   
       <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}>
       <Image
               src={require(`../../../assets/car.jpg`)}  

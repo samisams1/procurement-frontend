@@ -60,6 +60,8 @@ export interface AdditionalData {
   remark: string;
   estimatedDelivery: string;
   addressDetail: string;
+  approvedBy:string;
+  requestedBy:string;
 }
 const NewRequisitionComponent: React.FC = () => {
   const location = useLocation();
@@ -211,6 +213,8 @@ const handleSubmit = async (
         estimatedDelivery: additional.estimatedDelivery,
         sourceType: selectedType,
         categoryId: Number(categoryId),
+        approvedBy:additional.approvedBy,
+        requestedBy:additional.requestedBy
       },
       suppliers: supplierNewId.map((supplierId) => ({ id: supplierId })),
       products: validProducts.map((product) => ({
@@ -235,6 +239,8 @@ const handleSubmit = async (
         referenceNumber: "samisam",
         sourceType: selectedType,
         categoryId: Number(categoryId),
+        approvedBy:additional.approvedBy,
+        requestedBy:additional.requestedBy
       },
       products: validProducts.map((product) => ({
         title: product.productTitle,

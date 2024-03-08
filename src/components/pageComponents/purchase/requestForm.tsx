@@ -48,7 +48,8 @@ export interface AdditionalData {
   remark: string;
   estimatedDelivery: string;
   addressDetail: string;
-
+  approvedBy:string;
+  requestedBy:string;
 }
 
 /*interface RequestFormProps {
@@ -110,6 +111,8 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
 
   const [remark, setRemark] = useState('');
   const [addressDetail, setAddressDetail] = useState('');
+  const [approvedBy, setAprovedBy] = useState('');
+  const [requestedBy, setRequestedBy] = useState('');
   const [estimatedDelivery, setEstimatedDelivery] = useState('');
   const [titleErrors, setTitleErrors] = useState<string[]>(['']);
 
@@ -274,8 +277,16 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
   const handleAddressChange = (value: string) => {
     setAddressDetail(value);
   };
+  const handleRequestedByChange = (value: string) => {
+    setRequestedBy(value);
+  };
+  const handleApprovedByChange = (value: string) => {
+    setAprovedBy(value);
+  };
     const handleReset = () => {
     setAddressDetail('');
+    setRequestedBy('');
+    setAprovedBy('');
     setEstimatedDelivery('');
     setItemCodes(['']);
     setManufacturers(['']);
@@ -397,7 +408,9 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
     const additional = {
       remark:remark,
       addressDetail:addressDetail,
-      estimatedDelivery:estimatedDelivery
+      estimatedDelivery:estimatedDelivery,
+      approvedBy:approvedBy,
+      requestedBy:requestedBy
     }
     setErrorMessage('');
 
@@ -520,7 +533,9 @@ console.log(supplierIds)
     const additional = {
       remark:remark,
       addressDetail:addressDetail,
-      estimatedDelivery:estimatedDelivery
+      estimatedDelivery:estimatedDelivery,
+      requestedBy:requestedBy,
+      approvedBy:approvedBy,
     }
     setErrorMessage('');
 
@@ -1365,9 +1380,9 @@ placeholder="Item Name"
       label="Requested By"
       variant="outlined"
       fullWidth
-     // value={requestedBy}
-    //  onChange={(e) => handleRequestedByChange(e.target.value)}
-      // error={requestedByError !== ''}
+     value={requestedBy}
+      onChange={(e) => handleRequestedByChange(e.target.value)}
+     // error={requestedByError !== ''}
     />
   </Grid>
   <Grid item xs={12} sm={6}>
@@ -1375,8 +1390,8 @@ placeholder="Item Name"
       label="Approved By"
       variant="outlined"
       fullWidth
-    //  value={approvedBy}
-    //  onChange={(e) => handleApprovedByChange(e.target.value)}
+      value={approvedBy}
+      onChange={(e) => handleApprovedByChange(e.target.value)}
       // error={approvedByError !== ''}
     />
   </Grid>

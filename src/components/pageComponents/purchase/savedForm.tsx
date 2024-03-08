@@ -46,6 +46,8 @@ export interface AdditionalData {
   remark: string;
   estimatedDelivery: string;
   addressDetail: string;
+  requestedBy:string;
+  approvedBy:string;
 
 }
 
@@ -401,7 +403,9 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,rema
     const additional = {
       remark:remark,
       addressDetail:addressDetail,
-      estimatedDelivery:estimatedDelivery
+      estimatedDelivery:estimatedDelivery,
+      requestedBy:"requestedBy",
+      approvedBy:"approvedBy",
     }
     setErrorMessage('');
 
@@ -524,7 +528,9 @@ console.log(supplierIds)
     const additional = {
       remark:remark,
       addressDetail:addressDetail,
-      estimatedDelivery:estimatedDelivery
+      estimatedDelivery:estimatedDelivery,
+      requestedBy:"requestedBy",
+      approvedBy:"approvedBy",
     }
     setErrorMessage('');
 
@@ -600,7 +606,7 @@ return(
           <SectionTitle>
           <PageHeader
             title="Saved  Requestion"
-            subTitle="This is Your save  requisition yo can send it whee ever you need"
+            subTitle="This is Your save  requisition yo can send it when ever you need"
             icon={<RequestPageTwoTone fontSize="large" />}
           />
           </SectionTitle>
