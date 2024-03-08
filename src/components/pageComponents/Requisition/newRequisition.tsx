@@ -4,9 +4,8 @@ import { Helmet } from 'react-helmet';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { UserContext } from '../../../auth/UserContext';
-import Spinner from '../../Spinner';
 import RequestForm, { SaleInput } from '../purchase/requestForm';
-import { GET_QUOTES } from '../../../graphql/rquest';
+import { GET_QUOTES, PURCHASE_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SavedForm from '../purchase/savedForm';
 
@@ -74,20 +73,20 @@ const NewRequisitionComponent: React.FC = () => {
   
   const navigate = useNavigate();
   const [flashMessage, setFlashMessage] = useState('');
+  const { currentUser } = useContext(UserContext);
+  const userId = currentUser?.id || '';
   const [createPurchaseRequest] = useMutation(CREATE_PURCHASE_REQUEST_MUTATION, {
-    refetchQueries: [{ query:GET_QUOTES }],
+    refetchQueries: [
+      {
+        query: PURCHASE_REQUESTS_BY_USER_ID,
+        variables: { userId: userId },
+      },
+    ],
   });
   const [savePurchaseRequest] = useMutation(SAVE_PURCHASE_REQUEST_MUTATION, {
     refetchQueries: [{ query:GET_QUOTES }],
-  });
+});
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const { currentUser } = useContext(UserContext);
-
-  if (!currentUser) {
-    return <Spinner />;
-  }
-
-  const userId = currentUser.id as number; // Type assertion
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);

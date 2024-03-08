@@ -1047,6 +1047,26 @@ Add Item
 
     />
   </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      label="Requested By"
+      variant="outlined"
+      fullWidth
+     value={requestedBy}
+      onChange={(e) => handleRequestedByChange(e.target.value)}
+     // error={requestedByError !== ''}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      label="Approved By"
+      variant="outlined"
+      fullWidth
+      value={approvedBy}
+      onChange={(e) => handleApprovedByChange(e.target.value)}
+      // error={approvedByError !== ''}
+    />
+  </Grid>
 </Grid>
 
 

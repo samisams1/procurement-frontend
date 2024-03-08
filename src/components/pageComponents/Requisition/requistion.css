@@ -1,0 +1,7 @@
+@media print {
+    .printable-table .MuiTableToolbar-root {
+      display: flex !important;
+      justify-content: space-between !important;
+      padding: 8px !important;
+    }
+  }
