@@ -21,7 +21,7 @@ import {
   Checkbox,
 } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { Add, DeleteOutlineTwoTone, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save } from '@mui/icons-material';
+import { Add, DeleteOutlineTwoTone, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save, Send } from '@mui/icons-material';
 import PageHeader from '../../PageHeader';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import { SectionTitle } from '../../Section';
@@ -1081,25 +1081,26 @@ Add Item
         marginBottom: '10px',
       }}
     >
-      <Button
-          variant="outlined"
-          color="primary" // Apply "#ccc" background color when loading is true
-          startIcon={<RequestPageOutlined />}
-          onClick={handleSubmit}
+     
+        <Button
+        variant="outlined"
+        color="primary"
+        onClick={() => handleSubmit()}
+        style={{ whiteSpace: 'nowrap' }}
+        startIcon={<Send />}
           ref={saveButtonRef}
-          fullWidth
-          disabled={loading} // Disable the button when loading is true
+        disabled={loading} // Disable the button when loading is true
         >
-           {loading ? (
+          {loading ? (
             <div>
                <CircularProgress size={24} style={{ color: 'red' }} />
           Sending.....
             </div>
          
         ) : (
-          'Send Request'
+          'Save'
         )}
-        </Button>
+      </Button>
       <Button
         variant="outlined"
         color="primary"
