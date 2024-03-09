@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
 import PageHeader from '../../PageHeader';
 import { RequestPageOutlined } from '@mui/icons-material';
 import Button from '../../Button';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { SectionTitle } from '../../Section';
 import { PURCHASE_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
 import Spinner from '../../Spinner';
@@ -43,9 +43,21 @@ const Requisitions: React.FC = () => {
 };
 
 const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
-  const { loading, error, data } = useQuery<PurchaseRequestData>(PURCHASE_REQUESTS_BY_USER_ID, {
-    variables: { userId: Number(userId) },
-  });
+  const location = useLocation();
+  const { loading, error, data } = useQuery<PurchaseRequestData>(
+    PURCHASE_REQUESTS_BY_USER_ID,
+    {
+      variables: { userId: Number(userId) },
+      fetchPolicy: 'network-only',
+    }
+  );
+  const [purchaseRequests, setPurchaseRequests] = useState(data?.purchaseRequestByUserId || []);
+
+  useEffect(() => {
+    if (data) {
+      setPurchaseRequests(data?.purchaseRequestByUserId || []);
+    }
+  }, [data, location.pathname]);
 
   const navigate = useNavigate();
 
@@ -56,8 +68,6 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
   if (error) {
     return <div>Error: {error.message}</div>;
   }
-
-  const purchaseRequests = data?.purchaseRequestByUserId || [];
 
   const handleClick = (id: string) => {
     navigate(`/purchaseRequest/${id}`);
@@ -142,16 +152,18 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <SectionTitle variant="outlined" square>
-          <PageHeader
-           title="Request"
-           icon={<RequestPageOutlined />} 
-           subTitle="this page is your request "
-           />
+          <PageHeader title={location.pathname || 'Default Title'} icon={<RequestPageOutlined />} subTitle="this page is your request " />
         </SectionTitle>
       </Grid>
       <Grid item xs={12}>
         <ThemeProvider theme={theme}>
-          <MUIDataTable title="Requests" data={tableData} columns={columns} options={options} />
+          <MUIDataTable
+            title="Requests"
+            data={tableData}
+            columns={columns}
+            options={options}
+            key={location.pathname || 'default-key'}
+          />
         </ThemeProvider>
       </Grid>
     </Grid>

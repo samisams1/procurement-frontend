@@ -61,6 +61,7 @@ interface RequestFormProps {
     addressData:string;
     categoryIdData:number;
     sourceType:string;
+    loading: boolean;
   onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string,categoryId:string,buttonType:string) => Promise<void>;
 }
 const GET_CATEGORIES = gql`

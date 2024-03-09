@@ -67,6 +67,7 @@ interface purchaseRequestId {
 
 const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
   const navigate = useNavigate()
+
   const { loading, error, data } = useQuery(GET_QUOTATION, {
     variables: { suplierId:Number(supplierId),status:"pending"},
   });

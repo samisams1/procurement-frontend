@@ -5,6 +5,7 @@ import {
 
   Box,
   useMediaQuery,
+  CircularProgress,
 } from '@mui/material';
 import {
   Grid,
@@ -20,7 +21,7 @@ import {
   Checkbox,
 } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { Add, DeleteOutlineTwoTone, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save, Send } from '@mui/icons-material';
+import { Add, DeleteOutlineTwoTone, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save } from '@mui/icons-material';
 import PageHeader from '../../PageHeader';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import { SectionTitle } from '../../Section';
@@ -57,6 +58,7 @@ export interface AdditionalData {
 }*/
 interface RequestFormProps {
   onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string,categoryId:string,buttonType:string) => Promise<void>;
+  loading:boolean
 }
 const GET_CATEGORIES = gql`
  query GetCategories {
@@ -92,15 +94,15 @@ mutation UploadProfilePicture($file: Upload!) {
   }
 }
 `;
-const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
+const RequestForm: React.FC<RequestFormProps> = ({ onSubmit,loading }) => {
 
   const [productTitles, setProductTitles] = useState<string[]>(['']);
   const [itemCodes, setItemCodes] = useState<string[]>(['']);
-  const [itemCodeErrors, setItemCodeErrors] = useState<string[]>(['']);
+  //const [itemCodeErrors, setItemCodeErrors] = useState<string[]>(['']);
   const [partNumbers, setPartNumbers] = useState<string[]>(['']);
  // const [partNumberErrors, setPartNumberErrors] = useState<string[]>(['']);
   const [uoms, setUoms] = useState<string[]>(['']);
-  const [uomErrors, setUomErrors] = useState<string[]>(['']);
+ // const [uomErrors, setUomErrors] = useState<string[]>(['']);
   const [quantities, setQuantities] = useState<string[]>([]);
   const [quantityErrors, setQuantityErrors] = useState<string[]>(['']);
   
@@ -184,13 +186,13 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
     updatedItemCodes[index] = value;
     setItemCodes(updatedItemCodes);
 
-    const updatedCodeErrors = [...itemCodeErrors];
+  /*  const updatedCodeErrors = [...itemCodeErrors];
     if (value.trim() === '') {
       updatedCodeErrors[index] = 'Please enter a valid item code.';
     } else {
       updatedCodeErrors[index] = '';
     }
-    setItemCodeErrors(updatedCodeErrors);
+    setItemCodeErrors(updatedCodeErrors);*/
   };
 
   const handlePartNumberChange = (index: number, value: string) => {
@@ -212,13 +214,13 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
     updatedUoms[index] = value;
     setUoms(updatedUoms);
 
-    const updatedUomErrors = [...uomErrors];
+  /*  const updatedUomErrors = [...uomErrors];
     if (value.trim() === '') {
       updatedUomErrors[index] = 'Please enter a valid UOM.';
     } else {
       updatedUomErrors[index] = '';
     }
-    setUomErrors(updatedUomErrors);
+    setUomErrors(updatedUomErrors);*/
   };
   const handleQuantityChange = (index: number, value: number) => {
     const updatedQuantities = [...quantities];
@@ -348,17 +350,17 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
     if (updatedTitleErrors.some((error) => error !== '')) {
       return;
     }
-    const updateItemCodeErrors = itemCodes.map((code) => {
+  /*  const updateItemCodeErrors = itemCodes.map((code) => {
       if (code.trim() === '') {
         return 'Please enter a valid item itemCodes.';
       }
       return '';
-    });
-    setItemCodeErrors(updateItemCodeErrors);
+    });*/
+   // setItemCodeErrors(updateItemCodeErrors);
 
-    if (updateItemCodeErrors.some((error) => error !== '')) {
+   /* if (updateItemCodeErrors.some((error) => error !== '')) {
       return;
-    }
+    }*/
     /*const updatePartNumberErrors = partNumbers.map((partNumber) => {
       if (partNumber.trim() === '') {
         return 'Please enter a valid item partNumbers.';
@@ -369,18 +371,18 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
 
    /* if (updatePartNumberErrors.some((error) => error !== '')) {
       return;
-    }*/
+    }
     const updateUomsErrors = uoms.map((uom) => {
       if (uom.trim() === '') {
         return 'Please enter a valid item uom.';
       }
       return '';
-    });
-    setUomErrors(updateUomsErrors);
+    }); 
+  setUomErrors(updateUomsErrors);
 
     if (updateUomsErrors.some((error) => error !== '')) {
       return;
-    }
+    }*/
     const updateQuantitieErrors = quantities.map((quantitie) => {
       if (quantitie.trim() === '') {
         return 'Please enter a valid item quantities.';
@@ -420,17 +422,14 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
       supplierNewId = supplierIds;
    //  onSubmit(selectedType, supplierNewId);
    console.log(supplierIds)
-console.log(supplierIds)
-      onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
-
-    } else if (selectedType === 'agent' || selectedType === 'x-company') {
+      onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType)
+  } else if (selectedType === 'agent' || selectedType === 'x-company') {
       supplierNewId = [selectedValue];
    
      // onSubmit(selectedType, supplierNewId);
      onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
 
-     
-
+  
     }
   };
   const handleSave = (buttonType: 'save' | 'send') => {
@@ -473,17 +472,17 @@ console.log(supplierIds)
     if (updatedTitleErrors.some((error) => error !== '')) {
       return;
     }
-    const updateItemCodeErrors = itemCodes.map((code) => {
+   /* const updateItemCodeErrors = itemCodes.map((code) => {
       if (code.trim() === '') {
         return 'Please enter a valid item itemCodes.';
       }
       return '';
-    });
-    setItemCodeErrors(updateItemCodeErrors);
+    });*/
+    //setItemCodeErrors(updateItemCodeErrors);
 
-    if (updateItemCodeErrors.some((error) => error !== '')) {
+    /*if (updateItemCodeErrors.some((error) => error !== '')) {
       return;
-    }
+    }*/
     const updatePartNumberErrors = partNumbers.map((partNumber) => {
       if (partNumber.trim() === '') {
         return 'Please enter a valid item partNumbers.';
@@ -501,7 +500,7 @@ console.log(supplierIds)
       }
       return '';
     });
-    setUomErrors(updateUomsErrors);
+   // setUomErrors(updateUomsErrors);
 
     if (updateUomsErrors.some((error) => error !== '')) {
       return;
@@ -650,7 +649,7 @@ return(
       disabled={selectedOptions.length === 1 && !selectedOptions.includes('x-company')}
     />
     {selectedOptions.includes('x-company') ? <span></span> : null}
-    <Typography>Etproforma</Typography>
+    <Typography>Et-Proforma</Typography>
   </Box>
 </Grid>
               {selectedOptions.includes('supplier') && (
@@ -760,7 +759,7 @@ return(
        
     {productTitles.map((title, index) => (
      
-     <Grid item xs={12} key={index} sx={{  marginLeft:'1rem', padding: '8px', border: '1px solid #ddd' }}>
+     <Grid item xs={12} key={index} sx={{ border: '1px solid #ddd' }}>
 
 
 <Typography variant="h6">Item Number #{index + 1}</Typography>
@@ -823,7 +822,7 @@ return(
       required
       value={itemCodes[index]}
       onChange={(e) => handleItemCodeChange(index, e.target.value)}
-      error={itemCodeErrors[index] !== ''}
+     // error={itemCodeErrors[index] !== ''}
      style={{ marginBottom: '1rem' }}
     />
     <TextField
@@ -843,7 +842,7 @@ return(
       fullWidth
       value={uoms[index]}
       onChange={(e) => handleUomChange(index, e.target.value)}
-      error={uomErrors[index] !== ''}
+     // error={uomErrors[index] !== ''}
      style={{ marginBottom: '1rem' }}
     /> 
     <TextField
@@ -1083,15 +1082,24 @@ Add Item
       }}
     >
       <Button
-        variant="outlined"
-        color="primary"
-        startIcon={<Send />}
-        onClick={handleSubmit}
-        style={{ whiteSpace: 'nowrap' }}
-        ref={saveButtonRef}
-      >
-        Send
-      </Button>
+          variant="outlined"
+          color="primary" // Apply "#ccc" background color when loading is true
+          startIcon={<RequestPageOutlined />}
+          onClick={handleSubmit}
+          ref={saveButtonRef}
+          fullWidth
+          disabled={loading} // Disable the button when loading is true
+        >
+           {loading ? (
+            <div>
+               <CircularProgress size={24} style={{ color: 'red' }} />
+          Sending.....
+            </div>
+         
+        ) : (
+          'Send Request'
+        )}
+        </Button>
       <Button
         variant="outlined"
         color="primary"
@@ -1099,8 +1107,17 @@ Add Item
         onClick={() => handleSave('save')}
         style={{ whiteSpace: 'nowrap' }}
         ref={saveButtonRef}
-      >
-        Save
+        disabled={loading} // Disable the button when loading is true
+        >
+          {loading ? (
+            <div>
+               <CircularProgress size={24} style={{ color: 'red' }} />
+          Saving.....
+            </div>
+         
+        ) : (
+          'Save'
+        )}
       </Button>
       <Button
         variant="outlined"
@@ -1205,7 +1222,7 @@ placeholder="Item Name"
           placeholder="Item Code"
           value={itemCodes[index]}
           onChange={(e) => handleItemCodeChange(index, e.target.value)}
-          error={itemCodeErrors[index] !== ''}
+        //  error={itemCodeErrors[index] !== ''}
           fullWidth
         />
         </TableCell>
@@ -1223,7 +1240,7 @@ placeholder="Item Name"
   placeholder="UOM"
   value={uoms[index]}
   onChange={(e) => handleUomChange(index, e.target.value)}
-  error={uomErrors[index] !== ''}
+ // error={uomErrors[index] !== ''}
   fullWidth
 />
         </TableCell>
@@ -1273,7 +1290,7 @@ placeholder="Item Name"
           placeholder="Model"
           value={models[index]}
           onChange={(e) => handleModelChange(index, e.target.value)}
-          error={itemCodeErrors[index] !== ''}
+         // error={itemCodeErrors[index] !== ''}
           fullWidth
         />
           </div>
@@ -1420,27 +1437,46 @@ placeholder="Item Name"
       <Grid item xs={6} sm={6}>
         <Button
           variant="outlined"
-          color="primary"
+          color="primary" // Apply "#ccc" background color when loading is true
           startIcon={<RequestPageOutlined />}
           onClick={handleSubmit}
           ref={saveButtonRef}
           fullWidth
+          disabled={loading} // Disable the button when loading is true
         >
-          Send Request
+           {loading ? (
+            <div>
+               <CircularProgress size={24} style={{ color: 'red' }} />
+          Sending.....
+            </div>
+         
+        ) : (
+          'Send Request'
+        )}
         </Button>
       </Grid>
       <Grid item xs={6} sm={6}>
-      <Button
-      variant="outlined"
-      color="primary"
-      startIcon={<Save />}
-      onClick={() => handleSave('save')}
-      style={{ whiteSpace: 'nowrap' }}
-      ref={saveButtonRef}
-      fullWidth
-    >
-      Save
-    </Button>
+        <Button
+          variant="outlined"
+          color="primary" // Apply "#ccc" background color when loading is true
+          startIcon={<RequestPageOutlined />}
+          onClick={() => handleSave('save')}
+          ref={saveButtonRef}
+          fullWidth
+          disabled={loading} // Disable the button when loading is true
+        >
+           {loading ? (
+            <div>
+               <CircularProgress size={24} style={{ color: 'red' }} />
+          Saving.....
+            </div>
+         
+        ) : (
+          'Save Request'
+        )}
+        </Button>
+      </Grid>
+      <Grid item xs={6} sm={6}>
       </Grid>
       <Grid item xs={6} sm={6}>
         <Button
