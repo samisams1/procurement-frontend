@@ -211,6 +211,10 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
     subtotal += shippingCost;
     return subtotal.toFixed(2);
   };
+  const calculateDisCountSubtotal = () => {
+    let subtotal = 20400;
+    return subtotal.toFixed(2);
+  };
   const calculateTax = (grandTotal: number, taxRate: number): string => {
     const taxAmount = grandTotal * taxRate;
     return taxAmount.toFixed(2);
@@ -267,12 +271,12 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
         display: true,
       },
     },
-    {
+   /* {
       name: 'Status',
       options: {
         display: true,
       },
-    },
+    },*/
   ];
   const tableData = quotationByRequestIdAdSupplierId.map(
     (quotation: any, index: number) => {
@@ -304,11 +308,11 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
           parseFloat(prices[quotation.id.toString()] || ''),
           quotation.product.quantity
         ),
-        quotation.status === 'pending' ? (
+     /*   quotation.status === 'pending' ? (
           <span style={{ color: 'red' }}>{quotation.status}</span>
         ) : (
           <span style={{ color: 'green' }}>{quotation.status}</span>
-        ),
+        ),*/
       ];
     }
   );
@@ -406,15 +410,20 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
       >
         {renderDateOptions()}
       </TextField>
-      <Typography variant="subtitle1" align="right" fontWeight="bold">
-        Tax: {tax} Birr
-      </Typography>
+    
       <Typography variant="subtitle1" align="right" fontWeight="bold">
         Subtotal: {calculateSubtotal()} Birr
       </Typography>
       <Typography variant="subtitle1" align="right" fontWeight="bold">
+        Tax: {tax} Birr
+      </Typography>
+      <Typography variant="subtitle1" align="right" fontWeight="bold">
         Grand Total: {grandTotal} Birr
       </Typography>
+      <Typography variant="subtitle1" align="right" fontWeight="bold">
+      Grand   Discount : {calculateDisCountSubtotal()} Birr
+      </Typography>
+      
     </Grid>
   </Grid>
 </Grid>

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import {  useMutation, useQuery } from '@apollo/client';
 import { Helmet } from 'react-helmet';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
@@ -8,46 +8,9 @@ import RequestForm, { SaleInput } from '../purchase/requestForm';
 import { GET_QUOTES, PURCHASE_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SavedForm from '../purchase/savedForm';
-
-const CREATE_PURCHASE_REQUEST_MUTATION = gql`
-mutation CreatePurchaseRequest($input: CreatePurchaseRequestInput!) {
-  createPurchaseRequest(input: $input) {
-    id
-    userId
-    status
-    remark
-    imageUrl
-    addressDetail
-    estimatedDelivery
-    referenceNumber
-    createdAt
-  }
-}
-`;
-const SAVE_PURCHASE_REQUEST_MUTATION = gql`
-mutation CreateDraftequest($input: CreatePurchaseRequestInput) {
-  createDraftequest(input: $input) {
-    id
-    userId
-    status
-    remark
-    addressDetail
-    estimatedDelivery
-    products {
-      id
-      Description
-      code
-      manufacturer
-      model
-      partNumber
-      quantity
-      title
-      uom
-      mark
-    }
-  }
-}
-`;
+import { CREATE_PURCHASE_REQUEST_MUTATION, SAVE_PURCHASE_REQUEST_MUTATION } from '../../../graphql/quotation';
+import { usePurchaseRequest } from '../../../context/purchaseRequestContext';
+import { PurchaseRequestData } from './manageRequisition';
 export interface AdditionalData {
   remark: string;
   estimatedDelivery: string;
@@ -56,6 +19,8 @@ export interface AdditionalData {
   requestedBy:string;
 }
 const NewRequisitionComponent: React.FC = () => {
+  const { setPurchaseRequests } = usePurchaseRequest();
+
   const location = useLocation();
   const [buttonLoading, setButtonLoading] = useState(false);
   const id = location.state?.id;
@@ -80,9 +45,11 @@ const NewRequisitionComponent: React.FC = () => {
   const [savePurchaseRequest] = useMutation(SAVE_PURCHASE_REQUEST_MUTATION, {
     refetchQueries: [{ query:GET_QUOTES }],
 });
-const { refetch } = useQuery(PURCHASE_REQUESTS_BY_USER_ID, {
-  variables: { userId: userId },
+const {data,refetch } = useQuery<PurchaseRequestData>(PURCHASE_REQUESTS_BY_USER_ID, {
+  variables: { userId: Number(userId) },
 });
+
+
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleCloseSnackbar = () => {
@@ -97,7 +64,11 @@ const handleSubmit = async (
   buttonType: string,
 ): Promise<void> => {
   try {
-    setButtonLoading(true);
+    if (buttonType === "save") {
+      setButtonLoading(true); 
+    }else if (buttonType === "send") {
+      setButtonLoading(true);
+    }
     if (
       selectedType !== 'supplier' &&
       selectedType !== 'agent' &&
@@ -169,6 +140,9 @@ const handleSubmit = async (
       setOpenSnackbar(true);
       setTimeout(() => {
         if (response.data && response.data.savePurchaseRequest && response.data.savePurchaseRequest.id) {
+        //  setPurchaseRequest(response.data.createPurchaseRequest);
+        refetch();
+          setPurchaseRequests(data?.purchaseRequestByUserId || []);
           navigate(`/purchaseRequest/${response.data.savePurchaseRequest.id}`);
           
         } else {
@@ -178,8 +152,9 @@ const handleSubmit = async (
       }, 2000);
     } else if (buttonType === "send") {
       const response = await createPurchaseRequest({ variables: { input } });
-      setButtonLoading(false);
       refetch();
+      setButtonLoading(false);
+      console.log('Mutation response:', response);
       console.log('Mutation response:', response);
       setFlashMessage('Your request is sent successfully');
       setOpenSnackbar(true);

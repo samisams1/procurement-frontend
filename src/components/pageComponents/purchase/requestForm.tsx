@@ -1088,7 +1088,6 @@ Add Item
         onClick={() => handleSubmit()}
         style={{ whiteSpace: 'nowrap' }}
         startIcon={<Send />}
-          ref={saveButtonRef}
         disabled={loading} // Disable the button when loading is true
         >
           {loading ? (
@@ -1098,7 +1097,7 @@ Add Item
             </div>
          
         ) : (
-          'Save'
+          'Send'
         )}
       </Button>
       <Button
@@ -1108,7 +1107,8 @@ Add Item
         onClick={() => handleSave('save')}
         style={{ whiteSpace: 'nowrap' }}
         ref={saveButtonRef}
-        disabled={loading} // Disable the button when loading is true
+
+        disabled={ loading} // Disable the button when loading is true
         >
           {loading ? (
             <div>
@@ -1478,8 +1478,6 @@ placeholder="Item Name"
         </Button>
       </Grid>
       <Grid item xs={6} sm={6}>
-      </Grid>
-      <Grid item xs={6} sm={6}>
         <Button
           variant="contained"
           style={{ backgroundColor: '#ccc', color: '#ffffff' }}
@@ -1490,7 +1488,6 @@ placeholder="Item Name"
         </Button>
       </Grid>
 </Grid>
-
 </Paper>
    </Grid>
    </Paper>

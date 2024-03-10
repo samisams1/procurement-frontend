@@ -356,7 +356,7 @@ const CustomFooter = () => {
         Requested By
       </Typography>
       <Typography variant="body1">
-        Customer Name: {orderDetail?.user.firstName  + " " +   orderDetail?.user.lastName   }
+        Customer Name: {orderDetail?.user?.firstName  + " " +   orderDetail?.user?.lastName   }
       </Typography>
       <Typography variant="body1">
         Reference Number: {orderDetail?.referenceNumber}

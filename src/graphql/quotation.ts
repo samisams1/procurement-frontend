@@ -28,3 +28,42 @@ export const COUNT_QUOTATIONS_QUERY = gql`
     countGetQuotationByStatus(status: $status, supplierId: $supplierId)
   }
 `;
+export const CREATE_PURCHASE_REQUEST_MUTATION = gql`
+mutation CreatePurchaseRequest($input: CreatePurchaseRequestInput!) {
+  createPurchaseRequest(input: $input) {
+    id
+    userId
+    status
+    remark
+    imageUrl
+    addressDetail
+    estimatedDelivery
+    referenceNumber
+    createdAt
+  }
+}
+`;
+export const SAVE_PURCHASE_REQUEST_MUTATION = gql`
+mutation CreateDraftequest($input: CreatePurchaseRequestInput) {
+  createDraftequest(input: $input) {
+    id
+    userId
+    status
+    remark
+    addressDetail
+    estimatedDelivery
+    products {
+      id
+      Description
+      code
+      manufacturer
+      model
+      partNumber
+      quantity
+      title
+      uom
+      mark
+    }
+  }
+}
+`;
