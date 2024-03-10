@@ -74,6 +74,7 @@ const PaymentConfirmation: React.FC = () => {
        <PageHeader
       title="Payment Confirmation"
       subTitle="Payment Confirmation "
+      imageSrc = "salesForce.png"
       />
     <StyledPaper>
      

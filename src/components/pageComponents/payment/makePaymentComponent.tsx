@@ -152,6 +152,7 @@ const List: React.FC<{ id: number }> = ({ id }) => {
           title="Make Payment"
           icon={<Payments/>}
           subTitle="Please make Paymanet"
+          imageSrc = "salesForce.png"
           />
         </SectionTitle>
         <ThemeProvider theme={theme}>

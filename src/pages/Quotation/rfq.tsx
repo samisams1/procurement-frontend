@@ -5,6 +5,7 @@ import RfqComponent from '../../components/pageComponents/Quotation/Rfq';
 import Rfqs from '../../components/pageComponents/Quotation/admin/rfq';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import PageHeader from '../../components/PageHeader';
+import { QuestionAnswer } from '@mui/icons-material';
 
 export default function Rfq() {
   const { currentUser } = useContext(UserContext);
@@ -31,6 +32,8 @@ export default function Rfq() {
           <PageHeader
           title="Rfq"
           subTitle="list of rfq "
+          icon={<QuestionAnswer/>}
+          imageSrc = "salesForce.png"
           />
         <RfqComponent userId={Number(userId)} />
       </ThemeProvider>

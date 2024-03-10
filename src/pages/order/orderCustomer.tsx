@@ -20,6 +20,7 @@ const OrderCustomer = () => {
           title="Order"
           subTitle="orders"
           icon={<PeopleAltTwoTone />}
+          imageSrc = "salesForce.png"
     />
    </SectionTitle>
        

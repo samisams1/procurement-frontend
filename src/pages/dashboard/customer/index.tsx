@@ -1,11 +1,12 @@
 import React from 'react';
 import { Grid, Paper, Typography, Box, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { ShoppingCart, CheckCircle, Warning, LocalShipping, Add } from '@mui/icons-material';
+import { ShoppingCart, CheckCircle, Warning, LocalShipping, Dashboard } from '@mui/icons-material';
 import PageHeader from '../../../components/PageHeader';
 import OrderByStatus from '../../../components/pageComponents/dashboard/customer/orderByStatus';
 import CountRequestStatus from '../../../components/pageComponents/dashboard/customer/countRequestsByStatus';
 import NewRfq from '../../../components/pageComponents/dashboard/customer/countNewRfq';
+import { useNavigate } from 'react-router-dom';
 const SectionTitle = styled(Paper)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   padding: theme.spacing(2),
@@ -41,13 +42,16 @@ interface CustomerDashboardProps {
 }
 
 const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ userId }) => {
+  const navigate = useNavigate();
   // Sample data for recent orders
   const recentOrders = [
     { id: 1, product: 'Widget A', quantity: 5, status: 'Delivered' },
     { id: 2, product: 'Widget B', quantity: 10, status: 'In Progress' },
     { id: 3, product: 'Widget C', quantity: 2, status: 'Cancelled' },
   ];
-
+  const handleClick =(searchPage : string)=>{
+    navigate(`/${searchPage}`);
+    }
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -55,7 +59,8 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ userId }) => {
          <PageHeader
          title="Dashboard"
          subTitle='dashboard'
-        icon={<Add/>}  
+        icon={<Dashboard/>}  
+        imageSrc = "salesForce.png"
          />
         </SectionTitle>
       </Grid>
@@ -65,8 +70,8 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ userId }) => {
             <MetricValue variant="h4"><NewRfq status="pending" customerId={Number(userId) }/></MetricValue>
             <MetricLabel variant="subtitle2">Total RFQs</MetricLabel>
           </Box>
-          <IconButton color="inherit">
-            <ShoppingCart />
+          <IconButton color="inherit"    onClick={() => handleClick("rfq")}>
+            <ShoppingCart  />
           </IconButton>
         </MetricContainer>
       </Grid>
@@ -76,7 +81,7 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ userId }) => {
             <MetricValue variant="h4"><CountRequestStatus status="pending" userId={Number(userId) }/></MetricValue>
             <MetricLabel variant="subtitle2">Pending Requests</MetricLabel>
           </Box>
-          <IconButton color="inherit">
+          <IconButton color="inherit"  onClick={() => handleClick("requisitions")}>
             <Warning />
           </IconButton>
         </MetricContainer>
@@ -87,7 +92,7 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ userId }) => {
             <MetricValue variant="h4"><OrderByStatus status="pending" customerId={Number(1) }/></MetricValue>
             <MetricLabel variant="subtitle2">Pending Orders</MetricLabel>
           </Box>
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={() => handleClick("requisitions")}>
             <CheckCircle />
           </IconButton>
         </MetricContainer>
@@ -98,7 +103,7 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ userId }) => {
             <MetricValue variant="h4"><OrderByStatus status="comformed"  customerId={Number(userId) }/></MetricValue>
             <MetricLabel variant="subtitle2">Comformed Orders </MetricLabel>
           </Box>
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={() => handleClick("order")}>
             <Warning />
           </IconButton>
         </MetricContainer>
@@ -110,7 +115,7 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ userId }) => {
             <MetricValue variant="h4"><OrderByStatus status="approved" customerId={Number(userId) }/></MetricValue>
             <MetricLabel variant="subtitle2">Approved Orders / Payment Pending</MetricLabel>
           </Box>
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={() => handleClick("order")}>
             <ShoppingCart />
           </IconButton>
         </MetricContainer>
@@ -118,10 +123,10 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ userId }) => {
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#9E9E9E">
           <Box>
-            <MetricValue variant="h4">150</MetricValue>
+            <MetricValue variant="h4">5</MetricValue>
             <MetricLabel variant="subtitle2">Orders in Transit</MetricLabel>
           </Box>
-          <IconButton color="inherit">
+          <IconButton color="inherit" onClick={() => handleClick("order")}>
             <LocalShipping />
           </IconButton>
         </MetricContainer>

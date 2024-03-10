@@ -55,6 +55,7 @@ interface SupplierDashboardProps {
          title="Dashboard"
          subTitle='dashboard'
         icon={<Dashboard/>}  
+        imageSrc = "salesForce.png"
          />
         </SectionTitle>
       </Grid>

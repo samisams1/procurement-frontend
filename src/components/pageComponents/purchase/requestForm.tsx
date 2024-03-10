@@ -612,6 +612,7 @@ return(
             title="NEW REQUISITION FORM"
             subTitle="Create new requisition"
             icon={<RequestPageTwoTone fontSize="large" />}
+            imageSrc = "salesForce.png"
           />
           </SectionTitle>
          

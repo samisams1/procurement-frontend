@@ -58,6 +58,7 @@ const RequisitionComponent: React.FC = () => {
     'ID',
     'Reference Number',
     'Status',
+    'No of suppliers seen',
     'Date',
     {
       name: 'Action',
@@ -85,10 +86,11 @@ View Details
     purchaseRequest.referenceNumber,
     /*purchaseRequest.suppliers.map((supplier) => supplier.user.username).join(', '), */
     purchaseRequest.status === 'pending' ? (
-      <span style={{ color: 'red' }}>{purchaseRequest.status}</span>
+      <span style={{ color: 'green' }}>{"sent"}</span>
     ) : (
       <span style={{ color: 'green' }}>{purchaseRequest.status}</span>
     ), 
+    5,
     new Date(purchaseRequest.createdAt).toLocaleString(),
     '',
   ]);
@@ -131,10 +133,10 @@ View Details
       ) : error ? (
         <p>Error: {error.message}</p>
       ) : purchaseRequests && purchaseRequests.length > 0 ? (
-        <Grid container spacing={3}>
+    <Grid container spacing={3}>
       <Grid item xs={12}>
         <SectionTitle variant="outlined" square>
-          <PageHeader title="Tis is your Requests" icon={<RequestPageOutlined />} />
+          <PageHeader title="Tis is your Requests" icon={<RequestPageOutlined />} imageSrc = "salesForce.png" />
         </SectionTitle>
       </Grid>
       <Grid item xs={12}>

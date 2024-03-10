@@ -152,7 +152,9 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <SectionTitle variant="outlined" square>
-          <PageHeader title={location.pathname || 'Default Title'} icon={<RequestPageOutlined />} subTitle="this page is your request " />
+          <PageHeader title={location.pathname || 'Default Title'} icon={<RequestPageOutlined />} subTitle="this page is your request " 
+          imageSrc = "salesForce.png"
+          />
         </SectionTitle>
       </Grid>
       <Grid item xs={12}>

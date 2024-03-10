@@ -116,6 +116,7 @@ const ViewShipping: React.FC = () => {
             Title="Shippings"
             icon={<ShoppingCart />}
             subTitle="List of all Shippigs "
+            imageSrc = "salesForce.png"
           />
         </SectionTitle>
         <ThemeProvider theme={theme}>

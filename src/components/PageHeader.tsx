@@ -16,7 +16,7 @@ const RowContainer = styled('div')({
 const Image = styled('img')({
   marginLeft: 'auto',
   width: '100px', // Adjust the width as needed
-  height: 'auto',
+  height: '60px',
 });
 const Icon = styled('div')({
   color: '#ffffff', // Set the icon color to white

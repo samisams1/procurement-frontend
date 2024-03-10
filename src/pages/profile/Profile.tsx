@@ -30,6 +30,7 @@ const Profile: React.FC = () => {
           title="My Profile"
           subTitle="This is your profile page"
           icon={<PeopleOutlineTwoTone fontSize="large" />}
+          imageSrc = "salesForce.png"
         />
       </SectionTitle>
       <Grid container spacing={3}>

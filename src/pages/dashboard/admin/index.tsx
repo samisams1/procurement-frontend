@@ -46,6 +46,7 @@ const AdminDashboard = () => {
          <PageHeader
          title="Dashboard"
         icon={<Dashboard/>}  
+        imageSrc = "salesForce.png"
          />
         </SectionTitle>
       </Grid>

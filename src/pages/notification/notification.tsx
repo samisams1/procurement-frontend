@@ -5,6 +5,7 @@ import { List, ListItem, ListItemText, Typography, useMediaQuery } from '@mui/ma
 import PageHeader from '../../components/PageHeader';
 import {  useNavigate } from 'react-router-dom';
 import { UserContext } from '../../auth/UserContext';
+import { NotificationImportant } from '@mui/icons-material';
 
 const GET_NOTIFICATIONS_INFO = gql`
 query NotificationsByUserIdInfo($recipientId: Int!) {
@@ -74,7 +75,7 @@ const Notifications: React.FC = () => {
   return (
     <div>
       <ThemeProvider theme={theme}>
-        <PageHeader title="Notifications" />
+        <PageHeader title="Notifications" imageSrc = "salesForce.png"  icon = {<NotificationImportant/>} />
         <Typography variant="h6" color="textSecondary">
           Total Notification: {count}
         </Typography>

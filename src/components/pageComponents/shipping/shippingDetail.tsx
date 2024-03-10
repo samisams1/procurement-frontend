@@ -302,7 +302,7 @@ const ShippingDetail = () => {
       icon={<LocalShipping/>}
       title="Shipping  Detail"
       subTitle ="pircase Order"
-      imageSrc="tra.jpg"
+      imageSrc = "salesForce.png"
       />
         <Button
         variant="outlined"
