@@ -67,3 +67,23 @@ mutation CreateDraftequest($input: CreatePurchaseRequestInput) {
   }
 }
 `;
+export const GET_QUOTATION = gql`
+query QuotationBydSupplierId($suplierId: Int!, $status: String!) {
+    quotationBydSupplierId(suplierId: $suplierId, status: $status) {
+      id
+      purchaseRequestId
+      status
+      customer {
+        firstName
+        lastName
+      }
+      supplier {
+        name
+      }
+      purchaseRequest {
+        referenceNumber
+      }
+      createdAt
+    }
+  }
+`;

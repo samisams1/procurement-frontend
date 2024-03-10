@@ -21,9 +21,9 @@ const PurchaseRequest: React.FC = () => {
   });
 
   useEffect(() => {
-    if (data && data.supplierIdByUserId) {
+    if (data && data?.supplierIdByUserId) {
       // Perform any logic with the supplier ID here
-      const supplierId = data.supplierIdByUserId.id;
+      const supplierId = data?.supplierIdByUserId.id;
       console.log('Supplier ID:', supplierId);
     }
   }, [data]);
@@ -49,8 +49,8 @@ const PurchaseRequest: React.FC = () => {
   }
 
   if (role === 'SUPPLIER') {
-    if (data && data.supplierIdByUserId) {
-      const supplierId = data.supplierIdByUserId.id;
+    if (data && data?.supplierIdByUserId) {
+      const supplierId = data?.supplierIdByUserId.id;
       return <PurchaseRequests  supplierId= {supplierId}/>;;
     }
   } else {

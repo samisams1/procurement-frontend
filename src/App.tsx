@@ -6,6 +6,7 @@ import UserProvider from './auth/UserContext';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { PurchaseRequestProvider } from './context/purchaseRequestContext';
+import { QuotationProvider } from './context/quotationContext';
 
 const App: React.FC = () => {
   if ('serviceWorker' in navigator) {
@@ -31,7 +32,7 @@ const App: React.FC = () => {
     };
   });
 
-//  const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
+// const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
  const httpLink = new HttpLink({ uri: 'https://test.nilesoftdemo.com/graphql' });
   const link = authLink.concat(httpLink);
 
@@ -54,7 +55,9 @@ const App: React.FC = () => {
         <ApolloProvider client={client}>
           <Router>
             <PurchaseRequestProvider>
-            <RoutePage />
+              <QuotationProvider>
+              <RoutePage />
+              </QuotationProvider>
             </PurchaseRequestProvider>
           </Router>
         </ApolloProvider>

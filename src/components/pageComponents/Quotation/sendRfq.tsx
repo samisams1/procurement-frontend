@@ -7,6 +7,8 @@ import Button from '../../Button';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
 import { useNavigate } from 'react-router-dom';
+import { GET_QUOTATION } from '../../../graphql/quotation';
+import { useQuotation } from '../../../context/quotationContext';
 interface Product {
   id: number;
   uom: string | null;
@@ -95,8 +97,15 @@ const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplie
   >(GET_QUOTATION_QUERY, {
     variables: { id,  supplierId },
   });
+  const { data: quotationData, refetch: qRefetch } = useQuery(GET_QUOTATION, {
+    variables: { supplierId: Number(supplierId), status: "pending" }, // Set status to "pending" or "quoted"
+  });
+  const { data: quotationQuetedData, refetch: qPendingRefetch } = useQuery(GET_QUOTATION, {
+    variables: { supplierId: Number(supplierId), status: "quoted" }, // Set status to "pending" or "quoted"
+  });
   const [updateQuotation] = useMutation(UPDATE_QUOTATION_MUTATION);
- 
+  const { setQuotations } = useQuotation();
+
   const quotationByRequestIdAdSupplierId = data?.quotationByRequestIdAdSupplierId || [];
  
   const initialFormValues: QuotationInterface = {
@@ -174,7 +183,11 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
     console.log('Quotation:', input);
     try {
       const response = await updateQuotation({ variables: { id:qId, input } });
-      const quotation = response.data;
+      qRefetch();
+      qPendingRefetch();
+      setQuotations(quotationData?.quotationBydSupplierId);
+      setQuotations(quotationQuetedData?.quotationBydSupplierId);
+      const quotation = response?.data;
       console.log('Quotation:', quotation);
       setSuccessMessage('Quotation send successfully!');
       setErrorMessage('');
@@ -282,7 +295,6 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
     (quotation: any, index: number) => {
       const createdAtDate = new Date(quotation.createdAt);
       const formattedDate = createdAtDate.toLocaleDateString();
-  
       return [
         index + 1,
         formattedDate, // Converted date
@@ -290,7 +302,8 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
         <Input
           type="number"
           placeholder="Please Enter Price"
-          value={prices[quotation.id.toString()] || ''}
+          //value={prices[quotation.id.toString()] || ''}
+          value={prices[quotation.id.toString()] || quotation.price}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handlePriceChange(quotation.id.toString(), e)
           }
@@ -298,7 +311,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
         <Input
           type="number"
           placeholder="Please Enter discount"
-          value={disCountPrice[quotation.id.toString()] || ''}
+          value={disCountPrice[quotation.id.toString()] || quotation.discount}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handlePriceDiscountChange(quotation.id.toString(), e)
           }

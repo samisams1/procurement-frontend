@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import {Button} from "@mui/material";
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import PageHeader from '../../PageHeader';
 import { ShoppingCart } from '@mui/icons-material';
 import { SectionTitle } from '../../Section';
+import { useQuotation } from '../../../context/quotationContext';
 
 const GET_QUOTATION = gql`
 query QuotationBydSupplierId($suplierId: Int!, $status: String!) {
@@ -67,13 +68,19 @@ interface purchaseRequestId {
 
 const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
   const navigate = useNavigate()
-
+  const { quotations, setQuotations } = useQuotation();
   const { loading, error, data } = useQuery(GET_QUOTATION, {
     variables: { suplierId:Number(supplierId),status:"pending"},
   });
   const handleListItemClick = (id: number,qId:number) => {
     navigate('/sendRfq', { state: { id,qId,supplierId} });
   };
+  useEffect(() => {
+    if (!loading && !error && data) {
+      console.log('Fetched data:', data);
+      setQuotations(data?.quotationBydSupplierId);
+    }
+  }, [loading, error, data, setQuotations]);
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -82,9 +89,9 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
     return <p>Error: {error.message}</p>;
   }
 
-  const { quotationBydSupplierId } = data;
+  //const { quotationBydSupplierId } = data;
 
-  const tableData = quotationBydSupplierId.map((quotation: any) => ({
+  const tableData = quotations?.map((quotation: any) => ({
     id: quotation.purchaseRequestId,
     qId:quotation.id,
     status: quotation.status,

@@ -4,6 +4,7 @@ import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardNavbar from "./DashboardNavbar";
+import FlashMessage from "../components/common/FlashMessage";
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -46,6 +47,7 @@ export default function DashboardLayout() {
             />
       </div>
       <MainStyle>
+      <FlashMessage/>
           <Outlet />
         </MainStyle>
         <style>{`

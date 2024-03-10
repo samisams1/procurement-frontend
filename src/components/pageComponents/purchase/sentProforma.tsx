@@ -1,34 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import {Button} from "@mui/material";
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import PageHeader from '../../PageHeader';
 import { ShoppingCart } from '@mui/icons-material';
 import { SectionTitle } from '../../Section';
-
-const GET_QUOTATION = gql`
-query QuotationBydSupplierId($suplierId: Int!, $status: String!) {
-    quotationBydSupplierId(suplierId: $suplierId, status: $status) {
-      id
-      purchaseRequestId
-      status
-      customer {
-        firstName
-        lastName
-      }
-      supplier {
-        name
-      }
-      purchaseRequest {
-        referenceNumber
-      }
-      createdAt
-    }
-  }
-`;
-
+import { useQuotation } from '../../../context/quotationContext';
+import { GET_QUOTATION } from '../../../graphql/quotation';
 const theme = createTheme({
   components: {
     MUIDataTableHeadCell: {
@@ -67,9 +47,16 @@ interface purchaseRequestId {
 
 const SentProformaComponent: React.FC<purchaseRequestId> = ({supplierId }) => {
   const navigate = useNavigate()
+  const { quotations, setQuotations } = useQuotation();
   const { loading, error, data } = useQuery(GET_QUOTATION, {
     variables: { suplierId:Number(supplierId),status:"quoted"},
   });
+  useEffect(() => {
+    if (!loading && !error && data) {
+      console.log('Fetched data:', data);
+      setQuotations(data?.quotationBydSupplierId);
+    }
+  }, [loading, error, data, setQuotations]);
   const handleListItemClick = (id: number,qId:number) => {
     navigate('/sendRfq', { state: { id,qId,supplierId} });
   };
@@ -80,10 +67,7 @@ const SentProformaComponent: React.FC<purchaseRequestId> = ({supplierId }) => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
-
-  const { quotationBydSupplierId } = data;
-
-  const tableData = quotationBydSupplierId.map((quotation: any) => ({
+  const tableData = quotations.map((quotation: any) => ({
     id: quotation.purchaseRequestId,
     qId:quotation.id,
     status: quotation.status,
