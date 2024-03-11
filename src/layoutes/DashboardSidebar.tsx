@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-// material
 import { styled } from '@mui/material/styles';
-import { Box, Link, Drawer, Typography, Avatar } from '@mui/material';
+import { Box, Link, Drawer, Typography, Avatar, IconButton } from '@mui/material';
 import useResponsive from '../hooks/useResponsive';
 import Spinner from '../components/Spinner';
 import { UserContext } from '../auth/UserContext';
 import NavSection from './NavSection';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { PowerOff } from '@mui/icons-material';
 
 const DRAWER_WIDTH = 280;
 
@@ -20,17 +21,29 @@ const RootStyle = styled('div')(({ theme }) => ({
 const AccountStyle = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'space-between',
   padding: theme.spacing(2, 2.5),
   borderRadius: Number(theme.shape.borderRadius) * 1.5,
   backgroundColor: theme.palette.primary.main,
+}));
+
+const LogoStyle = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: theme.spacing(2, 2.5),
+}));
+
+const LogoImage = styled('img')(({ theme }) => ({
+  width: 80,
+  height: 80,
+  marginRight: theme.spacing(1),
 }));
 
 type DashboardSidebarProps = {
   isOpenSidebar: boolean;
   onCloseSidebar: () => void;
 };
-
-
 
 const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCloseSidebar }) => {
   const { pathname } = useLocation();
@@ -49,27 +62,36 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCl
   }
 
   const renderContent = (
-    <div> 
-      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
-        <img src={require('../assets/pro.png')} alt="logo" />
-        <h1 style={{ color: '#1c9fef' }}> </h1>
-      </Box>
+    <div>
+      <LogoStyle>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <LogoImage src={require('../assets/pro.png')} alt="logo" />
+          <Typography variant="h6" sx={{ color: '#00b0ad' }}>
+     Etproforma
+          </Typography>
+        </Box>
+        <IconButton color="inherit" component={RouterLink} to="/logout">
+          <PowerOff />
+        </IconButton>
+      </LogoStyle>
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            <Avatar src={require('../assets/sams.jpg')} alt="photoURL" />
+            <Avatar src={require('../assets/pro.png')} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}></Typography>
               <Typography variant="body2" sx={{ color: 'white' }}>
-                welcome {' ' + currentUser.username}
+                Welcome, {currentUser.username}!
               </Typography>
             </Box>
+            <IconButton color="inherit" component={RouterLink} to="/logout">
+              <LogoutIcon />
+            </IconButton>
           </AccountStyle>
         </Link>
       </Box>
-      <NavSection/>
+      <NavSection />
       <Box sx={{ flexGrow: 1 }} />
-      </div>
+    </div>
   );
 
   return (
