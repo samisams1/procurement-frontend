@@ -5,11 +5,11 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { UserContext } from '../../../auth/UserContext';
 import RequestForm, { SaleInput } from '../purchase/requestForm';
-import { GET_QUOTES, PURCHASE_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
+import {PURCHASE_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SavedForm from '../purchase/savedForm';
-import { CREATE_PURCHASE_REQUEST_MUTATION, SAVE_PURCHASE_REQUEST_MUTATION } from '../../../graphql/quotation';
-import { usePurchaseRequest } from '../../../context/purchaseRequestContext';
+import { CREATE_PURCHASE_REQUEST_MUTATION } from '../../../graphql/quotation';
+//import { usePurchaseRequest } from '../../../context/purchaseRequestContext';
 import { PurchaseRequestData } from './manageRequisition';
 export interface AdditionalData {
   remark: string;
@@ -19,8 +19,6 @@ export interface AdditionalData {
   requestedBy:string;
 }
 const NewRequisitionComponent: React.FC = () => {
-  const { setPurchaseRequests } = usePurchaseRequest();
-
   const location = useLocation();
   const [buttonLoading, setButtonLoading] = useState(false);
   const id = location.state?.id;
@@ -29,7 +27,7 @@ const NewRequisitionComponent: React.FC = () => {
   const remark =  location.state?.remark;
   const categoryId =  location.state?.categoryId;
   const sourceType = location.state?.sourceType;
-  
+  const products=location.state?.products || [];
   const navigate = useNavigate();
   const [flashMessage, setFlashMessage] = useState('');
   const { currentUser } = useContext(UserContext);
@@ -42,10 +40,10 @@ const NewRequisitionComponent: React.FC = () => {
       },
     ],
   });
-  const [savePurchaseRequest] = useMutation(SAVE_PURCHASE_REQUEST_MUTATION, {
+ /* const [savePurchaseRequest] = useMutation(SAVE_PURCHASE_REQUEST_MUTATION, {
     refetchQueries: [{ query:GET_QUOTES }],
-});
-const {data,refetch } = useQuery<PurchaseRequestData>(PURCHASE_REQUESTS_BY_USER_ID, {
+});*/
+const {refetch } = useQuery<PurchaseRequestData>(PURCHASE_REQUESTS_BY_USER_ID, {
   variables: { userId: Number(userId) },
 });
 
@@ -64,11 +62,7 @@ const handleSubmit = async (
   buttonType: string,
 ): Promise<void> => {
   try {
-    if (buttonType === "save") {
-      setButtonLoading(true); 
-    }else if (buttonType === "send") {
-      setButtonLoading(true);
-    }
+    setButtonLoading(true); 
     if (
       selectedType !== 'supplier' &&
       selectedType !== 'agent' &&
@@ -82,7 +76,7 @@ const handleSubmit = async (
     const input = {
       purchaseRequest: {
         userId: Number(userId),
-        status: 'pending',
+        status: 'saved',
         remark: additional.remark,
         addressDetail: additional.addressDetail,
         estimatedDelivery: additional.estimatedDelivery,
@@ -104,19 +98,19 @@ const handleSubmit = async (
         model: product.model,
       })),
     };
-    const inputSave = {
+   /* const inputSave = {
       purchaseRequest: {
         userId: Number(userId),
         status: 'saved',
         remark: additional.remark,
         addressDetail: additional.addressDetail,
         estimatedDelivery: additional.estimatedDelivery,
-        referenceNumber: "samisam",
         sourceType: selectedType,
         categoryId: Number(categoryId),
         approvedBy:additional.approvedBy,
         requestedBy:additional.requestedBy
       },
+      suppliers: supplierNewId.map((supplierId) => ({ id: supplierId })),
       products: validProducts.map((product) => ({
         title: product.productTitle,
         quantity: product.quantity,
@@ -129,22 +123,18 @@ const handleSubmit = async (
         model: product.model,
       })),
     };
-    console.log(input);
+  
+    console.log(input); */
     if (buttonType === "save") {
-      alert("saved");
-      const response = await savePurchaseRequest({ variables: { input: inputSave } });
+      const response = await createPurchaseRequest({ variables: { input } });
       refetch();
       setButtonLoading(false);
-      console.log("response:", response);
-      setFlashMessage('Your request is saved successfully');
+      console.log('Mutation response:', response);
+      setFlashMessage('Your request is sent successfully');
       setOpenSnackbar(true);
       setTimeout(() => {
-        if (response.data && response.data.savePurchaseRequest && response.data.savePurchaseRequest.id) {
-        //  setPurchaseRequest(response.data.createPurchaseRequest);
-        refetch();
-          setPurchaseRequests(data?.purchaseRequestByUserId || []);
-          navigate(`/purchaseRequest/${response.data.savePurchaseRequest.id}`);
-          
+        if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
+          navigate(`/purchaseRequest/${response.data.createPurchaseRequest.id}`);
         } else {
           console.error('Invalid response data');
           // Handle the case when the response data is not as expected
@@ -154,7 +144,6 @@ const handleSubmit = async (
       const response = await createPurchaseRequest({ variables: { input } });
       refetch();
       setButtonLoading(false);
-      console.log('Mutation response:', response);
       console.log('Mutation response:', response);
       setFlashMessage('Your request is sent successfully');
       setOpenSnackbar(true);
@@ -181,6 +170,7 @@ useEffect(() => {
       <Helmet>
         <title>New Requisition</title>
       </Helmet>
+    
       <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleCloseSnackbar}>
         <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
           {flashMessage}
@@ -188,7 +178,8 @@ useEffect(() => {
       </Snackbar>
       {
         id ?<SavedForm loading={buttonLoading}  onSubmit={handleSubmit} purchaseRequestId={id} estimatedDate={samis} 
-        addressData={address} remarkData={remark} categoryIdData =  {categoryId} sourceType= {sourceType}/>:
+        addressData={address} remarkData={remark} categoryIdData =  {categoryId} sourceType= {sourceType} savedProducts={products}
+        />:
         <RequestForm   loading={buttonLoading} onSubmit={handleSubmit}/>
       }
     </>

@@ -11,7 +11,7 @@ export default function NewRequisition() {
     // Simulating an asynchronous action
     setTimeout(() => {
       setLoading(false);
-    }, 50); // Replace with your actual data fetching or processing logic
+    }, 2000); // Replace with your actual data fetching or processing logic
   }, []);
 
   if (loading) {

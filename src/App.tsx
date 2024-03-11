@@ -32,7 +32,7 @@ const App: React.FC = () => {
     };
   });
 
-// const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
+//const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
  const httpLink = new HttpLink({ uri: 'https://test.nilesoftdemo.com/graphql' });
   const link = authLink.concat(httpLink);
 

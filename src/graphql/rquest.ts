@@ -80,6 +80,34 @@ query SavedRequestByUserId($userId: Int!) {
     estimatedDelivery
     referenceNumber
     createdAt
+    products {
+      id
+      quantity
+      title
+      Description
+      code
+      manufacturer
+      model
+      partNumber
+      uom
+      mark
+    }
+    
+  }
+}
+`;
+export const PURCHASE_REQUESTS_BY__ID = gql`
+query GetDraftProductsByRequestId($purchaseRequestId: Int!) {
+  getDraftProductsByRequestId(purchaseRequestId: $purchaseRequestId) {
+    id
+    userId
+    status
+    remark
+    imageUrl
+    addressDetail
+    estimatedDelivery
+    referenceNumber
+    createdAt
     
   }
 }

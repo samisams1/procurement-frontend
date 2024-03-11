@@ -42,6 +42,17 @@ export interface SaleInput {
   manufacturer  :string;
   model  :string;
 }
+export interface Product {
+  title: string;
+  code:string;
+  partNumber  :string;
+  uom :string;
+  quantity :string;
+  mark  :string;
+  description :string;
+  manufacturer  :string;
+  model  :string;
+}
 export interface AdditionalData {
   remark: string;
   estimatedDelivery: string;
@@ -62,6 +73,7 @@ interface RequestFormProps {
     categoryIdData:number;
     sourceType:string;
     loading: boolean;
+    savedProducts:[Product]
   onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string,categoryId:string,buttonType:string) => Promise<void>;
 }
 const GET_CATEGORIES = gql`
@@ -98,22 +110,24 @@ mutation UploadProfilePicture($file: Upload!) {
   }
 }
 `;
-const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,remarkData,categoryIdData,addressData,estimatedDate,sourceType }) => {
+const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,remarkData,categoryIdData,addressData,estimatedDate,sourceType,savedProducts }) => {
 
-  const [productTitles, setProductTitles] = useState<string[]>(['Title 1', 'Title 2', 'Title 3']);
-  const [itemCodes, setItemCodes] = useState<string[]>(['']);
-  const [itemCodeErrors, setItemCodeErrors] = useState<string[]>(['']);
-  const [partNumbers, setPartNumbers] = useState<string[]>(['']);
-  const [partNumberErrors, setPartNumberErrors] = useState<string[]>(['']);
-  const [uoms, setUoms] = useState<string[]>(['']);
-  const [uomErrors, setUomErrors] = useState<string[]>(['']);
-  const [quantities, setQuantities] = useState<string[]>(['4500','1500','2000',]);
+  const [productTitles, setProductTitles] = useState<string[]>(savedProducts.map(product => product.title));
+
+ // const [productTitles, setProductTitles] = useState<string[]>(['']);
+  const [itemCodes, setItemCodes] = useState<string[]>(savedProducts.map(product => product.code));
+ // const [itemCodeErrors, setItemCodeErrors] = useState<string[]>(['']);
+  const [partNumbers, setPartNumbers] =useState<string[]>(savedProducts.map(product => product.partNumber));
+  //const [partNumberErrors, setPartNumberErrors] = useState<string[]>(['']);
+  const [uoms, setUoms] = useState<string[]>(savedProducts.map(product => product.title));
+  //const [uomErrors, setUomErrors] = useState<string[]>(['']);
+  const [quantities, setQuantities] = useState<string[]>(savedProducts.map(product => product.quantity));
   const [quantityErrors, setQuantityErrors] = useState<string[]>(['']);
   
-  const [manufacturers, setManufacturers] = useState<string[]>(['']);
-  const [descriptions, setDescriptions] = useState<string[]>(['']);
-  const [marks, setMarks] = useState<string[]>(['']);
-  const [models, setModels] = useState<string[]>(['']);
+  const [manufacturers, setManufacturers] = useState<string[]>(savedProducts.map(product => product.manufacturer));
+  const [descriptions, setDescriptions] = useState<string[]>(savedProducts.map(product => product.description));
+  const [marks, setMarks] = useState<string[]>(savedProducts.map(product => product.mark));
+  const [models, setModels] = useState<string[]>(savedProducts.map(product => product.model));
 
   const [remark, setRemark] = useState(remarkData);
   const [addressDetail, setAddressDetail] = useState(addressData);
@@ -188,13 +202,13 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,rema
     updatedItemCodes[index] = value;
     setItemCodes(updatedItemCodes);
 
-    const updatedCodeErrors = [...itemCodeErrors];
+    /*const updatedCodeErrors = [...itemCodeErrors];
     if (value.trim() === '') {
       updatedCodeErrors[index] = 'Please enter a valid item code.';
     } else {
       updatedCodeErrors[index] = '';
     }
-    setItemCodeErrors(updatedCodeErrors);
+    setItemCodeErrors(updatedCodeErrors);*/
   };
 
   const handlePartNumberChange = (index: number, value: string) => {
@@ -202,13 +216,13 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,rema
     updatedPartNumbers[index] = value;
     setPartNumbers(updatedPartNumbers);
 
-    const updatedPartNumberErrors = [...partNumberErrors];
+   /* const updatedPartNumberErrors = [...partNumberErrors];
     if (value.trim() === '') {
       updatedPartNumberErrors[index] = 'Please enter a valid part number.';
     } else {
       updatedPartNumberErrors[index] = '';
     }
-    setPartNumberErrors(updatedPartNumberErrors);
+    setPartNumberErrors(updatedPartNumberErrors);*/
   };
 
   const handleUomChange = (index: number, value: string) => {
@@ -216,13 +230,13 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,rema
     updatedUoms[index] = value;
     setUoms(updatedUoms);
 
-    const updatedUomErrors = [...uomErrors];
+/*    const updatedUomErrors = [...uomErrors];
     if (value.trim() === '') {
       updatedUomErrors[index] = 'Please enter a valid UOM.';
     } else {
       updatedUomErrors[index] = '';
     }
-    setUomErrors(updatedUomErrors);
+  setUomErrors(updatedUomErrors);*/
   };
   const handleQuantityChange = (index: number, value: number) => {
     const updatedQuantities = [...quantities];
@@ -341,7 +355,7 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,rema
     });
     setTitleErrors(updatedTitleErrors);
 
-    if (updatedTitleErrors.some((error) => error !== '')) {
+   /* if (updatedTitleErrors.some((error) => error !== '')) {
       return;
     }
     const updateItemCodeErrors = itemCodes.map((code) => {
@@ -366,7 +380,7 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,rema
     if (updatePartNumberErrors.some((error) => error !== '')) {
       return;
     }
-    const updateUomsErrors = uoms.map((uom) => {
+   const updateUomsErrors = uoms.map((uom) => {
       if (uom.trim() === '') {
         return 'Please enter a valid item uom.';
       }
@@ -376,7 +390,7 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,rema
 
     if (updateUomsErrors.some((error) => error !== '')) {
       return;
-    }
+    }*/
     const updateQuantitieErrors = quantities.map((quantitie) => {
       if (quantitie.trim() === '') {
         return 'Please enter a valid item quantities.';
@@ -469,7 +483,7 @@ console.log(supplierIds)
     if (updatedTitleErrors.some((error) => error !== '')) {
       return;
     }
-    const updateItemCodeErrors = itemCodes.map((code) => {
+   /* const updateItemCodeErrors = itemCodes.map((code) => {
       if (code.trim() === '') {
         return 'Please enter a valid item itemCodes.';
       }
@@ -501,7 +515,7 @@ console.log(supplierIds)
 
     if (updateUomsErrors.some((error) => error !== '')) {
       return;
-    }
+    }*/
     const updateQuantitieErrors = quantities.map((quantitie) => {
       if (quantitie.trim() === '') {
         return 'Please enter a valid item quantities.';
@@ -816,30 +830,27 @@ return(
       label="Item Code"
       variant="outlined"
       fullWidth
-      required
       value={itemCodes[index]}
       onChange={(e) => handleItemCodeChange(index, e.target.value)}
-      error={itemCodeErrors[index] !== ''}
+     // error={itemCodeErrors[index] !== ''}
      style={{ marginBottom: '1rem' }}
     />
     <TextField
       label="Part Number"
       variant="outlined"
       fullWidth
-      required
       value={partNumbers[index]}
       onChange={(e) => handlePartNumberChange(index, e.target.value)}
-      error={partNumberErrors[index] !== ''}
+    //  error={partNumberErrors[index] !== ''}
      style={{ marginBottom: '1rem' }}
     />
        <TextField
       label="UOM"
-      required
       variant="outlined"
       fullWidth
       value={uoms[index]}
       onChange={(e) => handleUomChange(index, e.target.value)}
-      error={uomErrors[index] !== ''}
+//error={uomErrors[index] !== ''}
      style={{ marginBottom: '1rem' }}
     /> 
     <TextField
@@ -871,7 +882,7 @@ return(
       fullWidth
       value={marks[index]}
       onChange={(e) => handleMarkChange(index, e.target.value)}
-      //error={quantityErrors[index] !== ''}
+      error={quantityErrors[index] !== ''}
      style={{ marginBottom: '1rem' }}
     /> 
         
@@ -1175,7 +1186,7 @@ placeholder="Item Name"
           placeholder="Item Code"
           value={itemCodes[index]}
           onChange={(e) => handleItemCodeChange(index, e.target.value)}
-          error={itemCodeErrors[index] !== ''}
+        //  error={itemCodeErrors[index] !== ''}
           fullWidth
         />
         </TableCell>
@@ -1184,7 +1195,7 @@ placeholder="Item Name"
           placeholder="Part Number"
           value={partNumbers[index]}
           onChange={(e) => handlePartNumberChange(index, e.target.value)}
-          error={partNumberErrors[index] !== ''}
+         // error={partNumberErrors[index] !== ''}
           fullWidth
         />
         </TableCell>
@@ -1193,7 +1204,7 @@ placeholder="Item Name"
   placeholder="UOM"
   value={uoms[index]}
   onChange={(e) => handleUomChange(index, e.target.value)}
-  error={uomErrors[index] !== ''}
+  //error={uomErrors[index] !== ''}
   fullWidth
 />
         </TableCell>
@@ -1243,7 +1254,7 @@ placeholder="Item Name"
           placeholder="Model"
           value={models[index]}
           onChange={(e) => handleModelChange(index, e.target.value)}
-          error={itemCodeErrors[index] !== ''}
+        //  error={itemCodeErrors[index] !== ''}
           fullWidth
         />
           </div>

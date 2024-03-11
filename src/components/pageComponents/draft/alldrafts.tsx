@@ -11,25 +11,34 @@ import { SAVED_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
 import Spinner from '../../Spinner';
 import { UserContext } from '../../../auth/UserContext';
 
-interface PurchaseRequestData {
-  savedRequestByUserId: {
-    id: string;
-    userId: number;
-    status: string;
-    remark: string;
-    addressDetail: string;
-    estimatedDelivery: string;
-    referenceNumber: string;
-    createdAt: string;
+interface PurchaseRequest {
+  id: string;
+  userId: number;
+  status: string;
+  remark: string;
+  addressDetail: string;
+  estimatedDelivery: string;
+  referenceNumber: string;
+  createdAt: string;
+  categoryId:number,
+  sourceType :string
+  products: {
+    id:number
+    quantity:number
+    title:string
+  },
+  user: {
+    username: string;
+  };
+  suppliers: {
     user: {
       username: string;
     };
-    suppliers: {
-      user: {
-        username: string;
-      };
-    }[];
   }[];
+}
+
+interface PurchaseRequestData {
+  savedRequestByUserId: PurchaseRequest[];
 }
 
 const AllDrafts: React.FC = () => {
@@ -58,8 +67,12 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
   }
 
   const purchaseRequests = data?.savedRequestByUserId || [];
-  const handleClick = (id: string,estimatedDelivery:number,remark:string,addressDetail:string,categoryId:number,sourceType:string) => {
-    navigate('/newRequest', { state: { id,estimatedDelivery,remark,addressDetail,categoryId,sourceType } });
+  const handleClick = (purchaseRequest: PurchaseRequest) => {
+    const { id, estimatedDelivery, remark, addressDetail, categoryId,products } = purchaseRequest;
+    const sourceType = "supplier"
+    console.log("krish")
+    console.log(products)
+    navigate('/newRequest', { state: { id, estimatedDelivery, remark, addressDetail, categoryId, sourceType,products } });
   };
 
   const columns = [
@@ -76,16 +89,11 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
         filter: false,
         sort: false,
         customBodyRender: (value: any, tableMeta: any) => {
-          const purchaseRequestId = tableMeta.rowData[1];
-          const estimatedDelivery = 13;
-          const remark = "ok";
-          const addressDetail = "Addis"
-          const categoryId = 1;
-          const sourceType ="supplier";
+          const purchaseRequest = purchaseRequests[tableMeta.rowIndex];
           return (
             <Button
               text="Revise and Send"
-              onClick={() => handleClick(purchaseRequestId,estimatedDelivery,remark,addressDetail,categoryId,sourceType)}
+              onClick={() => handleClick(purchaseRequest)}
               style={{ cursor: 'pointer' }}
             />
           );
@@ -147,11 +155,11 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
       <Grid item xs={12}>
         <SectionTitle variant="outlined" square>
           <PageHeader
-           title="Saved Request"
-           icon={<RequestPageOutlined />} 
-           subTitle="this page is your saved Request You can re Send as you need"
-           />
-        </SectionTitle>
+            title="Saved Request"
+            icon={<RequestPageOutlined />}
+            subTitle="this page is your saved Request You can re Send as you need"
+          />
+       </SectionTitle>
       </Grid>
       <Grid item xs={12}>
         <ThemeProvider theme={theme}>
