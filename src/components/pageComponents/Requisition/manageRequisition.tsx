@@ -80,20 +80,21 @@ View Details
     },
   ];
 
-  const tableData = purchaseRequests.map((purchaseRequest, index) => [
+  const tableData = purchaseRequests
+  .filter((purchaseRequest) => purchaseRequest.status === 'pending')
+  .map((purchaseRequest, index) => [
     index + 1,
     purchaseRequest.id,
     purchaseRequest.referenceNumber,
-    /*purchaseRequest.suppliers.map((supplier) => supplier.user.username).join(', '), */
-    purchaseRequest.status === 'pending' ? (
+    (
       <span style={{ color: 'green' }}>{"sent"}</span>
-    ) : (
-      <span style={{ color: 'green' }}>{purchaseRequest.status}</span>
-    ), 
-    5,
+    ),
+    purchaseRequest?.suppliers?.map((supplier:any) => supplier.user.first).join(', '),
     new Date(purchaseRequest.createdAt).toLocaleString(),
     '',
   ]);
+
+ 
   const options: MUIDataTableOptions = {
     filter: true,
     download: true,

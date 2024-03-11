@@ -36,7 +36,7 @@ const NewRequisitionComponent: React.FC = () => {
     refetchQueries: [
       {
         query: PURCHASE_REQUESTS_BY_USER_ID,
-        variables: { userId: userId },
+        variables: { userId: userId,status:"pending" },
       },
     ],
   });
@@ -44,7 +44,7 @@ const NewRequisitionComponent: React.FC = () => {
     refetchQueries: [{ query:GET_QUOTES }],
 });*/
 const {refetch } = useQuery<PurchaseRequestData>(PURCHASE_REQUESTS_BY_USER_ID, {
-  variables: { userId: Number(userId) },
+  variables: { userId: Number(userId),status:"pending" },
 });
 
 
@@ -76,7 +76,7 @@ const handleSubmit = async (
     const input = {
       purchaseRequest: {
         userId: Number(userId),
-        status: 'saved',
+        status: buttonType === "save"?"seved":"pending",
         remark: additional.remark,
         addressDetail: additional.addressDetail,
         estimatedDelivery: additional.estimatedDelivery,
@@ -98,6 +98,7 @@ const handleSubmit = async (
         model: product.model,
       })),
     };
+    
    /* const inputSave = {
       purchaseRequest: {
         userId: Number(userId),
@@ -134,12 +135,12 @@ const handleSubmit = async (
       setOpenSnackbar(true);
       setTimeout(() => {
         if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
-          navigate(`/purchaseRequest/${response.data.createPurchaseRequest.id}`);
+          navigate(`/drafts`);
         } else {
           console.error('Invalid response data');
           // Handle the case when the response data is not as expected
         }
-      }, 2000);
+      }, 5000);
     } else if (buttonType === "send") {
       const response = await createPurchaseRequest({ variables: { input } });
       refetch();

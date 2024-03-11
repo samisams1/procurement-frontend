@@ -7,7 +7,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { PurchaseRequestProvider } from './context/purchaseRequestContext';
 import { QuotationProvider } from './context/quotationContext';
-
 const App: React.FC = () => {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -20,7 +19,6 @@ const App: React.FC = () => {
         });
     });
   }
-
   const authLink = setContext((_, { headers }) => {
     const token = localStorage.getItem('token');
 
@@ -32,8 +30,8 @@ const App: React.FC = () => {
     };
   });
 
-//const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
- const httpLink = new HttpLink({ uri: 'https://test.nilesoftdemo.com/graphql' });
+const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
+// const httpLink = new HttpLink({ uri: 'https://test.nilesoftdemo.com/graphql' });
   const link = authLink.concat(httpLink);
 
   const client = new ApolloClient({

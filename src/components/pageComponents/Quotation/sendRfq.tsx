@@ -225,7 +225,13 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
     return subtotal.toFixed(2);
   };
   const calculateDisCountSubtotal = () => {
-    let subtotal = 20400;
+    let subtotal = 0;
+    quotationByRequestIdAdSupplierId.forEach((quotation) => {
+      const discountPrice = parseFloat(quotation.product.quantity) || 0;
+      const quantity = parseFloat(disCountPrice[quotation.id.toString()]) || 0;
+      subtotal += discountPrice * quantity;
+    });
+    subtotal += shippingCost;
     return subtotal.toFixed(2);
   };
   const calculateTax = (grandTotal: number, taxRate: number): string => {
@@ -233,7 +239,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
     return taxAmount.toFixed(2);
   };
   
-  const taxRate: number = 0.08; // Assuming the tax rate is 8%
+  const taxRate: number = 0.15; // Assuming the tax rate is 8%
   const grandTotal: number = parseFloat(calculateSubtotal());
   const tax: string = calculateTax(grandTotal, taxRate);
 
@@ -431,12 +437,16 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
         Tax: {tax} Birr
       </Typography>
       <Typography variant="subtitle1" align="right" fontWeight="bold">
-        Grand Total: {grandTotal} Birr
+        Grand Total: {Number(grandTotal)  + Number(tax)} Birr
       </Typography>
+      {
+        Number(calculateDisCountSubtotal()) >0?  <Typography variant="subtitle1" align="right" fontWeight="bold">
+        Discount : {calculateDisCountSubtotal()} Birr
+     </Typography>:''
+      } 
       <Typography variant="subtitle1" align="right" fontWeight="bold">
-      Grand   Discount : {calculateDisCountSubtotal()} Birr
+         Payable amount  : {Number(grandTotal)  + Number(tax)  -  Number(calculateDisCountSubtotal())} Birr
       </Typography>
-      
     </Grid>
   </Grid>
 </Grid>

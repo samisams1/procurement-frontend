@@ -7,7 +7,7 @@ import { RequestPageOutlined } from '@mui/icons-material';
 import Button from '../../Button';
 import { useNavigate } from 'react-router-dom';
 import { SectionTitle } from '../../Section';
-import { SAVED_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
+import {  SAVED_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
 import Spinner from '../../Spinner';
 import { UserContext } from '../../../auth/UserContext';
 
@@ -102,7 +102,7 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
     },
   ];
 
-  const tableData = purchaseRequests?.map((purchaseRequest, index) => [
+ /* const tableData = purchaseRequests?.map((purchaseRequest, index) => [
     index + 1,
     purchaseRequest.id,
     purchaseRequest.referenceNumber,
@@ -115,8 +115,20 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
     ),
     new Date(purchaseRequest.createdAt).toLocaleString(),
     '',
+  ]);*/
+  const tableData = purchaseRequests
+  .filter((purchaseRequest) => purchaseRequest.status === 'seved')
+  .map((purchaseRequest, index) => [
+    index + 1,
+    purchaseRequest.id,
+    purchaseRequest.referenceNumber,
+    (
+      <span style={{ color: 'green' }}>{purchaseRequest.status}</span>
+    ),
+    purchaseRequest?.suppliers?.map((supplier:any) => supplier.user.first).join(', '),
+    new Date(purchaseRequest.createdAt).toLocaleString(),
+    '',
   ]);
-
   const options: MUIDataTableOptions = {
     filter: true,
     download: true,
