@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Input from '../../Input';
-import { Alert, Box, MenuItem, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, MenuItem, Paper, TextField, Typography } from '@mui/material';
 import { Form, useForm } from '../../useForm';
-import Button from '../../Button';
+//import Button from '../../Button';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
 import { useNavigate } from 'react-router-dom';
 import { GET_QUOTATION } from '../../../graphql/quotation';
 import { useQuotation } from '../../../context/quotationContext';
+import { Cancel, Drafts, Save } from '@mui/icons-material';
+import numberToWords from 'number-to-words';
 interface Product {
   id: number;
   uom: string | null;
@@ -22,7 +24,7 @@ interface Quotation {
 interface ProductPrice {
   id: number;
   createdAt: string;
-  price: number;
+  price: string;
   status: string;
   product: Product;
   quotation: Quotation;
@@ -80,9 +82,11 @@ interface Props {
   supplierId: number;
   status: string;
   customerId: string;
+  referenceNumber:string;
+  requestedDate:string;
 }
 
-const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplierId }) => {
+const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplierId,referenceNumber,requestedDate }) => {
   const [prices, setPrices] = useState<{ [key: string]: string }>({});
   const [disCountPrice, setDisCountPrices] = useState<{ [key: string]: string }>({});
   const [shippingCost, setShippingCost] = useState<number>(0);
@@ -239,6 +243,9 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
     return taxAmount.toFixed(2);
   };
   
+  const convertToWords = (num: number): string => {
+    return numberToWords.toWords(num);
+  };
   const taxRate: number = 0.15; // Assuming the tax rate is 8%
   const grandTotal: number = parseFloat(calculateSubtotal());
   const tax: string = calculateTax(grandTotal, taxRate);
@@ -308,8 +315,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
         <Input
           type="number"
           placeholder="Please Enter Price"
-          //value={prices[quotation.id.toString()] || ''}
-          value={prices[quotation.id.toString()] || quotation.price}
+          value={prices[quotation.id.toString()]  ||  quotation.price}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handlePriceChange(quotation.id.toString(), e)
           }
@@ -384,6 +390,21 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
       </Alert>
     )}
       </Grid>
+      <Grid item xs={12} sm={12}>
+        <Paper elevation={3} sx={{ padding: '20px' }}>
+            <div style={{
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: '10px',
+}}>
+  
+  <Typography>Reference Number : {referenceNumber} </Typography>
+  <Typography>Requested  Date : {requestedDate} </Typography>
+ <Typography>Due Date : </Typography>
+</div>
+</Paper>
+        </Grid>
           <MUIDataTable
             title="Quotation products"
             data={tableData}
@@ -429,16 +450,22 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
       >
         {renderDateOptions()}
       </TextField>
-    
       <Typography variant="subtitle1" align="right" fontWeight="bold">
-        Subtotal: {calculateSubtotal()} Birr
-      </Typography>
-      <Typography variant="subtitle1" align="right" fontWeight="bold">
-        Tax: {tax} Birr
-      </Typography>
-      <Typography variant="subtitle1" align="right" fontWeight="bold">
-        Grand Total: {Number(grandTotal)  + Number(tax)} Birr
-      </Typography>
+  Subtotal: {calculateSubtotal()} Birr
+  {' - '}
+  <span style={{color:"red"}}> {convertToWords(Number(calculateSubtotal()))} Birr (In Words)</span>
+</Typography>
+<Typography variant="subtitle1" align="right" fontWeight="bold">
+Tax(15%): {tax} Birr
+  {' - '}
+  <span style={{color:"red"}}> {convertToWords(Number(tax))} Birr (In Words)</span>
+</Typography>
+<Typography variant="subtitle1" align="right" fontWeight="bold">
+ Grand Total: {Number(grandTotal)  + Number(tax)} Birr
+  {' - '}
+  <span style={{color:"red"}}> {convertToWords(Number(grandTotal) + Number(tax))} Birr (In Words)</span>
+</Typography>
+
       {
         Number(calculateDisCountSubtotal()) >0?  <Typography variant="subtitle1" align="right" fontWeight="bold">
         Discount : {calculateDisCountSubtotal()} Birr
@@ -446,15 +473,59 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
       } 
       <Typography variant="subtitle1" align="right" fontWeight="bold">
          Payable amount  : {Number(grandTotal)  + Number(tax)  -  Number(calculateDisCountSubtotal())} Birr
+         {' - '}
+         <span style={{color:"red"}}> {convertToWords(Number(grandTotal)  + Number(tax)  -  Number(calculateDisCountSubtotal()))} Birr (In Words)</span>
+      </Typography>
+      <Typography variant="subtitle1" align="left" fontWeight="bold">
+     Approved By :First Name last Name
       </Typography>
     </Grid>
   </Grid>
 </Grid>
   <Grid item xs={12} textAlign="center">
     {!successMessage && !errorMessage && (
-      <Button variant="contained" type="submit" size="large"  text= "  Send Quotation">
-        Send Quotation
-      </Button>
+    <div>
+        <Grid item xs={12} sm={12}>
+        <Paper elevation={3} sx={{ padding: '20px' }}>
+            <div style={{
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: '10px',
+}}>
+  
+  <Button
+    variant="outlined"
+    color="primary"
+    type="submit"
+    startIcon={<Save />}
+    //onClick={handleAddTitle}
+    style={{ whiteSpace: 'nowrap',backgroundColor:"green",color:"#ffffff"}}
+  >
+   Send Quotation
+  </Button>
+  <Button
+    variant="outlined"
+    color="primary"
+    startIcon={<Drafts />}
+    //onClick={handleAddTitle}
+    style={{ whiteSpace: 'nowrap',backgroundColor:"gray",color:"#ffffff" }}
+  >
+  Seve as Drafts
+  </Button>
+  <Button
+    variant="outlined"
+    //color="Secodary"
+    startIcon={<Cancel />}
+    //onClick={handleAddTitle}
+    style={{ whiteSpace: 'nowrap',backgroundColor:"red",color:"#ffffff" }}
+  >
+    Cancel
+  </Button>
+</div>
+</Paper>
+        </Grid>
+    </div>
     )}
   </Grid>
 </Grid>

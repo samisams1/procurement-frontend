@@ -70,15 +70,15 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCl
      Etproforma
           </Typography>
         </Box>
-        <IconButton color="inherit" component={RouterLink} to="/logout">
+        <IconButton color="inherit" component={RouterLink} to="/home">
           <PowerOff />
         </IconButton>
       </LogoStyle>
-      <Box sx={{ mb: 5, mx: 2.5 }}>
+      <Box sx={{ mb: 2, mx: 1 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
             <Avatar src={require('../assets/pro.png')} alt="photoURL" />
-            <Box sx={{ ml: 2 }}>
+            <Box sx={{ ml: 1 }}>
               <Typography variant="body2" sx={{ color: 'white' }}>
                 Welcome, {currentUser.username}!
               </Typography>

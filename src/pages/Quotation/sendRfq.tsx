@@ -9,6 +9,8 @@ const SendRfq = () => {
   const qId = location.state?.qId;
   const customerId = location.state?.customerId;
   const supplierId = location.state?.supplierId;
+  const referenceNumber=location.state?.referenceNumber;
+  const  requestedDate=location.state?.requestedDate;
   return (
     <div>
     <PageHeader
@@ -16,7 +18,8 @@ const SendRfq = () => {
     icon={<RequestQuote/>}
     subTitle="please fill your price and send to the supplier"
     />
-          <SendRfqComponent id={Number(id)} qId ={Number(qId)}  status="pending" customerId= {customerId} supplierId={Number(supplierId)} />
+          <SendRfqComponent id={Number(id)} qId ={Number(qId)}  status="pending" customerId= {customerId} supplierId={Number(supplierId)} 
+         referenceNumber={referenceNumber} requestedDate ={requestedDate} />
     </div>
   );
 };

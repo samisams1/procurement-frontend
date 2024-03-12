@@ -65,6 +65,17 @@ query PurchaseRequestByUserId($userId: Int!) {
     status
     referenceNumber
     createdAt
+    products {
+      id
+      quantity
+      title
+      Description
+      code
+      manufacturer
+      model
+      partNumber
+      uom
+    }
   }
 }
 `;

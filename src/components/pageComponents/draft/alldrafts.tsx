@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
-import { Grid, createTheme, ThemeProvider } from '@mui/material';
+import { usePurchaseRequest } from '../../../context/purchaseRequestContext';
+import { PURCHASE_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
+import { UserContext } from '../../../auth/UserContext';
+
+import { Grid, createTheme, ThemeProvider, Button } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
 import PageHeader from '../../PageHeader';
 import { RequestPageOutlined } from '@mui/icons-material';
-import Button from '../../Button';
+//import Button from '../../Button';
 import { useNavigate } from 'react-router-dom';
 import { SectionTitle } from '../../Section';
-import {  SAVED_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
-import Spinner from '../../Spinner';
-import { UserContext } from '../../../auth/UserContext';
-
 interface PurchaseRequest {
   id: string;
   userId: number;
@@ -36,37 +36,42 @@ interface PurchaseRequest {
     };
   }[];
 }
-
-interface PurchaseRequestData {
-  savedRequestByUserId: PurchaseRequest[];
+export interface PurchaseRequestData {
+  purchaseRequestByUserId: {
+    id: string;
+    userId: number;
+    status: string;
+    remark: string;
+    addressDetail: string;
+    estimatedDelivery: string;
+    referenceNumber: string;
+    createdAt: string;
+    user: {
+      username: string;
+    };
+    suppliers: {
+      user: {
+        username: string;
+      };
+    }[];
+  }[];
 }
 
 const AllDrafts: React.FC = () => {
   const { currentUser } = useContext(UserContext);
-
-  if (!currentUser) {
-    return <Spinner />;
-  }
-
-  return <PurchaseRequisitions userId={currentUser.id} />;
-};
-
-const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
-  const { loading, error, data } = useQuery<PurchaseRequestData>(SAVED_REQUESTS_BY_USER_ID, {
+  const userId = currentUser?.id || '';
+  const { purchaseRequests, setPurchaseRequests } = usePurchaseRequest();
+  const navigate = useNavigate();
+  const { loading, error, data } = useQuery<PurchaseRequestData>(PURCHASE_REQUESTS_BY_USER_ID, {
     variables: { userId: Number(userId) },
   });
 
-  const navigate = useNavigate();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  const purchaseRequests = data?.savedRequestByUserId || [];
+  useEffect(() => {
+    if (!loading && !error && data) {
+      console.log('Fetched data:', data);
+      setPurchaseRequests(data?.purchaseRequestByUserId || []);
+    }
+  }, [loading, error, data, setPurchaseRequests]);
   const handleClick = (purchaseRequest: PurchaseRequest) => {
     const { id, estimatedDelivery, remark, addressDetail, categoryId,products } = purchaseRequest;
     const sourceType = "supplier"
@@ -74,15 +79,32 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
     console.log(products)
     navigate('/newRequest', { state: { id, estimatedDelivery, remark, addressDetail, categoryId, sourceType,products } });
   };
-
+  console.log('Purchase requests:', purchaseRequests);
   const columns = [
     { name: 'SN', options: { filter: false, sort: false } },
     'ID',
     'Reference Number',
-    'User',
-    'Suppliers',
     'Status',
+    'No of suppliers seen',
     'Date',
+    /*{
+      name: 'Action',
+      options: {
+        filter: false,
+        sort: false,
+        customBodyRender: (value: any, tableMeta: any) => {
+          const purchaseRequestId = tableMeta.rowData[1];
+          return (
+<Button
+onClick={() => handleClick(purchaseRequestId)}
+style={{ cursor: 'pointer', color:"#00b0ad"}}
+>
+View Details
+</Button>
+          );
+        },
+      },
+    },*/
     {
       name: 'Action',
       options: {
@@ -91,31 +113,17 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
         customBodyRender: (value: any, tableMeta: any) => {
           const purchaseRequest = purchaseRequests[tableMeta.rowIndex];
           return (
-            <Button
-              text="Revise and Send"
-              onClick={() => handleClick(purchaseRequest)}
-              style={{ cursor: 'pointer' }}
-            />
+           <Button
+           onClick={() => handleClick(purchaseRequest)}
+           >
+            View Details
+           </Button>
           );
         },
       },
     },
   ];
 
- /* const tableData = purchaseRequests?.map((purchaseRequest, index) => [
-    index + 1,
-    purchaseRequest.id,
-    purchaseRequest.referenceNumber,
-    purchaseRequest?.user?.username,
-    purchaseRequest?.suppliers?.map((supplier) => supplier.user.username).join(', '),
-    purchaseRequest?.status === 'pending' ? (
-      <span style={{ color: 'red' }}>{purchaseRequest.status}</span>
-    ) : (
-      <span style={{ color: 'green' }}>{purchaseRequest.status}</span>
-    ),
-    new Date(purchaseRequest.createdAt).toLocaleString(),
-    '',
-  ]);*/
   const tableData = purchaseRequests
   .filter((purchaseRequest) => purchaseRequest.status === 'seved')
   .map((purchaseRequest, index) => [
@@ -129,6 +137,8 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
     new Date(purchaseRequest.createdAt).toLocaleString(),
     '',
   ]);
+
+ 
   const options: MUIDataTableOptions = {
     filter: true,
     download: true,
@@ -161,17 +171,18 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
       },
     },
   });
-
   return (
+    <div>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>Error: {error.message}</p>
+      ) : purchaseRequests && purchaseRequests.length > 0 ? (
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <SectionTitle variant="outlined" square>
-          <PageHeader
-            title="Saved Request"
-            icon={<RequestPageOutlined />}
-            subTitle="this page is your saved Request You can re Send as you need"
-          />
-       </SectionTitle>
+          <PageHeader title="Tis is your Requests" icon={<RequestPageOutlined />} imageSrc = "salesForce.png" />
+        </SectionTitle>
       </Grid>
       <Grid item xs={12}>
         <ThemeProvider theme={theme}>
@@ -179,6 +190,11 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
         </ThemeProvider>
       </Grid>
     </Grid>
+      ) : (
+        <p>No purchase requests found.</p>
+      )}
+      
+    </div>
   );
 };
 

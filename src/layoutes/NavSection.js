@@ -36,13 +36,13 @@ export default function NavSection() {
   const renderNestedItems = (items, parentIndex) => {
     return (
       <Collapse in={openItems.includes(parentIndex)}>
-        <List sx={{ paddingLeft: '24px', paddingTop: '0', paddingBottom: '0' }}>
+        <List sx={{ paddingLeft: '10px', paddingTop: '0', paddingBottom: '0' }}>
           {items.map((item) => (
             <ListItemButton
               key={item.title}
               onClick={() => handleItemClick(item.path)}
               sx={{
-                paddingLeft: '24px',
+                paddingLeft: '4px',
                 paddingTop: '2px',
                 paddingBottom: '2px',
                 '&:hover': {
@@ -79,7 +79,7 @@ export default function NavSection() {
           <ListItemButton
             onClick={() => toggleOpenItems(index)}
             sx={{
-              paddingLeft: '12px',
+              paddingLeft: '2px',
               paddingTop: '8px',
               paddingBottom: '8px',
               '&:hover': {
@@ -103,7 +103,7 @@ export default function NavSection() {
           <ListItemButton
             onClick={() => handleItemClick(mainItem.path)}
             sx={{
-              paddingLeft: '12px',
+              paddingLeft: '2px',
               paddingTop: '8px',
               paddingBottom: '8px',
               '&:hover': {
@@ -144,8 +144,8 @@ export default function NavSection() {
           <ListItemButton
             onClick={() => toggleOpenItems(index)}
             sx={{
-              paddingLeft: '12px',
-              paddingTop: '8px',
+              paddingLeft: '2px',
+              paddingTop: '4px',
               paddingBottom: '8px',
               '&:hover': {
                 backgroundColor: '#E3F2FD',

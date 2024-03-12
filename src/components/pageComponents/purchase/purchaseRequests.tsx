@@ -72,8 +72,8 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
   const { loading, error, data } = useQuery(GET_QUOTATION, {
     variables: { suplierId:Number(supplierId),status:"pending"},
   });
-  const handleListItemClick = (id: number,qId:number) => {
-    navigate('/sendRfq', { state: { id,qId,supplierId} });
+  const handleListItemClick = (id: number,qId:number,referenceNumber:string,requestedDate:string) => {
+    navigate('/sendRfq', { state: { id,qId,supplierId,referenceNumber,requestedDate} });
   };
   useEffect(() => {
     if (!loading && !error && data) {
@@ -147,11 +147,13 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
         customBodyRender: (value: any, tableMeta: any) => {
           const id = tableMeta.rowData[0];
           const qId = tableMeta.rowData[1];
+          const referenceNumber = tableMeta.rowData[5];
+          const requestedDate = tableMeta.rowData[6];
 
           return (
             <Button
               variant="outlined"
-              onClick={() => handleListItemClick(id,qId)}
+              onClick={() => handleListItemClick(id,qId,referenceNumber,requestedDate)}
               style={{ whiteSpace: 'nowrap' }}
             >
               View Detail
