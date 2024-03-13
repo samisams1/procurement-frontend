@@ -105,7 +105,6 @@ const GET_ALL_PRODUCT_PRICES = gql`
         shippingPrice
         status
         createdAt
-        otherPayment
         availabilityDate
         supplier {
           name
