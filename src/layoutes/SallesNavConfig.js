@@ -46,6 +46,11 @@ const SallesNavConfig = () => {
           path: 'sentProformaInvoice',
           icon: getIcon('ri:product-hunt-fill'),
         },
+        {
+          title: 'RFQ Drafts ',
+          path: 'rfqDraft',
+          icon: getIcon('ri:product-hunt-fill'),
+        },
       ],
     },
     {

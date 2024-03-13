@@ -73,6 +73,8 @@ query QuotationBydSupplierId($suplierId: Int!, $status: String!) {
       id
       purchaseRequestId
       status
+      remark
+      sentBy
       customer {
         firstName
         lastName

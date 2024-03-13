@@ -10,11 +10,12 @@ import { SectionTitle } from '../../Section';
 import { useQuotation } from '../../../context/quotationContext';
 
 const GET_QUOTATION = gql`
-query QuotationBydSupplierId($suplierId: Int!, $status: String!) {
-  quotationBydSupplierId(suplierId: $suplierId, status: $status) {
+query QuotationBydSupplierId($suplierId: Int!) {
+  quotationBydSupplierId(suplierId: $suplierId) {
       id
       purchaseRequestId
       status
+      remark
       customer {
         firstName
         lastName
@@ -70,7 +71,7 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
   const navigate = useNavigate()
   const { quotations, setQuotations } = useQuotation();
   const { loading, error, data } = useQuery(GET_QUOTATION, {
-    variables: { suplierId:Number(supplierId),status:"pending"},
+    variables: { suplierId:Number(supplierId)},
   });
   const handleListItemClick = (id: number,qId:number,referenceNumber:string,requestedDate:string) => {
     navigate('/sendRfq', { state: { id,qId,supplierId,referenceNumber,requestedDate} });
@@ -91,7 +92,7 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
 
   //const { quotationBydSupplierId } = data;
 
-  const tableData = quotations?.map((quotation: any) => ({
+  /*const tableData = quotations?.map((quotation: any) => ({
     id: quotation.purchaseRequestId,
     qId:quotation.id,
     status: quotation.status,
@@ -99,8 +100,18 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
     supplierName: quotation?.supplier?.name,
     referenceNumber: quotation.purchaseRequest.referenceNumber,
     createdAt: quotation.createdAt,
+  }));*/
+  const tableData = quotations
+  ?.filter((quotation: any) => quotation.status !== "sami")
+  .map((quotation: any) => ({
+    id: quotation.purchaseRequestId,
+    qId: quotation.id,
+    status: quotation.status,
+    customerName: `${quotation?.customer?.firstName} ${quotation?.customer?.lastName}`,
+    supplierName: quotation?.supplier?.name,
+    referenceNumber: quotation.purchaseRequest.referenceNumber,
+    createdAt: quotation.createdAt,
   }));
-
   const columns = [
     {
       name: 'id',
@@ -156,7 +167,7 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
               onClick={() => handleListItemClick(id,qId,referenceNumber,requestedDate)}
               style={{ whiteSpace: 'nowrap' }}
             >
-              View Detail
+              View Detail sams
             </Button>
           );
         },

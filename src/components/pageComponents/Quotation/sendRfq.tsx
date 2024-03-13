@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Input from '../../Input';
 import { Alert, Box, Button, MenuItem, Paper, TextField, Typography } from '@mui/material';
-import { Form, useForm } from '../../useForm';
+import { Form } from '../../useForm';
 //import Button from '../../Button';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
@@ -20,6 +20,10 @@ interface Product {
 
 interface Quotation {
   purchaseRequestId: string;
+  sentBy:string;
+  remark:string;
+  availabilityDate:string;
+  shippingPrice:number;
 }
 interface ProductPrice {
   id: number;
@@ -29,6 +33,9 @@ interface ProductPrice {
   product: Product;
   quotation: Quotation;
   disCountPrice: number;
+  remark:string;
+  sentBy:string;
+  
 }
 
 interface QuotationByRequestIdAdSupplierIdData {
@@ -39,19 +46,17 @@ interface QuotationByRequestIdAdSupplierIdVariables {
   id: number | null;
   supplierId: number;
 }
-interface QuotationInterface {
-  price: string;
-  shippingPrice: string;
-  discountPrices:string;
-  otherPayment:string;
-}
+
 const GET_QUOTATION_QUERY = gql`
   query QuotationByRequestIdAdSupplierId($id: Int!, $supplierId: Int!) {
     quotationByRequestIdAdSupplierId(id: $id, supplierId: $supplierId) {
       id
       createdAt
       price
+      disCountPrice
       status
+      remark
+      sentBy
       product {
         id
         uom
@@ -60,6 +65,10 @@ const GET_QUOTATION_QUERY = gql`
       }
       quotation {
         purchaseRequestId
+        remark
+        sentBy
+        availabilityDate
+        shippingPrice
       }
     }
   }
@@ -89,11 +98,14 @@ interface Props {
 const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplierId,referenceNumber,requestedDate }) => {
   const [prices, setPrices] = useState<{ [key: string]: string }>({});
   const [disCountPrice, setDisCountPrices] = useState<{ [key: string]: string }>({});
-  const [shippingCost, setShippingCost] = useState<number>(0);
-  const [estimatedDelivery, setEstimatedDelivery] = useState('');
-  const [otherPayment,setOtherPayment] =useState<number>(0);
+ 
+  
+  //const [otherPayment,setOtherPayment] =useState<number>(0);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');  
+
+
+
   const navigate = useNavigate();
   const { loading, error, data,refetch } = useQuery<
     QuotationByRequestIdAdSupplierIdData,
@@ -108,16 +120,16 @@ const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplie
     variables: { supplierId: Number(supplierId), status: "quoted" }, // Set status to "pending" or "quoted"
   });
   const [updateQuotation] = useMutation(UPDATE_QUOTATION_MUTATION);
-  const { setQuotations } = useQuotation();
+  const {quotations, setQuotations } = useQuotation();
+console.log("setQuotations")
 
   const quotationByRequestIdAdSupplierId = data?.quotationByRequestIdAdSupplierId || [];
- 
-  const initialFormValues: QuotationInterface = {
-    price: '0',
-    shippingPrice: '0',
-    discountPrices:'0',
-    otherPayment:'0',
-  };
+//const availabilityDate = quotationByRequestIdAdSupplierId[0]?.avalabilityDate;
+console.log(quotationByRequestIdAdSupplierId)
+const [remark, setRemark] = useState(quotationByRequestIdAdSupplierId[0]?.quotation.remark || '');
+const [sentBy, setSentBy] = useState(quotationByRequestIdAdSupplierId[0]?.quotation.sentBy || '');
+const [estimatedDelivery, setEstimatedDelivery] = useState(quotationByRequestIdAdSupplierId[0]?.quotation.availabilityDate || '');
+const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdSupplierId[0]?.quotation.shippingPrice ||0);
   const renderDateOptions = () => {
     const options = [];
     for (let i = 1; i <= 30; i++) {
@@ -129,37 +141,22 @@ const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplie
     }
     return options;
   };
-const validate = (fieldValues: QuotationInterface = values): boolean => {
-    let tempErrors: Partial<QuotationInterface> = { ...errors };
-    if ('price' in fieldValues) {
-      tempErrors.price = fieldValues.price !== '0' ? '' : 'This field is required.';
-    }
-    if ('shippingPrice' in fieldValues) {
-      tempErrors.shippingPrice = fieldValues.shippingPrice !== '0' ? '' : 'This field is required.';
-    }
-    if ('discountPrices' in fieldValues) {
-      tempErrors.discountPrices = fieldValues.discountPrices !== '0' ? '' : 'This field is required.';
-    }
-    if ('otherPayment' in fieldValues) {
-      tempErrors.otherPayment = fieldValues.otherPayment !== '0' ? '' : 'This field is required.';
-    }
-    setErrors({
-      ...tempErrors,
-    });
-    return fieldValues === values ? Object.values(tempErrors).every((x) => x === '') : false;
+  const handleRemarkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRemark(event.target.value);
   };
-
-  const { values, errors, setErrors } = useForm(
-    initialFormValues,
-    true,
-    validate
-  );
+  const handleSentByChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSentBy(event.target.value);
+  };
   const handlePriceChange = (productId: string, event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-    setPrices((prevPrices) => ({
-      ...prevPrices,
-      [productId]: value,
-    }));
+    setPrices((prevPrices) => {
+      if (value === '') {
+        const { [productId]: valueToRemove, ...newPrices } = prevPrices;
+        return newPrices;
+      } else {
+        return { ...prevPrices, [productId]: value };
+      }
+    });
   };
   const handlePriceDiscountChange = (productId: string, event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -175,30 +172,31 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
     e.preventDefault();
     const input = {
       status: "quoted",
+      remark:remark,
+      sentBy:sentBy,
       shippingPrice: shippingCost,
       productPrices: Object.keys(prices).map((key) => ({
         id: parseInt(key),
         price: parseFloat(prices[key]),
         disCountPrice: parseFloat(disCountPrice[key]),
       })),
-      otherPayment:otherPayment,
       availabilityDate:Number(estimatedDelivery),
     };
-    console.log('Quotation:', input);
+    console.log('Samisams:', input);
     try {
-      const response = await updateQuotation({ variables: { id:qId, input } });
+    await updateQuotation({ variables: { id:qId, input } });
       qRefetch();
       qPendingRefetch();
       setQuotations(quotationData?.quotationBydSupplierId);
       setQuotations(quotationQuetedData?.quotationBydSupplierId);
-      const quotation = response?.data;
-      console.log('Quotation:', quotation);
+    //  const quotation = response?.data;
+      console.log('Quotation:', quotations);
       setSuccessMessage('Quotation send successfully!');
       setErrorMessage('');
       await refetch();
       setTimeout(() => {
         setSuccessMessage('');
-      }, 5000);
+      }, 15000);
       navigate('/purchaseRequests')
     } catch (error) {
       console.error('Mutation error:', error);
@@ -207,9 +205,48 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
   
       setTimeout(() => {
         setErrorMessage('');
-      }, 5000);
+      }, 15000);
     }
   };
+    const hadleSeveAsDraftAndCancel = async (status:string): Promise<void> => {
+    const input = {
+      status: status,
+      remark:remark,
+      sentBy:sentBy,
+      shippingPrice: shippingCost,
+      productPrices: Object.keys(prices).map((key) => ({
+        id: parseInt(key),
+        price: parseFloat(prices[key]),
+        disCountPrice: parseFloat(disCountPrice[key]),
+      })),
+      availabilityDate:Number(estimatedDelivery),
+    };
+    console.log('Quotation:', input);
+    try {
+       await updateQuotation({ variables: { id:qId, input } });
+      qRefetch();
+      qPendingRefetch();
+      setQuotations(quotationData?.quotationBydSupplierId);
+      setQuotations(quotationQuetedData?.quotationBydSupplierId);
+     // const quotation = response?.data;
+      console.log('Quotation:', quotations);
+      setSuccessMessage('Quotation send successfully!');
+      setErrorMessage('');
+      await refetch();
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 15000);
+      navigate('/purchaseRequests')
+    } catch (error) {
+      console.error('Mutation error:', error);
+      setErrorMessage('Failed to update the quotation.');
+      setSuccessMessage('');
+  
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 15000);
+  }
+}
   const calculateSubtotalRow = (price: number, quantity: string) => {
     const parsedQuantity = parseFloat(quantity);
     if (isNaN(parsedQuantity)) {
@@ -313,17 +350,15 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
         formattedDate, // Converted date
         quotation.product.title,
         <Input
-          type="number"
-          placeholder="Please Enter Price"
-          value={prices[quotation.id.toString()]  ||  quotation.price}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handlePriceChange(quotation.id.toString(), e)
-          }
-        />,
+        productId={quotation.id.toString()}
+        value={prices[quotation.id.toString()] || quotation.disCountPrice || ''}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          handlePriceChange(quotation.id.toString(), e)
+        }
+      />,
         <Input
-          type="number"
           placeholder="Please Enter discount"
-          value={disCountPrice[quotation.id.toString()] || quotation.discount}
+          value={disCountPrice[quotation.id.toString()] || quotation.disCountPrice}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handlePriceDiscountChange(quotation.id.toString(), e)
           }
@@ -373,6 +408,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
       },
     },
   });
+ 
   return (
     <ThemeProvider theme={theme}> 
     <Grid container spacing={3}>
@@ -414,7 +450,7 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
        <Box mt={2}>
   <Form onSubmit={handleSubmit}>
   <Grid container spacing={2} justifyContent="center">
-  <Grid item xs={12} md={6}>
+  <Grid item xs={12} md={12}>
   <Grid container spacing={2}>
     <Grid item xs={12}>
       <TextField
@@ -428,42 +464,15 @@ const validate = (fieldValues: QuotationInterface = values): boolean => {
         fullWidth
         sx={{ paddingTop: '10px',paddingBottom: '10px',}}
       />
-      <TextField
-        type="number"
-        label="Other Payment"
-        placeholder="Enter Other Payment"
-        value={otherPayment.toString()}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setOtherPayment(parseFloat(e.target.value))
-        }
-        fullWidth
-        sx={{ paddingTop: '10px',paddingBottom: '10px',}}
-      />
-      <TextField
-        select
-        required
-        label="Availability Date of Price"
-        value={estimatedDelivery}
-        onChange={handleDateChange}
-        fullWidth
-        sx={{ paddingTop: '20px' }}
-      >
-        {renderDateOptions()}
-      </TextField>
       <Typography variant="subtitle1" align="right" fontWeight="bold">
   Subtotal: {calculateSubtotal()} Birr
-  {' - '}
-  <span style={{color:"red"}}> {convertToWords(Number(calculateSubtotal()))} Birr (In Words)</span>
 </Typography>
 <Typography variant="subtitle1" align="right" fontWeight="bold">
 Tax(15%): {tax} Birr
-  {' - '}
-  <span style={{color:"red"}}> {convertToWords(Number(tax))} Birr (In Words)</span>
 </Typography>
 <Typography variant="subtitle1" align="right" fontWeight="bold">
  Grand Total: {Number(grandTotal)  + Number(tax)} Birr
-  {' - '}
-  <span style={{color:"red"}}> {convertToWords(Number(grandTotal) + Number(tax))} Birr (In Words)</span>
+
 </Typography>
 
       {
@@ -472,15 +481,53 @@ Tax(15%): {tax} Birr
      </Typography>:''
       } 
       <Typography variant="subtitle1" align="right" fontWeight="bold">
-         Payable amount  : {Number(grandTotal)  + Number(tax)  -  Number(calculateDisCountSubtotal())} Birr
+       
+         <span style={{color:"red"}}> {convertToWords(Number(grandTotal)  + Number(tax)  -  Number(calculateDisCountSubtotal()))} Birr (In Words) </span>
          {' - '}
-         <span style={{color:"red"}}> {convertToWords(Number(grandTotal)  + Number(tax)  -  Number(calculateDisCountSubtotal()))} Birr (In Words)</span>
+       {"    "}  Payable amount  : {Number(grandTotal)  + Number(tax)  -  Number(calculateDisCountSubtotal())} Birr
       </Typography>
-      <Typography variant="subtitle1" align="left" fontWeight="bold">
-     Approved By :First Name last Name
-      </Typography>
+  
     </Grid>
   </Grid>
+</Grid>
+
+<Grid item xs={12} sm={12}>
+  <Paper elevation={3} sx={{ padding: '20px' }}>
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: '10px',
+    }}>
+      <Input
+        label="Sent Approved By"
+        placeholder="Please specify approved By"
+        value={sentBy}
+        fullWidth
+        sx={{ paddingTop: '10px', paddingBottom: '10px', marginRight: '10px' }}
+        onChange={handleSentByChange}
+      />
+        <TextField
+        select
+        required
+        label="Availability Date of Price"
+        value={estimatedDelivery}
+        onChange={handleDateChange}
+        fullWidth
+        sx={{ paddingTop: '10px', paddingBottom: '10px', marginRight: '10px' }}
+      >
+        {renderDateOptions()}
+      </TextField>
+      <Input
+        label="Remark"
+        value={remark }
+        placeholder="Please enter Remark"
+        fullWidth
+        sx={{ paddingTop: '10px', paddingBottom: '10px', marginLeft: '10px' }}
+        onChange={handleRemarkChange}
+      />
+    </div>
+  </Paper>
 </Grid>
   <Grid item xs={12} textAlign="center">
     {!successMessage && !errorMessage && (
@@ -508,7 +555,7 @@ Tax(15%): {tax} Birr
     variant="outlined"
     color="primary"
     startIcon={<Drafts />}
-    //onClick={handleAddTitle}
+    onClick={()=>hadleSeveAsDraftAndCancel("draft")}
     style={{ whiteSpace: 'nowrap',backgroundColor:"gray",color:"#ffffff" }}
   >
   Seve as Drafts
@@ -517,7 +564,7 @@ Tax(15%): {tax} Birr
     variant="outlined"
     //color="Secodary"
     startIcon={<Cancel />}
-    //onClick={handleAddTitle}
+    onClick={()=>hadleSeveAsDraftAndCancel("canceled")}
     style={{ whiteSpace: 'nowrap',backgroundColor:"red",color:"#ffffff" }}
   >
     Cancel
