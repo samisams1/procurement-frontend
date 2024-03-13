@@ -102,7 +102,7 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
     createdAt: quotation.createdAt,
   }));*/
   const tableData = quotations
-  ?.filter((quotation: any) => quotation.status === "quoted")
+  ?.filter((quotation: any) => quotation.status === "pending")
   .map((quotation: any) => ({
     id: quotation.purchaseRequestId,
     qId: quotation.id,
