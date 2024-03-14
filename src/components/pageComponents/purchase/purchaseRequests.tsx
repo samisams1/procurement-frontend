@@ -5,9 +5,11 @@ import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
 import { useQuery, gql } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import PageHeader from '../../PageHeader';
+import '../../PrintPage.css';
 import { ShoppingCart } from '@mui/icons-material';
 import { SectionTitle } from '../../Section';
 import { useQuotation } from '../../../context/quotationContext';
+//import { useReactToPrint } from 'react-to-print';
 
 const GET_QUOTATION = gql`
 query QuotationBydSupplierId($suplierId: Int!) {
@@ -69,6 +71,11 @@ interface purchaseRequestId {
 
 const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
   const navigate = useNavigate()
+  /*const printRef = React.useRef(null);
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });*/
   const { quotations, setQuotations } = useQuotation();
   const { loading, error, data } = useQuery(GET_QUOTATION, {
     variables: { suplierId:Number(supplierId)},
@@ -176,6 +183,8 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
   ];
 
   return (
+    <div  className="print-content">
+
     <Grid container spacing={3}>
     
       <Grid item xs={12}>
@@ -191,6 +200,7 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
         </ThemeProvider>
       </Grid>
     </Grid>
+    </div>
   );
 };
 

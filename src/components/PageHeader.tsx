@@ -8,44 +8,55 @@ const StyledPageHeader = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-const RowContainer = styled('div')({
+const RowContainer = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-});
+  justifyContent: 'space-between',
+  flexDirection: 'row',
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: 'column',
+    maxWidth: '300px', // Adjust the max width as needed
+    margin: '0 auto', // Center the container horizontally
+  },
+}));
 
 const Image = styled('img')({
-  marginLeft: 'auto',
-  width: '100px', // Adjust the width as needed
+  marginTop: '12px',
+  width: '100px',
   height: '60px',
 });
 const Icon = styled('div')({
-  color: '#ffffff', // Set the icon color to white
+  color: '#ffffff',
 });
 const MainHeader = styled('div')({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   fontWeight: 'bold',
-  width: '60%', // Add this line to make the component centered
+  width: '60%',
+  marginTop: '12px',
 });
+
 export default function PageHeader(props: any) {
   const { title, subTitle, icon, imageSrc } = props;
 
   return (
     <StyledPageHeader elevation={0} square>
       <RowContainer>
-      <Icon>{icon}</Icon>  
         <div>
-          <Typography variant="h6" component="div" style={{ color: '#ffffff' }}>
-            {title}
-          </Typography>
-          <Typography variant="subtitle2" component="div" style={{ color: '#ffffff' }}>
-        {subTitle}
-          </Typography>
+          <Icon>{icon}</Icon>
+          <div>
+            <Typography variant="h6" component="div" style={{ color: '#ffffff' }}>
+              {title}
+            </Typography>
+            <Typography variant="subtitle2" component="div" style={{ color: '#ffffff' }}>
+              {subTitle}
+            </Typography>
+          </div>
         </div>
         <MainHeader>
-        <Typography variant="h5" component="div" style={{ color: '#ffffff' }}>
-          My Company 
+          <Typography variant="h5" component="div" style={{ color: '#ffffff' }}>
+            My Company
           </Typography>
         </MainHeader>
         {imageSrc && <Image src={require(`../assets/${imageSrc}`)} alt="Header Image" />}
@@ -53,5 +64,3 @@ export default function PageHeader(props: any) {
     </StyledPageHeader>
   );
 }
-       
-   

@@ -10,6 +10,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PageFooter from '../../../PageFooter';
 import { Add, Cancel, ConfirmationNumberTwoTone, Print, Send } from '@mui/icons-material';
 import { styled } from '@mui/system';
+import { useReactToPrint } from 'react-to-print';
+import '../../../PrintPage.css';
 interface Product {
   id: number;
   Description: string | null;
@@ -148,6 +150,12 @@ mutation UpdateOrder($id: Int!, $input: String!) {
 const Detail = () => {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
+  const printRef = React.useRef(null);
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
+
   const [updateOrder] = useMutation(UPDATE_ORDER);
   const { loading, error, data } = useQuery<GetOrderDetailByOrderIdResponse, GetOrderDetailByOrderIdVariables>(
     GET_ORDER_DETAIL_BY_ORDER_ID,
@@ -305,9 +313,7 @@ console.log(payment)
       console.error('Failed to update order:', updateError);
     }
   };
-  const handlePrint = () => {
-    window.print();
-  };
+ 
   const createdDate = orderDetail?.order.createdAt ? new Date(orderDetail.createdAt) : null;
   const formattedDate = createdDate?.toLocaleString('en-US', {
     day: 'numeric',
@@ -320,6 +326,8 @@ console.log(payment)
   
   
   return (
+    <div ref={printRef} className="print-content">
+
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Grid>
@@ -509,6 +517,7 @@ Order Actions
         </Grid>
       </Grid>
     </Grid>
+  </div>
   );
 };
 
