@@ -483,15 +483,15 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit,loading }) => {
     /*if (updateItemCodeErrors.some((error) => error !== '')) {
       return;
     }*/
-    const updatePartNumberErrors = partNumbers.map((partNumber) => {
+    /*const updatePartNumberErrors = partNumbers.map((partNumber) => {
       if (partNumber.trim() === '') {
         return 'Please enter a valid item partNumbers.';
       }
       return '';
-    });
+    });*/
    // setPartNumberErrors(updatePartNumberErrors);
 
-    if (updatePartNumberErrors.some((error) => error !== '')) {
+   /* if (updatePartNumberErrors.some((error) => error !== '')) {
       return;
     }
     const updateUomsErrors = uoms.map((uom) => {
@@ -499,12 +499,12 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit,loading }) => {
         return 'Please enter a valid item uom.';
       }
       return '';
-    });
+    });*/
    // setUomErrors(updateUomsErrors);
 
-    if (updateUomsErrors.some((error) => error !== '')) {
+  /*  if (updateUomsErrors.some((error) => error !== '')) {
       return;
-    }
+    }*/
     const updateQuantitieErrors = quantities.map((quantitie) => {
       if (quantitie.trim() === '') {
         return 'Please enter a valid item quantities.';
