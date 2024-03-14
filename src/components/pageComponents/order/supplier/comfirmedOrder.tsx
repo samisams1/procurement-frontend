@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
@@ -9,11 +9,13 @@ import Spinner from '../../../Spinner';
 import { GET_ORDER_BY_SUPPLIER_ID_QUERY } from '../../../../graphql/Order';
 const ConfirmedOrders: React.FC<{userId: number}> = ({userId}) => {
   const navigate = useNavigate();
-  const { loading, error, data } = useQuery(GET_ORDER_BY_SUPPLIER_ID_QUERY, {
+  const { loading, error, data,refetch } = useQuery(GET_ORDER_BY_SUPPLIER_ID_QUERY, {
     variables: { id: Number(userId),status:"comformed"  }, // Specify the userId here
   });
   const { currentUser } = useContext(UserContext);
-
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
   if (!currentUser) {
     return <Spinner />;
   }

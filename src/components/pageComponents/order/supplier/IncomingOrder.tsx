@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
@@ -7,12 +7,17 @@ import Button from '../../../Button';
 import { UserContext } from '../../../../auth/UserContext';
 import Spinner from '../../../Spinner';
 import { GET_ORDER_BY_SUPPLIER_ID_QUERY } from '../../../../graphql/Order';
-const IncomingOrders: React.FC<{userId: number}> = ({userId}) => {
+
+const IncomingOrders: React.FC<{ userId: number }> = ({ userId }) => {
   const navigate = useNavigate();
-  const { loading, error, data } = useQuery(GET_ORDER_BY_SUPPLIER_ID_QUERY, {
-    variables: { id: Number(userId),status:"pending"  }, // Specify the userId here
+  const { loading, error, data, refetch } = useQuery(GET_ORDER_BY_SUPPLIER_ID_QUERY, {
+    variables: { id: Number(userId), status: 'pending' },
   });
   const { currentUser } = useContext(UserContext);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   if (!currentUser) {
     return <Spinner />;
@@ -35,7 +40,6 @@ const IncomingOrders: React.FC<{userId: number}> = ({userId}) => {
         display: true,
       },
     },
-   
     {
       name: 'Status',
       options: {
@@ -52,22 +56,23 @@ const IncomingOrders: React.FC<{userId: number}> = ({userId}) => {
           const id = tableMeta.rowData[1];
           return (
             <Button
-            variant="outlined"
-            onClick={() => {
-              navigate(`/orderDetail/${id}`);
-            }}
-            style={{ whiteSpace: 'nowrap' }}
-          text="View Detail"  
-          />
+              variant="outlined"
+              onClick={() => {
+                navigate(`/orderDetail/${id}`);
+              }}
+              style={{ whiteSpace: 'nowrap' }}
+              text="View Detail"
+            />
           );
         },
       },
     },
   ];
+
   const tableData = data.getOrderBySupplierId.map((order: any, index: number) => {
     const createdAtDate = new Date(order.createdAt);
     const formattedDate = createdAtDate.toLocaleString();
-  
+
     return [
       index + 1,
       order.id,
@@ -93,6 +98,7 @@ const IncomingOrders: React.FC<{userId: number}> = ({userId}) => {
     rowsPerPage: 10,
     rowsPerPageOptions: [10, 25, 50],
   };
+
   const theme = createTheme({
     components: {
       MUIDataTableHeadCell: {
