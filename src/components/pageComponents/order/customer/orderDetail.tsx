@@ -8,7 +8,7 @@ import Spinner from '../../../Spinner';
 import { UserContext } from '../../../../auth/UserContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import PageFooter from '../../../PageFooter';
-import { Add, Print, Send } from '@mui/icons-material';
+import { Add, Cancel, ConfirmationNumberTwoTone, Print, Send } from '@mui/icons-material';
 import { styled } from '@mui/system';
 interface Product {
   id: number;
@@ -65,10 +65,26 @@ interface GetOrderDetailByOrderIdResponse {
 interface GetOrderDetailByOrderIdVariables {
   getOrderDetailByOrderIdId: number;
 }
+
 const StyledTableHeadCell = styled(TableCell)`
   background-color: #00b0ad;
   font-size: 15px;
   color:#ffffff;
+`;
+const GET_PAYMENT_BY_ORDER_ID = gql`
+  query PaymentByPrderId($orderId: Int!) {
+    paymentByPrderId(orderId: $orderId) {
+      id
+      amount
+      paidAt
+      paymentMethod
+      userId
+      orderId
+      status
+      referenceNumber
+      fullName
+    }
+  }
 `;
 const GET_ORDER_DETAIL_BY_ORDER_ID = gql`
   query GetOrderDetailByOrderId($getOrderDetailByOrderIdId: Int!) {
@@ -140,6 +156,13 @@ const Detail = () => {
     }
   );
   const { currentUser } = useContext(UserContext);
+
+ const { loading:paymentLoding, error:paymentError, data:paymentData } = useQuery(GET_PAYMENT_BY_ORDER_ID, {
+    variables: {orderId:Number(id)},
+  })
+  const payment = paymentData?.paymentByPrderId;
+console.log("fasile")
+console.log(payment)
   if (!currentUser) {
     return <Spinner />;
   }
@@ -150,11 +173,14 @@ const Detail = () => {
   if (error) {
     return <div>Error: {error.message}</div>;
   }
+  if (paymentLoding) return <p>Loading...</p>;
+  if (paymentError) return <p>Error: {paymentError.message}</p>;
 
   const orderDetail = data?.getOrderDetailByOrderId[0];
   const order = orderDetail?.order;
   const products = orderDetail?.product;
  
+  
   const columns = [
     // Define your product table columns here
     {
@@ -204,9 +230,9 @@ const Detail = () => {
   </TableHead>
   <TableBody>
     <TableRow>
-      <TableCell>samisams</TableCell>
-      <TableCell>2024</TableCell>
-      <span style={{background:"green",color:"#ffffff"}}><TableCell>active</TableCell></span> 
+      <TableCell>{payment.amount}</TableCell>
+      <TableCell>{payment?.amount}</TableCell>
+      <span style={{background:"green",color:"#ffffff"}}><TableCell>{payment?.status}</TableCell></span> 
     </TableRow>
   </TableBody>
 </Table>
@@ -373,6 +399,17 @@ const Detail = () => {
         </h1>
       )}
       {currentUser.role === "ADMIN" && (
+         <Grid item xs={12} textAlign="center">
+         <Paper elevation={3} sx={{ padding: '20px', paddingTop: '10px', paddingBottom: '10px',marginTop:'10px',mariginBottom:'10px', border: '1px dashed #00b0ad' }}>
+         <Typography variant="h6" component="h2" sx={{ marginBottom: '10px' }}>
+         Order Actions
+           </Typography>
+                      <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '10px',
+          }}>
         <Button
         variant="outlined"
         color="primary"
@@ -382,6 +419,9 @@ const Detail = () => {
       >
         Approve Order
       </Button>
+      </div>
+      </Paper>
+      </Grid>
       )}
     </div>
   )}
@@ -393,33 +433,37 @@ const Detail = () => {
         </h1>
       )}
       {currentUser.role === "SUPPLIER" && (
-        <Grid container alignItems="center" spacing={2}>
-        
-        <Grid item xs={12} sm={6}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item>
+         <Grid item xs={12} textAlign="center">
+<Paper elevation={3} sx={{ padding: '20px', paddingTop: '10px', paddingBottom: '10px',marginTop:'10px',mariginBottom:'10px', border: '1px dashed #00b0ad' }}>
+<Typography variant="h6" component="h2" sx={{ marginBottom: '10px' }}>
+Order Actions
+  </Typography>
+             <div style={{
+   display: 'flex',
+   alignItems: 'center',
+   justifyContent: 'space-between',
+   marginBottom: '10px',
+ }}>
               <Button
+                startIcon={<ConfirmationNumberTwoTone />}
                 variant="outlined"
                 color="primary"
                 onClick={handleUpdate}
               >
                 Confirm Order
               </Button>
-            </Grid>
-            <Grid item>
-        <Button
+              <Button
         variant="outlined"
-        color="primary"
-        startIcon={<Add />}
+        startIcon={<Cancel />}
         onClick={handleUpdateReject}
-        style={{ whiteSpace: 'nowrap' }}
+        style={{ whiteSpace: 'nowrap',color:"red" }}
       >
-        Reject Order
+        Reject Order 
       </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
+   </div>
+         </Paper>
+   </Grid>
+      
       )}
       
     </div>
@@ -433,8 +477,18 @@ const Detail = () => {
       )}
         {currentUser.role === "CUSTOMER" && (
     
-  <Paper elevation={3} style={{ padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-    <Typography> Please make the payment for the order.</Typography>
+    <Grid item xs={12} textAlign="center">
+    <Paper elevation={3} sx={{ padding: '20px', paddingTop: '10px', paddingBottom: '10px',marginTop:'10px',mariginBottom:'10px', border: '1px dashed #00b0ad' }}>
+    <Typography variant="h6" component="h2" sx={{ marginBottom: '10px' }}>
+    Order Actions
+      </Typography>
+                 <div style={{
+       display: 'flex',
+       alignItems: 'center',
+       justifyContent: 'space-between',
+       marginBottom: '10px',
+     }}>
+                     <Typography> Please make the payment for the order.</Typography>
   <Button
     type="submit"
     variant="outlined"
@@ -444,7 +498,9 @@ const Detail = () => {
   >
     <Send /> Make Payment
   </Button>
-</Paper>
+       </div>
+             </Paper>
+       </Grid>
       )}
       
     </div>

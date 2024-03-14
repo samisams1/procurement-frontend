@@ -257,12 +257,17 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
  
   const calculateSubtotal = () => {
     let subtotal = 0;
+  
     quotationByRequestIdAdSupplierId.forEach((quotation) => {
       const price = parseFloat(prices[quotation.id.toString()]) || 0;
       const quantity = parseFloat(quotation.product.quantity) || 0;
       subtotal += price * quantity;
     });
-    subtotal += shippingCost;
+  
+    if (Number.isFinite(shippingCost)) {
+      subtotal += shippingCost;
+    }
+  
     return subtotal.toFixed(2);
   };
   const calculateDisCountSubtotal = () => {
@@ -280,9 +285,9 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
     return taxAmount.toFixed(2);
   };
   
-  const convertToWords = (num: number): string => {
+  /*const convertToWords = (num: number): string => {
     return numberToWords.toWords(num);
-  };
+  };*/
   const taxRate: number = 0.15; // Assuming the tax rate is 8%
   const grandTotal: number = parseFloat(calculateSubtotal());
   const tax: string = calculateTax(grandTotal, taxRate);
@@ -453,17 +458,17 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   <Grid item xs={12} md={12}>
   <Grid container spacing={2}>
     <Grid item xs={12}>
-      <TextField
-        type="number"
-        label="Shipping Cost"
-        placeholder="Enter Shipping Cost"
-        value={shippingCost.toString()}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setShippingCost(parseFloat(e.target.value))
-        }
-        fullWidth
-        sx={{ paddingTop: '10px',paddingBottom: '10px',}}
-      />
+     <TextField
+  type="number"
+  label="Shipping Cost"
+  placeholder="Enter Shipping Cost"
+  value={Number.isFinite(shippingCost) ? shippingCost.toString() : ''}
+  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+    setShippingCost(parseFloat(e.target.value))
+  }
+  fullWidth
+  sx={{ paddingTop: '10px', paddingBottom: '10px' }}
+/>
       <Typography variant="subtitle1" align="right" fontWeight="bold">
   Subtotal: {calculateSubtotal()} Birr
 </Typography>
@@ -482,9 +487,7 @@ Tax(15%): {tax} Birr
       } 
       <Typography variant="subtitle1" align="right" fontWeight="bold">
        
-         <span style={{color:"red"}}> {convertToWords(Number(grandTotal)  + Number(tax)  -  Number(calculateDisCountSubtotal()))} Birr (In Words) </span>
-         {' - '}
-       {"    "}  Payable amount  : {Number(grandTotal)  + Number(tax)  -  Number(calculateDisCountSubtotal())} Birr
+        
       </Typography>
   
     </Grid>
