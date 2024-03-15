@@ -287,7 +287,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
           <SectionTitle>
           <PageHeader
             title="Send Order"
-            subTitle="select your price from given bellow of different price"
+            subTitle="select your price from given bellow of different price sams"
             icon={<QuizTwoTone fontSize="large" />}
             imageSrc="tra.jpg"
           />
@@ -307,7 +307,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <p>Status - {productPrices[0].quotation?.status}</p>
-                  <p >This Price is Avalabile for  - <span style={{color:'red'}}></span> days</p>
+                  <p >This Price is Avalabile for  - <span style={{color:'red'}}></span> {productPrices[0].quotation?.availabilityDate}days</p>
                 </Grid>
               </Grid>
               <ThemeProvider theme={theme}>
