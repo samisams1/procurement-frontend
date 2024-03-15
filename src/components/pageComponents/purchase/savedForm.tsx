@@ -4,6 +4,7 @@ import {
   SelectChangeEvent,
   Box,
   useMediaQuery,
+  CircularProgress,
 } from '@mui/material';
 import {
   Grid,
@@ -72,9 +73,9 @@ interface RequestFormProps {
     addressData:string;
     categoryIdData:number;
     sourceType:string;
-    loading: boolean;
     savedProducts:[Product]
   onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string,categoryId:string,buttonType:string) => Promise<void>;
+  loading:boolean
 }
 const GET_CATEGORIES = gql`
  query GetCategories {
@@ -110,7 +111,7 @@ mutation UploadProfilePicture($file: Upload!) {
   }
 }
 `;
-const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,remarkData,categoryIdData,addressData,estimatedDate,sourceType,savedProducts }) => {
+const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseRequestId,remarkData,categoryIdData,addressData,estimatedDate,sourceType,savedProducts }) => {
 
   const [productTitles, setProductTitles] = useState<string[]>(savedProducts.map(product => product.title));
 
@@ -135,6 +136,9 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,rema
   const [titleErrors, setTitleErrors] = useState<string[]>(['']);
 
   const saveButtonRef = useRef<HTMLButtonElement>(null);
+
+  const [approvedBy, setAprovedBy] = useState(addressData);
+  const [requestedBy, setRequestedBy] = useState(addressData);
 
   const [selectedValue, setSelectedValue] = useState('1');
   const [errorMessage, setErrorMessage] = useState('');
@@ -256,6 +260,12 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,purchaseRequestId,rema
     updatedDescriptions[index] = value;
     setDescriptions(updatedDescriptions);
 
+  };
+  const handleRequestedByChange = (value: string) => {
+    setRequestedBy(value);
+  };
+  const handleApprovedByChange = (value: string) => {
+    setAprovedBy(value);
   };
   const handleMarkChange = (index: number, value: string) => {
     const updatedMarks = [...marks];
@@ -444,129 +454,129 @@ console.log(supplierIds)
     }
   };
   const handleSave = (buttonType: 'save' | 'send') => {
-   /* if (buttonType === 'save') {
-      // Save button was clicked
-      console.log('Save button clicked');
-      // Perform save functionality
-    } else if (buttonType === 'send') {
-      // Send button was clicked
-      console.log('Send button clicked');
-      // Perform send functionality
-    }*/
-    if (selectedOptions.length === 0) {
-      setErrorMessage('Please select an option');
-      return;
-    }
-  
-    if (selectedOptions.includes('supplier') && (!selectedValue || !categoryId)) {
-      setErrorMessage('Please select a category');
-      return;
-    }
-  
-    if (selectedOptions.includes('agent') && !selectedValue) {
-      setErrorMessage('Please select an agent');
-      return;
-    }
-  
-    if (selectedOptions.includes('x-company') && !selectedValue) {
-      setErrorMessage('Please select an X-company');
-      return;
-    }
-    const updatedTitleErrors = productTitles.map((title) => {
-      if (title.trim() === '') {
-        return 'Please enter a valid item name.';
-      }
-      return '';
-    });
-    setTitleErrors(updatedTitleErrors);
-
-    if (updatedTitleErrors.some((error) => error !== '')) {
-      return;
-    }
-   /* const updateItemCodeErrors = itemCodes.map((code) => {
-      if (code.trim() === '') {
-        return 'Please enter a valid item itemCodes.';
-      }
-      return '';
-    });
-    setItemCodeErrors(updateItemCodeErrors);
-
-    if (updateItemCodeErrors.some((error) => error !== '')) {
-      return;
-    }
-    const updatePartNumberErrors = partNumbers.map((partNumber) => {
-      if (partNumber.trim() === '') {
-        return 'Please enter a valid item partNumbers.';
-      }
-      return '';
-    });
-    setPartNumberErrors(updatePartNumberErrors);
-
-    if (updatePartNumberErrors.some((error) => error !== '')) {
-      return;
-    }
-    const updateUomsErrors = uoms.map((uom) => {
-      if (uom.trim() === '') {
-        return 'Please enter a valid item uom.';
-      }
-      return '';
-    });
-    setUomErrors(updateUomsErrors);
-
-    if (updateUomsErrors.some((error) => error !== '')) {
-      return;
-    }*/
-    const updateQuantitieErrors = quantities.map((quantitie) => {
-      if (quantitie.trim() === '') {
-        return 'Please enter a valid item quantities.';
-      }
-      return '';
-    });
-    setQuantityErrors(updateQuantitieErrors);
-    if (updateQuantitieErrors.some((error) => error !== '')) {
-      return;
-    }
-
-    // Create an array of SaleInput objects from the productTitles array
-    const products: SaleInput[] = productTitles.map((title,index) => ({ 
-      productTitle: title, 
-      code: itemCodes[index],
-      partNumber: partNumbers[index],
-      uom: uoms[index],
-      quantity: Number(quantities[index]), // Convert the quantity value
-      mark: marks[index],
-      model: models[index],
-      description: descriptions[index],
-      manufacturer:manufacturers[index],
-    }));
-
-    const additional = {
-      remark:remark,
-      addressDetail:addressDetail,
-      estimatedDelivery:estimatedDelivery,
-      requestedBy:"requestedBy",
-      approvedBy:"approvedBy",
-    }
-    setErrorMessage('');
-
-    let supplierNewId: string[] = [];
-    if (selectedType === 'supplier') {
-  //    supplierNewId = ['1','2'];
-      supplierNewId = supplierIds;
-   //  onSubmit(selectedType, supplierNewId);
-   console.log(supplierIds)
-console.log(supplierIds)
+    /* if (buttonType === 'save') {
+       // Save button was clicked
+       console.log('Save button clicked');
+       // Perform save functionality
+     } else if (buttonType === 'send') {
+       // Send button was clicked
+       console.log('Send button clicked');
+       // Perform send functionality
+     }*/
+     if (selectedOptions.length === 0) {
+       setErrorMessage('Please select an option');
+       return;
+     }
+   
+     if (selectedOptions.includes('supplier') && (!selectedValue || !categoryId)) {
+       setErrorMessage('Please select a category');
+       return;
+     }
+   
+     if (selectedOptions.includes('agent') && !selectedValue) {
+       setErrorMessage('Please select an agent');
+       return;
+     }
+   
+     if (selectedOptions.includes('x-company') && !selectedValue) {
+       setErrorMessage('Please select an X-company');
+       return;
+     }
+     const updatedTitleErrors = productTitles.map((title) => {
+       if (title.trim() === '') {
+         return 'Please enter a valid item name.';
+       }
+       return '';
+     });
+     setTitleErrors(updatedTitleErrors);
+ 
+     if (updatedTitleErrors.some((error) => error !== '')) {
+       return;
+     }
+    /* const updateItemCodeErrors = itemCodes.map((code) => {
+       if (code.trim() === '') {
+         return 'Please enter a valid item itemCodes.';
+       }
+       return '';
+     });*/
+     //setItemCodeErrors(updateItemCodeErrors);
+ 
+     /*if (updateItemCodeErrors.some((error) => error !== '')) {
+       return;
+     }*/
+     /*const updatePartNumberErrors = partNumbers.map((partNumber) => {
+       if (partNumber.trim() === '') {
+         return 'Please enter a valid item partNumbers.';
+       }
+       return '';
+     });*/
+    // setPartNumberErrors(updatePartNumberErrors);
+ 
+    /* if (updatePartNumberErrors.some((error) => error !== '')) {
+       return;
+     }
+     const updateUomsErrors = uoms.map((uom) => {
+       if (uom.trim() === '') {
+         return 'Please enter a valid item uom.';
+       }
+       return '';
+     });*/
+    // setUomErrors(updateUomsErrors);
+ 
+   /*  if (updateUomsErrors.some((error) => error !== '')) {
+       return;
+     }*/
+     const updateQuantitieErrors = quantities.map((quantitie) => {
+       if (quantitie.trim() === '') {
+         return 'Please enter a valid item quantities.';
+       }
+       return '';
+     });
+     setQuantityErrors(updateQuantitieErrors);
+     if (updateQuantitieErrors.some((error) => error !== '')) {
+       return;
+     }
+ 
+     // Create an array of SaleInput objects from the productTitles array
+     const products: SaleInput[] = productTitles.map((title,index) => ({ 
+       productTitle: title, 
+       code: itemCodes[index],
+       partNumber: partNumbers[index],
+       uom: uoms[index],
+       quantity: Number(quantities[index]), // Convert the quantity value
+       mark: marks[index],
+       model: models[index],
+       description: descriptions[index],
+       manufacturer:manufacturers[index],
+     }));
+ 
+     const additional = {
+       remark:remark,
+       addressDetail:addressDetail,
+       estimatedDelivery:estimatedDelivery,
+       requestedBy:requestedBy,
+       approvedBy:approvedBy,
+     }
+     setErrorMessage('');
+ 
+     let supplierNewId: string[] = [];
+     if (selectedType === 'supplier') {
+   //    supplierNewId = ['1','2'];
+       supplierNewId = supplierIds;
+    //  onSubmit(selectedType, supplierNewId);
+    console.log(supplierIds)
+ console.log(supplierIds)
+       onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
+ 
+     } else if (selectedType === 'agent' || selectedType === 'x-company') {
+       supplierNewId = [selectedValue];
+      // onSubmit(selectedType, supplierNewId);
       onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
-
-    } else if (selectedType === 'agent' || selectedType === 'x-company') {
-      supplierNewId = [selectedValue];
-     // onSubmit(selectedType, supplierNewId);
-     onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
-
-     
-
-    }
-  };
+ 
+      
+ 
+     }
+   };
   const handleOptionChange = (option: string) => {
     if (selectedOptions.includes(option)) {
       setSelectedOptions(selectedOptions.filter((item) => item !== option));
@@ -665,17 +675,17 @@ return(
 </Grid>
               {selectedOptions.includes('supplier') && (
                 <Grid item xs={12}>
-        <FormControl fullWidth>
-          <InputLabel>Category</InputLabel>
-          <Select value={selectedValue} onChange={handleChange} label="Category">
-            {data &&
-              data.getCategories.map((category: Category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))}
-          </Select>
-        </FormControl>
+      <FormControl fullWidth>
+  <InputLabel>Category</InputLabel>
+  <Select value={categoryId || selectedValue} onChange={handleChange} label="Category">
+    {data &&
+      data.getCategories.map((category: Category) => (
+        <MenuItem key={category.id} value={Number(categoryId) || category.id}>
+          {category.name}
+        </MenuItem>
+      ))}
+  </Select>
+</FormControl>
                 </Grid>
               )}
           {selectedOptions.includes('agent') && (
@@ -1152,7 +1162,7 @@ marginBottom: '10px',
               <Button  variant="text" component="label" htmlFor="upload-input"
                  style={{
                   textTransform: 'none',
-                  fontSize: '14px',
+                  fontSize: '8px',
                   color: '#00b0ad',
                   borderColor: '##00b0ad',
                 }}
@@ -1373,17 +1383,68 @@ placeholder="Item Name"
 
     />
   </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      label="Requested By"
+      variant="outlined"
+      fullWidth
+     value={requestedBy}
+      onChange={(e) => handleRequestedByChange(e.target.value)}
+     // error={requestedByError !== ''}
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      label="Approved By"
+      variant="outlined"
+      fullWidth
+      value={approvedBy}
+      onChange={(e) => handleApprovedByChange(e.target.value)}
+      // error={approvedByError !== ''}
+    />
+  </Grid>
 </Grid>
 <Grid container spacing={2} alignItems="center" justifyContent="center" style={{ paddingTop: '20px' }}>
       <Grid item xs={6} sm={6}>
         <Button
-          variant="contained"
-          color="primary"
+          variant="outlined"
+          color="primary" // Apply "#ccc" background color when loading is true
           startIcon={<RequestPageOutlined />}
           onClick={handleSubmit}
+          ref={saveButtonRef}
           fullWidth
+          disabled={loading} // Disable the button when loading is true
         >
-          Send Request
+           {loading ? (
+            <div>
+               <CircularProgress size={24} style={{ color: 'red' }} />
+          Sending.....
+            </div>
+         
+        ) : (
+          'Send Request'
+        )}
+        </Button>
+      </Grid>
+      <Grid item xs={6} sm={6}>
+        <Button
+          variant="outlined"
+          color="primary" // Apply "#ccc" background color when loading is true
+          startIcon={<RequestPageOutlined />}
+          onClick={() => handleSave('save')}
+          ref={saveButtonRef}
+          fullWidth
+          disabled={loading} // Disable the button when loading is true
+        >
+           {loading ? (
+            <div>
+               <CircularProgress size={24} style={{ color: 'red' }} />
+          Saving.....
+            </div>
+         
+        ) : (
+          'Save Request'
+        )}
         </Button>
       </Grid>
       <Grid item xs={6} sm={6}>
@@ -1397,7 +1458,6 @@ placeholder="Item Name"
         </Button>
       </Grid>
 </Grid>
-
 </Paper>
    </Grid>
    </Paper>

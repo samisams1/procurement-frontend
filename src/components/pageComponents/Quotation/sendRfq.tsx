@@ -4,15 +4,16 @@ import Input from '../../Input';
 import { Alert, Box, Button, MenuItem, Paper, TextField, Typography } from '@mui/material';
 import { Form } from '../../useForm';
 //import Button from '../../Button';
-import { Grid, createTheme, ThemeProvider } from '@mui/material';
+import { Grid } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
 import { useNavigate } from 'react-router-dom';
 import { GET_QUOTATION } from '../../../graphql/quotation';
 import { useQuotation } from '../../../context/quotationContext';
-import { Cancel, Drafts, Save } from '@mui/icons-material';
+import { Cancel, Drafts, RequestQuote, Save } from '@mui/icons-material';
 //import numberToWords from 'number-to-words';
 import { useReactToPrint } from 'react-to-print';
 import '../../PrintPage.css';
+import PageHeader from '../../PageHeader';
 interface Product {
   id: number;
   uom: string | null;
@@ -396,7 +397,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
     rowsPerPage: 10,
     rowsPerPageOptions: [10, 25, 50],
   };
-  const theme = createTheme({
+  /*const theme = createTheme({
     components: {
       MUIDataTableHeadCell: {
         styleOverrides: {
@@ -416,15 +417,19 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       },
     },
   });
+  */
  
   return (
-   
-    <ThemeProvider theme={theme}> 
      <div ref={printRef} className="print-content">
     <Grid container spacing={3}>
-
-   
+  
       <Grid item xs={12}>
+      <PageHeader
+    title="Quotation"
+    icon={<RequestQuote/>}
+    subTitle="please fill your price and send to the Customer"
+    imageSrc="tra.jpg"
+    />
       <Grid>
       {successMessage && (
       <Alert variant="filled" severity="success" style={{ marginTop: 10 }}>
@@ -591,7 +596,6 @@ Tax(15%): {tax} Birr
 </Grid>
     </Grid>
     </div>
-    </ThemeProvider>
 
   );
 }; 
