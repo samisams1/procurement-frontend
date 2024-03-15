@@ -10,7 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import { GET_QUOTATION } from '../../../graphql/quotation';
 import { useQuotation } from '../../../context/quotationContext';
 import { Cancel, Drafts, Save } from '@mui/icons-material';
-import numberToWords from 'number-to-words';
+//import numberToWords from 'number-to-words';
+import { useReactToPrint } from 'react-to-print';
+import '../../PrintPage.css';
 interface Product {
   id: number;
   uom: string | null;
@@ -103,9 +105,10 @@ const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplie
   //const [otherPayment,setOtherPayment] =useState<number>(0);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');  
-
-
-
+  const printRef = React.useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
   const navigate = useNavigate();
   const { loading, error, data,refetch } = useQuery<
     QuotationByRequestIdAdSupplierIdData,
@@ -129,7 +132,7 @@ console.log(quotationByRequestIdAdSupplierId)
 const [remark, setRemark] = useState(quotationByRequestIdAdSupplierId[0]?.quotation.remark || '');
 const [sentBy, setSentBy] = useState(quotationByRequestIdAdSupplierId[0]?.quotation.sentBy || '');
 const [estimatedDelivery, setEstimatedDelivery] = useState(quotationByRequestIdAdSupplierId[0]?.quotation.availabilityDate || '');
-const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdSupplierId[0]?.quotation.shippingPrice ||0);
+const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdSupplierId[0]?.quotation.shippingPrice || 0);
   const renderDateOptions = () => {
     const options = [];
     for (let i = 1; i <= 30; i++) {
@@ -196,7 +199,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       await refetch();
       setTimeout(() => {
         setSuccessMessage('');
-      }, 15000);
+      }, 1500);
       navigate('/purchaseRequests')
     } catch (error) {
       console.error('Mutation error:', error);
@@ -205,7 +208,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   
       setTimeout(() => {
         setErrorMessage('');
-      }, 15000);
+      }, 1500);
     }
   };
     const hadleSeveAsDraftAndCancel = async (status:string): Promise<void> => {
@@ -356,7 +359,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
         quotation.product.title,
         <Input
         productId={quotation.id.toString()}
-        value={prices[quotation.id.toString()] || quotation.disCountPrice || ''}
+        value={prices[quotation.id.toString()] || quotation.price || ''}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           handlePriceChange(quotation.id.toString(), e)
         }
@@ -415,9 +418,12 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   });
  
   return (
+   
     <ThemeProvider theme={theme}> 
+     <div ref={printRef} className="print-content">
     <Grid container spacing={3}>
-    
+
+   
       <Grid item xs={12}>
       <Grid>
       {successMessage && (
@@ -444,6 +450,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   <Typography>Requested  Date : {requestedDate} </Typography>
  <Typography>Due Date : </Typography>
 </div>
+<Button onClick={handlePrint}>Print</Button>
 </Paper>
         </Grid>
           <MUIDataTable
@@ -583,8 +590,9 @@ Tax(15%): {tax} Birr
 </Box>
 </Grid>
     </Grid>
+    </div>
     </ThemeProvider>
-  );
-};
 
+  );
+}; 
 export default SendRfqComponent;

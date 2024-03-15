@@ -393,6 +393,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
     variant="outlined"
     color="primary"
     style={{ whiteSpace: 'nowrap' }}
+    className="no-print"
   >
     <Send /> Send Order
   </Button>

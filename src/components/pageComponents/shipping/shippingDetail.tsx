@@ -11,6 +11,8 @@ import PageFooter from '../../PageFooter';
 import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
 import PageHeader from '../../PageHeader';
+import { useReactToPrint } from 'react-to-print';
+import '../../PrintPage.css';
 interface Product {
   id: number;
   Description: string | null;
@@ -133,6 +135,10 @@ mutation UpdateOrder($id: Int!, $input: String!) {
 const ShippingDetail = () => {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
+  const printRef = React.useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
   const [updateOrder] = useMutation(UPDATE_ORDER);
   const { loading, error, data } = useQuery<GetOrderDetailByOrderIdResponse, GetOrderDetailByOrderIdVariables>(
     GET_ORDER_DETAIL_BY_ORDER_ID,
@@ -280,9 +286,7 @@ const ShippingDetail = () => {
       console.error('Failed to update order:', updateError);
     }
   };
-  const handlePrint = () => {
-    window.print();
-  };
+
   const createdDate = orderDetail?.order.createdAt ? new Date(orderDetail.createdAt) : null;
   const formattedDate = createdDate?.toLocaleString('en-US', {
     day: 'numeric',
@@ -295,6 +299,7 @@ const ShippingDetail = () => {
   
   
   return (
+    <div ref={printRef} className="print-content">
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Grid>
@@ -455,6 +460,7 @@ const ShippingDetail = () => {
         </Grid>
       </Grid>
     </Grid>
+    </div>
   );
 };
 
