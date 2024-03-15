@@ -108,7 +108,7 @@ const SupplierNavConfig = () => {
           icon: getIcon('mdi:report-areaspline-variant'),
         },
         {
-          title: 'Requisitions',
+          title: 'Sent Requisitions',
           path: 'requisitions',
           icon: getIcon('ri:product-hunt-fill'),
         },

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
 import { TableFooter as MuiTableFooter } from '@mui/material';
+import { useReactToPrint } from 'react-to-print';
+
 import {
   ThemeProvider,
   TableCell,
@@ -139,6 +141,10 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
     variables: { id: qId },
   });
   //const theme = useTheme();
+  const printRef = React.useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
   const [selectedItems, setSelectedItems] = useState<{ [productId: string]: boolean }>({});
 
   if (loading) {
@@ -263,7 +269,9 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
     },
   });
   return (
-    <div>
+    <div ref={printRef} className="print-content">
+          
+
      <Grid container spacing={2}>
         {successMessage && (
           <Alert variant="filled" severity="success" style={{ marginTop: 10 }}>
@@ -278,9 +286,10 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
           <Grid item xs={12} sm={12}>
           <SectionTitle>
           <PageHeader
-            title="Best Two Price From Quotation From Differnt Suppliers"
+            title="Send Order"
             subTitle="select your price from given bellow of different price"
             icon={<QuizTwoTone fontSize="large" />}
+            imageSrc="tra.jpg"
           />
           </SectionTitle>
          </Grid>
@@ -306,7 +315,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
                 title={
                    <TableRow>
                     <TableCell>Please Select the Item and Send us order:</TableCell>
-                   
+                   <Button className="no-print" onClick={handlePrint}>  Print  </Button>
                   </TableRow>
                 }
                 options={options}

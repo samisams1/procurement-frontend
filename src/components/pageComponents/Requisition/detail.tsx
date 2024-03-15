@@ -11,6 +11,8 @@ import { SectionTitle } from '../../Section';
 import { Print, RequestPageOutlined } from '@mui/icons-material';
 import PageFooter from '../../PageFooter';
 import Popup from '../../Popup';
+import { useReactToPrint } from 'react-to-print';
+import '../../PrintPage.css';
 const paperStyle = {
   padding: '1rem',
   borderRadius: '8px',
@@ -127,6 +129,11 @@ function Detail() {
   const { id } = useParams<{ id?: string }>();
   const [isHovered, setIsHovered] = React.useState(false);
   const [openPopup, setOpenPopup] = useState(false);
+  const printRef = React.useRef(null);
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
 
   const { loading, error, data } = useQuery<OrderDetailData, OrderDetailVariables>(GET_PURCHASE_REQUEST_BY_ID, {
     variables: { id: Number(id) },
@@ -144,9 +151,7 @@ function Detail() {
     return <div>Error: {error.message}</div>;
   }
   const orderDetail = data?.purchaseRequestById[0]; // Assuming there's only one order detail for a given order ID
-  const handlePrint = () => {
-    window.print();
-  };
+
   const columns = [
     {
       name: 'id',
@@ -329,6 +334,7 @@ const CustomFooter = () => {
 };
 
   return (
+    <div ref={printRef} className="print-content">
     <Grid container spacing={2}>
     <Grid item xs={12}>
      
@@ -340,6 +346,7 @@ const CustomFooter = () => {
         startIcon={<Print />}
         onClick={handlePrint}
         style={{ whiteSpace: 'nowrap' }}
+        className="no-print"
       >
         Print Page
       </Button>
@@ -416,21 +423,8 @@ const CustomFooter = () => {
     <PageFooter/>
     </Grid>
     </Grid>
+    </div>
   );
 }
 
 export default Detail;
-// CSS media query
-const styles = `
-  @media print {
-    button {
-      display: none !important;
-    }
-  }
-`;
-
-// Add the CSS styles to the bottom of your code
-const styleElement = document.createElement('style');
-styleElement.type = 'text/css';
-styleElement.appendChild(document.createTextNode(styles));
-document.head.appendChild(styleElement);

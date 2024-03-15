@@ -58,3 +58,12 @@
   .footer-info {
     margin-right: 10px;
   }
+  .no-print {
+    display: none;
+  }
+  
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+  }
