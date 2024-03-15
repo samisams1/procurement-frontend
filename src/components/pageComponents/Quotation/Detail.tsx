@@ -353,15 +353,9 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
                     </TableCell>
                       </TableRow>
                       <TableRow>
-                      <TableCell>Other payment:</TableCell> 
-                    <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
-                    <span style={{color:'black'}}>{Number(productPrices[0].quotation?.otherPayment).toLocaleString()}</span> Birr
-                    </TableCell>
-                      </TableRow>
-                      <TableRow>
                       <TableCell> Before Discount Price:</TableCell>
                     <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
-                    <span style={{color:"black"}}>{Number((productPrices[0].quotation?.shippingPrice) + Number(productPrices[0].quotation?.otherPayment) +  Number(productPrices.reduce((sum, productPrice) => sum + productPrice.price * productPrice.product.quantity, 0).toFixed(2))).toLocaleString()}  </span> Birr
+                    <span style={{color:"black"}}>{Number((productPrices[0].quotation?.shippingPrice) +  Number(productPrices.reduce((sum, productPrice) => sum + productPrice.price * productPrice.product.quantity, 0).toFixed(2))).toLocaleString()}  </span> Birr
                      </TableCell>
                       </TableRow>
                       <TableRow>
@@ -373,7 +367,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
                       </TableRow><TableRow>
                       <TableCell>Net to Pay after discount  Price:</TableCell>
                     <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
-                    <span style={{color:"black"}}>{(Number(productPrices[0].quotation?.shippingPrice) + Number(productPrices[0].quotation?.otherPayment) +  Number(productPrices.reduce((sum, productPrice) => sum + productPrice.price * productPrice.product.quantity, 0).toFixed(2))- Number(productPrices.reduce((sum, productPrice) => sum + productPrice.disCountPrice * productPrice.product.quantity, 0).toFixed(2))).toLocaleString()}</span> Birr
+                    <span style={{color:"black"}}>{(Number(productPrices[0].quotation?.shippingPrice) +  Number(productPrices.reduce((sum, productPrice) => sum + productPrice.price * productPrice.product.quantity, 0).toFixed(2))- Number(productPrices.reduce((sum, productPrice) => sum + productPrice.disCountPrice * productPrice.product.quantity, 0).toFixed(2))).toLocaleString()}</span> Birr
                     </TableCell>
                       </TableRow>
                       
