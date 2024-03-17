@@ -55,6 +55,7 @@ import Profile from './pages/profile/Profile';
 import ShippingDetail from './components/pageComponents/shipping/shippingDetail';
 import SentProforma from './pages/purchase/sentProforma';
 import RfqDraft from './pages/Quotation/rfqDraft';
+import BestQuotation from './components/pageComponents/Quotation/BestRequotation';
 export default function RoutePage() {
 
     return useRoutes([
@@ -125,6 +126,9 @@ export default function RoutePage() {
               { path: '/approvedOrder', element: <ProtectedRoute  element={<Order state={{ orderType: "approved" }}/>} /> },
               { path: '/rejectedOrder', element: <ProtectedRoute  element={<Order state={{ orderType: "rejected" }}/>} /> },
               { path: '/rfqDraft', element: <ProtectedRoute  element={<RfqDraft />} /> },
+
+              { path: '/bestQuotation', element: <ProtectedRoute  element={<BestQuotation />} /> },
+              
             ],
           },
           {

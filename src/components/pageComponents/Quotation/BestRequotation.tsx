@@ -18,6 +18,7 @@ import {
 import { SectionTitle } from '../../Section';
 import PageHeader from '../../PageHeader';
 import { QuizTwoTone, Send } from '@mui/icons-material';
+import { useLocation } from 'react-router-dom';
 interface Product {
   id: string;
   Description: string;
@@ -116,7 +117,10 @@ type QuotationDetailProps = {
   customerId:number;
   supplierId:number;
 };
-const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,supplierId }) => {
+const BestQuotation: React.FC = () => {
+    const location = useLocation();
+    const qId = location.state?.qId;
+    const customerId = location.state?.qId;
   const [createOrder] = useMutation(CREATE_ORDER_MUTATION);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -381,4 +385,4 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId,customerId,suppli
   );
 };
 
-export default QuotationDetail;
+export default BestQuotation;
