@@ -115,7 +115,7 @@ mutation CreateOrder($input: [CreateOrderInput]!) {
 const BestQuotation: React.FC = () => {
     const location = useLocation();
     const qId = location.state?.qId;
-    const customerId = location.state?.qId;
+    const customerId = location.state?.customerId;
   const [createOrder] = useMutation(CREATE_ORDER_MUTATION);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
