@@ -183,11 +183,17 @@ export  const UserForm: React.FC<UserFormProps> = ({ selectedRole }) => {
   }
   return (
     <div>
- 
+
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Typography variant="h6" style={{ color: '#00b0ad' }}>
-        {selectedRole} REGISTRATION
+        {selectedRole ==="CUSTOMER" ? "Create your buyer account": "Create your supplier account"} 
       </Typography>
+      {selectedRole ==="CUSTOMER" ? 
+       <p>Dear customer, create your account for free to send your requests to get multiple
+       competitive suppliers price per each quotation. Kindly fill the following registration fields
+       carefully.</p>
+      : ""} 
+     
       <Form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
