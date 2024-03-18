@@ -69,6 +69,19 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
     viewColumns: true,
     rowsPerPage: 10,
     rowsPerPageOptions: [10, 25, 50],
+    customToolbar: () => {
+      return (
+        <Button
+          variant="outlined"
+          color="primary"
+          startIcon={<Details />}
+          onClick={() => handleClick(qId.toString())}
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          Best Price
+        </Button>
+      );
+    },
   };
 
   const columns = [
@@ -94,7 +107,26 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
         customBodyRender: (value: number) => `${value} Days`,
       },
     },
-  ];;
+    {
+      name: 'action',
+      label: 'Action',
+      options: {
+        customBodyRender: (value: any, tableMeta: any) => {
+          const supplierId = tableData[tableMeta.rowIndex]?.supplierId;
+          return (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => handleActionClick(supplierId)}
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              Action
+            </Button>
+          );
+        },
+      },
+    },
+  ];
 
   const theme = createTheme({
     components: {
@@ -121,6 +153,11 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
     navigate('/bestQuotation', { state: { qId: qId, customerId: customerId } });
   };
 
+  const handleActionClick = (supplierId: number) => {
+    // Handle the action button click for the specific supplier
+    navigate('/bestQuotation', { state: { qId: qId, customerId: customerId,supplierId:supplierId } });
+  };
+
   return (
     <div>
       <PageHeader
@@ -136,19 +173,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
       ) : (
         <ThemeProvider theme={theme}>
           <MUIDataTable
-            title={
-              <div>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  startIcon={<Details />}
-                  onClick={() => handleClick(qId.toString())}
-                  style={{ whiteSpace: 'nowrap' }}
-                >
-                  Best  Price
-                </Button>
-              </div>
-            }
+            title=""
             data={tableData}
             columns={columns}
             options={options}
