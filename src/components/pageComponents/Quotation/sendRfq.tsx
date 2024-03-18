@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Input from '../../Input';
-import { Alert, Box, Button, MenuItem, Paper, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, MenuItem, Paper, TextField, ThemeProvider, Typography, createTheme } from '@mui/material';
 import {  Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 
 import { Form } from '../../useForm';
@@ -14,7 +14,7 @@ import { useQuotation } from '../../../context/quotationContext';
 import { Cancel, Drafts, RequestQuote, Save } from '@mui/icons-material';
 //import numberToWords from 'number-to-words';
 import { useReactToPrint } from 'react-to-print';
-import '../../PrintPage.css';
+//import '../../PrintPage.css';
 import PageHeader from '../../PageHeader';
 interface Product {
   id: number;
@@ -67,6 +67,8 @@ const GET_QUOTATION_QUERY = gql`
         uom
         title
         quantity
+        code
+        uom
       }
       quotation {
         purchaseRequestId
@@ -312,19 +314,25 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   const columns = [
     { name: 'SN', options: { filter: false, sort: false } },
     {
-      name: 'Created At',
+      name: 'Product/Service description',
       options: {
         display: true,
       },
     },
     {
-      name: 'Item Name',
+      name: 'Item code',
       options: {
         display: true,
       },
     },
     {
-      name: 'Price',
+      name: 'Unit',
+      options: {
+        display: true,
+      },
+    },
+    {
+      name: 'U. Price',
       options: {
         display: true,
       },
@@ -336,7 +344,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       },
     },
     {
-      name: 'Quantity',
+      name: 'Qty',
       options: {
         display: true,
       },
@@ -351,12 +359,14 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   ];
   const tableData = quotationByRequestIdAdSupplierId.map(
     (quotation: any, index: number) => {
-      const createdAtDate = new Date(quotation.createdAt);
-      const formattedDate = createdAtDate.toLocaleDateString();
+     // const createdAtDate = new Date(quotation.createdAt);
+     // const formattedDate = createdAtDate.toLocaleDateString();
       return [
         index + 1,
-        formattedDate, // Converted date
+       // formattedDate, // Converted date
         quotation.product.title,
+        quotation.product.code,
+        quotation.product.uom,
         <Input
         productId={quotation.id.toString()}
         value={prices[quotation.id.toString()] || quotation.price || ''}
@@ -379,14 +389,15 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       ];
     }
   );
+  
   const options: MUIDataTableOptions = {
     filter: true,
     download: true,
     print: true,
     search: true,
-    responsive: 'vertical',
     selectableRows: 'none',
     viewColumns: true,
+    responsive: 'standard',
     rowsPerPage: 10,
     rowsPerPageOptions: [10, 25, 50],
     customFooter: () => {
@@ -514,7 +525,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       );
     }
   };
- /* const theme = createTheme({
+  const theme = createTheme({
     components: {
       MUIDataTableHeadCell: {
         styleOverrides: {
@@ -533,7 +544,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
         },
       },
     },
-  });*/
+  });
   
   return (
      <div ref={printRef} className="print-content">
@@ -594,12 +605,14 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
 <Button onClick={handlePrint}>Print</Button>
 </Paper>
         </Grid>
+        <ThemeProvider theme={theme}>
           <MUIDataTable
             title="Quotation products"
             data={tableData}
             columns={columns}
             options={options}
           />
+          </ThemeProvider>
        <Box mt={2}>
   <Form onSubmit={handleSubmit}>
   <Grid container spacing={2} justifyContent="center">
