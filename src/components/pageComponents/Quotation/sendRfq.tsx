@@ -402,8 +402,9 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
     rowsPerPageOptions: [10, 25, 50],
     customFooter: () => {
       return (
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
+        <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+        <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
       <Typography variant="h6" style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center' }}>
         Terms of Sales
       </Typography>
@@ -428,7 +429,9 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
         </Typography>
       </div>
     </div>
-    <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+        <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
     <TableContainer component={Paper} style={{ margin: '10px' }}>
       <Table>
         <TableBody>
@@ -521,7 +524,9 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       </Table>
     </TableContainer>
   </div>
-        </div>
+        </Grid>
+      </Grid>
+     
       );
     }
   };
