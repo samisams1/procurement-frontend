@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Snackbar } from '@mui/material';
+import SignalWifiOffIcon from '@mui/icons-material/SignalWifiOff';
 
 const FlashMessage = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -17,9 +18,6 @@ const FlashMessage = () => {
     const handleOffline = () => {
       setIsOnline(false);
       setOpen(true);
-      setTimeout(() => {
-        setOpen(false);
-      }, 2000);
     };
 
     window.addEventListener('online', handleOnline);
@@ -39,9 +37,18 @@ const FlashMessage = () => {
     <Snackbar
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       open={open}
-      autoHideDuration={2000}
+      autoHideDuration={null}
       onClose={handleClose}
-      message={isOnline ? 'Connected!' : 'No Connection!'}
+      message={
+        isOnline ? (
+          'Connected!'
+        ) : (
+          <span>
+            <SignalWifiOffIcon style={{ marginRight: '8px', fontSize: '18px' }} />
+            No Internet Connection! Please check your network connection.
+          </span>
+        )
+      }
       ContentProps={{
         className: isOnline ? 'flash-message connected' : 'flash-message no-connection',
       }}
