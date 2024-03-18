@@ -112,11 +112,6 @@ mutation CreateOrder($input: [CreateOrderInput]!) {
   }
 }
 `;
-type QuotationDetailProps = {
-  qId: number;
-  customerId:number;
-  supplierId:number;
-};
 const BestQuotation: React.FC = () => {
     const location = useLocation();
     const qId = location.state?.qId;
