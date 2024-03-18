@@ -284,7 +284,6 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       const quantity = parseFloat(disCountPrice[quotation.id.toString()]) || 0;
       subtotal += discountPrice * quantity;
     });
-    subtotal += shippingCost;
     return subtotal.toFixed(2);
   };
   const calculateTax = (grandTotal: number, taxRate: number): string => {
@@ -295,10 +294,13 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   /*const convertToWords = (num: number): string => {
     return numberToWords.toWords(num);
   };*/
-  const taxRate: number = 0.15; // Assuming the tax rate is 8%
+  const taxRate: number = 0.35; // Assuming the tax rate is 8%
+  const vatRate: number = 0.15;
+  const servieRate = 0.001;
   const grandTotal: number = parseFloat(calculateSubtotal());
   const tax: string = calculateTax(grandTotal, taxRate);
-
+  const vat:string = calculateTax(grandTotal, vatRate);
+  const serviceCharge:string = calculateTax(grandTotal, servieRate);
   console.log(tax); // Output the calculated tax amount
   if (loading) {
     return <div>Loading...</div>;
@@ -451,7 +453,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
           </TableRow>
           <TableRow>
             <TableCell align="center">
-              <Typography>Tax</Typography>
+              <Typography>Tax (35%)</Typography>
             </TableCell>
             <TableCell align="center">
               <Typography>{tax}</Typography>
@@ -462,7 +464,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
               <Typography>VAT (15%)</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography>4.00</Typography>
+              <Typography>{vat}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -470,7 +472,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
               <Typography>Service charge (1%)</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography>4.00</Typography>
+              <Typography>{serviceCharge}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -478,7 +480,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
               <Typography>Total</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography> {Number(grandTotal)  + Number(tax)}</Typography>
+              <Typography> {Number(grandTotal)  + Number(tax) + Number(serviceCharge) + Number(vat)}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
