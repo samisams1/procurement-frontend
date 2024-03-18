@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Input from '../../Input';
 import { Alert, Box, Button, MenuItem, Paper, TextField, Typography } from '@mui/material';
+import {  Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+
 import { Form } from '../../useForm';
 //import Button from '../../Button';
 import { Grid } from '@mui/material';
@@ -96,9 +98,10 @@ interface Props {
   customerId: string;
   referenceNumber:string;
   requestedDate:string;
+  customerName:string;
 }
 
-const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplierId,referenceNumber,requestedDate }) => {
+const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplierId,referenceNumber,requestedDate,customerName }) => {
   const [prices, setPrices] = useState<{ [key: string]: string }>({});
   const [disCountPrice, setDisCountPrices] = useState<{ [key: string]: string }>({});
  
@@ -126,7 +129,7 @@ const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplie
   const [updateQuotation] = useMutation(UPDATE_QUOTATION_MUTATION);
   const {quotations, setQuotations } = useQuotation();
 console.log("setQuotations")
-
+const currentDate = new Date().toLocaleDateString();
   const quotationByRequestIdAdSupplierId = data?.quotationByRequestIdAdSupplierId || [];
 //const availabilityDate = quotationByRequestIdAdSupplierId[0]?.avalabilityDate;
 console.log(quotationByRequestIdAdSupplierId)
@@ -343,12 +346,6 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
         display: true,
       },
     },
-   /* {
-      name: 'Status',
-      options: {
-        display: true,
-      },
-    },*/
   ];
   const tableData = quotationByRequestIdAdSupplierId.map(
     (quotation: any, index: number) => {
@@ -377,15 +374,9 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
           parseFloat(prices[quotation.id.toString()] || ''),
           quotation.product.quantity
         ),
-     /*   quotation.status === 'pending' ? (
-          <span style={{ color: 'red' }}>{quotation.status}</span>
-        ) : (
-          <span style={{ color: 'green' }}>{quotation.status}</span>
-        ),*/
       ];
     }
   );
-
   const options: MUIDataTableOptions = {
     filter: true,
     download: true,
@@ -396,8 +387,132 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
     viewColumns: true,
     rowsPerPage: 10,
     rowsPerPageOptions: [10, 25, 50],
+    customFooter: () => {
+      return (
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
+      <Typography variant="h6" style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center' }}>
+        Terms of Sales
+      </Typography>
+      <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
+        <Typography>
+          Please order your purchase before valid days
+        </Typography>
+      </div>
+      <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
+        <Typography>
+          Buyers are responsible for the requested items
+        </Typography>
+      </div>
+      <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
+        <Typography>
+          If any change please notify us before 24hrs
+        </Typography>
+      </div>
+      <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
+        <Typography>
+          If any change please notify us before 24hrs
+        </Typography>
+      </div>
+    </div>
+    <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
+    <TableContainer component={Paper} style={{ margin: '10px' }}>
+      <Table>
+        <TableBody>
+        <TableRow>
+            <TableCell align="center">
+              <Typography>Shipping Cost</Typography>
+            </TableCell>
+            <TableCell align="center" style={{ padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <TextField
+                type="number"
+                placeholder="Enter Shipping Cost"
+                value={Number.isFinite(shippingCost) ? shippingCost.toString() : ''}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setShippingCost(parseFloat(e.target.value))
+                }
+                fullWidth
+                style={{ height: '30px' }}
+                InputProps={{
+                  style: {
+                    padding: '0 8px',
+                  },
+                }}
+              />
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Sub Total</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>{calculateSubtotal()}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Tax</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>{tax}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>VAT (15%)</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>4.00</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Service charge (1%)</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>4.00</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Total</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography> {Number(grandTotal)  + Number(tax)}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Total discount</Typography>
+            </TableCell>
+            <TableCell align="center">{calculateDisCountSubtotal()}</TableCell>
+          </TableRow>
+         
+          <TableRow>
+            <TableCell align="center">
+              <Typography>payable</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography> {Number(grandTotal)  + Number(tax) - Number(calculateDisCountSubtotal()) }</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Currency</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>ETB</Typography>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </div>
+        </div>
+      );
+    }
   };
-  /*const theme = createTheme({
+ /* const theme = createTheme({
     components: {
       MUIDataTableHeadCell: {
         styleOverrides: {
@@ -416,13 +531,11 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
         },
       },
     },
-  });
-  */
- 
+  });*/
+  
   return (
      <div ref={printRef} className="print-content">
     <Grid container spacing={3}>
-  
       <Grid item xs={12}>
       <PageHeader
     title="Quotation"
@@ -444,16 +557,37 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       </Grid>
       <Grid item xs={12} sm={12}>
         <Paper elevation={3} sx={{ padding: '20px' }}>
-            <div style={{
+        <div style={{
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
   marginBottom: '10px',
 }}>
-  
-  <Typography>Reference Number : {referenceNumber} </Typography>
-  <Typography>Requested  Date : {requestedDate} </Typography>
- <Typography>Due Date : </Typography>
+  <div>
+    <Typography> {"Quotation: Purchase Request"}</Typography>
+  </div>
+  <div>
+    <Typography>Category: {"Construction"}</Typography>
+  </div>
+  <div>
+  <Typography>Customer Name: {customerName}</Typography>
+  </div>
+</div>
+<div style={{
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: '1',
+}}>
+  <div>
+  <Typography>Reference Number: {referenceNumber}</Typography>
+  </div>
+  <div>
+  <Typography>Requested Date: {requestedDate}</Typography>
+  </div>
+  <div>
+  <Typography>Due Date: {currentDate}</Typography>
+  </div>
 </div>
 <Button onClick={handlePrint}>Print</Button>
 </Paper>
@@ -467,45 +601,6 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
        <Box mt={2}>
   <Form onSubmit={handleSubmit}>
   <Grid container spacing={2} justifyContent="center">
-  <Grid item xs={12} md={12}>
-  <Grid container spacing={2}>
-    <Grid item xs={12}>
-     <TextField
-  type="number"
-  label="Shipping Cost"
-  placeholder="Enter Shipping Cost"
-  value={Number.isFinite(shippingCost) ? shippingCost.toString() : ''}
-  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-    setShippingCost(parseFloat(e.target.value))
-  }
-  fullWidth
-  sx={{ paddingTop: '10px', paddingBottom: '10px' }}
-/>
-      <Typography variant="subtitle1" align="right" fontWeight="bold">
-  Subtotal: {calculateSubtotal()} Birr
-</Typography>
-<Typography variant="subtitle1" align="right" fontWeight="bold">
-Tax(15%): {tax} Birr
-</Typography>
-<Typography variant="subtitle1" align="right" fontWeight="bold">
- Grand Total: {Number(grandTotal)  + Number(tax)} Birr
-
-</Typography>
-
-      {
-        Number(calculateDisCountSubtotal()) >0?  <Typography variant="subtitle1" align="right" fontWeight="bold">
-        Discount : {calculateDisCountSubtotal()} Birr
-     </Typography>:''
-      } 
-      <Typography variant="subtitle1" align="right" fontWeight="bold">
-       
-        
-      </Typography>
-  
-    </Grid>
-  </Grid>
-</Grid>
-
 <Grid item xs={12} sm={12}>
   <Paper elevation={3} sx={{ padding: '20px' }}>
     <div style={{

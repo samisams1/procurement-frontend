@@ -80,8 +80,8 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
   const { loading, error, data } = useQuery(GET_QUOTATION, {
     variables: { suplierId:Number(supplierId)},
   });
-  const handleListItemClick = (id: number,qId:number,referenceNumber:string,requestedDate:string) => {
-    navigate('/sendRfq', { state: { id,qId,supplierId,referenceNumber,requestedDate} });
+  const handleListItemClick = (id: number,qId:number,referenceNumber:string,requestedDate:string,customerName:string) => {
+    navigate('/sendRfq', { state: { id,qId,supplierId,referenceNumber,requestedDate,customerName} });
   };
   useEffect(() => {
     if (!loading && !error && data) {
@@ -117,6 +117,7 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
     customerName: `${quotation?.customer?.firstName} ${quotation?.customer?.lastName}`,
     supplierName: quotation?.supplier?.name,
     referenceNumber: quotation.purchaseRequest.referenceNumber,
+    
     createdAt: quotation.createdAt,
   }));
   const columns = [
@@ -165,13 +166,14 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
         customBodyRender: (value: any, tableMeta: any) => {
           const id = tableMeta.rowData[0];
           const qId = tableMeta.rowData[1];
+          const customerName = tableMeta.rowData[3];
           const referenceNumber = tableMeta.rowData[5];
           const requestedDate = tableMeta.rowData[6];
 
           return (
             <Button
               variant="outlined"
-              onClick={() => handleListItemClick(id,qId,referenceNumber,requestedDate)}
+              onClick={() => handleListItemClick(id,qId,referenceNumber,requestedDate,customerName)}
               style={{ whiteSpace: 'nowrap' }}
             >
               View Detail sams
