@@ -369,6 +369,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
         quotation.product.code,
         quotation.product.uom,
         <TextField
+        placeholder="Please Enter the Price"
         value={prices[quotation.id.toString()] || quotation.price || ''}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           handlePriceChange(quotation.id.toString(), e)
