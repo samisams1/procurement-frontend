@@ -1,8 +1,7 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { Grid, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 interface RfqComponentProps {
@@ -84,9 +83,6 @@ const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
   });
   const theme = useTheme();
   const navigate = useNavigate();
-
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -104,61 +100,79 @@ const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
   };
 
   if (uniquePurchaseRequestIds.length === 0) {
-    return  <Grid container justifyContent="center" alignItems="center">
-       <Typography variant="h6"> <Typography>Sorry, no matching records found</Typography></Typography></Grid>
-    
+    return (
+      <Grid container justifyContent="center" alignItems="center">
+        <Typography variant="h6">
+          <Typography>Sorry, no matching records found</Typography>
+        </Typography>
+      </Grid>
+    );
   }
 
   return (
     <ThemeProvider theme={theme}>
-      <List>
-        {uniquePurchaseRequestIds.map((purchaseRequestId) => {
-          const productPrice = data?.getAllProductPrices.find(
-            (productPrice) => productPrice.quotation.purchaseRequestId === purchaseRequestId
-          );
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>S.N</TableCell>
+              <TableCell>Request ID</TableCell>
+              <TableCell>No. of Suppliers</TableCell>
+              <TableCell>Category</TableCell>
+              <TableCell>RFQ Date</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {uniquePurchaseRequestIds.map((purchaseRequestId, index) => {
+              const productPrice = data?.getAllProductPrices.find(
+                (productPrice) => productPrice.quotation.purchaseRequestId === purchaseRequestId
+              );
 
-          if (!productPrice) {
-            return null;
-          }
-
-          return (
-            <ListItem
-              key={productPrice.id}
-              alignItems="flex-start"
-              disableGutters={!isMobile}
-              divider
-              onClick={() =>
-                handleClick(
-                  productPrice.quotation.purchaseRequestId,
-                  productPrice.quotation.customerId,
-                  productPrice.quotation.supplierId
-                )
+              if (!productPrice) {
+                return null;
               }
-              style={{ cursor: 'pointer' }}
-            >
-              <ListItemText
-                primary={
-                  <Typography variant="h6" color="primary">
-                    Request ID: {productPrice.id}
-                  </Typography>
-                }
-                secondary={
-                  <>
-                    <Typography variant="body2" color="textSecondary">
-                      Created At: {productPrice.createdAt}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      Status:{' '}
-                      <span style={{ color: 'red' }}>{productPrice.status}</span>
-                    </Typography>
-                  </>
-                }
-              />
-            
-            </ListItem>
-          );
-        })}
-      </List>
+
+              return (
+                <TableRow
+                  key={productPrice.id}
+                  hover
+                  onClick={() =>
+                    handleClick(
+                      productPrice.quotation.purchaseRequestId,
+                      productPrice.quotation.customerId,
+                      productPrice.quotation.supplierId
+                    )
+                  }
+                  style={{ cursor: 'pointer' }}
+                >
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{productPrice.id}</TableCell>
+                  <TableCell>{"9"}</TableCell>
+                  <TableCell>{"Electronics"}</TableCell>
+                  <TableCell>{productPrice.createdAt}</TableCell>
+                  <TableCell>
+                    <span style={{ color: 'red' }}>{productPrice.status}</span>
+                  </TableCell>
+                  <TableCell>
+                   
+                    <Button
+                      type="submit"
+                      variant="outlined"
+                      color="primary"
+                      style={{ whiteSpace: 'nowrap' }}
+                    onClick={() => handleClick(productPrice.productId, productPrice.quotation.customerId, productPrice.quotation.supplierId)}
+                    >
+                      Detail
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </ThemeProvider>
   );
 };

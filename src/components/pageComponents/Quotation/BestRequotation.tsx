@@ -377,7 +377,7 @@ const BestQuotation: React.FC = () => {
     style={{ whiteSpace: 'nowrap' }}
     className="no-print"
   >
-    <Send /> Send Order
+    <Send /> Send to Purchase order
   </Button>
 </Paper>
        
