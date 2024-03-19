@@ -268,6 +268,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
     let subtotal = 0;
   
     quotationByRequestIdAdSupplierId.forEach((quotation) => {
+      console.log("sami kaba")
       const price = parseFloat(prices[quotation.id.toString()]) || 0;
       const quantity = parseFloat(quotation.product.quantity) || 0;
       subtotal += price * quantity;
@@ -370,9 +371,9 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
         quotation.product.uom,
         <TextField
         placeholder="Please Enter the Price"
-        value={prices[quotation.id.toString()] || quotation.price || ''}
+        value={prices[quotation.id.toString()] || quotation.price || '225'}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          handlePriceChange(quotation.id.toString(), e)
+        handlePriceChange(quotation.id.toString(), e)
         }
         InputProps={{
           style: {

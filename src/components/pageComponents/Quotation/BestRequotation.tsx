@@ -312,18 +312,24 @@ const BestQuotation: React.FC = () => {
                       disabled={isOrdered}
                     />,
                     product.title ,
+                    product.partNumber,
+                    product.uom,
                     product.quantity,
                     productPrice.price ,
-                    productPrice.disCountPrice ,
+                    productPrice.disCountPrice,
+                    productPrice.price * product.quantity,
                   ];
                 })}
                 columns={[
                   '#',
                   'Select',
-                  'Title',
-                  'Quantity',
+                  'Product/Service Description',
+                  'Item Number',
+                  'Unit',
+                  'Qty',
                   'Price',
-                  'Discount'
+                  'Discount',
+                  'Total Price'
                 ]}
                 components={{
                   TableFooter: () => (
