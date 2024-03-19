@@ -12,9 +12,9 @@ import { useNavigate } from 'react-router-dom';
 import { GET_QUOTATION } from '../../../graphql/quotation';
 import { useQuotation } from '../../../context/quotationContext';
 import { Cancel, Drafts, RequestQuote, Save } from '@mui/icons-material';
-//import numberToWords from 'number-to-words';
+import numberToWords from 'number-to-words';
 import { useReactToPrint } from 'react-to-print';
-//import '../../PrintPage.css';
+import '../../PrintPage.css';
 import PageHeader from '../../PageHeader';
 interface Product {
   id: number;
@@ -293,9 +293,9 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
     return taxAmount.toFixed(2);
   };
   
-  /*const convertToWords = (num: number): string => {
+  const convertToWords = (num: number): string => {
     return numberToWords.toWords(num);
-  };*/
+  };
   const taxRate: number = 0.35; // Assuming the tax rate is 8%
   const vatRate: number = 0.15;
   const servieRate = 0.001;
@@ -303,6 +303,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   const tax: string = calculateTax(grandTotal, taxRate);
   const vat:string = calculateTax(grandTotal, vatRate);
   const serviceCharge:string = calculateTax(grandTotal, servieRate);
+ const payable =  Number(grandTotal)  + Number(tax) - Number(calculateDisCountSubtotal());
   console.log(tax); // Output the calculated tax amount
   if (loading) {
     return <div>Loading...</div>;
@@ -367,19 +368,30 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
         quotation.product.title,
         quotation.product.code,
         quotation.product.uom,
-        <Input
-        productId={quotation.id.toString()}
+        <TextField
         value={prices[quotation.id.toString()] || quotation.price || ''}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           handlePriceChange(quotation.id.toString(), e)
         }
+        InputProps={{
+          style: {
+            padding: '0 8px',
+            height:'30px',
+          },
+        }}
       />,
-        <Input
+        <TextField
           placeholder="Please Enter discount"
           value={disCountPrice[quotation.id.toString()] || quotation.disCountPrice}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handlePriceDiscountChange(quotation.id.toString(), e)
           }
+          InputProps={{
+            style: {
+              padding: '0 8px',
+              height:'30px',
+            },
+          }}
         />,
         quotation.product.quantity,
         calculateSubtotalRow(
@@ -452,6 +464,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
                 InputProps={{
                   style: {
                     padding: '0 8px',
+                    height:'30px',
                   },
                 }}
               />
@@ -525,6 +538,12 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
     </TableContainer>
   </div>
         </Grid>
+        <Grid item xs={12} sm={12} style={{ display: 'flex', justifyContent: 'center' }}>
+    <div style={{ border: '1px solid black', padding: '10px' }}>
+      Amounts in word: <span style={{ color: 'red' }}>{convertToWords(payable)}</span>
+    </div>
+  </Grid>
+      
       </Grid>
      
       );
@@ -664,41 +683,42 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
     <div>
         <Grid item xs={12} sm={12}>
         <Paper elevation={3} sx={{ padding: '20px' }}>
-            <div style={{
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  marginBottom: '10px',
-}}>
-  
-  <Button
-    variant="outlined"
-    color="primary"
-    type="submit"
-    startIcon={<Save />}
-    //onClick={handleAddTitle}
-    style={{ whiteSpace: 'nowrap',backgroundColor:"green",color:"#ffffff"}}
-  >
-   Send Quotation
-  </Button>
-  <Button
-    variant="outlined"
-    color="primary"
-    startIcon={<Drafts />}
-    onClick={()=>hadleSeveAsDraftAndCancel("draft")}
-    style={{ whiteSpace: 'nowrap',backgroundColor:"gray",color:"#ffffff" }}
-  >
-  Seve as Drafts
-  </Button>
-  <Button
-    variant="outlined"
-    //color="Secodary"
-    startIcon={<Cancel />}
-    onClick={()=>hadleSeveAsDraftAndCancel("canceled")}
-    style={{ whiteSpace: 'nowrap',backgroundColor:"red",color:"#ffffff" }}
-  >
-    Cancel
-  </Button>
+  <Grid item xs={12} sm={12} style={{ display: 'flex', justifyContent: 'center' }}>
+    <div style={{ border: '1px solid black', padding: '10px' }}>
+    I declare that the information mentioned above is true and correct to the best of my knowledge.
+    </div>
+  </Grid>
+<div>
+  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
+    <Button
+      variant="outlined"
+      color="primary"
+      type="submit"
+      startIcon={<Save />}
+      //onClick={handleAddTitle}
+      style={{ whiteSpace: 'nowrap', backgroundColor: 'green', color: '#ffffff' }}
+    >
+      Send Quotation
+    </Button>
+    <Button
+      variant="outlined"
+      color="primary"
+      startIcon={<Drafts />}
+      onClick={() => hadleSeveAsDraftAndCancel('draft')}
+      style={{ whiteSpace: 'nowrap', backgroundColor: 'gray', color: '#ffffff' }}
+    >
+      Seve as Drafts
+    </Button>
+    <Button
+      variant="outlined"
+      //color="Secodary"
+      startIcon={<Cancel />}
+      onClick={() => hadleSeveAsDraftAndCancel('canceled')}
+      style={{ whiteSpace: 'nowrap', backgroundColor: 'red', color: '#ffffff' }}
+    >
+      Cancel
+    </Button>
+  </Box>
 </div>
 </Paper>
         </Grid>
