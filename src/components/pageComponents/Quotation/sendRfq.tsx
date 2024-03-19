@@ -641,43 +641,40 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
        <Box mt={2}>
   <Form onSubmit={handleSubmit}>
   <Grid container spacing={2} justifyContent="center">
-<Grid item xs={12} sm={12}>
-  <Paper elevation={3} sx={{ padding: '20px' }}>
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: '10px',
-    }}>
-      <Input
-        label="Sent Approved By"
-        placeholder="Please specify approved By"
-        value={sentBy}
-        fullWidth
-        sx={{ paddingTop: '10px', paddingBottom: '10px', marginRight: '10px' }}
-        onChange={handleSentByChange}
-      />
-        <TextField
-        select
-        required
-        label="Availability Date of Price"
-        value={estimatedDelivery}
-        onChange={handleDateChange}
-        fullWidth
-        sx={{ paddingTop: '10px', paddingBottom: '10px', marginRight: '10px' }}
-      >
-        {renderDateOptions()}
-      </TextField>
-      <Input
-        label="Remark"
-        value={remark }
-        placeholder="Please enter Remark"
-        fullWidth
-        sx={{ paddingTop: '10px', paddingBottom: '10px', marginLeft: '10px' }}
-        onChange={handleRemarkChange}
-      />
-    </div>
-  </Paper>
+  <Grid container spacing={3}>
+  <Grid item xs={12} sm={4}>
+    <Input
+      label="Sent Approved By"
+      placeholder="Please specify approved By"
+      value={sentBy}
+      fullWidth
+      sx={{ paddingTop: '10px', paddingBottom: '10px', marginBottom: '10px' }}
+      onChange={handleSentByChange}
+    />
+  </Grid>
+  <Grid item xs={12} sm={4}>
+    <TextField
+      select
+      required
+      label="Availability Date of Price"
+      value={estimatedDelivery}
+      onChange={handleDateChange}
+      fullWidth
+      sx={{ paddingTop: '10px', paddingBottom: '10px', marginBottom: '10px' }}
+    >
+      {renderDateOptions()}
+    </TextField>
+  </Grid>
+  <Grid item xs={12} sm={4}>
+    <Input
+      label="Remark"
+      value={remark}
+      placeholder="Please enter Remark"
+      fullWidth
+      sx={{ paddingTop: '10px', paddingBottom: '10px' }}
+      onChange={handleRemarkChange}
+    />
+  </Grid>
 </Grid>
   <Grid item xs={12} textAlign="center">
     {!successMessage && !errorMessage && (
