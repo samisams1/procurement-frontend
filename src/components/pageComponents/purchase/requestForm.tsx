@@ -104,7 +104,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit,loading }) => {
   const [uoms, setUoms] = useState<string[]>(['']);
  // const [uomErrors, setUomErrors] = useState<string[]>(['']);
   const [quantities, setQuantities] = useState<string[]>([]);
-  const [quantityErrors, setQuantityErrors] = useState<string[]>(['']);
+  const [quantityErrors, setQuantityErrors] = useState<string[]>(['* Required field']);
   
   const [manufacturers, setManufacturers] = useState<string[]>(['']);
   const [descriptions, setDescriptions] = useState<string[]>(['']);
@@ -116,12 +116,12 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit,loading }) => {
   const [approvedBy, setAprovedBy] = useState('');
   const [requestedBy, setRequestedBy] = useState('');
   const [estimatedDelivery, setEstimatedDelivery] = useState('');
-  const [titleErrors, setTitleErrors] = useState<string[]>(['']);
+  const [titleErrors, setTitleErrors] = useState<string[]>(['* Required field']);
 
   const saveButtonRef = useRef<HTMLButtonElement>(null);
 
   const [selectedValue, setSelectedValue] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('* Required field');
   const [categoryId, setCategoryId] = useState<string>('');
   const [supplierIds, setSupplierIds] = useState<string[]>([]);
 
@@ -1201,26 +1201,28 @@ marginBottom: '10px',
 />
    </TableCell>
    <TableCell sx={{ padding: '4px', height: '32px' }}>
-   <TextField
-  type="number"
-  label="Qty"
-  placeholder="Please Enter Quantity"
-  required
-  value={quantities[index]}
-  onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
+   
+<TextField
+      id="qty"
+      type="number"
+      label="Qty"
+      placeholder="Please Enter Quantity"
+      value={quantities[index]}
+      onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
   error={quantityErrors[index] !== ''}
-  fullWidth
-  InputLabelProps={{
-    shrink: true,
-  }}
-  InputProps={{
-    disableUnderline: true,
-    style: { height: '30px', paddingLeft: '1px' }
-  }}
-  FormHelperTextProps={{
-    children: "* Required field"
-  }}
-/>
+      fullWidth
+      required
+      InputLabelProps={{
+        shrink: true,
+      }}
+      InputProps={{
+        disableUnderline: true,
+        style: { height: '30px', paddingLeft: '1px' }
+      }}
+      FormHelperTextProps={{
+        children: "* Required field"
+      }}
+    />
    </TableCell>
    <TableCell sx={{ padding: '4px', height: '32px' }}>
   <Accordion
@@ -1294,6 +1296,7 @@ marginBottom: '10px',
      value={models[index]}
      onChange={(e) => handleModelChange(index, e.target.value)}
      style={{ marginBottom: '1rem' }}
+
       InputLabelProps={{
         shrink: true,
       }}
