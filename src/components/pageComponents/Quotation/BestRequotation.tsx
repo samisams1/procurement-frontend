@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
-import { TableFooter as MuiTableFooter } from '@mui/material';
+import { Table, TableBody, TableContainer, Typography } from '@mui/material';
 import { useReactToPrint } from 'react-to-print';
 
 import {
@@ -19,6 +19,7 @@ import { SectionTitle } from '../../Section';
 import PageHeader from '../../PageHeader';
 import { QuizTwoTone, Send } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
+import TermsCondition from '../../common/termsCondition';
 interface Product {
   id: string;
   Description: string;
@@ -250,7 +251,15 @@ const BestQuotation: React.FC = () => {
       },
     },
   });
-  return (
+const shippingCost = Number(productPrices[0].quotation?.shippingPrice)
+const subTotal =  Number((productPrices[0].quotation?.shippingPrice) +  Number(productPrices.reduce((sum, productPrice) => sum + productPrice.price * productPrice.product.quantity + shippingCost, 0).toFixed(2)));
+const vat = subTotal * 0.15;
+const tax = subTotal * 0.35; 
+const serviceCharge = subTotal * 0.01;
+const total = subTotal + vat + tax + serviceCharge;
+const discount  =   Number(productPrices.reduce((sum, productPrice) => sum + productPrice.disCountPrice *  productPrice.product.quantity, 0).toFixed(2))
+const payable = total - discount;
+return (
     <div ref={printRef} className="print-content">
           
 
@@ -333,33 +342,94 @@ const BestQuotation: React.FC = () => {
                 ]}
                 components={{
                   TableFooter: () => (
-                    <MuiTableFooter >
-                        <TableRow>
-                      <TableCell >Shipping Price:</TableCell> 
-                    <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
-                    <span style={{color:'black'}}>{Number(productPrices[0].quotation?.shippingPrice).toLocaleString()}</span> Birr
-                    </TableCell>
-                      </TableRow>
-                      <TableRow>
-                      <TableCell> Before Discount Price:</TableCell>
-                    <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
-                    <span style={{color:"black"}}>{Number((productPrices[0].quotation?.shippingPrice) +  Number(productPrices.reduce((sum, productPrice) => sum + productPrice.price * productPrice.product.quantity, 0).toFixed(2))).toLocaleString()}  </span> Birr
-                     </TableCell>
-                      </TableRow>
-                      <TableRow>
-                      <TableCell>Discount:</TableCell>
-                    <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
-                   <span style={{color:"black"}}>{Number(productPrices.reduce((sum, productPrice) => sum + productPrice.disCountPrice * 
-                   productPrice.product.quantity, 0).toFixed(2)).toLocaleString()}</span> Birr
-                    </TableCell>
-                      </TableRow><TableRow>
-                      <TableCell>Net to Pay after discount  Price:</TableCell>
-                    <TableCell colSpan={4} style={{ fontSize: 'larger', fontWeight: 'bold' }}>
-                    <span style={{color:"black"}}>{(Number(productPrices[0].quotation?.shippingPrice) +  Number(productPrices.reduce((sum, productPrice) => sum + productPrice.price * productPrice.product.quantity, 0).toFixed(2))- Number(productPrices.reduce((sum, productPrice) => sum + productPrice.disCountPrice * productPrice.product.quantity, 0).toFixed(2))).toLocaleString()}</span> Birr
-                    </TableCell>
-                      </TableRow>
-                      
-                    </MuiTableFooter>
+                    <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6} md={6}>
+                     <TermsCondition/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={6}>
+                    <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
+    <TableContainer component={Paper} style={{ margin: '10px' }}>
+      <Table>
+        <TableBody>
+        <TableRow>
+            <TableCell align="center">
+              <Typography>Shipping Cost</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>
+              {shippingCost}
+              </Typography></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Sub Total</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>
+              {subTotal}
+              </Typography></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Tax (35%)</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>{tax}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>VAT (35%)</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>{vat}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Service charge (1%)</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>{serviceCharge}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Total</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>{total}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Total discount</Typography>
+            </TableCell>
+            <TableCell align="center">{discount}</TableCell>
+          </TableRow>
+         
+          <TableRow>
+            <TableCell align="center">
+              <Typography>payable</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography> {payable}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Currency</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>ETB</Typography>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </div>
+                    </Grid>
+                    </Grid>
                   ),
                 }}     
                   />

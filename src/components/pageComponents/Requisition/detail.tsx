@@ -160,7 +160,6 @@ function Detail() {
     {
       name: "imageurl",
       label: "Image",
-      
       options: {
         customBodyRender: (value:string) => {
           return (
@@ -172,19 +171,17 @@ function Detail() {
             />
           );
         },
+        display: false,
       },
     },
     
     {
       name: 'title',
-      label: 'Title',
+      label: 'Product/Service description',
     },
     {
       name: 'uom',
       label: 'uom',
-      options: {
-        display: false,
-      }
     },
     {
       name: 'partNumber',
@@ -216,10 +213,7 @@ function Detail() {
     },
     {
       name: 'code',
-      label: 'code',
-      options: {
-        display: false,
-      }
+      label: 'Item code',
     },
     {
       name: 'Description',
