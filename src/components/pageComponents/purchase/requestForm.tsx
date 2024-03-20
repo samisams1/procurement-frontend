@@ -17,11 +17,11 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Table, TableHead, TableRow, TableCell, TableBody, Input,Accordion, AccordionSummary, AccordionDetails, 
+  Table, TableHead, TableRow, TableCell, TableBody,Accordion, AccordionSummary, AccordionDetails, 
   Checkbox,
 } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { Add, DeleteOutlineTwoTone, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save, Send } from '@mui/icons-material';
+import { Add, DeleteOutlineTwoTone, ExpandMore, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save, Send } from '@mui/icons-material';
 import PageHeader from '../../PageHeader';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import { SectionTitle } from '../../Section';
@@ -764,48 +764,6 @@ return(
 
 
 <Typography variant="h6">Item Number #{index + 1}</Typography>
-          <FormControl style={{ flex: 1, marginBottom: '1rem'  }} >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                padding: '6px 10px',
-                cursor: 'pointer',
-              }}
-            >
-              <input
-                type="file"
-                accept=".pdf"
-                style={{
-                  display: 'none',
-                }}
-                // onChange={handleFileChange}
-              />
-              <label htmlFor="attachment-input">
-               
-                
-                <Button  variant="text" component="label" htmlFor="upload-input"
-                 style={{
-                  textTransform: 'none',
-                  fontSize: '14px',
-                  color: '#00b0ad',
-                  borderColor: '##00b0ad',
-                }}
-                >
-            Upload picture
-            <input
-              accept="image/*"
-              style={{ display: 'none' }}
-              id="upload-input"
-              type="file"
-              onChange={handleUpload}
-            />
-          </Button>
-              </label>
-            </div>
-          </FormControl>
      <TextField
       label="Item Name"
       variant="outlined"
@@ -1152,7 +1110,6 @@ marginBottom: '10px',
     <Table>
   <TableHead>
     <TableRow sx={{ backgroundColor: '#00b0ad' }}>
-      <TableCell sx={{ padding: '4px', height: '32px' }}>Image</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Name</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Code</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Part Number</TableCell>
@@ -1164,146 +1121,193 @@ marginBottom: '10px',
   </TableHead>
   <TableBody>
     {productTitles.map((title, index) => (
-      <TableRow key={index} sx={{ height: '1px' }}>
-        <TableCell sx={{  padding: '1px', height: '2px' }}>
-          <FormControl style={{ flex: 1 }}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                padding: '6px 10px',
-                cursor: 'pointer',
-              }}
-            >
-              <input
-                type="file"
-                accept=".pdf"
-                style={{
-                  display: 'none',
-                }}
-                // onChange={handleFileChange}
-              />
-              <label htmlFor="attachment-input">
-               
-              <Button  variant="text" component="label" htmlFor="upload-input"
-                 style={{
-                  textTransform: 'none',
-                  fontSize: '14px',
-                  color: '#00b0ad',
-                  borderColor: '##00b0ad',
-                }}
-                >
-            Upload picture
-            <input
-              accept="image/*"
-              style={{ display: 'none' }}
-              id="upload-input"
-              type="file"
-              onChange={handleUpload}
-            />
-          </Button>
-              </label>
-            </div>
-          </FormControl>
-        </TableCell>
-        <TableCell sx={{   padding: '0px', height: '1px' }}>
-          
-        <Input
-placeholder="Item Name"
-    value={title}
-    onChange={(e) => handleTitleChange(index, e.target.value)}
-    error={titleErrors[index] !== ''}
-    fullWidth
-  />
-  
-        </TableCell>
-        <TableCell sx={{ padding: '0px', height: '24px' }}>
-        <Input
+   <TableRow>
+   <TableCell sx={{ padding: '4px', height: '32px' }}>
+   <TextField
+      id="item-name"
+      label="Item Name"
+      placeholder="Item Name"
+      value={title}
+      onChange={(e) => handleTitleChange(index, e.target.value)}
+      error={titleErrors[index] !== ''}
+      fullWidth
+      required
+      InputLabelProps={{
+        shrink: true,
+      }}
+      InputProps={{
+        disableUnderline: true,
+        style: { height: '30px', paddingLeft: '1px' }
+      }}
+      FormHelperTextProps={{
+        children: "* Required field"
+      }}
+    />
+   </TableCell>
+   <TableCell sx={{ padding: '4px', height: '32px' }}>
+   <TextField
           placeholder="Item Code"
           value={itemCodes[index]}
           onChange={(e) => handleItemCodeChange(index, e.target.value)}
         //  error={itemCodeErrors[index] !== ''}
           fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+          InputProps={{
+            disableUnderline: true,
+            style: { height: '30px', paddingLeft: '1px' }
+          }}
+          FormHelperTextProps={{
+            children: "* Required field"
+          }}
         />
-        </TableCell>
-        <TableCell sx={{ padding: '0px', height: '24px' }}>
-        <Input
+   </TableCell>
+   <TableCell sx={{ padding: '4px', height: '32px' }}>
+   <TextField
+          label="Part Number"
           placeholder="Part Number"
           value={partNumbers[index]}
           onChange={(e) => handlePartNumberChange(index, e.target.value)}
-        // /  error={partNumberErrors[index] !== ''}
           fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+          InputProps={{
+            disableUnderline: true,
+            style: { height: '30px', paddingLeft: '1px' }
+          }}
+          FormHelperTextProps={{
+            children: "* Required field"
+          }}
         />
-        </TableCell>
-        <TableCell sx={{ padding: '0px', height: '24px' }}>
-        <Input
+   </TableCell>
+   <TableCell sx={{ padding: '4px', height: '32px' }} >
+   <TextField
   placeholder="UOM"
   value={uoms[index]}
   onChange={(e) => handleUomChange(index, e.target.value)}
- // error={uomErrors[index] !== ''}
   fullWidth
+  InputLabelProps={{
+    shrink: true,
+  }}
+  InputProps={{
+    disableUnderline: true,
+    style: { height: '30px', paddingLeft: '1px' }
+  }}
+  FormHelperTextProps={{
+    children: "* Required field"
+  }}
 />
-        </TableCell>
-        <TableCell sx={{ padding: '0px', height: '24px' }}>
-  <Input
+   </TableCell>
+   <TableCell sx={{ padding: '4px', height: '32px' }}>
+   <TextField
   type="number"
-  placeholder="Qty"
+  label="Qty"
+  placeholder="Please Enter Quantity"
   required
   value={quantities[index]}
   onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
   error={quantityErrors[index] !== ''}
   fullWidth
+  InputLabelProps={{
+    shrink: true,
+  }}
+  InputProps={{
+    disableUnderline: true,
+    style: { height: '30px', paddingLeft: '1px' }
+  }}
+  FormHelperTextProps={{
+    children: "* Required field"
+  }}
 />
-        </TableCell> 
-        <TableCell sx={{ padding: '1px', height: '0px', minWidth: '24px' }}>
-        <div>
-        <Accordion
+   </TableCell>
+   <TableCell sx={{ padding: '4px', height: '32px' }}>
+  <Accordion
     key={index}
     expanded={expanded === `panel${index}`}
     onChange={handleAccordionChange(`panel${index}`)}
-    style={{ width: '240px', marginBottom: '15px' }}
+    elevation={0}
+    sx={{
+      borderRadius: '4px',
+      boxShadow: 'none',
+      '&:hover': {
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+      },
+    }}
   >
-        <AccordionSummary expandIcon={<Add />} aria-controls="panel1bh-content" id="panel1bh-header">
-          <Typography>Add More</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <div>
-          <Input
-          placeholder="Mark"
-          value={marks[index]}
-          onChange={(e) => handleMarkChange(index, e.target.value)}
-          fullWidth
-        />
-         <Input
-          placeholder="Description"
-          value={descriptions[index]}
-          onChange={(e) => handleDescriptionChange(index, e.target.value)}
-          fullWidth
-        />
-          <Input
-          placeholder="Manufacture"
-          value={manufacturers[index]}
-          onChange={(e) => handleManufacturersChange(index, e.target.value)}
-          fullWidth
-        />
-           <Input
-          placeholder="Model"
-          value={models[index]}
-          onChange={(e) => handleModelChange(index, e.target.value)}
-         // error={itemCodeErrors[index] !== ''}
-          fullWidth
-        />
-          </div>
-        </AccordionDetails>
-      </Accordion>
-
-
-      {/* Rest of your code */}
-    </div>
-        </TableCell>
-        <TableCell sx={{ padding: '0px', height: '24px' }}>
+    <AccordionSummary
+      expandIcon={<ExpandMore />}
+      aria-controls={`panel${index}bh-content`}
+      id={`panel${index}bh-header`}
+      sx={{
+        minHeight: '32px',
+        '& .MuiAccordionSummary-content': {
+          margin: '6px 0',
+        },
+      }}
+    >
+      <Typography variant="body1">More Details</Typography>
+    </AccordionSummary>
+    <AccordionDetails sx={{ padding: '8px 16px' }}>
+    <TableCell sx={{ padding: '4px', height: '32px' }}>
+   <TextField
+       label="Description"
+       variant="outlined"
+       fullWidth
+       value={descriptions[index]}
+       onChange={(e) => handleDescriptionChange(index, e.target.value)}
+       style={{ marginBottom: '1rem' }}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      InputProps={{
+        disableUnderline: true,
+        style: { height: '30px', paddingLeft: '1px' }
+      }}
+     
+    />
+   </TableCell>
+   <TableRow>
+   <TableCell sx={{ padding: '4px', height: '32px' }}>
+   <TextField
+      label="Manufacture"
+      variant="outlined"
+      fullWidth
+      value={manufacturers[index]}
+      onChange={(e) => handleManufacturersChange(index, e.target.value)}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      InputProps={{
+        disableUnderline: true,
+        style: { height: '30px', paddingLeft: '1px' }
+      }}
+     
+    />
+   </TableCell></TableRow>
+   <TableRow><TableCell sx={{ padding: '4px', height: '32px' }}>
+   <TextField
+     label="Model"
+     variant="outlined"
+     fullWidth
+     value={models[index]}
+     onChange={(e) => handleModelChange(index, e.target.value)}
+     style={{ marginBottom: '1rem' }}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      InputProps={{
+        disableUnderline: true,
+        style: { height: '30px', paddingLeft: '1px' }
+      }}
+     
+    />
+   </TableCell></TableRow>
+    </AccordionDetails>
+  </Accordion>
+</TableCell>
+   <TableCell sx={{ padding: '0px', height: '24px' }}>
           <Button
             variant="contained"
             color="error"
@@ -1314,7 +1318,7 @@ placeholder="Item Name"
             
           </Button>
         </TableCell>
-      </TableRow>
+ </TableRow>
     ))}
   </TableBody>
     </Table>
