@@ -251,13 +251,24 @@ const BestQuotation: React.FC = () => {
       },
     },
   });
-const shippingCost = Number(productPrices[0].quotation?.shippingPrice)
-const subTotal =  Number((productPrices[0].quotation?.shippingPrice) +  Number(productPrices.reduce((sum, productPrice) => sum + productPrice.price * productPrice.product.quantity + shippingCost, 0).toFixed(2)));
+  const subTotal =
+  Number(productPrices[0]?.quotation?.shippingPrice) +
+  Number(
+    productPrices.reduce(
+      (sum, productPrice) => sum + productPrice.price * productPrice.product.quantity,
+      0
+    ).toFixed(2)
+  );
 const vat = subTotal * 0.15;
-const tax = subTotal * 0.35; 
+const tax = subTotal * 0.35;
 const serviceCharge = subTotal * 0.01;
 const total = subTotal + vat + tax + serviceCharge;
-const discount  =   Number(productPrices.reduce((sum, productPrice) => sum + productPrice.disCountPrice *  productPrice.product.quantity, 0).toFixed(2))
+const discount = Number(
+  productPrices.reduce(
+    (sum, productPrice) => sum + productPrice.disCountPrice * productPrice.product.quantity,
+    0
+  ).toFixed(2)
+);
 const payable = total - discount;
 return (
     <div ref={printRef} className="print-content">
@@ -357,7 +368,7 @@ return (
             </TableCell>
             <TableCell align="center">
               <Typography>
-              {shippingCost}
+              {subTotal}
               </Typography></TableCell>
           </TableRow>
           <TableRow>
