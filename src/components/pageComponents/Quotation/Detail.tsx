@@ -90,10 +90,6 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
       label: 'SN',
     },
     {
-      name: 'createdAt',
-      label: 'createdAt',
-    },
-    {
       name: 'supplierName',
       label: 'Supplier',
     },

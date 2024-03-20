@@ -453,12 +453,14 @@ return (
       </Grid>
       <form onSubmit={handleSubmit}>
       <Paper elevation={3} style={{ padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        
   <Button
     type="submit"
     variant="outlined"
     color="primary"
     style={{ whiteSpace: 'nowrap' }}
     className="no-print"
+
   >
     <Send /> Send to Purchase order
   </Button>
