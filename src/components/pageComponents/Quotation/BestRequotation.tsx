@@ -251,7 +251,9 @@ const BestQuotation: React.FC = () => {
       },
     },
   });
+  const shipping = Number(productPrices[0].quotation?.shippingPrice)
   const subTotal =
+  shipping + 
   Number(productPrices[0]?.quotation?.shippingPrice) +
   Number(
     productPrices.reduce(
@@ -368,7 +370,7 @@ return (
             </TableCell>
             <TableCell align="center">
               <Typography>
-              {subTotal}
+              {shipping}
               </Typography></TableCell>
           </TableRow>
           <TableRow>
