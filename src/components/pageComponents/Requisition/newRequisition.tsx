@@ -151,7 +151,7 @@ const handleSubmit = async (
       setOpenSnackbar(true);
       setTimeout(() => {
         if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
-          navigate(`/drafts`);
+          navigate(`/purchaseRequest${response.data.createPurchaseRequest.id}`);
         } else {
           console.error('Invalid response data');
           // Handle the case when the response data is not as expected

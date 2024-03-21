@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Typography } from '@mui/material';
+import { Paper, Typography, Grid, Box } from '@mui/material';
 import { styled } from '@mui/system';
 
 const StyledPageHeader = styled(Paper)(({ theme }) => ({
@@ -8,59 +8,63 @@ const StyledPageHeader = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
-const RowContainer = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  flexDirection: 'row',
-  [theme.breakpoints.down('sm')]: {
-    flexDirection: 'column',
-    maxWidth: '300px', // Adjust the max width as needed
-    margin: '0 auto', // Center the container horizontally
-  },
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: '#ffffff',
 }));
 
 const Image = styled('img')({
   marginTop: '12px',
   width: '100px',
-  height: '60px',
-});
-const Icon = styled('div')({
-  color: '#ffffff',
-});
-const MainHeader = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontWeight: 'bold',
-  width: '60%',
-  marginTop: '12px',
+  height: '40px',
 });
 
 export default function PageHeader(props: any) {
   const { title, subTitle, icon, imageSrc } = props;
-
   return (
     <StyledPageHeader elevation={0} square>
-      <RowContainer>
-        <div>
-          <Icon>{icon}</Icon>
-          <div>
-            <Typography variant="h6" component="div" style={{ color: '#ffffff' }}>
-              {title}
-            </Typography>
-            <Typography variant="subtitle2" component="div" style={{ color: '#ffffff' }}>
-              {subTitle}
-            </Typography>
-          </div>
-        </div>
-        <MainHeader>
-          <Typography variant="h5" component="div" style={{ color: '#ffffff' }}>
-            My Company
-          </Typography>
-        </MainHeader>
-        {imageSrc && <Image src={require(`../assets/${imageSrc}`)} alt="Header Image" />}
-      </RowContainer>
+      <Grid container alignItems="center">
+        {/* Left section */}
+        <Grid item xs={icon ? 3 : false}>
+          {icon && (
+            <Box display="flex" alignItems="center">
+              <Box mr={1}>{icon}</Box>
+              <Box>
+                {title && (
+                  <StyledTypography variant="h6">
+                    {title}
+                  </StyledTypography>
+                )}
+                {subTitle && (
+                  <StyledTypography variant="subtitle2">
+                    {subTitle}
+                  </StyledTypography>
+                )}
+              </Box>
+            </Box>
+          )}
+        </Grid>
+
+        {/* Middle section */}
+        <Grid item xs={icon ? 6 : 12}>
+          <Box display="flex" justifyContent="center">
+            <StyledTypography variant="h5">
+              My Company
+            </StyledTypography>
+          </Box>
+        </Grid>
+
+        {/* Right section */}
+        <Grid item xs={icon ? 3 : false}>
+          {imageSrc && (
+            <Box display="flex" justifyContent="flex-end">
+              <Image
+                src={require(`../assets/${imageSrc}`)}
+                alt="Header Image"
+              />
+            </Box>
+          )}
+        </Grid>
+      </Grid>
     </StyledPageHeader>
   );
 }

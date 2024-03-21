@@ -6,6 +6,7 @@ import {
   Box,
   useMediaQuery,
   CircularProgress,
+  TextareaAutosize,
 } from '@mui/material';
 import {
   Grid,
@@ -19,9 +20,10 @@ import {
   MenuItem,
   Table, TableHead, TableRow, TableCell, TableBody,Accordion, AccordionSummary, AccordionDetails, 
   Checkbox,
+  Input
 } from '@mui/material';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { Add, DeleteOutlineTwoTone, ExpandMore, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save, Send } from '@mui/icons-material';
+import { Add, CloudUpload, DeleteOutlineTwoTone, ExpandMore, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save, Send } from '@mui/icons-material';
 import PageHeader from '../../PageHeader';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import { SectionTitle } from '../../Section';
@@ -120,7 +122,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit,loading }) => {
 
   const saveButtonRef = useRef<HTMLButtonElement>(null);
 
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState('* Required field');
   const [errorMessage, setErrorMessage] = useState('* Required field');
   const [categoryId, setCategoryId] = useState<string>('');
   const [supplierIds, setSupplierIds] = useState<string[]>([]);
@@ -148,7 +150,12 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit,loading }) => {
   console.log("samisams")
   console.log(categoryId)
   const { data: supData } = useQuery(GET_SUPPLIERS);
-
+useEffect(()=>{
+  if (selectedOptions.includes('supplier') && (!selectedValue || !categoryId)) {
+    setErrorMessage('Please select a category');
+    return;
+  }
+},[categoryId,selectedOptions,selectedValue])
   useEffect(() => {
     if (supData) {
       setSelectedValue(supData.suppliers[0]?.id || '');
@@ -162,6 +169,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit,loading }) => {
     if (supplierData && supplierData.refetch) {
       supplierData.refetch({ categoryId: parseInt(selectedCategoryId) });
     }
+    setErrorMessage('')
   };
 
   const handleTitleChange = (index: number, value: string) => {
@@ -620,6 +628,13 @@ return(
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Typography>Select Your Source</Typography>
+                {errorMessage && (
+        <Grid item xs={12}>
+          <Typography variant="body1" color="error">
+            {errorMessage}
+          </Typography>
+        </Grid>
+        )}
               </Grid>
               
               <Grid item xs={4} sm={4}>
@@ -651,6 +666,7 @@ return(
     />
     {selectedOptions.includes('x-company') ? <span></span> : null}
     <Typography>Et-Proforma</Typography>
+    
   </Box>
 </Grid>
               {selectedOptions.includes('supplier') && (
@@ -720,13 +736,7 @@ return(
             </Grid>
           </Paper>
         </Grid>
-        {errorMessage && (
-        <Grid item xs={12}>
-          <Typography variant="body1" color="error">
-            {errorMessage}
-          </Typography>
-        </Grid>
-        )}
+      
         {!isMobile ? (  
         <Grid item xs={12} sm={12}>
         <Paper elevation={3} sx={{ padding: '20px' }}>
@@ -1110,23 +1120,25 @@ marginBottom: '10px',
     <Table>
   <TableHead>
     <TableRow sx={{ backgroundColor: '#00b0ad' }}>
-      <TableCell sx={{ padding: '4px', height: '32px' }}>Item Name</TableCell>
+    <TableCell sx={{ padding: '4px', height: '32px' }}>SN</TableCell>
+      <TableCell sx={{ padding: '4px', height: '32px' }}>Product /Service description</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Code</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Part Number</TableCell>
-      <TableCell sx={{ padding: '4px', height: '32px' }}>UOM</TableCell>
+      <TableCell sx={{ padding: '4px', height: '32px' }}>Unit</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Qty</TableCell>
-      <TableCell sx={{ padding: '4px', height: '32px' }}>More</TableCell>
+      <TableCell sx={{ padding: '4px', height: '32px' }}>More Details</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Action</TableCell>
     </TableRow>
   </TableHead>
   <TableBody>
     {productTitles.map((title, index) => (
    <TableRow>
+    <TableCell>{index + 1}</TableCell>
    <TableCell sx={{ padding: '4px', height: '32px' }}>
    <TextField
       id="item-name"
-      label="Item Name"
-      placeholder="Item Name"
+      label="Product /Service description"
+      placeholder="Product /Service description"
       value={title}
       onChange={(e) => handleTitleChange(index, e.target.value)}
       error={titleErrors[index] !== ''}
@@ -1202,29 +1214,33 @@ marginBottom: '10px',
    </TableCell>
    <TableCell sx={{ padding: '4px', height: '32px' }}>
    
-<TextField
-      id="qty"
-      type="number"
-      label="Qty"
-      placeholder="Please Enter Quantity"
-      value={quantities[index]}
-      onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
+   <TextField
+  id="qty"
+  label="Qty"
+  placeholder="Please Enter Quantity"
+  value={quantities[index] || 0.0} // Use value prop and set 0.0 as default
+  onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
   error={quantityErrors[index] !== ''}
-      fullWidth
-      required
-      InputLabelProps={{
-        shrink: true,
-      }}
-      InputProps={{
-        disableUnderline: true,
-        style: { height: '30px', paddingLeft: '1px' }
-      }}
-      FormHelperTextProps={{
-        children: "* Required field"
-      }}
-    />
+  fullWidth
+  required
+  InputLabelProps={{
+    shrink: true,
+  }}
+  InputProps={{
+    disableUnderline: true,
+    style: { height: '30px', paddingLeft: '1px' },
+    inputProps: {
+      step: 0.01, // Optional: Set the step value to allow decimals
+      min: 0, // Optional: Set the minimum value
+      type: 'number', // Set the input type to 'number'
+    },
+  }}
+  FormHelperTextProps={{
+    children: "* Required field"
+  }}
+/>
    </TableCell>
-   <TableCell sx={{ padding: '4px', height: '32px' }}>
+   <TableCell sx={{ padding: '1px', height: '32px' }}>
   <Accordion
     key={index}
     expanded={expanded === `panel${index}`}
@@ -1249,64 +1265,85 @@ marginBottom: '10px',
         },
       }}
     >
-      <Typography variant="body1">More Details</Typography>
+      <Typography variant="body1">Type more</Typography>
     </AccordionSummary>
-    <AccordionDetails sx={{ padding: '8px 16px' }}>
-    <TableCell sx={{ padding: '4px', height: '32px' }}>
-   <TextField
-       label="Description"
-       variant="outlined"
-       fullWidth
-       value={descriptions[index]}
-       onChange={(e) => handleDescriptionChange(index, e.target.value)}
-       style={{ marginBottom: '1rem' }}
-      InputLabelProps={{
-        shrink: true,
-      }}
-      InputProps={{
-        disableUnderline: true,
-        style: { height: '30px', paddingLeft: '1px' }
-      }}
-     
-    />
-   </TableCell>
-   <TableRow>
-   <TableCell sx={{ padding: '4px', height: '32px' }}>
-   <TextField
-      label="Manufacture"
-      variant="outlined"
-      fullWidth
-      value={manufacturers[index]}
-      onChange={(e) => handleManufacturersChange(index, e.target.value)}
-      InputLabelProps={{
-        shrink: true,
-      }}
-      InputProps={{
-        disableUnderline: true,
-        style: { height: '30px', paddingLeft: '1px' }
-      }}
-     
-    />
-   </TableCell></TableRow>
-   <TableRow><TableCell sx={{ padding: '4px', height: '32px' }}>
-   <TextField
-     label="Model"
-     variant="outlined"
-     fullWidth
-     value={models[index]}
-     onChange={(e) => handleModelChange(index, e.target.value)}
-     style={{ marginBottom: '1rem' }}
-
-      InputLabelProps={{
-        shrink: true,
-      }}
-      InputProps={{
-        disableUnderline: true,
-        style: { height: '30px', paddingLeft: '1px' }
-      }}
-     
-    />
-   </TableCell></TableRow>
+    <AccordionDetails sx={{ padding: '2px 6px' }}>
+      <TableCell sx={{ padding: '1px', height: '32px' }}>
+        <TableRow>
+          <Input
+            placeholder="Manufacture"
+            value={manufacturers[index]}
+            onChange={(e) => handleManufacturersChange(index, e.target.value)}
+            fullWidth
+            sx={{ width: '100%' }}
+          />
+        </TableRow>
+        <TableRow>
+          <Input
+            placeholder="Model"
+            fullWidth
+            value={models[index]}
+            onChange={(e) => handleModelChange(index, e.target.value)}
+            style={{ marginBottom: '1rem', width: '100%' }}
+          />
+        </TableRow>
+        <TableRow>
+          <TextareaAutosize
+            placeholder="Description"
+            value={descriptions[index]}
+            onChange={(e) => handleDescriptionChange(index, e.target.value)}
+            style={{
+              minHeight: '100px',
+              padding: '8px',
+              fontSize: '16px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+              resize: 'vertical',
+              outline: 'none',
+              fontFamily: 'Arial, sans-serif',
+              width: '100%',
+            }}
+          />
+        </TableRow>
+        <TableRow>
+          <TableCell>
+            <label htmlFor="file-upload2">
+              <input
+                type="file"
+                accept=".pdf"
+                id="file-upload2"
+                style={{ display: 'none' }}
+              />
+              <Button
+                variant="contained"
+                component="span"
+                startIcon={<CloudUpload />}
+                sx={{ width: '100%' }}
+              >
+                Upload File 2
+              </Button>
+            </label>
+          </TableCell>
+          <TableCell>
+            <label htmlFor="file-upload2">
+              <input
+                type="file"
+                accept=".pdf"
+                id="file-upload2"
+                style={{ display: 'none' }}
+              />
+              <Button
+                variant="contained"
+                component="span"
+                startIcon={<CloudUpload />}
+                sx={{ width: '100%' }}
+              >
+                Upload File 2
+              </Button>
+            </label>
+          </TableCell>
+        </TableRow>
+      </TableCell>
     </AccordionDetails>
   </Accordion>
 </TableCell>

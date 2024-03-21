@@ -366,7 +366,7 @@ const CustomFooter = () => {
         Created Date: {formattedDate}
       </Typography>
       <Typography variant="body1">
-        Customer Name: {orderDetail?.user?.address}
+        Address: {orderDetail?.user?.address}
       </Typography>
     </Paper>
         </Grid>

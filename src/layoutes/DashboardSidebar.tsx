@@ -7,7 +7,7 @@ import Spinner from '../components/Spinner';
 import { UserContext } from '../auth/UserContext';
 import NavSection from './NavSection';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { PowerOff } from '@mui/icons-material';
+import { LogoutSharp } from '@mui/icons-material';
 
 const DRAWER_WIDTH = 280;
 
@@ -71,7 +71,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCl
           </Typography>
         </Box>
         <IconButton color="inherit" component={RouterLink} to="/home">
-          <PowerOff />
+          <LogoutSharp />
         </IconButton>
       </LogoStyle>
       <Box sx={{ mb: 2, mx: 1 }}>
