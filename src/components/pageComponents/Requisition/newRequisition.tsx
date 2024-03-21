@@ -151,12 +151,12 @@ const handleSubmit = async (
       setOpenSnackbar(true);
       setTimeout(() => {
         if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
-          navigate(`/purchaseRequest${response.data.createPurchaseRequest.id}`);
+          navigate(`/purchaseRequest/${response.data.createPurchaseRequest.id}`);
         } else {
           console.error('Invalid response data');
           // Handle the case when the response data is not as expected
         }
-      }, 2000);
+      }, 5000);
     }
   } catch (error: any) {
     console.error('Error creating/saving purchase request:', error);
@@ -172,12 +172,19 @@ useEffect(() => {
       <Helmet>
         <title>New Requisition</title>
       </Helmet>
-    
-      <Snackbar open={openSnackbar} autoHideDuration={3000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-          {flashMessage}
-        </Alert>
-      </Snackbar>
+      <Snackbar
+  open={openSnackbar}
+ // autoHideDuration={6000}
+  onClose={handleCloseSnackbar}
+  style={{
+    left: '50%',
+    transform: 'translateX(-50%)',
+  }}
+>
+  <Alert onClose={handleCloseSnackbar} severity="success">
+    {flashMessage}
+  </Alert>
+</Snackbar>
       {
         id ?<SavedForm loading={buttonLoading}  onSubmit={handleSubmit} purchaseRequestId={id} estimatedDate={samis} 
         addressData={address} remarkData={remark} categoryIdData =  {categoryId} sourceType= {sourceType} savedProducts={products}

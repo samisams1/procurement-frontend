@@ -1268,83 +1268,81 @@ marginBottom: '10px',
       <Typography variant="body1">Type more</Typography>
     </AccordionSummary>
     <AccordionDetails sx={{ padding: '2px 6px' }}>
-      <TableCell sx={{ padding: '1px', height: '32px' }}>
-        <TableRow>
-          <Input
-            placeholder="Manufacture"
-            value={manufacturers[index]}
-            onChange={(e) => handleManufacturersChange(index, e.target.value)}
-            fullWidth
-            sx={{ width: '100%' }}
-          />
-        </TableRow>
-        <TableRow>
-          <Input
-            placeholder="Model"
-            fullWidth
-            value={models[index]}
-            onChange={(e) => handleModelChange(index, e.target.value)}
-            style={{ marginBottom: '1rem', width: '100%' }}
-          />
-        </TableRow>
-        <TableRow>
-          <TextareaAutosize
-            placeholder="Description"
-            value={descriptions[index]}
-            onChange={(e) => handleDescriptionChange(index, e.target.value)}
-            style={{
-              minHeight: '100px',
-              padding: '8px',
-              fontSize: '16px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              resize: 'vertical',
-              outline: 'none',
-              fontFamily: 'Arial, sans-serif',
-              width: '100%',
-            }}
-          />
-        </TableRow>
-        <TableRow>
-          <TableCell>
-            <label htmlFor="file-upload2">
-              <input
-                type="file"
-                accept=".pdf"
-                id="file-upload2"
-                style={{ display: 'none' }}
-              />
-              <Button
-                variant="contained"
-                component="span"
-                startIcon={<CloudUpload />}
-                sx={{ width: '100%' }}
-              >
-                Upload File 2
-              </Button>
-            </label>
-          </TableCell>
-          <TableCell>
-            <label htmlFor="file-upload2">
-              <input
-                type="file"
-                accept=".pdf"
-                id="file-upload2"
-                style={{ display: 'none' }}
-              />
-              <Button
-                variant="contained"
-                component="span"
-                startIcon={<CloudUpload />}
-                sx={{ width: '100%' }}
-              >
-                Upload File 2
-              </Button>
-            </label>
-          </TableCell>
-        </TableRow>
-      </TableCell>
-    </AccordionDetails>
+  <Grid container spacing={1}>
+    <Grid item xs={12}>
+      <Input
+        placeholder="Manufacture"
+        value={manufacturers[index]}
+        onChange={(e) => handleManufacturersChange(index, e.target.value)}
+        fullWidth
+        sx={{ width: '100%' }}
+      />
+    </Grid>
+    <Grid item xs={12}>
+      <Input
+        placeholder="Model"
+        fullWidth
+        value={models[index]}
+        onChange={(e) => handleModelChange(index, e.target.value)}
+        sx={{ width: '100%' }}
+      />
+    </Grid>
+    <Grid item xs={12}>
+      <TextareaAutosize
+        placeholder="Description"
+        value={descriptions[index]}
+        onChange={(e) => handleDescriptionChange(index, e.target.value)}
+        style={{
+          minHeight: '100px',
+          padding: '8px',
+          fontSize: '16px',
+          borderRadius: '4px',
+          border: '1px solid #ccc',
+          resize: 'vertical',
+          outline: 'none',
+          fontFamily: 'Arial, sans-serif',
+          width: '100%',
+        }}
+      />
+    </Grid>
+    <Grid item xs={6}>
+      <label htmlFor="file-upload1">
+        <input
+          type="file"
+          accept=".pdf"
+          id="file-upload1"
+          style={{ display: 'none' }}
+        />
+        <Button
+          variant="contained"
+          component="span"
+          startIcon={<CloudUpload />}
+          fullWidth
+        >
+          Upload 1
+        </Button>
+      </label>
+    </Grid>
+    <Grid item xs={6}>
+      <label htmlFor="file-upload2">
+        <input
+          type="file"
+          accept=".pdf"
+          id="file-upload2"
+          style={{ display: 'none' }}
+        />
+        <Button
+          variant="contained"
+          component="span"
+          startIcon={<CloudUpload />}
+          fullWidth
+        >
+          Upload 2
+        </Button>
+      </label>
+    </Grid>
+  </Grid>
+</AccordionDetails>
   </Accordion>
 </TableCell>
    <TableCell sx={{ padding: '0px', height: '24px' }}>
