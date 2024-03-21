@@ -20,6 +20,7 @@ import PageHeader from '../../PageHeader';
 import { QuizTwoTone, Send } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import TermsCondition from '../../common/termsCondition';
+import numberToWords from 'number-to-words';
 interface Product {
   id: string;
   Description: string;
@@ -137,7 +138,9 @@ const BestQuotation: React.FC = () => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
-
+  const convertToWords = (num: number): string => {
+    return numberToWords.toWords(num);
+  };
   const handleCheckboxChange = (productId: string, checked: boolean) => {
     setSelectedItems((prevSelectedItems) => {
       const updatedSelectedItems = { ...prevSelectedItems };
@@ -337,9 +340,9 @@ return (
                     product.partNumber,
                     product.uom,
                     product.quantity,
-                    productPrice.price ,
-                    productPrice.disCountPrice,
-                    productPrice.price * product.quantity,
+                    Number(productPrice.price).toFixed(2).toLocaleString(),
+                   // Number(productPrice.disCountPrice).toFixed(2).toLocaleString(),
+                    (productPrice.price * product.quantity).toLocaleString(),
                   ];
                 })}
                 columns={[
@@ -350,7 +353,6 @@ return (
                   'Unit',
                   'Qty',
                   'Price',
-                  'Discount',
                   'Total Price'
                 ]}
                 components={{
@@ -370,7 +372,7 @@ return (
             </TableCell>
             <TableCell align="center">
               <Typography>
-              {shipping}
+              {shipping.toLocaleString()}
               </Typography></TableCell>
           </TableRow>
           <TableRow>
@@ -379,7 +381,7 @@ return (
             </TableCell>
             <TableCell align="center">
               <Typography>
-              {subTotal}
+              {subTotal.toLocaleString()}
               </Typography></TableCell>
           </TableRow>
           <TableRow>
@@ -387,7 +389,7 @@ return (
               <Typography>Tax (35%)</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography>{tax}</Typography>
+              <Typography>{tax.toLocaleString()}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -395,7 +397,7 @@ return (
               <Typography>VAT (35%)</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography>{vat}</Typography>
+              <Typography>{vat.toLocaleString()}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -403,7 +405,7 @@ return (
               <Typography>Service charge (1%)</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography>{serviceCharge}</Typography>
+              <Typography>{serviceCharge.toLocaleString()}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -411,14 +413,14 @@ return (
               <Typography>Total</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography>{total}</Typography>
+              <Typography>{total.toLocaleString()}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell align="center">
               <Typography>Total discount</Typography>
             </TableCell>
-            <TableCell align="center">{discount}</TableCell>
+            <TableCell align="center">{discount.toLocaleString()}</TableCell>
           </TableRow>
          
           <TableRow>
@@ -426,7 +428,7 @@ return (
               <Typography>payable</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography> {payable}</Typography>
+              <Typography> {payable.toLocaleString()}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -437,6 +439,7 @@ return (
               <Typography>ETB</Typography>
             </TableCell>
           </TableRow>
+          Amounts in word: <span style={{ color: 'red' }}>{convertToWords(payable)}</span>
         </TableBody>
       </Table>
     </TableContainer>
