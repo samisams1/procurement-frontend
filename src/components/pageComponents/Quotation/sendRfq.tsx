@@ -104,6 +104,7 @@ interface Props {
 }
 
 const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplierId,referenceNumber,requestedDate,customerName }) => {
+  const {quotations, setQuotations } = useQuotation();
   const [prices, setPrices] = useState<{ [key: string]: string }>({});
   const [disCountPrice, setDisCountPrices] = useState<{ [key: string]: string }>({});
  
@@ -129,7 +130,7 @@ const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplie
     variables: { supplierId: Number(supplierId), status: "quoted" }, // Set status to "pending" or "quoted"
   });
   const [updateQuotation] = useMutation(UPDATE_QUOTATION_MUTATION);
-  const {quotations, setQuotations } = useQuotation();
+ 
 console.log("setQuotations")
 const currentDate = new Date().toLocaleDateString();
   const quotationByRequestIdAdSupplierId = data?.quotationByRequestIdAdSupplierId || [];
@@ -304,6 +305,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   const tax: string = calculateTax(grandTotal, taxRate);
   const vat:string = calculateTax(grandTotal, vatRate);
   const serviceCharge:string = calculateTax(grandTotal, servieRate);
+  const total = Number(grandTotal)  + Number(tax) + Number(serviceCharge) + Number(vat);
  const payable =  Number(grandTotal)  + Number(tax) - Number(calculateDisCountSubtotal());
   console.log(tax); // Output the calculated tax amount
   if (loading) {
@@ -371,7 +373,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
         quotation.product.uom,
         <TextField
         placeholder="Please Enter the Price"
-        value={prices[quotation.id.toString()] || quotation.price || '225'}
+        value={prices[quotation.id.toString()] || quotation.price || ''}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
         handlePriceChange(quotation.id.toString(), e)
         }
@@ -477,7 +479,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
               <Typography>Sub Total</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography>{calculateSubtotal()}</Typography>
+              <Typography>{Number(calculateSubtotal()).toLocaleString()}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -485,7 +487,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
               <Typography>Tax (35%)</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography>{tax}</Typography>
+              <Typography>{Number(tax).toLocaleString()}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -493,7 +495,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
               <Typography>VAT (15%)</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography>{vat}</Typography>
+              <Typography>{Number(vat).toLocaleString()}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -501,7 +503,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
               <Typography>Service charge (1%)</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography>{serviceCharge}</Typography>
+              <Typography>{serviceCharge.toLocaleString()}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -509,14 +511,14 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
               <Typography>Total</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography> {Number(grandTotal)  + Number(tax) + Number(serviceCharge) + Number(vat)}</Typography>
+              <Typography> {total.toLocaleString()}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell align="center">
               <Typography>Total discount</Typography>
             </TableCell>
-            <TableCell align="center">{calculateDisCountSubtotal()}</TableCell>
+            <TableCell align="center">{calculateDisCountSubtotal().toLocaleString()}</TableCell>
           </TableRow>
          
           <TableRow>
@@ -524,7 +526,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
               <Typography>payable</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography> {Number(grandTotal)  + Number(tax) - Number(calculateDisCountSubtotal()) }</Typography>
+              <Typography> {payable.toLocaleString()}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -535,17 +537,12 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
               <Typography>ETB</Typography>
             </TableCell>
           </TableRow>
+          Amounts in word: <span style={{ color: 'red' }}>{convertToWords(payable)}</span>
         </TableBody>
       </Table>
     </TableContainer>
   </div>
         </Grid>
-        <Grid item xs={12} sm={12} style={{ display: 'flex', justifyContent: 'center' }}>
-    <div style={{ border: '1px solid black', padding: '10px' }}>
-      Amounts in word: <span style={{ color: 'red' }}>{convertToWords(payable)}</span>
-    </div>
-  </Grid>
-      
       </Grid>
      
       );
