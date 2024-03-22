@@ -1,17 +1,17 @@
 import React, { useContext } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
-import { Button, Grid, Paper, Table, TableCell,TableRow, Typography,TableHead, TableBody } from '@mui/material';
-import MUIDataTable, { MUIDataTableOptions, MUIDataTableMeta } from 'mui-datatables';
+import { Button, Grid, Paper, Table, TableCell,TableRow, Typography,TableHead, TableBody, createTheme, ThemeProvider, TableContainer } from '@mui/material';
+import MUIDataTable, { MUIDataTableOptions, MUIDataTableMeta,Responsive } from 'mui-datatables';
+
 import PageHeader from '../../../PageHeader';
 import numberToWords from 'number-to-words';
 import Spinner from '../../../Spinner';
 import { UserContext } from '../../../../auth/UserContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import PageFooter from '../../../PageFooter';
 import { Add, Cancel, ConfirmationNumberTwoTone, Print, Send } from '@mui/icons-material';
-import { styled } from '@mui/system';
 import { useReactToPrint } from 'react-to-print';
 import '../../../PrintPage.css';
+import TermsCondition from '../../../common/termsCondition';
 interface Product {
   id: number;
   Description: string | null;
@@ -67,12 +67,6 @@ interface GetOrderDetailByOrderIdResponse {
 interface GetOrderDetailByOrderIdVariables {
   getOrderDetailByOrderIdId: number;
 }
-
-const StyledTableHeadCell = styled(TableCell)`
-  background-color: #00b0ad;
-  font-size: 15px;
-  color:#ffffff;
-`;
 const GET_PAYMENT_BY_ORDER_ID = gql`
   query PaymentByPrderId($orderId: Int!) {
     paymentByPrderId(orderId: $orderId) {
@@ -168,9 +162,9 @@ const Detail = () => {
  const { loading:paymentLoding, error:paymentError, data:paymentData } = useQuery(GET_PAYMENT_BY_ORDER_ID, {
     variables: {orderId:Number(id)},
   })
-  const payment = paymentData?.paymentByPrderId;
+  const payments = paymentData?.paymentByPrderId;
 console.log("fasile")
-console.log(payment)
+console.log(payments)
   if (!currentUser) {
     return <Spinner />;
   }
@@ -188,7 +182,7 @@ console.log(payment)
   const order = orderDetail?.order;
   const products = orderDetail?.product;
  
-  
+ 
   const columns = [
     // Define your product table columns here
     {
@@ -219,48 +213,150 @@ console.log(payment)
 
   const productsArray: Product[] = products ? [products] : [];
 
+  const theme = createTheme({
+    components: {
+      MUIDataTableHeadCell: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#00b0ad',
+            color: 'white',
+          },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        },
+      },
+    },
+  });
   const options: MUIDataTableOptions = {
-    selectableRows: 'none',
+    filter: true,
+    download: true,
+    print: true,
+    search: true,
+    selectableRows: 'none', // or 'single' for single row selection
+    responsive: 'standard' as Responsive,
+    viewColumns: true,
+    rowsPerPage: 10,
+    rowsPerPageOptions: [10, 25, 50],
     customFooter: () => {
       return (
         <Grid container spacing={3}>
         <Grid item xs={6}>
-          <Typography>Invoice total i words</Typography>
-        <Grid><h3><span style={{color:"red"}}>{amountInWords}</span> Birr</h3></Grid>
-        <Typography>Payments</Typography>
-        <Table>
-  <TableHead>
-    <TableRow>
-      <StyledTableHeadCell>Date</StyledTableHeadCell>
-      <StyledTableHeadCell>Amount</StyledTableHeadCell>
-      <StyledTableHeadCell>Status</StyledTableHeadCell>
-    </TableRow>
-  </TableHead>
-  <TableBody>
-    <TableRow>
-      <TableCell>{payment.amount}</TableCell>
-      <TableCell>{payment?.amount}</TableCell>
-      <span style={{background:"green",color:"#ffffff"}}><TableCell>{payment?.status}</TableCell></span> 
-    </TableRow>
-  </TableBody>
-</Table>
+        <Typography variant="h6" align="center">Payments</Typography>
+<TableContainer>
+  <Table>
+    <TableHead>
+      <TableRow>
+        <TableCell style={{ backgroundColor: "#00b0ad", color: "#ffffff", borderBottom: "1px solid #ffffff" }}>Date</TableCell>
+        <TableCell style={{ backgroundColor: "#00b0ad", color: "#ffffff", borderBottom: "1px solid #ffffff" }}>Amount</TableCell>
+        <TableCell style={{ backgroundColor: "#00b0ad", color: "#ffffff", borderBottom: "1px solid #ffffff" }}>Status</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {payments.map((payment:any) => (
+        <TableRow key={payment.id}>
+          <TableCell>{payment.date}</TableCell>
+          <TableCell>{payment.amount}</TableCell>
+          <TableCell>
+            <span style={{ backgroundColor: "green", color: "#ffffff", padding: "4px 8px" }}>{payment.status}</span>
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</TableContainer>
+     <TermsCondition/>
         </Grid>
-        <Grid item xs={6}>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '16px' }}>
-          <div style={{ marginRight: 'auto' }}>
-             <Typography variant="h6" align="right">Subtotal:&nbsp;</Typography>
-            <Typography variant="h6" align="right">Shipping Cost:</Typography>
-            <Typography variant="h6" align="right">Tax:</Typography>
-            <Typography variant="h6" align="right">Grand Total:</Typography>
-          </div>
-          <div style={{ marginLeft: 'auto' }}>
-            <Typography variant="h6" align="left">{subtotal.toLocaleString()} Birr</Typography>
-            <Typography variant="h6" align="left">{order?.shippingCost.toLocaleString()} Birr</Typography>
-            <Typography variant="h6" align="left">{tax.toLocaleString()} Birr</Typography>
-            <Typography variant="h6" align="left">{grandTotal.toLocaleString()} Birr</Typography>
-          </div>
-        </div>
-        </Grid>
+        <Grid item xs={12} sm={6} md={6}>
+                    <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
+    <TableContainer component={Paper} style={{ margin: '10px' }}>
+      <Table>
+        <TableBody>
+        <TableRow>
+            <TableCell align="center">
+              <Typography>Shipping Cost</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>
+              {shipping}
+              </Typography></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Sub Total</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>
+              {subTotalIncShipping.toLocaleString()}
+              </Typography></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Tax (35%)</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>{tax.toLocaleString()}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>VAT (15%)</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>{vat.toLocaleString()}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Service charge (1%)</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>{serviceCharge.toLocaleString()}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Total</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>{total.toLocaleString()}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Total discount</Typography>
+            </TableCell>
+            <TableCell align="center">{discount.toLocaleString()}</TableCell>
+          </TableRow>
+         
+          <TableRow>
+            <TableCell align="center">
+              <Typography>payable</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography> {payable.toLocaleString()}</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Currency</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>ETB</Typography>
+            </TableCell>
+          </TableRow>
+          Amounts in word: <span style={{ color: 'red' }}>{amountInWords}</span>
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </div>
+                    </Grid>
+     
       </Grid>
       );
     },
@@ -270,9 +366,19 @@ console.log(payment)
     return acc + (product?.quantity ?? 0) * (orderDetail?.price ?? 0);
   }, 0);
 
-  const tax = subtotal * 0.15;
-  const grandTotal = subtotal + tax + (order?.shippingCost ?? 0);
-  const amountInWords = numberToWords.toWords(grandTotal);
+  
+  const serviceCharge =subtotal *  0.01;
+  const shipping = order?.shippingCost;
+  const subTotalIncShipping =  Number(subtotal + Number(shipping));
+  const tax = subTotalIncShipping * 0.35;
+  const vat = subTotalIncShipping * 0.15;
+  const total = subTotalIncShipping + tax + vat;
+  const discount  = 45;
+  const payable = total - discount;
+
+  const amountInWords = numberToWords.toWords(payable);
+
+
  /* const handlePayment = () => {
     navigate(`/payment/${1}`);
   };*/
@@ -280,14 +386,14 @@ console.log(payment)
   const handlePayment = () => {
     const paymentId = id;
     const userId = currentUser.id;
-    navigate(`/payment?id=${paymentId}&total=${grandTotal}&userId=${userId}`);
+    navigate(`/payment?id=${paymentId}&total=${payable}&userId=${userId}`);
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const { data } = await updateOrder({ variables: { id:Number(id), input:"comformed" } });
+      const { data } = await updateOrder({ variables: { id:Number(id), input:"approved" } });
       console.log('Order updated:', data.updateOrder);
     } catch (updateError) {
       console.error('Failed to update order:', updateError);
@@ -323,6 +429,7 @@ console.log(payment)
     minute: 'numeric',
     hour12: true,
   });
+
   
   
   return (
@@ -391,13 +498,14 @@ console.log(payment)
       </Grid>
       </Grid>
         </Grid>
+        <ThemeProvider theme={theme}>
         <MUIDataTable
           title="Product Details"
           data={productsArray}
           columns={columns}
           options={options}
         />
-       
+       </ThemeProvider>
         <Grid>
         {orderDetail?.order?.status === "comformed" && (
     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -458,7 +566,7 @@ Order Actions
                 color="primary"
                 onClick={handleUpdate}
               >
-                Confirm Order
+               Approve Order
               </Button>
               <Button
         variant="outlined"
@@ -513,7 +621,6 @@ Order Actions
       
     </div>
   )}
-  <PageFooter/>
         </Grid>
       </Grid>
     </Grid>

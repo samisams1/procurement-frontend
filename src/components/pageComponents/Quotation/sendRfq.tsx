@@ -457,7 +457,6 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
             </TableCell>
             <TableCell align="center" style={{ padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <TextField
-                type="number"
                 placeholder="Enter Shipping Cost"
                 value={Number.isFinite(shippingCost) ? shippingCost.toString() : ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
