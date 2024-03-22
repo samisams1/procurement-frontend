@@ -118,6 +118,7 @@ const BestQuotation: React.FC = () => {
     const location = useLocation();
     const qId = location.state?.qId;
     const customerId = location.state?.customerId;
+    const shippingPrice = location.state?.shippingPrice;
   const [createOrder] = useMutation(CREATE_ORDER_MUTATION);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -181,7 +182,6 @@ const BestQuotation: React.FC = () => {
      
         const orders = Object.entries(selectedProductsBySupplier).map(([supplierId, productsForSupplier]) => {
           let totalPrice = 0;
-          let shippingCost = 500;
   
           const orderDetails = productsForSupplier.map((product) => ({
             title: product.product.title,
@@ -201,7 +201,7 @@ const BestQuotation: React.FC = () => {
             totalPrice: totalPrice,
             tax: totalPrice  * 0.15,
              orderDetails:orderDetails,
-            shippingCost: shippingCost,
+            shippingCost: shippingPrice,
             status: 'pending',
             productPriceIds: productsForSupplier.map((product) => Number(product.id)),
           };

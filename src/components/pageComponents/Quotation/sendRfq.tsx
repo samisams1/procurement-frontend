@@ -298,15 +298,16 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   const convertToWords = (num: number): string => {
     return numberToWords.toWords(num);
   };
+  const sub_total = Number(calculateSubtotal()) + shippingCost
   const taxRate: number = 0.35; // Assuming the tax rate is 8%
   const vatRate: number = 0.15;
-  const servieRate = 0.001;
-  const grandTotal: number = parseFloat(calculateSubtotal());
-  const tax: string = calculateTax(grandTotal, taxRate);
-  const vat:string = calculateTax(grandTotal, vatRate);
-  const serviceCharge:string = calculateTax(grandTotal, servieRate);
-  const total = Number(grandTotal)  + Number(tax) + Number(serviceCharge) + Number(vat);
- const payable =  Number(grandTotal)  + Number(tax) - Number(calculateDisCountSubtotal());
+  const servieRate = 0.01;
+  const tax: string = calculateTax(sub_total, taxRate);
+  const vat:string = calculateTax(sub_total, vatRate);
+  const serviceCharge:string = calculateTax(sub_total, servieRate);
+
+  const total = Number(sub_total)  + Number(tax) + Number(serviceCharge) + Number(vat);
+ const payable =  total - Number(calculateDisCountSubtotal());
   console.log(tax); // Output the calculated tax amount
   if (loading) {
     return <div>Loading...</div>;
@@ -478,7 +479,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
               <Typography>Sub Total</Typography>
             </TableCell>
             <TableCell align="center">
-              <Typography>{Number(calculateSubtotal()).toLocaleString()}</Typography>
+              <Typography>{sub_total}</Typography>
             </TableCell>
           </TableRow>
           <TableRow>

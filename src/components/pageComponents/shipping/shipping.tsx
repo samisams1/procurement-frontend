@@ -68,7 +68,7 @@ const ViewShipping: React.FC = () => {
             }}
             style={{ whiteSpace: 'nowrap' }}
           >
-            Print Page
+            Detail
           </Button>
            );
         },

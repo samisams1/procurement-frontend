@@ -365,15 +365,13 @@ console.log(payments)
   const subtotal = productsArray.reduce((acc, product) => {
     return acc + (product?.quantity ?? 0) * (orderDetail?.price ?? 0);
   }, 0);
-
-  
   const serviceCharge =subtotal *  0.01;
   const shipping = order?.shippingCost;
   const subTotalIncShipping =  Number(subtotal + Number(shipping));
   const tax = subTotalIncShipping * 0.35;
   const vat = subTotalIncShipping * 0.15;
-  const total = subTotalIncShipping + tax + vat;
-  const discount  = 45;
+  const total = subTotalIncShipping + tax + vat + serviceCharge;
+  const discount  = 0;
   const payable = total - discount;
 
   const amountInWords = numberToWords.toWords(payable);
