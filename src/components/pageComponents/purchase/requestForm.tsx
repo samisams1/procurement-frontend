@@ -230,7 +230,7 @@ useEffect(()=>{
     }
     setUomErrors(updatedUomErrors);*/
   };
-  const handleQuantityChange = (index: number, value: number) => {
+  const handleQuantityChange = (index: number, value: any) => {
     const updatedQuantities = [...quantities];
     updatedQuantities[index] = value.toString(); // Convert value to a string
     setQuantities(updatedQuantities);
@@ -1213,13 +1213,16 @@ marginBottom: '10px',
 />
    </TableCell>
    <TableCell sx={{ padding: '4px', height: '32px' }}>
-   
    <TextField
   id="qty"
   label="Qty"
   placeholder="Please Enter Quantity"
-  value={quantities[index] || 0.0} // Use value prop and set 0.0 as default
-  onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
+  value={quantities[index] || ''}
+  onChange={(e) => {
+    const inputValue = e.target.value;
+    const numbersOnly = inputValue.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+    handleQuantityChange(index, numbersOnly === '' ? '' : Number(numbersOnly));
+  }}
   error={quantityErrors[index] !== ''}
   fullWidth
   required
@@ -1230,9 +1233,8 @@ marginBottom: '10px',
     disableUnderline: true,
     style: { height: '30px', paddingLeft: '1px' },
     inputProps: {
-      step: 0.01, // Optional: Set the step value to allow decimals
-      min: 0, // Optional: Set the minimum value
-      type: 'number', // Set the input type to 'number'
+      inputMode: 'numeric', // Set input mode to numeric
+      pattern: '[0-9]*', // Set pattern to allow only numbers
     },
   }}
   FormHelperTextProps={{
