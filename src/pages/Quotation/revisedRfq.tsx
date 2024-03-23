@@ -1,5 +1,5 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
-import { Box, Grid, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from '@mui/material';
+import { Box, Grid, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableRow, TextField, ThemeProvider, Typography, createTheme } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -179,10 +179,14 @@ const handleRemarkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       options: {
         display: true,
         customBodyRender: (value: string, tableMeta: any, updateValue: any) => (
-          <TextField
+            <TextField
             value={value}
             onChange={(event) => handlePriceChange(event, tableMeta.rowIndex)}
             type="number"
+            inputProps={{
+              inputMode: 'numeric',
+              pattern: '[0-9]*',
+            }}
           />
         ),
       },
@@ -479,18 +483,40 @@ const handleRemarkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEstimatedDelivery(event.target.value);
   };
+  const theme = createTheme({
+    components: {
+      MUIDataTableHeadCell: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#00b0ad',
+            color: 'white',
+          },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        },
+      },
+    },
+  });
   return (
     <>
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error.message}</p>}
       {formattedData.length > 0 && (
         <>
+          <ThemeProvider theme={theme}>
           <MUIDataTable
             title="Revised RFQ"
             data={formattedData}
             columns={columns}
             options={options}
           />
+          </ThemeProvider>
              <Box mt={3}>
   <Form onSubmit={handleSubmit}>
   <Grid container spacing={2} justifyContent="center">
