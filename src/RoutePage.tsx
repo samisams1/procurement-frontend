@@ -56,6 +56,7 @@ import ShippingDetail from './components/pageComponents/shipping/shippingDetail'
 import SentProforma from './pages/purchase/sentProforma';
 import RfqDraft from './pages/Quotation/rfqDraft';
 import BestQuotation from './components/pageComponents/Quotation/BestRequotation';
+import RevisedRfq from './pages/Quotation/revisedRfq';
 export default function RoutePage() {
 
     return useRoutes([
@@ -110,6 +111,7 @@ export default function RoutePage() {
               
               
               { path: '/sendRfq', element: <ProtectedRoute  element={<SendRfq />} /> },
+              { path: '/revisedRfq', element: <ProtectedRoute  element={<RevisedRfq />} /> },
 
               { path: '/notificaations', element: <ProtectedRoute  element={<Notification />} /> },
               

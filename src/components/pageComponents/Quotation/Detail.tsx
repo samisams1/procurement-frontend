@@ -20,6 +20,7 @@ type SupplierTotals = {
   supplierId: number;
   totalAmount: number;
   supplierName: string;
+  shippingPrice: number; // Added shippingPrice property
   Sn?: number;
 };
 
@@ -36,6 +37,7 @@ const GET_ALL_PRODUCT_PRICES = gql`
         supplierId
         totalAmount
         supplierName
+        shippingPrice
         availabilityDate
       }
     }
@@ -64,7 +66,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
     download: true,
     print: true,
     search: true,
-    selectableRows: 'none', // or 'single' for single row selection
+    selectableRows: 'none',
     responsive: 'standard',
     viewColumns: true,
     rowsPerPage: 10,
@@ -90,22 +92,32 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
       label: 'SN',
     },
     {
+      name: 'createdAt',
+      label: 'createdAt',
+    },
+    {
       name: 'supplierName',
       label: 'Supplier',
     },
     {
       name: 'totalAmount',
-      label: 'Total Amount (Birr)',
+      label: 'Total Amount (ETB)', // Added tax column
       options: {
-        customBodyRender: (value: number) => `${value} Birr`,
+        customBodyRender: (value: any, tableMeta: any) => {
+          const totalAmount = tableData[tableMeta.rowIndex]?.totalAmount;
+          const shippingPrice = tableData[tableMeta.rowIndex]?.shippingPrice;
+
+          const subTotal  = totalAmount + shippingPrice;
+          const tax = Number(calculateTax(subTotal));
+          const vat = Number(calculateVat(subTotal));
+          const serviseCharge = Number(calculateServiseCharge(subTotal));
+          return `${subTotal + tax + vat + serviseCharge } ETB`;
+        },
       },
     },
     {
       name: 'availabilityDate',
-      label: 'Price Valid until',
-      options: {
-        customBodyRender: (value: number) => `${value} Days`,
-      },
+      label: 'Availability Date (DAYS)',
     },
     {
       name: 'action',
@@ -150,14 +162,28 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
   });
 
   const handleClick = (id: string) => {
-    navigate('/bestQuotation', { state: { qId: qId, customerId: customerId } });
+    navigate('/bestQuotation', {state: { qId: qId, customerId: customerId } });
   };
 
   const handleActionClick = (supplierId: number) => {
-    // Handle the action button click for the specific supplier
-    navigate('/bestQuotation', { state: { qId: qId, customerId: customerId,supplierId:supplierId } });
+    navigate('/bestQuotation', { state: { qId: qId, customerId: customerId, supplierId: supplierId } });
   };
 
+  const calculateTax = (subTotal: number, ) => {
+    const taxPercentage = 0.35; // Assuming tax rate is 10%
+    const tax =subTotal * taxPercentage;
+    return tax.toFixed(2);
+  };
+  const calculateVat = (subTotal: number, ) => {
+    const taxPercentage = 0.15; // Assuming tax rate is 10%
+    const vat =subTotal * taxPercentage;
+    return vat.toFixed(2);
+  };
+  const calculateServiseCharge = (subTotal: number, ) => {
+    const taxPercentage = 0.01; // Assuming tax rate is 10%
+    const serviceCharge =subTotal * taxPercentage;
+    return serviceCharge.toFixed(2);
+  };
   return (
     <div>
       <PageHeader

@@ -187,9 +187,8 @@ console.log(payments)
     // Define your product table columns here
     {
       name: 'title',
-      field: 'title',
+      label: 'Product/Service Description',
     },
-    
     {
       name: 'Description',
       field: 'Description',
@@ -201,16 +200,26 @@ console.log(payments)
     },
     {
       name: 'Price',
-      field: 'price',
+      label: 'price (ETB)',
       options: {
         customBodyRender: (value: number | undefined, tableMeta: MUIDataTableMeta) => {
-          return   orderDetail?.price
-           
+          return orderDetail?.price;
+        },
+      },
+    },
+    {
+      name: 'subTotal',
+      label: 'Subtotal (ETB)',
+      options: {
+        customBodyRender: (value: number | undefined, tableMeta: MUIDataTableMeta) => {
+          const quantity = tableMeta.rowData[2]; // Assuming quantity is at index 2 in the row data
+          const price = orderDetail?.price; // Assuming price is at index 3 in the row data
+          const subtotal = price !== undefined ? quantity * price : 0;
+          return subtotal;
         },
       },
     },
   ];
-
   const productsArray: Product[] = products ? [products] : [];
 
   const theme = createTheme({
@@ -246,27 +255,23 @@ console.log(payments)
     customFooter: () => {
       return (
         <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={6}  style={{paddingLeft: "20px", paddingRight: "20px"}} >
         <Typography variant="h6" align="center">Payments</Typography>
-<TableContainer>
+        <TableContainer style={{ border: "3px solid green" }}>
   <Table>
     <TableHead>
       <TableRow>
         <TableCell style={{ backgroundColor: "#00b0ad", color: "#ffffff", borderBottom: "1px solid #ffffff" }}>Date</TableCell>
-        <TableCell style={{ backgroundColor: "#00b0ad", color: "#ffffff", borderBottom: "1px solid #ffffff" }}>Amount</TableCell>
+        <TableCell style={{ backgroundColor: "#00b0ad", color: "#ffffff", borderBottom: "1px solid #ffffff" }}>Amount (ETB)</TableCell>
         <TableCell style={{ backgroundColor: "#00b0ad", color: "#ffffff", borderBottom: "1px solid #ffffff" }}>Status</TableCell>
       </TableRow>
     </TableHead>
     <TableBody>
-      {payments.map((payment:any) => (
-        <TableRow key={payment.id}>
-          <TableCell>{payment.date}</TableCell>
-          <TableCell>{payment.amount}</TableCell>
-          <TableCell>
-            <span style={{ backgroundColor: "green", color: "#ffffff", padding: "4px 8px" }}>{payment.status}</span>
-          </TableCell>
-        </TableRow>
-      ))}
+      <TableRow>
+        <TableCell>2024/4/1</TableCell>
+        <TableCell>{payable}</TableCell>
+        <TableCell style={{ color: "#00b0ad" }}>{orderDetail?.order?.status === "approved"?"Wait for Payment":"paid"} </TableCell>
+      </TableRow>
     </TableBody>
   </Table>
 </TableContainer>

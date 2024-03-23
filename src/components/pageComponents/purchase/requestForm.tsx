@@ -269,7 +269,6 @@ useEffect(()=>{
   };
   const handleAddTitle = () => {
     setProductTitles([...productTitles, '']);
-    setTitleErrors([...titleErrors, '']);
   };
 
   const handleRemoveTitle = (index: number) => {

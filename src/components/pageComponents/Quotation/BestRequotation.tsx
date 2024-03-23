@@ -257,7 +257,6 @@ const BestQuotation: React.FC = () => {
   const shipping = Number(productPrices[0].quotation?.shippingPrice)
   const subTotal =
   shipping + 
-  Number(productPrices[0]?.quotation?.shippingPrice) +
   Number(
     productPrices.reduce(
       (sum, productPrice) => sum + productPrice.price * productPrice.product.quantity,

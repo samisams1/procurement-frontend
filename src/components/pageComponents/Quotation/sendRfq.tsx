@@ -159,12 +159,15 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   };
   const handlePriceChange = (productId: string, event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
+  
     setPrices((prevPrices) => {
       if (value === '') {
         const { [productId]: valueToRemove, ...newPrices } = prevPrices;
         return newPrices;
-      } else {
+      } else if (/^\d+$/.test(value)) {
         return { ...prevPrices, [productId]: value };
+      } else {
+        return { ...prevPrices, [productId]: '' };
       }
     });
   };
@@ -374,14 +377,14 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
         quotation.product.uom,
         <TextField
         placeholder="Please Enter the Price"
-        value={prices[quotation.id.toString()] || quotation.price || ''}
+        value={prices[quotation.id.toString()] !== undefined ? prices[quotation.id.toString()] : quotation.price || ''}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-        handlePriceChange(quotation.id.toString(), e)
+          handlePriceChange(quotation.id.toString(), e)
         }
         InputProps={{
           style: {
             padding: '0 8px',
-            height:'30px',
+            height: '30px',
           },
         }}
       />,
