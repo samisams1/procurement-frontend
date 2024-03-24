@@ -6,16 +6,18 @@ const StyledPageHeader = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.primary.contrastText,
   padding: theme.spacing(2),
+  marginTop: theme.spacing(2), // Add top margin for container
 }));
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
   color: '#ffffff',
+  fontSize: '16px', // Adjust the font size for better visibility
 }));
 
 const Image = styled('img')({
   marginTop: '12px',
-  width: '100px',
-  height: '40px',
+  width: '80px', // Reduce the image width
+  height: '30px', // Reduce the image height
 });
 
 export default function PageHeader(props: any) {

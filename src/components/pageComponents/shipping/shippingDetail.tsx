@@ -6,7 +6,7 @@ import MUIDataTable, { MUIDataTableOptions, MUIDataTableMeta,Responsive } from '
 
 import numberToWords from 'number-to-words';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Add, Cancel, ConfirmationNumberTwoTone, Print, Send } from '@mui/icons-material';
+import { Add, Cancel, ConfirmationNumberTwoTone, LocalShipping, Print, Send } from '@mui/icons-material';
 import { useReactToPrint } from 'react-to-print';
 import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
@@ -246,7 +246,7 @@ console.log(payments)
     customFooter: () => {
       return (
         <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6} md={6}>
      <TermsCondition/>
         </Grid>
         <Grid item xs={12} sm={6} md={6}>
@@ -413,11 +413,11 @@ console.log(payments)
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Grid>
-        <PageHeader
-      title="Purchas Order"
-      subTitle ="pircase Order"
-      imageSrc="tra.jpg"
-      />
+<PageHeader
+          title="Shipping"
+          icon={<LocalShipping/>}
+          imageSrc = "salesForce.png"
+          />
         <Button
         variant="outlined"
         color="primary"

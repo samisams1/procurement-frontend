@@ -15,7 +15,6 @@ import {
   Button,
   Alert,
 } from '@mui/material';
-import { SectionTitle } from '../../Section';
 import PageHeader from '../../PageHeader';
 import { QuizTwoTone, Send } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
@@ -31,6 +30,8 @@ interface Product {
   quantity: number;
   title: string;
   uom: string;
+  mark: string;
+  manufacturer: string;
 }
 
 interface Quotation {
@@ -86,6 +87,10 @@ const GET_ALL_PRODUCT_PRICES = gql`
         quantity
         title
         uom
+        mark
+        model
+        Description
+        manufacturer
       }
       quotation {
         id
@@ -118,7 +123,7 @@ const BestQuotation: React.FC = () => {
     const location = useLocation();
     const qId = location.state?.qId;
     const customerId = location.state?.customerId;
-    const shippingPrice = location.state?.shippingPrice;
+  //  const shippingPrice = location.state?.shippingPrice;
   const [createOrder] = useMutation(CREATE_ORDER_MUTATION);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -187,6 +192,7 @@ const BestQuotation: React.FC = () => {
             title: product.product.title,
             productId: parseInt(product.product.id),
             price: product.price,
+            discount:product.disCountPrice,
             quantity: Number(product.product.quantity),
           }));
               // Calculate totalPrice and totalTax based on orderDetails
@@ -201,7 +207,7 @@ const BestQuotation: React.FC = () => {
             totalPrice: totalPrice,
             tax: totalPrice  * 0.15,
              orderDetails:orderDetails,
-            shippingCost: shippingPrice,
+            shippingCost: shipping,
             status: 'pending',
             productPriceIds: productsForSupplier.map((product) => Number(product.id)),
           };
@@ -290,14 +296,11 @@ return (
           </Alert>
         )}
           <Grid item xs={12} sm={12}>
-          <SectionTitle>
           <PageHeader
             title="Send Order"
-            subTitle="select your price from given bellow of different price sams"
             icon={<QuizTwoTone fontSize="large" />}
             imageSrc="tra.jpg"
           />
-          </SectionTitle>
          </Grid>
         {Object.entries(quotationGroups).map(([quotationId, productPrices]) => (
           <Grid item xs={12} key={quotationId}>
@@ -337,10 +340,14 @@ return (
                     />,
                     product.title ,
                     product.partNumber,
+                    product.mark,
+                    product.model,
+                    product.code,
+                    product.Description,
                     product.uom,
                     product.quantity,
                     Number(productPrice.price).toFixed(2).toLocaleString(),
-                   // Number(productPrice.disCountPrice).toFixed(2).toLocaleString(),
+                    Number(productPrice.disCountPrice).toFixed(2).toLocaleString(),
                     (productPrice.price * product.quantity).toLocaleString(),
                   ];
                 })}
@@ -349,9 +356,34 @@ return (
                   'Select',
                   'Product/Service Description',
                   'Item Number',
+                  {
+                    name: 'mark',
+                    options: {
+                      display: false,
+                    },
+                  },
+                  {
+                    name: 'model',
+                    options: {
+                      display: false,
+                    },
+                  },
+                  {
+                    name: 'code',
+                    options: {
+                      display: false,
+                    },
+                  },
+                  {
+                    name: 'Description',
+                    options: {
+                      display: false,
+                    },
+                  },
                   'Unit',
                   'Qty',
                   'Price',
+                  'Discount',
                   'Total Price'
                 ]}
                 components={{

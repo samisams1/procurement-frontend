@@ -31,7 +31,6 @@ export default function Rfq() {
       
           <PageHeader
           title="Rfq"
-          subTitle="list of rfq "
           icon={<QuestionAnswer/>}
           imageSrc = "salesForce.png"
           />

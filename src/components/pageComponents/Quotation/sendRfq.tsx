@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import Input from '../../Input';
 import { Alert, Box, Button, MenuItem, Paper, TextField, ThemeProvider, Typography, createTheme } from '@mui/material';
-import {  Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import {  Table, TableBody, TableCell, TableContainer, TableRow,Checkbox } from '@mui/material';
 
 import { Form } from '../../useForm';
 //import Button from '../../Button';
@@ -107,8 +107,13 @@ const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplie
   const {quotations, setQuotations } = useQuotation();
   const [prices, setPrices] = useState<{ [key: string]: string }>({});
   const [disCountPrice, setDisCountPrices] = useState<{ [key: string]: string }>({});
- 
-  
+  const [isSelectedMap, setIsSelectedMap] = useState<{ [key: number]: boolean }>({});
+  const handleCheckboxChange = (productId: number) => {
+    setIsSelectedMap(prevState => ({
+      ...prevState,
+      [productId]: !prevState[productId]
+    }));
+  };
   //const [otherPayment,setOtherPayment] =useState<number>(0);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');  
@@ -262,10 +267,10 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
 }
   const calculateSubtotalRow = (price: number, quantity: string) => {
     const parsedQuantity = parseFloat(quantity);
-    if (isNaN(parsedQuantity)) {
+    if (isNaN(price)) {
       return 0;
     }
-    return price * parsedQuantity;
+    return parsedQuantity * price;
   };
  
   const calculateSubtotal = () => {
@@ -301,7 +306,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   const convertToWords = (num: number): string => {
     return numberToWords.toWords(num);
   };
-  const sub_total = Number(calculateSubtotal()) + shippingCost
+  const sub_total = Number(calculateSubtotal())
   const taxRate: number = 0.35; // Assuming the tax rate is 8%
   const vatRate: number = 0.15;
   const servieRate = 0.01;
@@ -321,6 +326,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   }
   const columns = [
     { name: 'SN', options: { filter: false, sort: false } },
+    { name: 'Select', options: { filter: false, sort: false } },
     {
       name: 'Product/Service description',
       options: {
@@ -365,22 +371,22 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       },
     },
   ];
-  const tableData = quotationByRequestIdAdSupplierId.map(
-    (quotation: any, index: number) => {
-     // const createdAtDate = new Date(quotation.createdAt);
-     // const formattedDate = createdAtDate.toLocaleDateString();
-      return [
-        index + 1,
-       // formattedDate, // Converted date
-        quotation.product.title,
-        quotation.product.code,
-        quotation.product.uom,
-        <TextField
+  const tableData = quotationByRequestIdAdSupplierId.map((quotation: any, index: number) => {
+  
+    return [
+      index + 1,
+      <Checkbox
+      checked={isSelectedMap[quotation.product.id]}
+      onChange={() => handleCheckboxChange(quotation.product.id)}
+      key={quotation.product.id}
+    />,
+      quotation.product.id,
+      quotation.product.code,
+      quotation.product.uom,
+      <TextField
         placeholder="Please Enter the Price"
         value={prices[quotation.id.toString()] !== undefined ? prices[quotation.id.toString()] : quotation.price || ''}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          handlePriceChange(quotation.id.toString(), e)
-        }
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handlePriceChange(quotation.id.toString(), e)}
         InputProps={{
           style: {
             padding: '0 8px',
@@ -388,32 +394,25 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
           },
         }}
       />,
-        <TextField
-          placeholder="Please Enter discount"
-          value={disCountPrice[quotation.id.toString()] || quotation.disCountPrice}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handlePriceDiscountChange(quotation.id.toString(), e)
-          }
-          InputProps={{
-            style: {
-              padding: '0 8px',
-              height:'30px',
-            },
-          }}
-        />,
-        quotation.product.quantity,
-        calculateSubtotalRow(
-          parseFloat(prices[quotation.id.toString()] || ''),
-          quotation.product.quantity
-        ),
-      ];
-    }
-  );
+      <TextField
+        placeholder="Please Enter discount"
+        value={disCountPrice[quotation.id.toString()] || quotation.disCountPrice}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handlePriceDiscountChange(quotation.id.toString(), e)}
+        InputProps={{
+          style: {
+            padding: '0 8px',
+            height: '30px',
+          },
+        }}
+      />,
+      quotation.product.quantity,
+      calculateSubtotalRow(parseFloat(prices[quotation.id.toString()] || ''), quotation.product.quantity),
+    ];
+  });
   
   const options: MUIDataTableOptions = {
     filter: true,
     download: true,
-    print: true,
     search: true,
     selectableRows: 'none',
     viewColumns: true,
@@ -577,9 +576,8 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
     <Grid container spacing={3}>
       <Grid item xs={12}>
       <PageHeader
-    title="Quotation"
+    title="Send Quotation"
     icon={<RequestQuote/>}
-    subTitle="please fill your price and send to the Customer"
     imageSrc="tra.jpg"
     />
       <Grid>

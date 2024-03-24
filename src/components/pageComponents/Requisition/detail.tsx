@@ -7,12 +7,11 @@ import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
 import PageHeader from '../../PageHeader';
 import MUIDataTable, {MUIDataTableOptions, Responsive } from 'mui-datatables';
-import { SectionTitle } from '../../Section';
 import { Print, RequestPageOutlined } from '@mui/icons-material';
-import PageFooter from '../../PageFooter';
 import Popup from '../../Popup';
 import { useReactToPrint } from 'react-to-print';
 import '../../PrintPage.css';
+import TermsCondition from '../../common/termsCondition';
 const paperStyle = {
   padding: '1rem',
   borderRadius: '8px',
@@ -331,9 +330,7 @@ const CustomFooter = () => {
     <div ref={printRef} className="print-content">
     <Grid container spacing={2}>
     <Grid item xs={12}>
-     
-      <SectionTitle variant="outlined" square>
-          <PageHeader title="Purchase Request" imageSrc="pro.png" subTitle="Purchase Request" icon={<RequestPageOutlined />} />
+          <PageHeader title="Purchase Request" imageSrc="pro.png" icon={<RequestPageOutlined />} />
           <Button
         variant="outlined"
         color="primary"
@@ -344,7 +341,6 @@ const CustomFooter = () => {
       >
         Print Page
       </Button>
-       </SectionTitle>
       <MobileGrid container spacing={2}>
         {/* Order By */}
         <Grid item xs={12} sm={4}>
@@ -414,7 +410,7 @@ const CustomFooter = () => {
       </Popup>
         </ThemeProvider>
      
-    <PageFooter/>
+    <TermsCondition/>
     </Grid>
     </Grid>
     </div>

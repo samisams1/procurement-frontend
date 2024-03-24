@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
@@ -32,11 +32,13 @@ const ORDER_QUERY = gql`
 `;
 const Orders: React.FC<{userId: number}> = ({userId}) => {
   const navigate = useNavigate();
-  const { loading, error, data } = useQuery(ORDER_QUERY, {
+  const { loading, error, data,refetch } = useQuery(ORDER_QUERY, {
     variables: { getOrderByUserIdId: Number(userId)  }, // Specify the userId here
   });
+  useEffect(() => {
+    refetch(); // Trigger the query after component mounts
+  }, [refetch]);
   const { currentUser } = useContext(UserContext);
-
   if (!currentUser) {
     return <Spinner />;
   }
@@ -48,7 +50,12 @@ const Orders: React.FC<{userId: number}> = ({userId}) => {
   if (error) {
     return <p>{error.message}</p>;
   }
+  console.log("order")
 
+
+  const order = data.getOrderByUserId;
+  const shipping = order.shippingCost;
+  console.log(order)
   const columns = [
     { name: 'SN', options: { filter: false, sort: false } },
     'ID',
@@ -142,7 +149,7 @@ const Orders: React.FC<{userId: number}> = ({userId}) => {
       <Grid item xs={12}>
         <ThemeProvider theme={theme}>
           <MUIDataTable
-            title="Orders"
+            title={shipping}
             data={tableData}
             columns={columns}
             options={options}

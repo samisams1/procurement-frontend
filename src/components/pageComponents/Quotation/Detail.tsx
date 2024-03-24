@@ -111,7 +111,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
           const tax = Number(calculateTax(subTotal));
           const vat = Number(calculateVat(subTotal));
           const serviseCharge = Number(calculateServiseCharge(subTotal));
-          return `${subTotal + tax + vat + serviseCharge } ETB`;
+          return `${(subTotal + tax + vat + serviseCharge).toLocaleString() } `;
         },
       },
     },
@@ -187,8 +187,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
   return (
     <div>
       <PageHeader
-        title="Send Order"
-        subTitle="select your price from given below of different price samples"
+        title="Quotation"
         icon={<RequestPageRounded fontSize="large" />}
         imageSrc="tra.jpg"
       />

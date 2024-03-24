@@ -4,7 +4,6 @@ import PageHeader from '../../components/PageHeader';
 import { PeopleAltTwoTone } from '@mui/icons-material';
 import { UserContext } from '../../auth/UserContext';
 import Orders from '../../components/pageComponents/order/customer/orders';
-import { SectionTitle } from '../../components/Section';
 
 
 const OrderCustomer = () => {
@@ -15,14 +14,11 @@ const OrderCustomer = () => {
       <Helmet>
         <title>et-proforma | order</title>
       </Helmet>
-   <SectionTitle>
    <PageHeader
           title="Order"
-          subTitle="orders"
           icon={<PeopleAltTwoTone />}
           imageSrc = "salesForce.png"
     />
-   </SectionTitle>
        
         <Orders userId= {Number(userId)} />
 

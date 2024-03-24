@@ -4,7 +4,6 @@ import { gql } from '@apollo/client';
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
 import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
-import { SectionTitle } from '../../Section';
 import PageHeader from '../../PageHeader';
 import { Details, ShoppingCart } from '@mui/icons-material';
 import { Grid, createTheme, ThemeProvider, Button } from '@mui/material';
@@ -111,14 +110,12 @@ const ViewShipping: React.FC = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <SectionTitle variant="outlined" square>
           <PageHeader
             Title="Shippings"
             icon={<ShoppingCart />}
             subTitle="List of all Shippigs "
             imageSrc = "salesForce.png"
           />
-        </SectionTitle>
         <ThemeProvider theme={theme}>
           <MUIDataTable
             title="Shippings"

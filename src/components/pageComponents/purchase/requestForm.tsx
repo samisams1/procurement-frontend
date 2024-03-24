@@ -673,6 +673,7 @@ return(
         <FormControl fullWidth>
           <InputLabel>Category</InputLabel>
           <Select value={selectedValue} onChange={handleChange} label="Category">
+          
             {data &&
               data.getCategories.map((category: Category) => (
                 <MenuItem key={category.id} value={category.id}>
@@ -1279,6 +1280,15 @@ marginBottom: '10px',
         sx={{ width: '100%' }}
       />
     </Grid>
+     <Grid item xs={12}>
+      <Input
+        placeholder="Mark"
+        value={marks[index]}
+        onChange={(e) => handleMarkChange(index, e.target.value)}
+        fullWidth
+        sx={{ width: '100%' }}
+      />
+    </Grid>
     <Grid item xs={12}>
       <Input
         placeholder="Model"
@@ -1295,7 +1305,6 @@ marginBottom: '10px',
         onChange={(e) => handleDescriptionChange(index, e.target.value)}
         style={{
           minHeight: '100px',
-          padding: '8px',
           fontSize: '16px',
           borderRadius: '4px',
           border: '1px solid #ccc',

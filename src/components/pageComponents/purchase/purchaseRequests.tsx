@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import PageHeader from '../../PageHeader';
 import '../../PrintPage.css';
 import { ShoppingCart } from '@mui/icons-material';
-import { SectionTitle } from '../../Section';
 import { useQuotation } from '../../../context/quotationContext';
 //import { useReactToPrint } from 'react-to-print';
 
@@ -71,18 +70,18 @@ interface purchaseRequestId {
 
 const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
   const navigate = useNavigate()
-  /*const printRef = React.useRef(null);
-
-  const handlePrint = useReactToPrint({
-    content: () => printRef.current,
-  });*/
   const { quotations, setQuotations } = useQuotation();
-  const { loading, error, data } = useQuery(GET_QUOTATION, {
+  const { loading, error, data,refetch } = useQuery(GET_QUOTATION, {
     variables: { suplierId:Number(supplierId)},
   });
   const handleListItemClick = (id: number,qId:number,referenceNumber:string,requestedDate:string,customerName:string) => {
     navigate('/sendRfq', { state: { id,qId,supplierId,referenceNumber,requestedDate,customerName} });
   };
+
+  useEffect(() => {
+    refetch(); // Trigger the query after component mounts
+  }, [refetch]);
+
   useEffect(() => {
     if (!loading && !error && data) {
       console.log('Fetched data:', data);
@@ -176,7 +175,7 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
               onClick={() => handleListItemClick(id,qId,referenceNumber,requestedDate,customerName)}
               style={{ whiteSpace: 'nowrap' }}
             >
-              View Detail sams
+              View Detail
             </Button>
           );
         },
@@ -190,13 +189,11 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
     <Grid container spacing={3}>
     
       <Grid item xs={12}>
-      <SectionTitle variant="outlined" square>
       <PageHeader
-      Title="Purchase Requests"
-      icon={<ShoppingCart/>}
-      subTitle="list of all purchase Requests"
-      />
-       </SectionTitle>
+          title="Purchase Request"
+          icon={<ShoppingCart/>}
+          imageSrc = "salesForce.png"
+          />
         <ThemeProvider theme={theme}>
           <MUIDataTable title="Requests" data={tableData} columns={columns} options={options} />
         </ThemeProvider>

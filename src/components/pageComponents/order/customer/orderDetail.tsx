@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { Button, Grid, Paper, Table, TableCell,TableRow, Typography,TableHead, TableBody, createTheme, ThemeProvider, TableContainer } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, MUIDataTableMeta,Responsive } from 'mui-datatables';
@@ -8,7 +8,7 @@ import numberToWords from 'number-to-words';
 import Spinner from '../../../Spinner';
 import { UserContext } from '../../../../auth/UserContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Add, Cancel, ConfirmationNumberTwoTone, Print, Send } from '@mui/icons-material';
+import { Add, Cancel, ConfirmationNumberTwoTone, Print, Send, ShoppingCart } from '@mui/icons-material';
 import { useReactToPrint } from 'react-to-print';
 import '../../../PrintPage.css';
 import TermsCondition from '../../../common/termsCondition';
@@ -29,6 +29,7 @@ interface OrderDetail {
   orderId: number;
   title: string | null;
   price?: number; // Make the price property optional
+  discount?:number;
   quantity: number;
   productId: number;
   createdAt: string;
@@ -89,6 +90,7 @@ const GET_ORDER_DETAIL_BY_ORDER_ID = gql`
       orderId
       title
       price
+      discount
       quantity
       productId
       createdAt
@@ -145,13 +147,12 @@ const Detail = () => {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
   const printRef = React.useRef(null);
-
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
   });
 
   const [updateOrder] = useMutation(UPDATE_ORDER);
-  const { loading, error, data } = useQuery<GetOrderDetailByOrderIdResponse, GetOrderDetailByOrderIdVariables>(
+  const { loading, error, data,refetch } = useQuery<GetOrderDetailByOrderIdResponse, GetOrderDetailByOrderIdVariables>(
     GET_ORDER_DETAIL_BY_ORDER_ID,
     {
       variables: { getOrderDetailByOrderIdId: Number(id)},
@@ -162,6 +163,9 @@ const Detail = () => {
  const { loading:paymentLoding, error:paymentError, data:paymentData } = useQuery(GET_PAYMENT_BY_ORDER_ID, {
     variables: {orderId:Number(id)},
   })
+  useEffect(() => {
+    refetch(); // Trigger the query after component mounts
+  }, [refetch]);
   const payments = paymentData?.paymentByPrderId;
 console.log("fasile")
 console.log(payments)
@@ -179,10 +183,11 @@ console.log(payments)
   if (paymentError) return <p>Error: {paymentError.message}</p>;
 
   const orderDetail = data?.getOrderDetailByOrderId[0];
-  const order = orderDetail?.order;
   const products = orderDetail?.product;
  
- 
+  const sf =orderDetail?.order.shippingCost;
+  //console.log(sf)
+  console.log("sf")
   const columns = [
     // Define your product table columns here
     {
@@ -190,8 +195,41 @@ console.log(payments)
       label: 'Product/Service Description',
     },
     {
+      name: 'partNumber',
+      options: {
+        display: true,
+      },
+    },
+    {
+      name: 'uom',
+      lable:'Unit',
+      options: {
+        display: true,
+      },
+    },
+    {
+      name: 'mark',
+      options: {
+        display: false,
+      },
+    },
+    {
+      name: 'model',
+      options: {
+        display: false,
+      },
+    },
+    {
+      name: 'code',
+      options: {
+        display: false,
+      },
+    },
+    {
       name: 'Description',
-      field: 'Description',
+      options: {
+        display: false,
+      },
     },
     // ... add other columns as needed
     {
@@ -204,6 +242,15 @@ console.log(payments)
       options: {
         customBodyRender: (value: number | undefined, tableMeta: MUIDataTableMeta) => {
           return orderDetail?.price;
+        },
+      },
+    },
+    {
+      name: 'discount',
+      label: 'discount (ETB)',
+      options: {
+        customBodyRender: (value: number | undefined, tableMeta: MUIDataTableMeta) => {
+          return orderDetail?.discount;
         },
       },
     },
@@ -255,7 +302,7 @@ console.log(payments)
     customFooter: () => {
       return (
         <Grid container spacing={3}>
-        <Grid item xs={6}  style={{paddingLeft: "20px", paddingRight: "20px"}} >
+        <Grid item xs={12} sm={6} md={6}>
         <Typography variant="h6" align="center">Payments</Typography>
         <TableContainer style={{ border: "3px solid green" }}>
   <Table>
@@ -288,7 +335,7 @@ console.log(payments)
             </TableCell>
             <TableCell align="center">
               <Typography>
-              {shipping}
+              {sf}
               </Typography></TableCell>
           </TableRow>
           <TableRow>
@@ -336,7 +383,7 @@ console.log(payments)
             <TableCell align="center">
               <Typography>Total discount</Typography>
             </TableCell>
-            <TableCell align="center">{discount.toLocaleString()}</TableCell>
+            <TableCell align="center">{totalDiscount.toLocaleString()}</TableCell>
           </TableRow>
          
           <TableRow>
@@ -370,14 +417,17 @@ console.log(payments)
   const subtotal = productsArray.reduce((acc, product) => {
     return acc + (product?.quantity ?? 0) * (orderDetail?.price ?? 0);
   }, 0);
-  const serviceCharge =subtotal *  0.01;
-  const shipping = order?.shippingCost;
-  const subTotalIncShipping =  Number(subtotal + Number(shipping));
+  const totalDiscount = productsArray.reduce((acc, product) => {
+    return acc + (product?.quantity ?? 0) * (orderDetail?.discount ?? 0);
+  }, 0);
+  
+  //const shipping = order?.shippingCost;
+  const subTotalIncShipping =  Number(subtotal + Number(sf));
   const tax = subTotalIncShipping * 0.35;
   const vat = subTotalIncShipping * 0.15;
+  const serviceCharge =subTotalIncShipping *  0.01;
   const total = subTotalIncShipping + tax + vat + serviceCharge;
-  const discount  = 0;
-  const payable = total - discount;
+  const payable = total - totalDiscount;
 
   const amountInWords = numberToWords.toWords(payable);
 
@@ -441,11 +491,11 @@ console.log(payments)
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Grid>
-        <PageHeader
+      <PageHeader
       title="Purchas Order"
-      subTitle ="pircase Order"
-      imageSrc="tra.jpg"
-      />
+      icon={<ShoppingCart/>}
+          imageSrc = "salesForce.png"
+          />
         <Button
         variant="outlined"
         color="primary"

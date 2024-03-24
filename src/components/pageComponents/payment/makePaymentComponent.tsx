@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../../auth/UserContext';
 import Spinner from '../../Spinner';
 import Button from '../../Button';
-import { SectionTitle } from '../../Section';
 import PageHeader from '../../PageHeader';
 import { Payments } from '@mui/icons-material';
 const ORDER_QUERY = gql`
@@ -147,14 +146,11 @@ const List: React.FC<{ id: number }> = ({ id }) => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <SectionTitle>
           <PageHeader
           title="Make Payment"
           icon={<Payments/>}
-          subTitle="Please make Paymanet"
           imageSrc = "salesForce.png"
           />
-        </SectionTitle>
         <ThemeProvider theme={theme}>
           <MUIDataTable
             title="List Of Order Ready For Payments"
