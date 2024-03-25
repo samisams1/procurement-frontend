@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
-import { ThemeProvider, useTheme } from '@mui/material/styles';
-import { Button, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
+import { Button, Grid, ThemeProvider, Typography, createTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 interface RfqComponentProps {
@@ -78,11 +78,11 @@ const GET_ALL_PRODUCT_PRICES = gql`
 `;
 
 const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
-  const { loading, error, data } = useQuery<GetAllProductPricesResponse>(GET_ALL_PRODUCT_PRICES, {
+  const { loading, error, data: { getAllProductPrices = [] } = {} } = useQuery<GetAllProductPricesResponse>(GET_ALL_PRODUCT_PRICES, {
     variables: { id: userId },
   });
-  const theme = useTheme();
   const navigate = useNavigate();
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -91,9 +91,7 @@ const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
     return <p>Error: {error.message}</p>;
   }
 
-  const uniquePurchaseRequestIds = Array.from(
-    new Set(data?.getAllProductPrices.map((productPrice) => productPrice.quotation.purchaseRequestId))
-  );
+  const uniquePurchaseRequestIds = Array.from(new Set(getAllProductPrices.map((productPrice) => productPrice.quotation.purchaseRequestId)));
 
   const handleClick = (productId: string, customerId: number, supplierId: number) => {
     navigate('/manageRfq', { state: { productId, customerId, supplierId } });
@@ -102,77 +100,86 @@ const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
   if (uniquePurchaseRequestIds.length === 0) {
     return (
       <Grid container justifyContent="center" alignItems="center">
-        <Typography variant="h6">
-          <Typography>Sorry, no matching records found</Typography>
-        </Typography>
+        <Typography variant="h6">Sorry, no matching records found</Typography>
       </Grid>
     );
   }
 
+  const tableTheme = createTheme({
+    components: {
+      MUIDataTableHeadCell: {
+        styleOverrides: {
+          root: {
+            backgroundColor: '#00b0ad',
+            color: 'white',
+          },
+        },
+      },
+      MuiTableCell: {
+        styleOverrides: {
+          root: {
+            paddingTop: 0,
+            paddingBottom: 0,
+          },
+        },
+      },
+    },
+  });
+  const tableOptions: MUIDataTableOptions = {
+    filter: true,
+    download: true,
+    print: true,
+    search: true,
+    selectableRows: 'none',
+    responsive: 'standard',
+    viewColumns: true,
+    rowsPerPage: 10,
+    rowsPerPageOptions: [10, 25, 50],
+  };
+
+  const tableData = uniquePurchaseRequestIds.map((purchaseRequestId, index) => {
+    const productPrice = getAllProductPrices.find(
+      (productPrice) => productPrice.quotation.purchaseRequestId === purchaseRequestId
+    );
+
+    if (!productPrice) {
+      return [];
+    }
+
+    return [
+      index + 1,
+      productPrice.id,
+      9,
+      'Electronics',
+      productPrice.createdAt,
+      <span style={{ color: 'red' }}>{productPrice.status}</span>,
+      <Button
+        type="submit"
+        variant="outlined"
+        color="primary"
+        style={{ whiteSpace: 'nowrap' }}
+        onClick={() =>
+          handleClick(productPrice.productId, productPrice.quotation.customerId, productPrice.quotation.supplierId)
+        }
+      >
+        Detail
+      </Button>,
+    ];
+  });
+
+  const tableColumns = [
+    'S.N',
+    'Request ID',
+    'No. of Suppliers',
+    'Category',
+    'RFQ Date',
+    'Status',
+    'Action',
+  ];
+
   return (
-    <ThemeProvider theme={theme}>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>S.N</TableCell>
-              <TableCell>Request ID</TableCell>
-              <TableCell>No. of Suppliers</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>RFQ Date</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {uniquePurchaseRequestIds.map((purchaseRequestId, index) => {
-              const productPrice = data?.getAllProductPrices.find(
-                (productPrice) => productPrice.quotation.purchaseRequestId === purchaseRequestId
-              );
-
-              if (!productPrice) {
-                return null;
-              }
-
-              return (
-                <TableRow
-                  key={productPrice.id}
-                  hover
-                  onClick={() =>
-                    handleClick(
-                      productPrice.quotation.purchaseRequestId,
-                      productPrice.quotation.customerId,
-                      productPrice.quotation.supplierId
-                    )
-                  }
-                  style={{ cursor: 'pointer' }}
-                >
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{productPrice.id}</TableCell>
-                  <TableCell>{"9"}</TableCell>
-                  <TableCell>{"Electronics"}</TableCell>
-                  <TableCell>{productPrice.createdAt}</TableCell>
-                  <TableCell>
-                    <span style={{ color: 'red' }}>{productPrice.status}</span>
-                  </TableCell>
-                  <TableCell>
-                   
-                    <Button
-                      type="submit"
-                      variant="outlined"
-                      color="primary"
-                      style={{ whiteSpace: 'nowrap' }}
-                    onClick={() => handleClick(productPrice.productId, productPrice.quotation.customerId, productPrice.quotation.supplierId)}
-                    >
-                      Detail
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <ThemeProvider theme={tableTheme}>
+      <MUIDataTable title="" data={tableData} columns={tableColumns} options={tableOptions} />
     </ThemeProvider>
   );
 };
