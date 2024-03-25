@@ -7,7 +7,6 @@ import { Inventory2Outlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Controls from '../../Controls';
-import { SectionTitle } from '../../Section';
 import { createTheme, ThemeProvider } from '@mui/material';
 interface Payment {
   id: number;
@@ -121,13 +120,11 @@ const Invoice: React.FC<userId> = ({userId}) => {
         <title>Et-proforma</title>
       </Helmet>
       <Paper elevation={3} sx={{ padding: '20px' }}>
-        <SectionTitle>
-          <PageHeader
-            title="Invoice "
-            subTitle="you can view invoice"
+         <PageHeader
+            title="Invoice"
             icon={<Inventory2Outlined fontSize="large" />}
+            imageSrc="tra.jpg"
           />
-          </SectionTitle>
           <Paper elevation={3} >
       {payments.length > 0 ? (
           <ThemeProvider theme={theme}>

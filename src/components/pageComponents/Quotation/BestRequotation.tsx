@@ -232,7 +232,6 @@ const BestQuotation: React.FC = () => {
   const options: MUIDataTableOptions = {
     filter: true,
     download: true,
-    print: true,
     search: true,
     selectableRows: 'none', // or 'single' for single row selection
     responsive: 'standard',
@@ -303,16 +302,31 @@ return (
           />
          </Grid>
         {Object.entries(quotationGroups).map(([quotationId, productPrices]) => (
+          
           <Grid item xs={12} key={quotationId}>
             <Paper>
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={4}>
                   <p>Requested By   - {productPrices[0].quotation?.customer.firstName + " " + productPrices[0].quotation?.customer.lastName }</p>
-                  <p>Requested Date - {data?.quotationByRequestId[0]?.quotation.createdAt}</p>
+                  <p>Quotation Created Date - {data?.quotationByRequestId[0]?.createdAt ? new Date(data?.quotationByRequestId[0]?.createdAt).toLocaleString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          }) : ''}</p>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <p >Quotation By Supplier - <span style={{color:'#00b0ad'}}>{productPrices[0].quotation?.supplier.name}</span></p>
-                  <p>Quotation Created Date - {data?.quotationByRequestId[0]?.createdAt}</p>
+                  <p>Quotation Created Date - {data?.quotationByRequestId[0]?.createdAt ? new Date(data?.quotationByRequestId[0]?.createdAt).toLocaleString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',      
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          }) : ''}</p>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <p>Status - {productPrices[0].quotation?.status}</p>
@@ -425,7 +439,7 @@ return (
           </TableRow>
           <TableRow>
             <TableCell align="center">
-              <Typography>VAT (35%)</Typography>
+              <Typography>VAT (15%)</Typography>
             </TableCell>
             <TableCell align="center">
               <Typography>{vat.toLocaleString()}</Typography>

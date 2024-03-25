@@ -10,7 +10,6 @@ import PageHeader from '../../PageHeader';
 import { RequestPageOutlined } from '@mui/icons-material';
 //import Button from '../../Button';
 import { useNavigate } from 'react-router-dom';
-import { SectionTitle } from '../../Section';
 
 export interface PurchaseRequestData {
   purchaseRequestByUserId: {
@@ -136,9 +135,7 @@ View Details
       ) : purchaseRequests && purchaseRequests.length > 0 ? (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <SectionTitle variant="outlined" square>
           <PageHeader title="Tis is your Requests" icon={<RequestPageOutlined />} imageSrc = "salesForce.png" />
-        </SectionTitle>
       </Grid>
       <Grid item xs={12}>
         <ThemeProvider theme={theme}>

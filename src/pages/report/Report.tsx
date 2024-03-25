@@ -13,7 +13,6 @@ const ReportPage = () => {
       <Paper elevation={3} sx={{ padding: '20px' }}>
       <PageHeader
               title="REPORT"
-              subTitle="the report"
               icon={<ReportOffTwoTone fontSize="large" />}
           /> 
            <Grid

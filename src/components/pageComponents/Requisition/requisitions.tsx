@@ -6,7 +6,6 @@ import PageHeader from '../../PageHeader';
 import { RequestPageOutlined } from '@mui/icons-material';
 import Button from '../../Button';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { SectionTitle } from '../../Section';
 import { PURCHASE_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
 import Spinner from '../../Spinner';
 import { UserContext } from '../../../auth/UserContext';
@@ -151,11 +150,9 @@ const PurchaseRequisitions: React.FC<{ userId: number }> = ({ userId }) => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <SectionTitle variant="outlined" square>
           <PageHeader title={location.pathname || 'Default Title'} icon={<RequestPageOutlined />} subTitle="this page is your request " 
           imageSrc = "salesForce.png"
           />
-        </SectionTitle>
       </Grid>
       <Grid item xs={12}>
         <ThemeProvider theme={theme}>

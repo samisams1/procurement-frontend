@@ -3,14 +3,11 @@ import { useQuery } from '@apollo/client';
 import { usePurchaseRequest } from '../../../context/purchaseRequestContext';
 import { PURCHASE_REQUESTS_BY_USER_ID } from '../../../graphql/rquest';
 import { UserContext } from '../../../auth/UserContext';
-
 import { Grid, createTheme, ThemeProvider, Button } from '@mui/material';
 import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
 import PageHeader from '../../PageHeader';
 import { RequestPageOutlined } from '@mui/icons-material';
-//import Button from '../../Button';
 import { useNavigate } from 'react-router-dom';
-import { SectionTitle } from '../../Section';
 interface PurchaseRequest {
   id: string;
   userId: number;
@@ -180,9 +177,7 @@ View Details
       ) : purchaseRequests && purchaseRequests.length > 0 ? (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <SectionTitle variant="outlined" square>
-          <PageHeader title="Tis is your Requests" icon={<RequestPageOutlined />} imageSrc = "salesForce.png" />
-        </SectionTitle>
+          <PageHeader title="Draft Requests" icon={<RequestPageOutlined />} imageSrc = "salesForce.png" />
       </Grid>
       <Grid item xs={12}>
         <ThemeProvider theme={theme}>

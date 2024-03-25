@@ -7,11 +7,6 @@ import OrderByStatus from '../../../components/pageComponents/dashboard/customer
 import CountRequestStatus from '../../../components/pageComponents/dashboard/customer/countRequestsByStatus';
 import NewRfq from '../../../components/pageComponents/dashboard/customer/countNewRfq';
 import { useNavigate } from 'react-router-dom';
-const SectionTitle = styled(Paper)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-  padding: theme.spacing(2),
-}));
-
 const MetricContainer = styled(Paper)(({ theme, color }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -55,14 +50,11 @@ const CustomerDashboard: React.FC<CustomerDashboardProps> = ({ userId }) => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <SectionTitle variant="outlined" square>
          <PageHeader
          title="Dashboard"
-         subTitle='dashboard'
         icon={<Dashboard/>}  
         imageSrc = "salesForce.png"
          />
-        </SectionTitle>
       </Grid>
       <Grid item xs={12} sm={6} md={4}>
         <MetricContainer elevation={3} color="#F44336">

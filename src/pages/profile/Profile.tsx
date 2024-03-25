@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet';
 import PageHeader from '../../components/PageHeader';
 import { PeopleOutlineTwoTone } from '@mui/icons-material';
 import CircularProgress from '@mui/material/CircularProgress';
-import { SectionTitle } from '../../components/Section';
 import { CompanyAttachment } from '../../components/pageComponents/account/company/companyAttachment';
 //import { CompanyDetail } from '../../components/pageComponents/account/company/companyDetail';
 import Map from '../../components/pageComponents/account/address/map';
@@ -25,14 +24,11 @@ const Profile: React.FC = () => {
       <Helmet>
         <title>Et-proforma | Profile</title>
       </Helmet>
-      <SectionTitle>
         <PageHeader
           title="My Profile"
-          subTitle="This is your profile page"
           icon={<PeopleOutlineTwoTone fontSize="large" />}
           imageSrc = "salesForce.png"
         />
-      </SectionTitle>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6} lg={4}>
           <Typography variant="h6" gutterBottom style={{ fontWeight: 'bold' }}>

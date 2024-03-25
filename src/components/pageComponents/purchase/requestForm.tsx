@@ -26,7 +26,6 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { Add, CloudUpload, DeleteOutlineTwoTone, ExpandMore, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save, Send } from '@mui/icons-material';
 import PageHeader from '../../PageHeader';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
-import { SectionTitle } from '../../Section';
 interface Category {
   id: string;
   name: string;
@@ -614,15 +613,11 @@ return(
      <form onSubmit={handleSubmit} onReset={handleReset}>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12}>
-          <SectionTitle>
           <PageHeader
             title="NEW REQUISITION FORM"
-            subTitle="Create new requisition"
             icon={<RequestPageTwoTone fontSize="large" />}
             imageSrc = "salesForce.png"
           />
-          </SectionTitle>
-         
           <Paper elevation={3} style={{ padding: '20px' }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>

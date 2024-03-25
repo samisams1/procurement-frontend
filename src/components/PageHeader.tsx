@@ -6,7 +6,7 @@ const StyledPageHeader = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   color: theme.palette.primary.contrastText,
   padding: theme.spacing(2),
-  marginTop: theme.spacing(2), // Add top margin for container
+  marginTop: theme.spacing(0), // Add top margin for container
 }));
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
