@@ -116,8 +116,7 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
     customerName: `${quotation?.customer?.firstName} ${quotation?.customer?.lastName}`,
     supplierName: quotation?.supplier?.name,
     referenceNumber: quotation.purchaseRequest.referenceNumber,
-    
-    createdAt: quotation.createdAt,
+    createdAt: new Date(quotation.createdAt).toLocaleDateString(), 
   }));
   const columns = [
     {

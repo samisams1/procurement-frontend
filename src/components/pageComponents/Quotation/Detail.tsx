@@ -19,6 +19,7 @@ type QuotationDetailProps = {
 type SupplierTotals = {
   supplierId: number;
   totalAmount: number;
+  totalDiscountPrice:number;
   supplierName: string;
   shippingPrice: number; // Added shippingPrice property
   Sn?: number;
@@ -36,6 +37,7 @@ const GET_ALL_PRODUCT_PRICES = gql`
       supplierTotals {
         supplierId
         totalAmount
+        totalDiscountPrice
         supplierName
         shippingPrice
         availabilityDate
@@ -50,7 +52,6 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
   const { loading, data, error } = useQuery<QuotationData>(GET_ALL_PRODUCT_PRICES, {
     variables: { id: qId },
   });
-
   useEffect(() => {
     if (data) {
       const updatedTableData = data.sendQuotationByRequestId.supplierTotals.map((item, index) => ({
@@ -92,10 +93,6 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
       label: 'SN',
     },
     {
-      name: 'createdAt',
-      label: 'createdAt',
-    },
-    {
       name: 'supplierName',
       label: 'Supplier',
     },
@@ -105,13 +102,15 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
       options: {
         customBodyRender: (value: any, tableMeta: any) => {
           const totalAmount = tableData[tableMeta.rowIndex]?.totalAmount;
-          const shippingPrice = tableData[tableMeta.rowIndex]?.shippingPrice;
+          const discount = tableData[tableMeta.rowIndex]?.totalDiscountPrice;
 
+          const shippingPrice = tableData[tableMeta.rowIndex]?.shippingPrice;
           const subTotal  = totalAmount + shippingPrice;
           const tax = Number(calculateTax(subTotal));
           const vat = Number(calculateVat(subTotal));
           const serviseCharge = Number(calculateServiseCharge(subTotal));
-          return `${(subTotal + tax + vat + serviseCharge).toLocaleString() } `;
+          const total= subTotal + tax + vat + serviseCharge;
+          return `${(total - Number(discount)).toLocaleString() } `;
         },
       },
     },

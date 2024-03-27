@@ -1,13 +1,12 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
-import { Button, Grid, ThemeProvider, Typography, createTheme } from '@mui/material';
+import { Button, Grid, ThemeProvider, Typography, } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import { tableTheme } from '../Table/table';
 interface RfqComponentProps {
   userId: number;
 }
-
 interface Product {
   id: string;
   Description: string;
@@ -104,27 +103,6 @@ const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
       </Grid>
     );
   }
-
-  const tableTheme = createTheme({
-    components: {
-      MUIDataTableHeadCell: {
-        styleOverrides: {
-          root: {
-            backgroundColor: '#00b0ad',
-            color: 'white',
-          },
-        },
-      },
-      MuiTableCell: {
-        styleOverrides: {
-          root: {
-            paddingTop: 0,
-            paddingBottom: 0,
-          },
-        },
-      },
-    },
-  });
   const tableOptions: MUIDataTableOptions = {
     filter: true,
     download: true,
@@ -145,13 +123,21 @@ const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
     if (!productPrice) {
       return [];
     }
-
     return [
       index + 1,
       productPrice.id,
-      9,
+      2,
       'Electronics',
-      productPrice.createdAt,
+      <>
+      <p>{productPrice.createdAt ? new Date(productPrice.createdAt).toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }) : ''}</p>
+    </>,
       <span style={{ color: 'red' }}>{productPrice.status}</span>,
       <Button
         type="submit"

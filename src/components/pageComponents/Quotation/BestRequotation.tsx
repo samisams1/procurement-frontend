@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
-import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
+import MUIDataTable from 'mui-datatables';
 import { Table, TableBody, TableContainer, Typography } from '@mui/material';
 import { useReactToPrint } from 'react-to-print';
 
@@ -20,19 +20,8 @@ import { QuizTwoTone, Send } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import TermsCondition from '../../common/termsCondition';
 import numberToWords from 'number-to-words';
-interface Product {
-  id: string;
-  Description: string;
-  code: string;
-  manufacture: string;
-  model: string;
-  partNumber: string;
-  quantity: number;
-  title: string;
-  uom: string;
-  mark: string;
-  manufacturer: string;
-}
+import { Product } from '../../../interface/products';
+
 
 interface Quotation {
   id: number;
@@ -50,7 +39,6 @@ interface Quotation {
   }
   createdAt:string;
 }
-
 
 interface ProductPrice {
   id: string;
@@ -229,16 +217,6 @@ const BestQuotation: React.FC = () => {
       }*/
      
     };
-  const options: MUIDataTableOptions = {
-    filter: true,
-    download: true,
-    search: true,
-    selectableRows: 'none', // or 'single' for single row selection
-    responsive: 'standard',
-    viewColumns: true,
-    rowsPerPage: 10,
-    rowsPerPageOptions: [10, 25, 50],
-  };
   const theme = createTheme({
     components: {
       MUIDataTableHeadCell: {
@@ -330,7 +308,7 @@ return (
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <p>Status - {productPrices[0].quotation?.status}</p>
-                  <p >This Price is Avalabile for  - <span style={{color:'red'}}></span> {productPrices[0].quotation?.availabilityDate}days</p>
+                  <p >This Price is Avalabile for  - <span style={{color:'red'}}>{productPrices[0].quotation?.availabilityDate}</span> - Days</p>
                 </Grid>
               </Grid>
               <ThemeProvider theme={theme}>
@@ -341,7 +319,6 @@ return (
                    <Button className="no-print" onClick={handlePrint}>  Print  </Button>
                   </TableRow>
                 }
-                options={options}
                 data={productPrices.map((productPrice: ProductPrice, index: number) => {
                   const { product, id, status } = productPrice;
                   const isOrdered = status === 'ordered';

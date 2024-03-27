@@ -4,9 +4,10 @@ import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Form } from '../../components/useForm';
-import { Cancel, Drafts, Save } from '@mui/icons-material';
+import { Cancel, RequestQuote, Save } from '@mui/icons-material';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import PageHeader from '../../components/PageHeader';
 
 const GET_QUOTATION_QUERY = gql`
   query QuotationByRequestIdAdSupplierId($id: Int!, $supplierId: Int!) {
@@ -89,6 +90,9 @@ const RevisedRfq = () => {
   const id = location.state?.id;
   const qId = location.state.qId;
   const supplierId = location.state?.supplierId;
+  const referenceNumber = location.state?.referenceNumber;
+  const requestedDate = location.state?.requestedDate;
+  const customerName = location.state?.customerName;
   
   const { loading, error, data } = useQuery<
     QuotationByRequestIdAdSupplierIdData,
@@ -108,7 +112,7 @@ const RevisedRfq = () => {
 
   const [formattedData, setFormattedData] = useState<any[]>([]);
   
-
+  const currentDate = new Date().toLocaleDateString();
   const [updateQuotation] = useMutation(UPDATE_QUOTATION_MUTATION);
 
   const [shippingCost, setShippingCost] = useState<number>(
@@ -332,7 +336,7 @@ const handleRemarkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
             <TableCell align="center">
               <Typography>Total discount</Typography>
             </TableCell>
-            <TableCell align="center">{calculateGrandTotal().toLocaleString()}</TableCell>
+            <TableCell align="center">{'-'}</TableCell>
           </TableRow>
          
           <TableRow>
@@ -371,6 +375,14 @@ const handleRemarkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const result = total + shippingCost;
     return result;
   };
+  /*const calculateDiscountTotal = (): number => {
+    let total = 0;
+    formattedData.forEach((row) => {
+      total += parseFloat(row[5]);
+    });
+    const result = total + shippingCost;
+    return result;
+  };*/
   const calculateTax = (): number => {
     // Calculate tax logic goes here
     // Replace this with your actual tax calculation logic
@@ -509,6 +521,47 @@ const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       {error && <p>Error: {error.message}</p>}
       {formattedData.length > 0 && (
         <>
+       <Grid item xs={12} sm={12}>
+       <PageHeader
+    title="Drafted Quotation"
+    icon={<RequestQuote/>}
+    imageSrc="tra.jpg"
+    />
+        <Paper elevation={3} sx={{ padding: '20px' }}>
+        <div style={{
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: '10px',
+}}>
+  <div>
+    <Typography> {"Quotation: Purchase Request"}</Typography>
+  </div>
+  <div>
+    <Typography>Category: {"Electronics"}</Typography>
+  </div>
+  <div>
+  <Typography>Customer Name: {customerName}</Typography>
+  </div>
+</div>
+<div style={{
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: '1',
+}}>
+  <div>
+  <Typography>Reference Number: {referenceNumber}</Typography>
+  </div>
+  <div>
+  <Typography>Requested Date: {requestedDate}</Typography>
+  </div>
+  <div>
+  <Typography>Due Date: {currentDate}</Typography>
+  </div>
+</div>
+</Paper>
+        </Grid>
           <ThemeProvider theme={theme}>
           <MUIDataTable
             title="Revised RFQ"
@@ -574,17 +627,9 @@ const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       startIcon={<Save />}
       //onClick={handleAddTitle}
       style={{ whiteSpace: 'nowrap', backgroundColor: 'green', color: '#ffffff' }}
+      text = "Send Quotation"
     >
-      Send Quotation
-    </Button>
-    <Button
-      variant="outlined"
-      color="primary"
-      startIcon={<Drafts />}
-      onClick={() => hadleSeveAsDraftAndCancel('draft')}
-      style={{ whiteSpace: 'nowrap', backgroundColor: 'gray', color: '#ffffff' }}
-    >
-      Seve as Drafts
+      
     </Button>
     <Button
       variant="outlined"
@@ -592,8 +637,8 @@ const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       startIcon={<Cancel />}
       onClick={() => hadleSeveAsDraftAndCancel('canceled')}
       style={{ whiteSpace: 'nowrap', backgroundColor: 'red', color: '#ffffff' }}
+      text = "Cancel"
     >
-      Cancel
     </Button>
   </Box>
 </div>

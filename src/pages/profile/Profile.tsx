@@ -7,9 +7,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { CompanyAttachment } from '../../components/pageComponents/account/company/companyAttachment';
 //import { CompanyDetail } from '../../components/pageComponents/account/company/companyDetail';
 import Map from '../../components/pageComponents/account/address/map';
-import { AccountProfile } from '../../components/pageComponents/account/changePassword/profile/AccountProfile';
 import { AccountProfileDetails } from '../../components/pageComponents/account/changePassword/profile/AccountProfileDetails';
 import { CompanyDetailUser } from '../../components/pageComponents/account/company/companyDetailUser';
+import FileUploadForm from '../../components/pageComponents/account/changePassword/profile/AccountProfile';
 
 const Profile: React.FC = () => {
   const [profileCompletion, setProfileCompletion] = useState<number>(80); // Set the initial profile completion percentage
@@ -57,7 +57,7 @@ const Profile: React.FC = () => {
             </Typography>
           </div>
           <Grid item xs={12} md={6} lg={8}>
-         <AccountProfile/>
+         <FileUploadForm/>
         </Grid>
         </Grid>
    
