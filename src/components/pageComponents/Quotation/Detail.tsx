@@ -81,7 +81,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
           onClick={() => handleClick(qId.toString())}
           style={{ whiteSpace: 'nowrap' }}
         >
-          Best Price
+          Best Price sasaw
         </Button>
       );
     },
