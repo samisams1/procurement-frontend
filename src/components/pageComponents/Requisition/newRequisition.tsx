@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {  useMutation, useQuery } from '@apollo/client';
+import {  gql, useMutation, useQuery } from '@apollo/client';
 import { Helmet } from 'react-helmet';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
@@ -11,6 +11,36 @@ import SavedForm from '../purchase/savedForm';
 import { CREATE_PURCHASE_REQUEST_MUTATION } from '../../../graphql/quotation';
 //import { usePurchaseRequest } from '../../../context/purchaseRequestContext';
 import { PurchaseRequestData } from './manageRequisition';
+const UPDATE_PURCHASE_REQUEST = gql`
+  mutation UpdatePurchaseRequest($input: UpdatePurchaseRequestInput!) {
+    updatePurchaseRequest(input: $input) {
+      id
+      userId
+      status
+      remark
+      addressDetail
+      estimatedDelivery
+      sourceType
+      categoryId
+      approvedBy
+      requestedBy
+      suppliers {
+        id
+      }
+      products {
+        title
+        quantity
+        mark
+        uom
+        Description
+        code
+        manufacturer
+        partNumber
+        model
+      }
+    }
+  }
+`;
 export interface AdditionalData {
   remark: string;
   estimatedDelivery: string;
@@ -46,7 +76,7 @@ const NewRequisitionComponent: React.FC = () => {
 const {refetch } = useQuery<PurchaseRequestData>(PURCHASE_REQUESTS_BY_USER_ID, {
   variables: { userId: Number(userId),status:"pending" },
 });
-
+const [updatePurchaseRequest, { loading, error }] = useMutation(UPDATE_PURCHASE_REQUEST);
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
@@ -76,7 +106,7 @@ const handleSubmit = async (
     const input = {
       purchaseRequest: {
         userId: Number(userId),
-        status: buttonType === "save"?"seved":"pending",
+        status: "sent",
         remark: additional.remark,
         addressDetail: additional.addressDetail,
         estimatedDelivery: additional.estimatedDelivery,
@@ -137,6 +167,22 @@ const handleSubmit = async (
         if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
 
           navigate(`/drafts`);
+        } else {
+          console.error('Invalid response data');
+          // Handle the case when the response data is not as expected
+        }
+      }, 5000);
+    } else if (buttonType === "update") {
+      
+      const response = await updatePurchaseRequest({ variables: { input } });
+      refetch();
+      setButtonLoading(false);
+      console.log('Mutation response:', response);
+      setFlashMessage('Your request is sent successfully');
+      setOpenSnackbar(true);
+      setTimeout(() => {
+        if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
+          navigate(`/purchaseRequest/${response.data.createPurchaseRequest.id}`);
         } else {
           console.error('Invalid response data');
           // Handle the case when the response data is not as expected

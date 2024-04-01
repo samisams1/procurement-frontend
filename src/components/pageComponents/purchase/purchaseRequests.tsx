@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { Grid, createTheme, ThemeProvider } from '@mui/material';
 import {Button} from "@mui/material";
-import MUIDataTable, { MUIDataTableOptions, Responsive } from 'mui-datatables';
+import MUIDataTable from 'mui-datatables';
 import { useQuery, gql } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import PageHeader from '../../PageHeader';
 import '../../PrintPage.css';
 import { ShoppingCart } from '@mui/icons-material';
 import { useQuotation } from '../../../context/quotationContext';
+import { tableOptions } from '../Table/table';
 //import { useReactToPrint } from 'react-to-print';
 
 const GET_QUOTATION = gql`
@@ -22,7 +23,9 @@ query QuotationBydSupplierId($suplierId: Int!) {
         lastName
       }
       supplier {
-        name
+        category {
+          name
+        }
       }
       purchaseRequest {
         referenceNumber
@@ -53,7 +56,7 @@ const theme = createTheme({
   },
 });
 
-const options: MUIDataTableOptions = {
+/*const options: MUIDataTableOptions = {
   filter: true,
   download: true,
   print: true,
@@ -63,7 +66,7 @@ const options: MUIDataTableOptions = {
   viewColumns: true,
   rowsPerPage: 10,
   rowsPerPageOptions: [10, 25, 50],
-};
+};*/
 interface purchaseRequestId {
   supplierId:number;
   }
@@ -95,18 +98,6 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
-
-  //const { quotationBydSupplierId } = data;
-
-  /*const tableData = quotations?.map((quotation: any) => ({
-    id: quotation.purchaseRequestId,
-    qId:quotation.id,
-    status: quotation.status,
-    customerName: `${quotation?.customer?.firstName} ${quotation?.customer?.lastName}`,
-    supplierName: quotation?.supplier?.name,
-    referenceNumber: quotation.purchaseRequest.referenceNumber,
-    createdAt: quotation.createdAt,
-  }));*/
   const tableData = quotations
   ?.filter((quotation: any) => quotation.status === "pending")
   .map((quotation: any) => ({
@@ -114,7 +105,7 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
     qId: quotation.id,
     status: quotation.status,
     customerName: `${quotation?.customer?.firstName} ${quotation?.customer?.lastName}`,
-    supplierName: quotation?.supplier?.name,
+    category: quotation?.supplier?.category?.name,
     referenceNumber: quotation.purchaseRequest.referenceNumber,
     createdAt: new Date(quotation.createdAt).toLocaleDateString(), 
   }));
@@ -145,8 +136,8 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
       label: 'Customer Name',
     },
     {
-      name: 'supplierName',
-      label: 'Supplier Name',
+      name: 'category',
+      label: 'category',
     },
     {
       name: 'referenceNumber',
@@ -194,7 +185,7 @@ const PurchaseRequests: React.FC<purchaseRequestId> = ({supplierId }) => {
           imageSrc = "salesForce.png"
           />
         <ThemeProvider theme={theme}>
-          <MUIDataTable title="Requests" data={tableData} columns={columns} options={options} />
+          <MUIDataTable title="Requests" data={tableData} columns={columns} options={tableOptions} />
         </ThemeProvider>
       </Grid>
     </Grid>

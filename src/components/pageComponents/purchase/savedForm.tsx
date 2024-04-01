@@ -145,7 +145,7 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
   const [categoryId, setCategoryId] = useState<string>('1');
   const [supplierIds, setSupplierIds] = useState<string[]>([]);
 
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedType, setSelectedType] = useState('supplier');
 
   const [selectedOptions, setSelectedOptions] = useState<string[]>([sourceType]);
   const [expanded, setExpanded] = useState<string | false>(false);
@@ -335,9 +335,8 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
     }
     return options;
   };
-  
   const handleSubmit = () => {
-    const  buttonType = "send";
+    const  buttonType = "update";
     if (selectedOptions.length === 0) {
       setErrorMessage('Please select an option');
       return;
@@ -365,38 +364,38 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
     });
     setTitleErrors(updatedTitleErrors);
 
-   /* if (updatedTitleErrors.some((error) => error !== '')) {
+    if (updatedTitleErrors.some((error) => error !== '')) {
       return;
     }
-    const updateItemCodeErrors = itemCodes.map((code) => {
+  /*  const updateItemCodeErrors = itemCodes.map((code) => {
       if (code.trim() === '') {
         return 'Please enter a valid item itemCodes.';
       }
       return '';
-    });
-    setItemCodeErrors(updateItemCodeErrors);
+    });*/
+   // setItemCodeErrors(updateItemCodeErrors);
 
-    if (updateItemCodeErrors.some((error) => error !== '')) {
+   /* if (updateItemCodeErrors.some((error) => error !== '')) {
       return;
-    }
-    const updatePartNumberErrors = partNumbers.map((partNumber) => {
+    }*/
+    /*const updatePartNumberErrors = partNumbers.map((partNumber) => {
       if (partNumber.trim() === '') {
         return 'Please enter a valid item partNumbers.';
       }
       return '';
-    });
-    setPartNumberErrors(updatePartNumberErrors);
+    });*/
+    //setPartNumberErrors(updatePartNumberErrors);
 
-    if (updatePartNumberErrors.some((error) => error !== '')) {
+   /* if (updatePartNumberErrors.some((error) => error !== '')) {
       return;
     }
-   const updateUomsErrors = uoms.map((uom) => {
+    const updateUomsErrors = uoms.map((uom) => {
       if (uom.trim() === '') {
         return 'Please enter a valid item uom.';
       }
       return '';
-    });
-    setUomErrors(updateUomsErrors);
+    }); 
+  setUomErrors(updateUomsErrors);
 
     if (updateUomsErrors.some((error) => error !== '')) {
       return;
@@ -429,8 +428,130 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
       remark:remark,
       addressDetail:addressDetail,
       estimatedDelivery:estimatedDelivery,
-      requestedBy:"requestedBy",
-      approvedBy:"approvedBy",
+      approvedBy:approvedBy,
+      requestedBy:requestedBy
+    }
+    setErrorMessage('');
+
+    let supplierNewId: string[] = [];
+    if (selectedType === 'supplier') {
+  //    supplierNewId = ['1','2'];
+      supplierNewId = supplierIds;
+   //  onSubmit(selectedType, supplierNewId);
+   console.log(supplierIds)
+      onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType)
+  } else if (selectedType === 'agent' || selectedType === 'x-company') {
+      supplierNewId = [selectedValue];
+   
+     // onSubmit(selectedType, supplierNewId);
+     onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
+
+  
+    }
+  };
+  const handleSave = (buttonType: 'save' | 'send') => {
+   /* if (buttonType === 'save') {
+      // Save button was clicked
+      console.log('Save button clicked');
+      // Perform save functionality
+    } else if (buttonType === 'send') {
+      // Send button was clicked
+      console.log('Send button clicked');
+      // Perform send functionality
+    }*/
+    if (selectedOptions.length === 0) {
+      setErrorMessage('Please select an option');
+      return;
+    }
+  
+    if (selectedOptions.includes('supplier') && (!selectedValue || !categoryId)) {
+      setErrorMessage('Please select a category');
+      return;
+    }
+  
+    if (selectedOptions.includes('agent') && !selectedValue) {
+      setErrorMessage('Please select an agent');
+      return;
+    }
+  
+    if (selectedOptions.includes('x-company') && !selectedValue) {
+      setErrorMessage('Please select an X-company');
+      return;
+    }
+    const updatedTitleErrors = productTitles.map((title) => {
+      if (title.trim() === '') {
+        return 'Please enter a valid item name.';
+      }
+      return '';
+    });
+    setTitleErrors(updatedTitleErrors);
+
+    if (updatedTitleErrors.some((error) => error !== '')) {
+      return;
+    }
+   /* const updateItemCodeErrors = itemCodes.map((code) => {
+      if (code.trim() === '') {
+        return 'Please enter a valid item itemCodes.';
+      }
+      return '';
+    });*/
+    //setItemCodeErrors(updateItemCodeErrors);
+
+    /*if (updateItemCodeErrors.some((error) => error !== '')) {
+      return;
+    }*/
+    /*const updatePartNumberErrors = partNumbers.map((partNumber) => {
+      if (partNumber.trim() === '') {
+        return 'Please enter a valid item partNumbers.';
+      }
+      return '';
+    });*/
+   // setPartNumberErrors(updatePartNumberErrors);
+
+   /* if (updatePartNumberErrors.some((error) => error !== '')) {
+      return;
+    }
+    const updateUomsErrors = uoms.map((uom) => {
+      if (uom.trim() === '') {
+        return 'Please enter a valid item uom.';
+      }
+      return '';
+    });*/
+   // setUomErrors(updateUomsErrors);
+
+  /*  if (updateUomsErrors.some((error) => error !== '')) {
+      return;
+    }*/
+    const updateQuantitieErrors = quantities.map((quantitie) => {
+      if (quantitie.trim() === '') {
+        return 'Please enter a valid item quantities.';
+      }
+      return '';
+    });
+    setQuantityErrors(updateQuantitieErrors);
+    if (updateQuantitieErrors.some((error) => error !== '')) {
+      return;
+    }
+
+    // Create an array of SaleInput objects from the productTitles array
+    const products: SaleInput[] = productTitles.map((title,index) => ({ 
+      productTitle: title, 
+      code: itemCodes[index],
+      partNumber: partNumbers[index],
+      uom: uoms[index],
+      quantity: Number(quantities[index]), // Convert the quantity value
+      mark: marks[index],
+      model: models[index],
+      description: descriptions[index],
+      manufacturer:manufacturers[index],
+    }));
+
+    const additional = {
+      remark:remark,
+      addressDetail:addressDetail,
+      estimatedDelivery:estimatedDelivery,
+      requestedBy:requestedBy,
+      approvedBy:approvedBy,
     }
     setErrorMessage('');
 
@@ -445,7 +566,6 @@ console.log(supplierIds)
 
     } else if (selectedType === 'agent' || selectedType === 'x-company') {
       supplierNewId = [selectedValue];
-   
      // onSubmit(selectedType, supplierNewId);
      onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
 
@@ -453,130 +573,6 @@ console.log(supplierIds)
 
     }
   };
-  const handleSave = (buttonType: 'save' | 'send') => {
-    /* if (buttonType === 'save') {
-       // Save button was clicked
-       console.log('Save button clicked');
-       // Perform save functionality
-     } else if (buttonType === 'send') {
-       // Send button was clicked
-       console.log('Send button clicked');
-       // Perform send functionality
-     }*/
-     if (selectedOptions.length === 0) {
-       setErrorMessage('Please select an option');
-       return;
-     }
-   
-     if (selectedOptions.includes('supplier') && (!selectedValue || !categoryId)) {
-       setErrorMessage('Please select a category');
-       return;
-     }
-   
-     if (selectedOptions.includes('agent') && !selectedValue) {
-       setErrorMessage('Please select an agent');
-       return;
-     }
-   
-     if (selectedOptions.includes('x-company') && !selectedValue) {
-       setErrorMessage('Please select an X-company');
-       return;
-     }
-     const updatedTitleErrors = productTitles.map((title) => {
-       if (title.trim() === '') {
-         return 'Please enter a valid item name.';
-       }
-       return '';
-     });
-     setTitleErrors(updatedTitleErrors);
- 
-     if (updatedTitleErrors.some((error) => error !== '')) {
-       return;
-     }
-    /* const updateItemCodeErrors = itemCodes.map((code) => {
-       if (code.trim() === '') {
-         return 'Please enter a valid item itemCodes.';
-       }
-       return '';
-     });*/
-     //setItemCodeErrors(updateItemCodeErrors);
- 
-     /*if (updateItemCodeErrors.some((error) => error !== '')) {
-       return;
-     }*/
-     /*const updatePartNumberErrors = partNumbers.map((partNumber) => {
-       if (partNumber.trim() === '') {
-         return 'Please enter a valid item partNumbers.';
-       }
-       return '';
-     });*/
-    // setPartNumberErrors(updatePartNumberErrors);
- 
-    /* if (updatePartNumberErrors.some((error) => error !== '')) {
-       return;
-     }
-     const updateUomsErrors = uoms.map((uom) => {
-       if (uom.trim() === '') {
-         return 'Please enter a valid item uom.';
-       }
-       return '';
-     });*/
-    // setUomErrors(updateUomsErrors);
- 
-   /*  if (updateUomsErrors.some((error) => error !== '')) {
-       return;
-     }*/
-     const updateQuantitieErrors = quantities.map((quantitie) => {
-       if (quantitie.trim() === '') {
-         return 'Please enter a valid item quantities.';
-       }
-       return '';
-     });
-     setQuantityErrors(updateQuantitieErrors);
-     if (updateQuantitieErrors.some((error) => error !== '')) {
-       return;
-     }
- 
-     // Create an array of SaleInput objects from the productTitles array
-     const products: SaleInput[] = productTitles.map((title,index) => ({ 
-       productTitle: title, 
-       code: itemCodes[index],
-       partNumber: partNumbers[index],
-       uom: uoms[index],
-       quantity: Number(quantities[index]), // Convert the quantity value
-       mark: marks[index],
-       model: models[index],
-       description: descriptions[index],
-       manufacturer:manufacturers[index],
-     }));
- 
-     const additional = {
-       remark:remark,
-       addressDetail:addressDetail,
-       estimatedDelivery:estimatedDelivery,
-       requestedBy:requestedBy,
-       approvedBy:approvedBy,
-     }
-     setErrorMessage('');
- 
-     let supplierNewId: string[] = [];
-     if (selectedType === 'supplier') {
-   //    supplierNewId = ['1','2'];
-       supplierNewId = supplierIds;
-    //  onSubmit(selectedType, supplierNewId);
-    console.log(supplierIds)
- console.log(supplierIds)
-       onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
- 
-     } else if (selectedType === 'agent' || selectedType === 'x-company') {
-       supplierNewId = [selectedValue];
-      // onSubmit(selectedType, supplierNewId);
-      onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
- 
-      
- 
-     }
-   };
   const handleOptionChange = (option: string) => {
     if (selectedOptions.includes(option)) {
       setSelectedOptions(selectedOptions.filter((item) => item !== option));

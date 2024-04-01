@@ -196,6 +196,9 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
         <p>Error: {error.message}</p>
       ) : (
         <ThemeProvider theme={theme}>
+          <h1>{qId }</h1>
+          <h2>{customerId}</h2>
+          <h3>{supplierId}</h3>
           <MUIDataTable
             title=""
             data={tableData}

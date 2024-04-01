@@ -73,7 +73,7 @@ const SentProformaComponent: React.FC<purchaseRequestId> = ({supplierId }) => {
     variables: { suplierId:Number(supplierId)},
   });
   const handleListItemClick = (id: number,qId:number,referenceNumber:string,requestedDate:string) => {
-    navigate('/revisedRfq', { state: { id,qId,supplierId,referenceNumber,requestedDate} });
+    navigate('/sendRFqDetail', { state: { id,qId,supplierId,referenceNumber,requestedDate} });
   };
   useEffect(() => {
     if (!loading && !error && data) {

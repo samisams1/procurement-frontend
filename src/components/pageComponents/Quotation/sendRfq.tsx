@@ -380,7 +380,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       onChange={() => handleCheckboxChange(quotation.product.id)}
       key={quotation.product.id}
     />,
-      quotation.product.id,
+      quotation.product.title,
       quotation.product.code,
       quotation.product.uom,
       <TextField
@@ -573,7 +573,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   
   return (
      <div ref={printRef} className="print-content">
-    <Grid container spacing={3}>
+    <Grid container spacing={3} >
       <Grid item xs={12}>
       <PageHeader
     title="Send Quotation"
@@ -626,7 +626,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
   <Typography>Due Date: {currentDate}</Typography>
   </div>
 </div>
-<Button onClick={handlePrint}>Print</Button>
+<Button onClick={handlePrint}  className="no-print">Print</Button>
 </Paper>
         </Grid>
         <ThemeProvider theme={theme}>
@@ -647,6 +647,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       placeholder="Please specify approved By"
       value={sentBy}
       fullWidth
+      required
       sx={{ paddingTop: '10px', paddingBottom: '10px', marginBottom: '10px' }}
       onChange={handleSentByChange}
     />
@@ -686,7 +687,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
     </div>
   </Grid>
 <div>
-  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
+  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}  className="no-print">
     <Button
       variant="outlined"
       color="primary"

@@ -57,6 +57,7 @@ import SentProforma from './pages/purchase/sentProforma';
 import RfqDraft from './pages/Quotation/rfqDraft';
 import BestQuotation from './components/pageComponents/Quotation/BestRequotation';
 import RevisedRfq from './pages/Quotation/revisedRfq';
+import SendDetail from './pages/Quotation/sentDetail';
 export default function RoutePage() {
 
     return useRoutes([
@@ -111,15 +112,15 @@ export default function RoutePage() {
               
               
               { path: '/sendRfq', element: <ProtectedRoute  element={<SendRfq />} /> },
+
               { path: '/revisedRfq', element: <ProtectedRoute  element={<RevisedRfq />} /> },
+              { path: '/sendRFqDetail', element: <ProtectedRoute  element={<SendDetail />} /> },
 
               { path: '/notificaations', element: <ProtectedRoute  element={<Notification />} /> },
               
               { path: '/drafts', element: <ProtectedRoute  element={<Draft />} /> },
 
               { path: '/shippingDetail/:id', element: <ProtectedRoute  element={<ShippingDetail />} /> },
-
-            
               {
                 path: '/incomingOrder',
                 element: <ProtectedRoute element={<Order state={{ orderType: "incoming" }} />} />

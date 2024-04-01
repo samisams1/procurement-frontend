@@ -497,6 +497,7 @@ console.log(payments)
           imageSrc = "salesForce.png"
           />
         <Button
+        className="no-print"
         variant="outlined"
         color="primary"
         startIcon={<Print />}
