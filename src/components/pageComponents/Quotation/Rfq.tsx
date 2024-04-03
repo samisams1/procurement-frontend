@@ -106,7 +106,7 @@ const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
   const tableOptions: MUIDataTableOptions = {
     filter: true,
     download: true,
-    print: true,
+    print: false,
     search: true,
     selectableRows: 'none',
     responsive: 'standard',
@@ -119,14 +119,13 @@ const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
     const productPrice = getAllProductPrices.find(
       (productPrice) => productPrice.quotation.purchaseRequestId === purchaseRequestId
     );
-
     if (!productPrice) {
       return [];
     }
     return [
       index + 1,
       productPrice.id,
-      2,
+      productPrice.quotation.supplierId,
       'Electronics',
       <>
       <p>{productPrice.createdAt ? new Date(productPrice.createdAt).toLocaleString('en-US', {

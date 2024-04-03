@@ -21,6 +21,9 @@ query QuotationBydSupplierId($suplierId: Int!) {
       }
       supplier {
         name
+        category {
+          name
+        }
       }
       purchaseRequest {
         referenceNumber
@@ -95,7 +98,7 @@ const RFQDraftComponent: React.FC<purchaseRequestId> = ({supplierId }) => {
     qId: quotation.id,
     status: quotation.status,
     customerName: `${quotation?.customer?.firstName} ${quotation?.customer?.lastName}`,
-    supplierName: quotation?.supplier?.name,
+    category: quotation?.supplier?.category?.name,
     referenceNumber: quotation.purchaseRequest.referenceNumber,
     createdAt: quotation.createdAt,
   }));
@@ -126,8 +129,8 @@ const RFQDraftComponent: React.FC<purchaseRequestId> = ({supplierId }) => {
       label: 'Customer Name',
     },
     {
-      name: 'supplierName',
-      label: 'Supplier Name',
+      name: 'category',
+      label: 'Category',
     },
     {
       name: 'referenceNumber',
@@ -154,7 +157,7 @@ const RFQDraftComponent: React.FC<purchaseRequestId> = ({supplierId }) => {
               onClick={() => handleListItemClick(id,qId,referenceNumber,requestedDate)}
               style={{ whiteSpace: 'nowrap' }}
             >
-              View Detail sams
+              View Detail
             </Button>
           );
         },

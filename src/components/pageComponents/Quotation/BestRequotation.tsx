@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, {useState } from 'react';
 import { useQuery, gql, useMutation } from '@apollo/client';
 import MUIDataTable from 'mui-datatables';
 import { Table, TableBody, TableContainer, Typography } from '@mui/material';
 import { useReactToPrint } from 'react-to-print';
-
 import {
   ThemeProvider,
   TableCell,
@@ -21,6 +20,7 @@ import { useLocation } from 'react-router-dom';
 import TermsCondition from '../../common/termsCondition';
 import numberToWords from 'number-to-words';
 import { Product } from '../../../interface/products';
+import { tableOptions } from '../Table/table';
 
 
 interface Quotation {
@@ -319,6 +319,7 @@ return (
                    <Button className="no-print" onClick={handlePrint}>  Print  </Button>
                   </TableRow>
                 }
+                options={tableOptions}
                 data={productPrices.map((productPrice: ProductPrice, index: number) => {
                   const { product, id, status } = productPrice;
                   const isOrdered = status === 'ordered';

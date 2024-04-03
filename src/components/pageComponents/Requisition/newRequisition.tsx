@@ -76,7 +76,7 @@ const NewRequisitionComponent: React.FC = () => {
 const {refetch } = useQuery<PurchaseRequestData>(PURCHASE_REQUESTS_BY_USER_ID, {
   variables: { userId: Number(userId),status:"pending" },
 });
-const [updatePurchaseRequest, { loading, error }] = useMutation(UPDATE_PURCHASE_REQUEST);
+const [updatePurchaseRequest] = useMutation(UPDATE_PURCHASE_REQUEST);
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
 

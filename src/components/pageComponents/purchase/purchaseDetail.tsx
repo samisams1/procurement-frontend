@@ -36,30 +36,6 @@ interface QuotationInterface {
   price: string;
   shippingPrice: string;
 }
-/*const GET_QUOTATION = gql`
-  query QuotationByRequestIdAdSupplierId($id: Float!, $supplierId: Float!) {
-    quotationByRequestIdAdSupplierId(id: $id, supplierId: $supplierId) {
-      purchaseRequestId
-      id
-      customerId
-      supplierId
-      status
-      createdAt
-      productPrices {
-        id
-        product {
-          title
-          quantity
-          partNumber
-          code
-          Description
-          status
-        }
-        price
-      }
-    }
-  }
-`;*/
 const GET_QUOTATION = gql`
   query QuotationByRequestIdAdSupplierId($id: Float!, $supplierId: Float!) {
     quotationByRequestIdAdSupplierId(id: $id, supplierId: $supplierId) {

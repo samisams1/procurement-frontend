@@ -1015,6 +1015,7 @@ Add Item
       label="Requested By"
       variant="outlined"
       fullWidth
+      required
      value={requestedBy}
       onChange={(e) => handleRequestedByChange(e.target.value)}
      // error={requestedByError !== ''}
@@ -1466,6 +1467,7 @@ marginBottom: '10px',
       label="Requested By"
       variant="outlined"
       fullWidth
+      required
      value={requestedBy}
       onChange={(e) => handleRequestedByChange(e.target.value)}
      // error={requestedByError !== ''}

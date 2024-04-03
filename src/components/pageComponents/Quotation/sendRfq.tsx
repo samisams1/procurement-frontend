@@ -101,9 +101,11 @@ interface Props {
   referenceNumber:string;
   requestedDate:string;
   customerName:string;
+  category:string;
+
 }
 
-const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplierId,referenceNumber,requestedDate,customerName }) => {
+const SendRfqComponent: React.FC<Props> = ({ id,qId, status, customerId, supplierId,referenceNumber,requestedDate,customerName,category }) => {
   const {quotations, setQuotations } = useQuotation();
   const [prices, setPrices] = useState<{ [key: string]: string }>({});
   const [disCountPrice, setDisCountPrices] = useState<{ [key: string]: string }>({});
@@ -592,43 +594,41 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       </Alert>
     )}
       </Grid>
-      <Grid item xs={12} sm={12}>
-        <Paper elevation={3} sx={{ padding: '20px' }}>
-        <div style={{
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  marginBottom: '10px',
-}}>
-  <div>
-    <Typography> {"Quotation: Purchase Request"}</Typography>
-  </div>
-  <div>
-    <Typography>Category: {"Construction"}</Typography>
-  </div>
-  <div>
-  <Typography>Customer Name: {customerName}</Typography>
-  </div>
-</div>
-<div style={{
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  marginBottom: '1',
-}}>
-  <div>
-  <Typography>Reference Number: {referenceNumber}</Typography>
-  </div>
-  <div>
-  <Typography>Requested Date: {requestedDate}</Typography>
-  </div>
-  <div>
-  <Typography>Due Date: {currentDate}</Typography>
-  </div>
-</div>
-<Button onClick={handlePrint}  className="no-print">Print</Button>
-</Paper>
-        </Grid>
+      <Grid container spacing={2}>
+  <Grid item xs={12} sm={4}>
+    <Paper elevation={3} sx={{ padding: '20px' }}>
+      <div>
+        <Typography>Quotation: Purchase Request</Typography>
+      </div>
+      <div>
+        
+        <Typography>Reference Number: {referenceNumber}</Typography>
+      </div>
+     
+    </Paper>
+  </Grid>
+  <Grid item xs={12} sm={4}>
+    <Paper elevation={3} sx={{ padding: '20px' }}>
+      <div>
+      <Typography>Category: {category}</Typography>
+      </div>
+      <div>
+        <Typography>Requested Date: {requestedDate}</Typography>
+      </div>
+    </Paper>
+  </Grid>
+  <Grid item xs={12} sm={4}>
+    <Paper elevation={3} sx={{ padding: '20px' }}>
+    <div>
+        <Typography>Customer Name: {customerName}</Typography>
+      </div>
+    <div>
+        <Typography>Due Date: {currentDate}</Typography>
+      </div>
+    </Paper>
+  </Grid>
+  <Button onClick={handlePrint} className="no-print">Print</Button>
+</Grid>
         <ThemeProvider theme={theme}>
           <MUIDataTable
             title="Quotation products"

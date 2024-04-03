@@ -10,10 +10,11 @@ const SendRfq = () => {
   const referenceNumber=location.state?.referenceNumber;
   const  requestedDate=location.state?.requestedDate;
   const customerName = location.state?.customerName;
+  const category = location.state?.category;
   return (
     <div>
   <SendRfqComponent id={Number(id)} qId ={Number(qId)}  status="pending" customerId= {customerId} supplierId={Number(supplierId)} 
-         referenceNumber={referenceNumber} requestedDate ={requestedDate} customerName = {customerName} />
+         referenceNumber={referenceNumber} requestedDate ={requestedDate} customerName = {customerName}  category = {category}/>
     </div>
   );
 };

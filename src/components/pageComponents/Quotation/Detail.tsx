@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
+import MUIDataTable from 'mui-datatables';
 import { gql, useQuery } from '@apollo/client';
 import {
   Button,
@@ -7,7 +7,7 @@ import {
   createTheme,
 } from '@mui/material';
 import PageHeader from '../../PageHeader';
-import { Details, RequestPageRounded } from '@mui/icons-material';
+import { RequestPageRounded } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 type QuotationDetailProps = {
@@ -61,8 +61,37 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
       setTableData(updatedTableData);
     }
   }, [data]);
+  const handleDownload = () => {
+    // Generate a CSV file content
+    const csvContent = 'Name,Company,City,State\nJohn Doe,ABC Corp,New York,NY\nJane Smith,XYZ Inc,San Francisco,CA';
 
-  const options: MUIDataTableOptions = {
+    // Create a Blob from the CSV content
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+
+    // Create a temporary URL for the Blob
+    const url = URL.createObjectURL(blob);
+
+    // Create a link element to trigger the download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'data.csv';
+    link.click();
+
+    // Clean up the temporary URL
+    URL.revokeObjectURL(url);
+  };
+
+  const options = {
+    customToolbarSelect: () => (
+      <div>
+        <h1>Page Header</h1>
+        <Button variant="contained" color="primary" onClick={handleDownload}>
+          Download
+        </Button>
+      </div>
+    ),
+  };
+ /* const options: MUIDataTableOptions = {
     filter: true,
     download: true,
     print: true,
@@ -85,7 +114,7 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
         </Button>
       );
     },
-  };
+  };*/
 
   const columns = [
     {
@@ -160,9 +189,9 @@ const QuotationDetail: React.FC<QuotationDetailProps> = ({ qId, customerId, supp
     },
   });
 
-  const handleClick = (id: string) => {
+  /*const handleClick = (id: string) => {
     navigate('/bestQuotation', {state: { qId: qId, customerId: customerId } });
-  };
+  };*/
 
   const handleActionClick = (supplierId: number) => {
     navigate('/bestQuotation', { state: { qId: qId, customerId: customerId, supplierId: supplierId } });
