@@ -61,6 +61,8 @@ query PurchaseRequestByUserId($userId: Int!) {
     status
     remark
     addressDetail
+    requestedBy
+    approvedBy
     estimatedDelivery
     status
     referenceNumber

@@ -14,6 +14,8 @@ interface PurchaseRequest {
   status: string;
   remark: string;
   addressDetail: string;
+  requestedBy:string;
+  approvedBy:string;
   estimatedDelivery: string;
   referenceNumber: string;
   createdAt: string;
@@ -70,11 +72,11 @@ const AllDrafts: React.FC = () => {
     }
   }, [loading, error, data, setPurchaseRequests]);
   const handleClick = (purchaseRequest: PurchaseRequest) => {
-    const { id, estimatedDelivery, remark, addressDetail, categoryId,products } = purchaseRequest;
+    const { id, estimatedDelivery, remark, addressDetail,requestedBy,approvedBy, categoryId,products } = purchaseRequest;
     const sourceType = "supplier"
     console.log("krish")
     console.log(products)
-    navigate('/newRequest', { state: { id, estimatedDelivery, remark, addressDetail, categoryId, sourceType,products } });
+    navigate('/newRequest', { state: { id, estimatedDelivery, remark, addressDetail,requestedBy,approvedBy, categoryId, sourceType,products } });
   };
   console.log('Purchase requests:', purchaseRequests);
   const columns = [
@@ -122,7 +124,7 @@ View Details
   ];
 
   const tableData = purchaseRequests
-  .filter((purchaseRequest) => purchaseRequest.status === 'seved')
+  .filter((purchaseRequest) => purchaseRequest.status === 'saved')
   .map((purchaseRequest, index) => [
     index + 1,
     purchaseRequest.id,
@@ -178,6 +180,7 @@ View Details
     <Grid container spacing={3}>
       <Grid item xs={12}>
           <PageHeader title="Draft Requests" icon={<RequestPageOutlined />} imageSrc = "salesForce.png" />
+          <h1>{userId}</h1>
       </Grid>
       <Grid item xs={12}>
         <ThemeProvider theme={theme}>

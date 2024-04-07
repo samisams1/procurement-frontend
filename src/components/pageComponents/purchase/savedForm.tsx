@@ -19,7 +19,7 @@ import {
   Table, TableHead, TableRow, TableCell, TableBody, Input,Accordion, AccordionSummary, AccordionDetails, 
   Checkbox,
 } from '@mui/material';
-import { Add, DeleteOutlineTwoTone, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save, Send } from '@mui/icons-material';
+import { Add, DeleteOutlineTwoTone, ExpandMore, RequestPageOutlined, RequestPageTwoTone, RestoreFromTrash, Save, Send } from '@mui/icons-material';
 import PageHeader from '../../PageHeader';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import { SectionTitle } from '../../Section';
@@ -50,7 +50,7 @@ export interface Product {
   uom :string;
   quantity :string;
   mark  :string;
-  description :string;
+  Description :string;
   manufacturer  :string;
   model  :string;
 }
@@ -71,6 +71,8 @@ interface RequestFormProps {
     estimatedDate:string;
     remarkData:string;
     addressData:string;
+    requestedData:string;
+    approvedData:string;
     categoryIdData:number;
     sourceType:string;
     savedProducts:[Product]
@@ -111,8 +113,10 @@ mutation UploadProfilePicture($file: Upload!) {
   }
 }
 `;
-const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseRequestId,remarkData,categoryIdData,addressData,estimatedDate,sourceType,savedProducts }) => {
+const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseRequestId,remarkData,categoryIdData,addressData,estimatedDate,sourceType,savedProducts,requestedData,approvedData }) => {
 
+  console.log("savedProducts")
+  console.log(savedProducts)
   const [productTitles, setProductTitles] = useState<string[]>(savedProducts.map(product => product.title));
 
  // const [productTitles, setProductTitles] = useState<string[]>(['']);
@@ -120,13 +124,13 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
  // const [itemCodeErrors, setItemCodeErrors] = useState<string[]>(['']);
   const [partNumbers, setPartNumbers] =useState<string[]>(savedProducts.map(product => product.partNumber));
   //const [partNumberErrors, setPartNumberErrors] = useState<string[]>(['']);
-  const [uoms, setUoms] = useState<string[]>(savedProducts.map(product => product.title));
+  const [uoms, setUoms] = useState<string[]>(savedProducts.map(product => product.uom));
   //const [uomErrors, setUomErrors] = useState<string[]>(['']);
   const [quantities, setQuantities] = useState<string[]>(savedProducts.map(product => product.quantity));
   const [quantityErrors, setQuantityErrors] = useState<string[]>(['']);
   
   const [manufacturers, setManufacturers] = useState<string[]>(savedProducts.map(product => product.manufacturer));
-  const [descriptions, setDescriptions] = useState<string[]>(savedProducts.map(product => product.description));
+  const [descriptions, setDescriptions] = useState<string[]>(savedProducts.map(product => product.Description));
   const [marks, setMarks] = useState<string[]>(savedProducts.map(product => product.mark));
   const [models, setModels] = useState<string[]>(savedProducts.map(product => product.model));
 
@@ -137,8 +141,8 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
 
   const saveButtonRef = useRef<HTMLButtonElement>(null);
 
-  const [approvedBy, setAprovedBy] = useState(addressData);
-  const [requestedBy, setRequestedBy] = useState(addressData);
+  const [requestedBy, setAprovedBy] = useState(requestedData);
+  const [approvedBy, setRequestedBy] = useState(approvedData);
 
   const [selectedValue, setSelectedValue] = useState('1');
   const [errorMessage, setErrorMessage] = useState('');
@@ -832,8 +836,9 @@ return(
       error={titleErrors[index] !== ''}
      style={{ marginBottom: '1rem' }}
     />
+    
        <TextField
-      label="Item Code"
+      label="Item Codes"
       variant="outlined"
       fullWidth
       value={itemCodes[index]}
@@ -1120,7 +1125,7 @@ marginBottom: '10px',
     <Table>
   <TableHead>
     <TableRow sx={{ backgroundColor: '#00b0ad' }}>
-      <TableCell sx={{ padding: '4px', height: '32px' }}>Image</TableCell>
+     <TableCell sx={{ padding: '4px', height: '32px' }}>SN</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Name</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Code</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Part Number</TableCell>
@@ -1133,89 +1138,88 @@ marginBottom: '10px',
   <TableBody>
     {productTitles.map((title, index) => (
       <TableRow key={index} sx={{ height: '1px' }}>
-        <TableCell sx={{  padding: '1px', height: '2px' }}>
-          <FormControl style={{ flex: 1 }}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                padding: '6px 10px',
-                cursor: 'pointer',
-              }}
-            >
-              <input
-                type="file"
-                accept=".pdf"
-                style={{
-                  display: 'none',
-                }}
-                // onChange={handleFileChange}
-              />
-              <label htmlFor="attachment-input">
-               
-              <Button  variant="text" component="label" htmlFor="upload-input"
-                 style={{
-                  textTransform: 'none',
-                  fontSize: '8px',
-                  color: '#00b0ad',
-                  borderColor: '##00b0ad',
-                }}
-                >
-            Upload picture
-            <input
-              accept="image/*"
-              style={{ display: 'none' }}
-              id="upload-input"
-              type="file"
-              onChange={handleUpload}
-            />
-          </Button>
-              </label>
-            </div>
-          </FormControl>
+         <TableCell>{index + 1}</TableCell>
+        <TableCell sx={{ padding: '4px', height: '32px' }}>
+    <TextField
+      label="Item Name"
+      placeholder="Item Name"
+      value={title}
+      onChange={(e) => handleTitleChange(index, e.target.value)}
+      error={titleErrors[index] !== ''}
+      fullWidth
+      required
+      InputLabelProps={{
+        shrink: true,
+      }}
+      InputProps={{
+        disableUnderline: true,
+        style: { height: '30px', paddingLeft: '1px' }
+      }}
+      FormHelperTextProps={{
+        children: "* Required field"
+      }}
+    />
         </TableCell>
-        <TableCell sx={{   padding: '0px', height: '1px' }}>
-          
-        <Input
-placeholder="Item Name"
-    value={title}
-    onChange={(e) => handleTitleChange(index, e.target.value)}
-    error={titleErrors[index] !== ''}
-    fullWidth
-  />
-  
-        </TableCell>
-        <TableCell sx={{ padding: '0px', height: '24px' }}>
-        <Input
+        <TableCell sx={{ padding: '4px', height: '32px' }}>
+        <TextField
           placeholder="Item Code"
           value={itemCodes[index]}
           onChange={(e) => handleItemCodeChange(index, e.target.value)}
         //  error={itemCodeErrors[index] !== ''}
           fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+          InputProps={{
+            disableUnderline: true,
+            style: { height: '30px', paddingLeft: '1px' }
+          }}
+          FormHelperTextProps={{
+            children: "* Required field"
+          }}
         />
         </TableCell>
-        <TableCell sx={{ padding: '0px', height: '24px' }}>
-        <Input
+        <TableCell sx={{ padding: '4px', height: '32px' }}>
+        <TextField
           placeholder="Part Number"
           value={partNumbers[index]}
           onChange={(e) => handlePartNumberChange(index, e.target.value)}
          // error={partNumberErrors[index] !== ''}
           fullWidth
+          InputLabelProps={{
+            shrink: true,
+          }}
+          InputProps={{
+            disableUnderline: true,
+            style: { height: '30px', paddingLeft: '1px' }
+          }}
+          FormHelperTextProps={{
+            children: "* Required field"
+          }}
         />
         </TableCell>
-        <TableCell sx={{ padding: '0px', height: '24px' }}>
-        <Input
+        <TableCell sx={{ padding: '4px', height: '32px' }}>
+        <TextField
   placeholder="UOM"
   value={uoms[index]}
   onChange={(e) => handleUomChange(index, e.target.value)}
   //error={uomErrors[index] !== ''}
   fullWidth
+  InputLabelProps={{
+    shrink: true,
+  }}
+  InputProps={{
+    disableUnderline: true,
+    style: { height: '30px', paddingLeft: '1px' }
+  }}
+  FormHelperTextProps={{
+    children: "* Required field"
+  }}
 />
+
         </TableCell>
-        <TableCell sx={{ padding: '0px', height: '24px' }}>
-  <Input
+         <TableCell sx={{ padding: '4px', height: '32px' }}>
+  <TextField
   type="number"
   placeholder="Qty"
   required
@@ -1223,6 +1227,16 @@ placeholder="Item Name"
   onChange={(e) => handleQuantityChange(index, Number(e.target.value))}
   error={quantityErrors[index] !== ''}
   fullWidth
+      InputLabelProps={{
+        shrink: true,
+      }}
+      InputProps={{
+        disableUnderline: true,
+        style: { height: '30px', paddingLeft: '1px' }
+      }}
+      FormHelperTextProps={{
+        children: "* Required field"
+      }}
 />
         </TableCell> 
         <TableCell sx={{ padding: '1px', height: '0px', minWidth: '24px' }}>
@@ -1231,12 +1245,29 @@ placeholder="Item Name"
     key={index}
     expanded={expanded === `panel${index}`}
     onChange={handleAccordionChange(`panel${index}`)}
-    style={{ width: '240px', marginBottom: '15px' }}
+    elevation={0}
+    sx={{
+      borderRadius: '4px',
+      boxShadow: 'none',
+      '&:hover': {
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+      },
+    }}
   >
-        <AccordionSummary expandIcon={<Add />} aria-controls="panel1bh-content" id="panel1bh-header">
-          <Typography>Add More</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
+    <AccordionSummary
+      expandIcon={<ExpandMore />}
+      aria-controls={`panel${index}bh-content`}
+      id={`panel${index}bh-header`}
+      sx={{
+        minHeight: '32px',
+        '& .MuiAccordionSummary-content': {
+          margin: '6px 0',
+        },
+      }}
+    >
+      <Typography variant="body1">Type more</Typography>
+    </AccordionSummary>
+    <AccordionDetails sx={{ padding: '2px 6px' }}>
           <div>
           <Input
           placeholder="Mark"

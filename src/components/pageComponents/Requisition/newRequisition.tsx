@@ -57,6 +57,8 @@ const NewRequisitionComponent: React.FC = () => {
   const remark =  location.state?.remark;
   const categoryId =  location.state?.categoryId;
   const sourceType = location.state?.sourceType;
+  const requestedBy = location.state?.requestedBy;
+  const approvedBy = location.state?.approvedBy;
   const products=location.state?.products || [];
   const navigate = useNavigate();
   const [flashMessage, setFlashMessage] = useState('');
@@ -129,7 +131,7 @@ const handleSubmit = async (
       })),
     };
     
-   /* const inputSave = {
+    const inputSave = {
       purchaseRequest: {
         userId: Number(userId),
         status: 'saved',
@@ -155,9 +157,9 @@ const handleSubmit = async (
       })),
     };
   
-    console.log(input); */
+    console.log(input); 
     if (buttonType === "save") {
-      const response = await createPurchaseRequest({ variables: { input } });
+      const response = await createPurchaseRequest({ variables: { input:inputSave } });
       refetch();
       setButtonLoading(false);
       console.log('Mutation response:', response);
@@ -234,6 +236,7 @@ useEffect(() => {
       {
         id ?<SavedForm loading={buttonLoading}  onSubmit={handleSubmit} purchaseRequestId={id} estimatedDate={samis} 
         addressData={address} remarkData={remark} categoryIdData =  {categoryId} sourceType= {sourceType} savedProducts={products}
+        requestedData = {requestedBy} approvedData = {approvedBy}
         />:
         <RequestForm   loading={buttonLoading} onSubmit={handleSubmit}/>
       }

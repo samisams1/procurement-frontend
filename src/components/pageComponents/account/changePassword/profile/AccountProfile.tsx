@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { useMutation } from '@apollo/client';
 import { gql } from '@apollo/client';
 
@@ -16,7 +16,7 @@ const FileUploadForm: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadFile] = useMutation(UPLOAD_FILE);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       setSelectedFile(event.target.files[0]);
     }
