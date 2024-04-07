@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { Grid,createTheme, Paper,ThemeProvider,Typography, styled, Button } from '@mui/material';
+import { Grid,createTheme, Paper,ThemeProvider,Typography, styled, Button, Table, TableCell, TableRow, TableBody, TableContainer } from '@mui/material';
 import { gql } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { UserContext } from '../../../auth/UserContext';
@@ -410,7 +410,94 @@ const CustomFooter = () => {
       </Popup>
         </ThemeProvider>
      
-    <TermsCondition/>
+        <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6} md={6}>
+                     <TermsCondition/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={6}>
+                    <div style={{ border: '1px solid black', padding: '10px', margin: '10px', textAlign: 'center' }}>
+    <TableContainer component={Paper} style={{ margin: '10px' }}>
+      <Table>
+        <TableBody>
+        <TableRow>
+            <TableCell align="center">
+              <Typography>Shipping Cost</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>
+              0.00
+              </Typography></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Sub Total</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>
+              0.00
+              </Typography></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Tax (35%)</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>0.00</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>VAT (15%)</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>0.00</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Service charge (1%)</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>0.00</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Total</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>0.00</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Total discount</Typography>
+            </TableCell>
+            <TableCell align="center">0.00</TableCell>
+          </TableRow>
+         
+          <TableRow>
+            <TableCell align="center">
+              <Typography>payable</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>0.00</Typography>
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">
+              <Typography>Currency</Typography>
+            </TableCell>
+            <TableCell align="center">
+              <Typography>ETB</Typography>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </div>
+                    </Grid>
+                    </Grid>
     </Grid>
     </Grid>
     </div>

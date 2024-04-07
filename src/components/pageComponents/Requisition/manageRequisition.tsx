@@ -57,7 +57,6 @@ const RequisitionComponent: React.FC = () => {
     'ID',
     'Reference Number',
     'Status',
-    'No of suppliers seen',
     'Date',
     {
       name: 'Action',
@@ -80,7 +79,7 @@ View Details
   ];
 
   const tableData = purchaseRequests
-  .filter((purchaseRequest) => purchaseRequest.status === 'pending')
+  .filter((purchaseRequest) => purchaseRequest.status === 'sent')
   .map((purchaseRequest, index) => [
     index + 1,
     purchaseRequest.id,
@@ -88,7 +87,7 @@ View Details
     (
       <span style={{ color: 'green' }}>{"sent"}</span>
     ),
-    purchaseRequest?.suppliers?.map((supplier:any) => supplier.user.first).join(', '),
+    //purchaseRequest?.suppliers?.map((supplier:any) => supplier.user.first).join(', '),
     new Date(purchaseRequest.createdAt).toLocaleString(),
     '',
   ]);
