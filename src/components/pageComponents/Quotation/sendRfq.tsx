@@ -637,93 +637,120 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
             options={options}
           />
           </ThemeProvider>
-       <Box mt={2}>
+          <Box mt={2} sx={{ padding: { xs: '10px', sm: '20px' } }}>
   <Form onSubmit={handleSubmit}>
-  <Grid container spacing={2} justifyContent="center">
-  <Grid container spacing={3}>
-  <Grid item xs={12} sm={4}>
-    <Input
-      label="Sent Approved By"
-      placeholder="Please specify approved By"
-      value={sentBy}
-      fullWidth
-      required
-      sx={{ paddingTop: '10px', paddingBottom: '10px', marginBottom: '10px' }}
-      onChange={handleSentByChange}
-    />
-  </Grid>
-  <Grid item xs={12} sm={4}>
-    <TextField
-      select
-      required
-      label="Availability Date of Price"
-      value={estimatedDelivery}
-      onChange={handleDateChange}
-      fullWidth
-      sx={{ paddingTop: '10px', paddingBottom: '10px', marginBottom: '10px' }}
-    >
-      {renderDateOptions()}
-    </TextField>
-  </Grid>
-  <Grid item xs={12} sm={4}>
-    <Input
-      label="Remark"
-      value={remark}
-      placeholder="Please enter Remark"
-      fullWidth
-      sx={{ paddingTop: '10px', paddingBottom: '10px' }}
-      onChange={handleRemarkChange}
-    />
-  </Grid>
-</Grid>
-  <Grid item xs={12} textAlign="center">
-    {!successMessage && !errorMessage && (
-    <div>
-        <Grid item xs={12} sm={12}>
-        <Paper elevation={3} sx={{ padding: '20px' }}>
-  <Grid item xs={12} sm={12} style={{ display: 'flex', justifyContent: 'center' }}>
-    <div style={{ border: '1px solid black', padding: '10px' }}>
-    I declare that the information mentioned above is true and correct to the best of my knowledge.
-    </div>
-  </Grid>
-<div>
-  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}  className="no-print">
-    <Button
-      variant="outlined"
-      color="primary"
-      type="submit"
-      startIcon={<Save />}
-      //onClick={handleAddTitle}
-      style={{ whiteSpace: 'nowrap', backgroundColor: 'green', color: '#ffffff' }}
-    >
-      Send Quotation
-    </Button>
-    <Button
-      variant="outlined"
-      color="primary"
-      startIcon={<Drafts />}
-      onClick={() => hadleSeveAsDraftAndCancel('draft')}
-      style={{ whiteSpace: 'nowrap', backgroundColor: 'gray', color: '#ffffff' }}
-    >
-      Seve as Drafts
-    </Button>
-    <Button
-      variant="outlined"
-      //color="Secodary"
-      startIcon={<Cancel />}
-      onClick={() => hadleSeveAsDraftAndCancel('canceled')}
-      style={{ whiteSpace: 'nowrap', backgroundColor: 'red', color: '#ffffff' }}
-    >
-      Cancel
-    </Button>
-  </Box>
-</div>
-</Paper>
+    <Grid container spacing={2} justifyContent="center">
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={4}>
+          <Input
+            label="Sent Approved By"
+            placeholder="Please specify approved By"
+            value={sentBy}
+            fullWidth
+            required
+            sx={{
+              paddingTop: { xs: '10px', sm: '10px' },
+              paddingBottom: { xs: '10px', sm: '10px' },
+              marginBottom: '10px'
+            }}
+            onChange={handleSentByChange}
+          />
         </Grid>
-    </div>
-    )}
-  </Grid>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            select
+            required
+            label="Availability Date of Price"
+            value={estimatedDelivery}
+            onChange={handleDateChange}
+            fullWidth
+            sx={{
+              paddingTop: { xs: '10px', sm: '10px' },
+              paddingBottom: { xs: '10px', sm: '10px' },
+              marginBottom: '10px'
+            }}
+          >
+            {renderDateOptions()}
+          </TextField>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Input
+            label="Remark"
+            value={remark}
+            placeholder="Please enter Remark"
+            fullWidth
+            sx={{
+              paddingTop: { xs: '10px', sm: '10px' },
+              paddingBottom: { xs: '10px', sm: '10px' }
+            }}
+            onChange={handleRemarkChange}
+          />
+        </Grid>
+        <Grid sx={{ padding: { xs: '10px', sm: '20px' }, display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
+  I declare that the information mentioned above is true and correct to the best of my knowledge.
 </Grid>
+      </Grid>
+      <Grid item xs={12} textAlign="center">
+        {!successMessage && !errorMessage && (
+          <div>
+            <Grid item xs={12} sm={12}>
+              <Paper elevation={3} sx={{ padding: '20px' }}>
+                <div>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: { xs: 'center', sm: 'space-between' },
+                      gap: '10px',
+                      flexWrap: 'wrap'
+                    }}
+                    className="no-print"
+                  >
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      type="submit"
+                      startIcon={<Save />}
+                      style={{
+                        whiteSpace: 'nowrap',
+                        backgroundColor: 'green',
+                        color: '#ffffff'
+                      }}
+                    >
+                      Send Quotation
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<Drafts />}
+                      onClick={() => hadleSeveAsDraftAndCancel('draft')}
+                      style={{
+                        whiteSpace: 'nowrap',
+                        backgroundColor: 'gray',
+                        color: '#ffffff'
+                      }}
+                    >
+                      Save as Draft
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      startIcon={<Cancel />}
+                      onClick={() => hadleSeveAsDraftAndCancel('canceled')}
+                      style={{
+                        whiteSpace: 'nowrap',
+                        backgroundColor: 'red',
+                        color: '#ffffff'
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
+                </div>
+              </Paper>
+            </Grid>
+          </div>
+        )}
+      </Grid>
+    </Grid>
   </Form>
 </Box>
 </Grid>

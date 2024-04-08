@@ -180,7 +180,6 @@ View Details
     <Grid container spacing={3}>
       <Grid item xs={12}>
           <PageHeader title="Draft Requests" icon={<RequestPageOutlined />} imageSrc = "salesForce.png" />
-          <h1>{userId}</h1>
       </Grid>
       <Grid item xs={12}>
         <ThemeProvider theme={theme}>

@@ -67,11 +67,14 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCl
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <LogoImage src={require('../assets/pro.png')} alt="logo" />
           <Typography variant="h6" sx={{ color: '#00b0ad' }}>
-     Etproforma
+            Etproforma
           </Typography>
         </Box>
-        <IconButton color="inherit" component={RouterLink} to="/home">
-          <LogoutSharp />
+        <IconButton color="inherit" component={RouterLink} to="/home" sx={{ p: 1 }}>
+          <LogoutSharp fontSize="small"  />
+          <Typography variant="body2" sx={{ fontSize: '10px', marginLeft: '4px', color: 'red' }}>
+            Logout
+          </Typography>
         </IconButton>
       </LogoStyle>
       <Box sx={{ mb: 2, mx: 1 }}>

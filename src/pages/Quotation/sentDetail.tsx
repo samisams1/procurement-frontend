@@ -233,6 +233,7 @@ const [estimatedDelivery] = useState(data?.quotationByRequestIdAdSupplierId[0]?.
               <TextField
                 placeholder="Enter Shipping Cost"
                 value={Number.isFinite(shippingCost) ? shippingCost.toString() : ''}
+                disabled
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setShippingCost(parseFloat(e.target.value))
                 }

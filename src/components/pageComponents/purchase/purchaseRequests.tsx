@@ -83,17 +83,25 @@ const PurchaseRequests: React.FC<PurchaseRequestId> = ({ supplierId }) => {
     referenceNumber: string,
     requestedDate: string,
     customerName: string,
-    category: string
+    category: string,
+    status:string,
   ) => {
-    navigate('/sendRfq', {
-      state: { id, qId, supplierId, referenceNumber, requestedDate, customerName, category },
-    });
+    if(status === "quoted"){
+      navigate('/sendRFqDetail', {
+        state: { id, qId, supplierId, referenceNumber, requestedDate, customerName, category },
+      });
+    }
+   if(status === "pending"){
+      navigate('/sendRfq', {
+        state: { id, qId, supplierId, referenceNumber, requestedDate, customerName, category },
+      });
+    }
   };
 
   const tableData = useMemo(
     () =>
       quotations
-        ?.filter((quotation: any) => quotation.status === 'pending')
+        ?.filter((quotation: any) => quotation.status === 'pending' || quotation.status === 'quoted')
         .map((quotation: any) => ({
           id: quotation.purchaseRequestId,
           qId: quotation.id,
@@ -121,8 +129,15 @@ const PurchaseRequests: React.FC<PurchaseRequestId> = ({ supplierId }) => {
       options: {
         customBodyRender: (value: any, tableMeta: any) => {
           const status = tableMeta.rowData[2]; // Assuming the status is located in the second column
-
-          return <span style={{ color: 'red' }}>{status}</span>;
+          let color = '';
+      
+          if (status === 'pending') {
+            color = 'red';
+          } else if (status === 'quoted') {
+            color = 'green';
+          }
+      
+          return <span style={{ color }}>{status}</span>;
         },
       },
     },
@@ -154,12 +169,13 @@ const PurchaseRequests: React.FC<PurchaseRequestId> = ({ supplierId }) => {
           const referenceNumber = tableMeta.rowData[5];
           const requestedDate = tableMeta.rowData[6];
           const category = tableMeta.rowData[4];
+          const status = tableMeta.rowData[2];
 
           return (
             <Button
               variant="outlined"
               onClick={() =>
-                handleListItemClick(id, qId, referenceNumber, requestedDate, customerName, category)
+                handleListItemClick(id, qId, referenceNumber, requestedDate, customerName, category,status)
               }
               style={{ whiteSpace: 'nowrap' }}
             >
