@@ -92,7 +92,7 @@ const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
 
   const uniquePurchaseRequestIds = Array.from(new Set(getAllProductPrices.map((productPrice) => productPrice.quotation.purchaseRequestId)));
 
-  const handleClick = (productId: string, customerId: number, supplierId: number) => {
+  const handleClick = (productId: number, customerId: number, supplierId: number) => {
     navigate('/manageRfq', { state: { productId, customerId, supplierId } });
   };
 
@@ -143,7 +143,7 @@ const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
         color="primary"
         style={{ whiteSpace: 'nowrap' }}
         onClick={() =>
-          handleClick(productPrice.productId, productPrice.quotation.customerId, productPrice.quotation.supplierId)
+          handleClick(productPrice.quotation.id, productPrice.quotation.customerId, productPrice.quotation.supplierId)
         }
       >
         Detail
