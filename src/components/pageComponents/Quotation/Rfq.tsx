@@ -125,7 +125,6 @@ const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
     return [
       index + 1,
       productPrice.id,
-      productPrice.quotation.supplierId,
       'Electronics',
       <>
       <p>{productPrice.createdAt ? new Date(productPrice.createdAt).toLocaleString('en-US', {
@@ -155,7 +154,6 @@ const RfqComponent: React.FC<RfqComponentProps> = ({ userId }) => {
   const tableColumns = [
     'S.N',
     'Request ID',
-    'No. of Suppliers',
     'Category',
     'RFQ Date',
     'Status',

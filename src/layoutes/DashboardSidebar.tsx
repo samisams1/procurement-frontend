@@ -6,7 +6,6 @@ import useResponsive from '../hooks/useResponsive';
 import Spinner from '../components/Spinner';
 import { UserContext } from '../auth/UserContext';
 import NavSection from './NavSection';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { LogoutSharp } from '@mui/icons-material';
 
 const DRAWER_WIDTH = 280;
@@ -70,28 +69,33 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCl
             Etproforma
           </Typography>
         </Box>
-        <IconButton color="inherit" component={RouterLink} to="/home" sx={{ p: 1 }}>
-          <LogoutSharp fontSize="small"  />
-          <Typography variant="body2" sx={{ fontSize: '10px', marginLeft: '4px', color: 'red' }}>
-            Logout
-          </Typography>
-        </IconButton>
+        <IconButton
+  color="inherit"
+  component={RouterLink}
+  to="/home"
+  sx={{ p: 1, borderRadius: '60%' }}
+>
+  <LogoutSharp fontSize="small" />
+  <Typography variant="body2" sx={{ fontSize: '10px', marginLeft: '4px', color: 'red' }}>
+    Logout
+  </Typography>
+</IconButton>
       </LogoStyle>
-      <Box sx={{ mb: 2, mx: 1 }}>
-        <Link underline="none" component={RouterLink} to="#">
-          <AccountStyle>
-            <Avatar src={require('../assets/pro.png')} alt="photoURL" />
-            <Box sx={{ ml: 1 }}>
-              <Typography variant="body2" sx={{ color: 'white' }}>
-                Welcome, {currentUser.username}!
-              </Typography>
-            </Box>
-            <IconButton color="inherit" component={RouterLink} to="/logout">
-              <LogoutIcon />
-            </IconButton>
-          </AccountStyle>
-        </Link>
+<Box >
+  <Link underline="none" component={RouterLink} to="#">
+    <AccountStyle>
+      <Avatar src={require('../assets/pro.png')} alt="photoURL" />
+      <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
+        <Typography variant="body2" sx={{ color: 'white' }}>
+          Welcome, {currentUser.username}!
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'white', marginLeft: '4px' }}>
+          Role, {currentUser.role}
+        </Typography>
       </Box>
+    </AccountStyle>
+  </Link>
+</Box>
       <NavSection />
       <Box sx={{ flexGrow: 1 }} />
     </div>
