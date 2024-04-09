@@ -12,34 +12,11 @@ import { CREATE_PURCHASE_REQUEST_MUTATION } from '../../../graphql/quotation';
 //import { usePurchaseRequest } from '../../../context/purchaseRequestContext';
 import { PurchaseRequestData } from './manageRequisition';
 const UPDATE_PURCHASE_REQUEST = gql`
-  mutation UpdatePurchaseRequest($input: UpdatePurchaseRequestInput!) {
-    updatePurchaseRequest(input: $input) {
-      id
-      userId
-      status
-      remark
-      addressDetail
-      estimatedDelivery
-      sourceType
-      categoryId
-      approvedBy
-      requestedBy
-      suppliers {
-        id
-      }
-      products {
-        title
-        quantity
-        mark
-        uom
-        Description
-        code
-        manufacturer
-        partNumber
-        model
-      }
-    }
+mutation UpdatePurchaseRequest($input: UpdatePurchaseRequestInput) {
+  updatePurchaseRequest(input: $input) {
+    id
   }
+}
 `;
 export interface AdditionalData {
   remark: string;
@@ -107,6 +84,7 @@ const handleSubmit = async (
     );
     const input = {
       purchaseRequest: {
+      // id:id,
         userId: Number(userId),
         status: "sent",
         remark: additional.remark,
@@ -130,7 +108,7 @@ const handleSubmit = async (
         model: product.model,
       })),
     };
-    
+    console.log(input)
     const inputSave = {
       purchaseRequest: {
         userId: Number(userId),
@@ -156,14 +134,66 @@ const handleSubmit = async (
         model: product.model,
       })),
     };
-  
+    const saveUpdate = {
+      purchaseRequest: {
+        id:id,
+        userId: Number(userId),
+        status: 'saved',
+        remark: additional.remark,
+        addressDetail: additional.addressDetail,
+        estimatedDelivery: additional.estimatedDelivery,
+        sourceType: selectedType,
+        categoryId: Number(categoryId),
+        approvedBy:additional.approvedBy,
+        requestedBy:additional.requestedBy
+      },
+      suppliers: supplierNewId.map((supplierId) => ({ id: supplierId })),
+      products: validProducts.map((product) => ({
+        title: product.productTitle,
+        quantity: product.quantity,
+        mark: product.mark,
+        uom: product.uom,
+        Description: product.description,
+        code: product.code,
+        manufacturer: product.manufacturer,
+        partNumber: product.partNumber,
+        model: product.model,
+      })),
+    };
+    const draftSent = {
+      purchaseRequest: {
+        id:Number(id),
+        userId: Number(userId),
+        status: 'sent',
+        remark: additional.remark,
+        addressDetail: additional.addressDetail,
+        estimatedDelivery: additional.estimatedDelivery,
+        sourceType: selectedType,
+        categoryId: Number(categoryId),
+        approvedBy:additional.approvedBy,
+        requestedBy:additional.requestedBy
+      },
+      suppliers: supplierNewId.map((supplierId) => ({ id: supplierId })),
+      products: validProducts.map((product) => ({
+        title: product.productTitle,
+        quantity: product.quantity,
+        mark: product.mark,
+        uom: product.uom,
+        Description: product.description,
+        code: product.code,
+        manufacturer: product.manufacturer,
+        partNumber: product.partNumber,
+        model: product.model,
+      })),
+    };
     console.log(input); 
     if (buttonType === "save") {
+     console.log("kebebush") 
       const response = await createPurchaseRequest({ variables: { input:inputSave } });
       refetch();
       setButtonLoading(false);
       console.log('Mutation response:', response);
-      setFlashMessage('Your request is sent successfully');
+      setFlashMessage('Your request is sent successfully sams');
       setOpenSnackbar(true);
       setTimeout(() => {
         if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
@@ -174,17 +204,33 @@ const handleSubmit = async (
           // Handle the case when the response data is not as expected
         }
       }, 5000);
-    } else if (buttonType === "update") {
+    } else if (buttonType === "saveUpdate") {
       
-      const response = await updatePurchaseRequest({ variables: { input } });
+      const response = await updatePurchaseRequest({ variables: { input:saveUpdate } });
       refetch();
       setButtonLoading(false);
       console.log('Mutation response:', response);
-      setFlashMessage('Your request is sent successfully');
+      setFlashMessage('Your request is saved successfully');
       setOpenSnackbar(true);
       setTimeout(() => {
-        if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
-          navigate(`/purchaseRequest/${response.data.createPurchaseRequest.id}`);
+        if (response.data) {
+          navigate(`/drafts`);
+        } else {
+          console.error('Invalid response data');
+          // Handle the case when the response data is not as expected
+        }
+      }, 5000);
+    }else if (buttonType === "draftSent") {
+      
+      const response = await updatePurchaseRequest({ variables: { input:draftSent } });
+      refetch();
+      setButtonLoading(false);
+      console.log('Mutation response:', response);
+      setFlashMessage('Your request is saved successfully');
+      setOpenSnackbar(true);
+      setTimeout(() => {
+        if (response.data) {
+          navigate(`/drafts`);
         } else {
           console.error('Invalid response data');
           // Handle the case when the response data is not as expected
@@ -199,7 +245,7 @@ const handleSubmit = async (
       setOpenSnackbar(true);
       setTimeout(() => {
         if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
-          navigate(`/purchaseRequest/${response.data.createPurchaseRequest.id}`);
+          navigate(`/purchaseRequest/${id}`);
         } else {
           console.error('Invalid response data');
           // Handle the case when the response data is not as expected
@@ -236,10 +282,11 @@ useEffect(() => {
       {
         id ?<SavedForm loading={buttonLoading}  onSubmit={handleSubmit} purchaseRequestId={id} estimatedDate={samis} 
         addressData={address} remarkData={remark} categoryIdData =  {categoryId} sourceType= {sourceType} savedProducts={products}
-        requestedData = {requestedBy} approvedData = {approvedBy}
+        requestedData = {requestedBy} approvedData = {approvedBy} 
         />:
         <RequestForm   loading={buttonLoading} onSubmit={handleSubmit}/>
       }
+      {id}
     </>
   );
 };

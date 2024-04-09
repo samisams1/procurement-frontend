@@ -76,7 +76,7 @@ interface RequestFormProps {
     categoryIdData:number;
     sourceType:string;
     savedProducts:[Product]
-  onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string,categoryId:string,buttonType:string) => Promise<void>;
+  onSubmit: (products: SaleInput[], supplierNewId: string[], additional: AdditionalData,selectedType:string,categoryId:string,buttonType:string,purchaseRequestId:number) => Promise<void>;
   loading:boolean
 }
 const GET_CATEGORIES = gql`
@@ -340,7 +340,7 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
     return options;
   };
   const handleSubmit = () => {
-    const  buttonType = "update";
+    const  buttonType = "draftSent";
     if (selectedOptions.length === 0) {
       setErrorMessage('Please select an option');
       return;
@@ -443,17 +443,17 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
       supplierNewId = supplierIds;
    //  onSubmit(selectedType, supplierNewId);
    console.log(supplierIds)
-      onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType)
+      onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType,purchaseRequestId)
   } else if (selectedType === 'agent' || selectedType === 'x-company') {
       supplierNewId = [selectedValue];
    
      // onSubmit(selectedType, supplierNewId);
-     onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
+     onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType,purchaseRequestId);
 
   
     }
   };
-  const handleSave = (buttonType: 'save' | 'send') => {
+  const handleSave = (buttonType: 'saveUpdate') => {
    /* if (buttonType === 'save') {
       // Save button was clicked
       console.log('Save button clicked');
@@ -564,14 +564,14 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
   //    supplierNewId = ['1','2'];
       supplierNewId = supplierIds;
    //  onSubmit(selectedType, supplierNewId);
-   console.log(supplierIds)
+   console.log("sami aye")
 console.log(supplierIds)
-      onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
+      onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType,purchaseRequestId);
 
     } else if (selectedType === 'agent' || selectedType === 'x-company') {
       supplierNewId = [selectedValue];
      // onSubmit(selectedType, supplierNewId);
-     onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType);
+     onSubmit(products, supplierNewId,additional,selectedType,categoryId,buttonType,purchaseRequestId);
 
      
 
@@ -774,6 +774,7 @@ return(
         <Grid item xs={12}>
 <Typography variant="h5" style={{ textAlign: 'center', color: '#333', fontWeight: 'bold', fontSize: '24px', marginBottom: '20px' }}>
   Fill your form
+  {purchaseRequestId}
 </Typography>
             
         <TableBody>
@@ -1088,7 +1089,7 @@ Add Item
         variant="outlined"
         color="primary"
         startIcon={<Save />}
-        onClick={() => handleSave('save')}
+        onClick={() => handleSave('saveUpdate')}
         style={{ whiteSpace: 'nowrap' }}
         ref={saveButtonRef}
       >
@@ -1458,7 +1459,7 @@ marginBottom: '10px',
           variant="outlined"
           color="primary" // Apply "#ccc" background color when loading is true
           startIcon={<RequestPageOutlined />}
-          onClick={() => handleSave('save')}
+          onClick={() => handleSave('saveUpdate')}
           ref={saveButtonRef}
           fullWidth
           disabled={loading} // Disable the button when loading is true
