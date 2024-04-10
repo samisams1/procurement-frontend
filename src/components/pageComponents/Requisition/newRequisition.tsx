@@ -230,7 +230,9 @@ const handleSubmit = async (
       setOpenSnackbar(true);
       setTimeout(() => {
         if (response.data) {
-          navigate(`/drafts`);
+         // navigate(`/drafts`);
+          navigate(`/purchaseRequest/${id}`);
+
         } else {
           console.error('Invalid response data');
           // Handle the case when the response data is not as expected
@@ -245,7 +247,7 @@ const handleSubmit = async (
       setOpenSnackbar(true);
       setTimeout(() => {
         if (response.data && response.data.createPurchaseRequest && response.data.createPurchaseRequest.id) {
-          navigate(`/purchaseRequest/${id}`);
+          navigate(`/purchaseRequest/${response.data.createPurchaseRequest.id}`);
         } else {
           console.error('Invalid response data');
           // Handle the case when the response data is not as expected
