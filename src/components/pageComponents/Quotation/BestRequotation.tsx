@@ -376,7 +376,28 @@ return (
                   'Qty',
                   'Price',
                   'Discount',
-                  'Total Price'
+                  'Total Price',
+                  {
+                    name: 'more',
+                    label: 'More',
+                    options: {
+                      display: true,
+                      customBodyRender: (value, tableMeta) => {
+                        const rowIndex = tableMeta.rowIndex;
+                        const product = productPrices[rowIndex];
+                        // Render the dropdown list with more details
+                        return (
+                          <select>
+                            <option value="details1">Manufacturer: {product?.product?.manufacture}</option>
+                            <option value="details2">Mark: {product?.product?.mark}</option>
+                            <option value="details3">Description: {product?.product?.Description}</option>
+                            <option value="details4">Model: {product?.product?.model}</option>
+                            {/* Add more options as needed */}
+                          </select>
+                        );
+                      },
+                    },
+                  },
                 ]}
                 components={{
                   TableFooter: () => (

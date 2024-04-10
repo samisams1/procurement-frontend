@@ -227,7 +227,27 @@ function Detail() {
       options: {
         display: true,
       }
-    }
+    },  {
+      name: 'more',
+      label: 'More',
+      options: {
+        display: true,
+        customBodyRender: (value: string, tableMeta: { rowIndex: number }) => {
+          const rowIndex = tableMeta.rowIndex;
+          const product = orderDetail?.products[rowIndex];
+          // Render the dropdown list with more details
+          return (
+            <select>
+              <option value="details1">Manufacturer:  {product?.manufacturer}</option>
+              <option value="details2">Mark:  {product?.mark}</option>
+              <option value="details2">Description: {product?.Description}</option>
+              <option value="details2">Model: {product?.model}</option>
+              {/* Add more options as needed */}
+            </select>
+          );
+        },
+      },
+    },
   ];
 
   const tableData = orderDetail?.products.map((product, index) => ({
