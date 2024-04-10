@@ -641,7 +641,7 @@ return(
       disabled={selectedOptions.length === 1 && !selectedOptions.includes('x-company')}
     />
     {selectedOptions.includes('x-company') ? <span></span> : null}
-    <Typography>Et-Proforma</Typography>
+    <Typography>EtPro</Typography>
     
   </Box>
 </Grid>
