@@ -104,7 +104,6 @@ const handleSubmit = async (
         Description: product.description,
         code: product.code,
         manufacturer: product.manufacturer,
-        partNumber: product.partNumber,
         model: product.model,
       })),
     };
@@ -130,7 +129,6 @@ const handleSubmit = async (
         Description: product.description,
         code: product.code,
         manufacturer: product.manufacturer,
-        partNumber: product.partNumber,
         model: product.model,
       })),
     };
@@ -156,7 +154,6 @@ const handleSubmit = async (
         Description: product.description,
         code: product.code,
         manufacturer: product.manufacturer,
-        partNumber: product.partNumber,
         model: product.model,
       })),
     };
@@ -182,7 +179,6 @@ const handleSubmit = async (
         Description: product.description,
         code: product.code,
         manufacturer: product.manufacturer,
-        partNumber: product.partNumber,
         model: product.model,
       })),
     };

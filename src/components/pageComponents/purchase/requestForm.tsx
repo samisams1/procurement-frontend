@@ -38,7 +38,6 @@ interface Supplier {
 export interface SaleInput {
   productTitle: string;
   code:string;
-  partNumber  :string;
   uom :string;
   quantity :number;
   mark  :string;
@@ -100,7 +99,6 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit,loading }) => {
   const [productTitles, setProductTitles] = useState<string[]>(['']);
   const [itemCodes, setItemCodes] = useState<string[]>(['']);
   //const [itemCodeErrors, setItemCodeErrors] = useState<string[]>(['']);
-  const [partNumbers, setPartNumbers] = useState<string[]>(['']);
  // const [partNumberErrors, setPartNumberErrors] = useState<string[]>(['']);
   const [uoms, setUoms] = useState<string[]>(['']);
  // const [uomErrors, setUomErrors] = useState<string[]>(['']);
@@ -202,20 +200,6 @@ useEffect(()=>{
     setItemCodeErrors(updatedCodeErrors);*/
   };
 
-  const handlePartNumberChange = (index: number, value: string) => {
-    const updatedPartNumbers = [...partNumbers];
-    updatedPartNumbers[index] = value;
-    setPartNumbers(updatedPartNumbers);
-
-   /* const updatedPartNumberErrors = [...partNumberErrors];
-    if (value.trim() === '') {
-      updatedPartNumberErrors[index] = 'Please enter a valid part number.';
-    } else {
-      updatedPartNumberErrors[index] = '';
-    }
-    setPartNumberErrors(updatedPartNumberErrors);*/
-  };
-
   const handleUomChange = (index: number, value: string) => {
     const updatedUoms = [...uoms];
     updatedUoms[index] = value;
@@ -299,7 +283,6 @@ useEffect(()=>{
     setItemCodes(['']);
     setManufacturers(['']);
     setModels(['']);
-    setPartNumbers(['']);
     setProductTitles(['']);
     setQuantities(['']);
     setUoms(['']);
@@ -404,7 +387,7 @@ useEffect(()=>{
     const products: SaleInput[] = productTitles.map((title,index) => ({ 
       productTitle: title, 
       code: itemCodes[index],
-      partNumber: partNumbers[index],
+      //partNumber: partNumbers[index],
       uom: uoms[index],
       quantity: Number(quantities[index]), // Convert the quantity value
       mark: marks[index],
@@ -526,7 +509,6 @@ useEffect(()=>{
     const products: SaleInput[] = productTitles.map((title,index) => ({ 
       productTitle: title, 
       code: itemCodes[index],
-      partNumber: partNumbers[index],
       uom: uoms[index],
       quantity: Number(quantities[index]), // Convert the quantity value
       mark: marks[index],
@@ -787,16 +769,6 @@ return(
       value={itemCodes[index]}
       onChange={(e) => handleItemCodeChange(index, e.target.value)}
      // error={itemCodeErrors[index] !== ''}
-     style={{ marginBottom: '1rem' }}
-    />
-    <TextField
-      label="Part Number"
-      variant="outlined"
-      fullWidth
-      required
-      value={partNumbers[index]}
-      onChange={(e) => handlePartNumberChange(index, e.target.value)}
-   //   error={partNumberErrors[index] !== ''}
      style={{ marginBottom: '1rem' }}
     />
        <TextField
@@ -1119,7 +1091,6 @@ marginBottom: '10px',
     <TableCell sx={{ padding: '4px', height: '32px' }}>SN</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Product /Service description</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Code</TableCell>
-      <TableCell sx={{ padding: '4px', height: '32px' }}>Part Number</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Unit</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Qty</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>More Details</TableCell>
@@ -1158,25 +1129,6 @@ marginBottom: '10px',
           value={itemCodes[index]}
           onChange={(e) => handleItemCodeChange(index, e.target.value)}
         //  error={itemCodeErrors[index] !== ''}
-          fullWidth
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{
-            disableUnderline: true,
-            style: { height: '30px', paddingLeft: '1px' }
-          }}
-          FormHelperTextProps={{
-            children: "* Required field"
-          }}
-        />
-   </TableCell>
-   <TableCell sx={{ padding: '4px', height: '32px' }}>
-   <TextField
-          label="Part Number"
-          placeholder="Part Number"
-          value={partNumbers[index]}
-          onChange={(e) => handlePartNumberChange(index, e.target.value)}
           fullWidth
           InputLabelProps={{
             shrink: true,

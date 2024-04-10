@@ -35,7 +35,6 @@ interface Supplier {
 export interface SaleInput {
   productTitle: string;
   code:string;
-  partNumber  :string;
   uom :string;
   quantity :number;
   mark  :string;
@@ -46,7 +45,6 @@ export interface SaleInput {
 export interface Product {
   title: string;
   code:string;
-  partNumber  :string;
   uom :string;
   quantity :string;
   mark  :string;
@@ -122,8 +120,6 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
  // const [productTitles, setProductTitles] = useState<string[]>(['']);
   const [itemCodes, setItemCodes] = useState<string[]>(savedProducts.map(product => product.code));
  // const [itemCodeErrors, setItemCodeErrors] = useState<string[]>(['']);
-  const [partNumbers, setPartNumbers] =useState<string[]>(savedProducts.map(product => product.partNumber));
-  //const [partNumberErrors, setPartNumberErrors] = useState<string[]>(['']);
   const [uoms, setUoms] = useState<string[]>(savedProducts.map(product => product.uom));
   //const [uomErrors, setUomErrors] = useState<string[]>(['']);
   const [quantities, setQuantities] = useState<string[]>(savedProducts.map(product => product.quantity));
@@ -218,21 +214,6 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
     }
     setItemCodeErrors(updatedCodeErrors);*/
   };
-
-  const handlePartNumberChange = (index: number, value: string) => {
-    const updatedPartNumbers = [...partNumbers];
-    updatedPartNumbers[index] = value;
-    setPartNumbers(updatedPartNumbers);
-
-   /* const updatedPartNumberErrors = [...partNumberErrors];
-    if (value.trim() === '') {
-      updatedPartNumberErrors[index] = 'Please enter a valid part number.';
-    } else {
-      updatedPartNumberErrors[index] = '';
-    }
-    setPartNumberErrors(updatedPartNumberErrors);*/
-  };
-
   const handleUomChange = (index: number, value: string) => {
     const updatedUoms = [...uoms];
     updatedUoms[index] = value;
@@ -315,7 +296,6 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
     setItemCodes(['']);
     setManufacturers(['']);
     setModels(['']);
-    setPartNumbers(['']);
     setProductTitles(['']);
     setQuantities(['']);
     setUoms(['']);
@@ -419,7 +399,6 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
     const products: SaleInput[] = productTitles.map((title,index) => ({ 
       productTitle: title, 
       code: itemCodes[index],
-      partNumber: partNumbers[index],
       uom: uoms[index],
       quantity: Number(quantities[index]), // Convert the quantity value
       mark: marks[index],
@@ -541,7 +520,6 @@ const SavedForm: React.FC<RequestFormProps> = ({ onSubmit,loading,purchaseReques
     const products: SaleInput[] = productTitles.map((title,index) => ({ 
       productTitle: title, 
       code: itemCodes[index],
-      partNumber: partNumbers[index],
       uom: uoms[index],
       quantity: Number(quantities[index]), // Convert the quantity value
       mark: marks[index],
@@ -847,15 +825,6 @@ return(
      // error={itemCodeErrors[index] !== ''}
      style={{ marginBottom: '1rem' }}
     />
-    <TextField
-      label="Part Number"
-      variant="outlined"
-      fullWidth
-      value={partNumbers[index]}
-      onChange={(e) => handlePartNumberChange(index, e.target.value)}
-    //  error={partNumberErrors[index] !== ''}
-     style={{ marginBottom: '1rem' }}
-    />
        <TextField
       label="UOM"
       variant="outlined"
@@ -1129,7 +1098,6 @@ marginBottom: '10px',
      <TableCell sx={{ padding: '4px', height: '32px' }}>SN</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Name</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Item Code</TableCell>
-      <TableCell sx={{ padding: '4px', height: '32px' }}>Part Number</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>UOM</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>Qty</TableCell>
       <TableCell sx={{ padding: '4px', height: '32px' }}>More</TableCell>
@@ -1167,25 +1135,6 @@ marginBottom: '10px',
           value={itemCodes[index]}
           onChange={(e) => handleItemCodeChange(index, e.target.value)}
         //  error={itemCodeErrors[index] !== ''}
-          fullWidth
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{
-            disableUnderline: true,
-            style: { height: '30px', paddingLeft: '1px' }
-          }}
-          FormHelperTextProps={{
-            children: "* Required field"
-          }}
-        />
-        </TableCell>
-        <TableCell sx={{ padding: '4px', height: '32px' }}>
-        <TextField
-          placeholder="Part Number"
-          value={partNumbers[index]}
-          onChange={(e) => handlePartNumberChange(index, e.target.value)}
-         // error={partNumberErrors[index] !== ''}
           fullWidth
           InputLabelProps={{
             shrink: true,
