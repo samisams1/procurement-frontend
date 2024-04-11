@@ -116,6 +116,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit,loading }) => {
   const [requestedBy, setRequestedBy] = useState('');
   const [estimatedDelivery, setEstimatedDelivery] = useState('');
   const [titleErrors, setTitleErrors] = useState<string[]>(['* Required field']);
+  const [addressErrors, setAddressErrors] = useState<string>('* Required field');
 
   const saveButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -268,6 +269,11 @@ useEffect(()=>{
   };
   const handleAddressChange = (value: string) => {
     setAddressDetail(value);
+    let updatedAddressErrors = '';
+    if (value.trim() === '') {
+      updatedAddressErrors = 'Please enter a valid item name.';
+    }
+    setAddressErrors(updatedAddressErrors);
   };
   const handleRequestedByChange = (value: string) => {
     setRequestedBy(value);
@@ -752,7 +758,7 @@ return(
 
 <Typography variant="h6">Item Number #{index + 1}</Typography>
      <TextField
-      label="Item Name"
+      label="Product /Service description"
       variant="outlined"
       fullWidth
       required
@@ -765,7 +771,6 @@ return(
       label="Item Code"
       variant="outlined"
       fullWidth
-      required
       value={itemCodes[index]}
       onChange={(e) => handleItemCodeChange(index, e.target.value)}
      // error={itemCodeErrors[index] !== ''}
@@ -773,7 +778,6 @@ return(
     />
        <TextField
       label="UOM"
-      required
       variant="outlined"
       fullWidth
       value={uoms[index]}
@@ -805,10 +809,19 @@ return(
   aria-controls="panel1bh-content"
   id="panel1bh-header"
 >
-          <Typography>Add More</Typography>
+          <Typography>Add More(Optional)</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
+          <TextField
+      label="Manufacture"
+      variant="outlined"
+      fullWidth
+      value={manufacturers[index]}
+      onChange={(e) => handleManufacturersChange(index, e.target.value)}
+      //   error={quantityErrors[index] !== ''}
+      style={{ marginBottom: '1rem' }}
+      /> 
          <TextField
       label="Mark"
       variant="outlined"
@@ -818,7 +831,15 @@ return(
       //error={quantityErrors[index] !== ''}
      style={{ marginBottom: '1rem' }}
     /> 
-        
+        <TextField
+      label="Model"
+      variant="outlined"
+      fullWidth
+      value={models[index]}
+      onChange={(e) => handleModelChange(index, e.target.value)}
+      //   error={quantityErrors[index] !== ''}
+      style={{ marginBottom: '1rem' }}
+      /> 
       <TextField
       label="Description"
       variant="outlined"
@@ -828,24 +849,7 @@ return(
       //   error={quantityErrors[index] !== ''}
       style={{ marginBottom: '1rem' }}
       /> 
-      <TextField
-      label="Manufacture"
-      variant="outlined"
-      fullWidth
-      value={manufacturers[index]}
-      onChange={(e) => handleManufacturersChange(index, e.target.value)}
-      //   error={quantityErrors[index] !== ''}
-      style={{ marginBottom: '1rem' }}
-      /> 
-      <TextField
-      label="Model"
-      variant="outlined"
-      fullWidth
-      value={models[index]}
-      onChange={(e) => handleModelChange(index, e.target.value)}
-      //   error={quantityErrors[index] !== ''}
-      style={{ marginBottom: '1rem' }}
-      />
+    
           </div>
         </AccordionDetails>
       </Accordion>
@@ -898,9 +902,10 @@ Add Item
       label="Address details"
       variant="outlined"
       fullWidth
+      required
       value={addressDetail}
       onChange={(e) => handleAddressChange(e.target.value)}
-     // error={remarkErrors !== ''}
+     error={addressErrors !== ''}
     />
   </Grid>
   <Grid item xs={12} sm={6} md={4}>
@@ -959,7 +964,6 @@ Add Item
     <Grid item xs={12}>
           <TextField
             select
-            required
             label="Estimated Delivery Date"
             value={estimatedDelivery}
             onChange={handleDateChange}
@@ -987,7 +991,6 @@ Add Item
       label="Requested By"
       variant="outlined"
       fullWidth
-      required
      value={requestedBy}
       onChange={(e) => handleRequestedByChange(e.target.value)}
      // error={requestedByError !== ''}
@@ -1023,7 +1026,7 @@ Add Item
         variant="outlined"
         color="primary"
         onClick={() => handleSubmit()}
-        style={{ whiteSpace: 'nowrap' }}
+        style={{whiteSpace: 'nowrap',backgroundColor: '#068d50', color: '#ffffff' }}
         startIcon={<Send />}
         disabled={loading} // Disable the button when loading is true
         >
@@ -1054,15 +1057,15 @@ Add Item
             </div>
          
         ) : (
-          'Save'
+          'Save as Draft'
         )}
       </Button>
       <Button
         variant="outlined"
-        color="primary"
         startIcon={<RestoreFromTrash />}
         onClick={handleReset}
-        style={{whiteSpace: 'nowrap'}}
+        style={{whiteSpace: 'nowrap',backgroundColor: '#ccc', color: '#ffffff' }}
+
       >
         Reset
       </Button>
@@ -1154,9 +1157,6 @@ marginBottom: '10px',
   InputProps={{
     disableUnderline: true,
     style: { height: '30px', paddingLeft: '1px' }
-  }}
-  FormHelperTextProps={{
-    children: "* Required field"
   }}
 />
    </TableCell>

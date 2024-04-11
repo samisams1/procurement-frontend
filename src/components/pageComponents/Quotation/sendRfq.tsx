@@ -374,37 +374,50 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
     },
   ];
   const tableData = quotationByRequestIdAdSupplierId.map((quotation: any, index: number) => {
-  
     return [
       index + 1,
       <Checkbox
-      checked={isSelectedMap[quotation.product.id]}
-      onChange={() => handleCheckboxChange(quotation.product.id)}
-      key={quotation.product.id}
-    />,
+        checked={isSelectedMap[quotation.product.id]}
+        onChange={() => handleCheckboxChange(quotation.product.id)}
+        key={quotation.product.id}
+      />,
       quotation.product.title,
       quotation.product.code,
       quotation.product.uom,
-      <TextField
-        placeholder="Please Enter the Price"
-        value={prices[quotation.id.toString()] !== undefined ? prices[quotation.id.toString()] : quotation.price || ''}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handlePriceChange(quotation.id.toString(), e)}
-        InputProps={{
-          style: {
-            padding: '0 8px',
-            height: '30px',
-          },
-        }}
-      />,
+    
+    <TableCell sx={{ padding: '4px', height: '32px' }}>
+    <TextField
+          placeholder="Please Enter the Price"
+          value={prices[quotation.id.toString()] !== undefined ? prices[quotation.id.toString()] : quotation.price || ''}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handlePriceChange(quotation.id.toString(), e)}
+         //  error={itemCodeErrors[index] !== ''}
+           fullWidth
+           InputLabelProps={{
+             shrink: true,
+           }}
+           InputProps={{
+             disableUnderline: true,
+             style: { height: '30px', paddingLeft: '1px',width:'200px' }
+           }}
+           FormHelperTextProps={{
+             children: "* Required field"
+           }}
+         />
+    </TableCell>,
       <TextField
         placeholder="Please Enter discount"
         value={disCountPrice[quotation.id.toString()] || quotation.disCountPrice}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handlePriceDiscountChange(quotation.id.toString(), e)}
+        fullWidth
+        InputLabelProps={{
+          shrink: true,
+        }}
         InputProps={{
-          style: {
-            padding: '0 8px',
-            height: '30px',
-          },
+          disableUnderline: true,
+          style: { height: '30px', paddingLeft: '1px',width:'200px' }
+        }}
+        FormHelperTextProps={{
+          children: "* Required field"
         }}
       />,
       quotation.product.quantity,

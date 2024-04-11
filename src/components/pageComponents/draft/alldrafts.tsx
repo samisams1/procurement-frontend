@@ -84,7 +84,6 @@ const AllDrafts: React.FC = () => {
     'ID',
     'Reference Number',
     'Status',
-    'No of suppliers seen',
     'Date',
     /*{
       name: 'Action',
@@ -132,7 +131,6 @@ View Details
     (
       <span style={{ color: 'green' }}>{purchaseRequest.status}</span>
     ),
-    purchaseRequest?.suppliers?.map((supplier:any) => supplier.user.first).join(', '),
     new Date(purchaseRequest.createdAt).toLocaleString(),
     '',
   ]);
