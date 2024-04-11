@@ -354,7 +354,8 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
       },
     },
     {
-      name: 'Discount',
+
+      name: 'Disc',
       options: {
         display: true,
       },
@@ -405,7 +406,7 @@ const [shippingCost, setShippingCost] = useState<number>(quotationByRequestIdAdS
          />
     </TableCell>,
       <TextField
-        placeholder="Please Enter discount"
+        placeholder="Please Enter Disc"
         value={disCountPrice[quotation.id.toString()] || quotation.disCountPrice}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => handlePriceDiscountChange(quotation.id.toString(), e)}
         fullWidth

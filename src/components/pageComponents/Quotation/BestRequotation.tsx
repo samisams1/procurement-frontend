@@ -375,7 +375,7 @@ return (
                   'Unit',
                   'Qty',
                   'Price',
-                  'Discount',
+                  'Disc',
                   'Total Price',
                   {
                     name: 'more',

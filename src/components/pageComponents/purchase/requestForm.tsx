@@ -1350,39 +1350,7 @@ marginBottom: '10px',
           style={{ display: 'none' }}
           // onChange={handleFileChange}
         />
-        <label htmlFor="attachment-input">
-          <span
-            style={{
-              flex: 1,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              marginRight: '10px',
-            }}
-          >
-            Attach a file
-          </span>
-          <Button
-            variant="text"
-            component="label"
-            htmlFor="upload-input"
-            style={{
-              textTransform: 'none',
-              fontSize: '14px',
-              color: '#00b0ad',
-              borderColor: '##00b0ad',
-            }}
-          >
-            Upload 
-            <input
-              accept="image/*"
-              style={{ display: 'none' }}
-              id="upload-input"
-              type="file"
-              onChange={handleUpload}
-            />
-          </Button>
-        </label>
+    
       </div>
     </FormControl>
   </Grid>
