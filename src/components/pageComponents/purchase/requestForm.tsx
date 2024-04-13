@@ -1332,28 +1332,7 @@ marginBottom: '10px',
      // error={remarkErrors !== ''}
     />
   </Grid>
-  <Grid item xs={12} sm={6} md={3}>
-    <FormControl variant="outlined" fullWidth>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          padding: '6px 10px',
-          cursor: 'pointer',
-        }}
-      >
-        <input
-          type="file"
-          accept=".pdf"
-          style={{ display: 'none' }}
-          // onChange={handleFileChange}
-        />
-    
-      </div>
-    </FormControl>
-  </Grid>
+ 
   <Grid item xs={12} sm={6} md={3}>
     <Grid container spacing={2}>
       <Grid item xs={12}>
