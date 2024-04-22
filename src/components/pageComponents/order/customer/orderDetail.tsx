@@ -317,7 +317,7 @@ console.log(payments)
       <TableRow>
         <TableCell>2024/4/1</TableCell>
         <TableCell>{payable}</TableCell>
-        <TableCell style={{ color: "#00b0ad" }}>{orderDetail?.order?.status === "approved"?"Wait for Payment":"paid"} </TableCell>
+        <TableCell style={{ color: "#00b0ad" }}>{orderDetail?.order?.status} </TableCell>
       </TableRow>
     </TableBody>
   </Table>
@@ -604,34 +604,34 @@ console.log(payments)
       )}
       {currentUser.role === "SUPPLIER" && (
          <Grid item xs={12} textAlign="center">
-<Paper elevation={3} sx={{ padding: '20px', paddingTop: '10px', paddingBottom: '10px',marginTop:'10px',mariginBottom:'10px', border: '1px dashed #00b0ad' }}>
-<Typography variant="h6" component="h2" sx={{ marginBottom: '10px' }}>
-Order Actions
+<Paper elevation={3} sx={{ padding: '20px', paddingTop: '10px', paddingBottom: '10px', marginTop: '10px', marginBottom: '10px', border: '1px dashed #00b0ad' }}>
+  <Typography variant="h6" component="h2" sx={{ marginBottom: '10px' }}>
+    Order Actions
   </Typography>
-             <div style={{
-   display: 'flex',
-   alignItems: 'center',
-   justifyContent: 'space-between',
-   marginBottom: '10px',
- }}>
-              <Button
-                startIcon={<ConfirmationNumberTwoTone />}
-                variant="outlined"
-                color="primary"
-                onClick={handleUpdate}
-              >
-               Approve Order
-              </Button>
-              <Button
-        variant="outlined"
-        startIcon={<Cancel />}
-        onClick={handleUpdateReject}
-        style={{ whiteSpace: 'nowrap',color:"red" }}
-      >
-        Reject Order 
-      </Button>
-   </div>
-         </Paper>
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: '10px',
+  }}>
+    <Button
+      startIcon={<ConfirmationNumberTwoTone />}
+      variant="outlined"
+      color="primary"
+      onClick={handleUpdate}
+      sx={{ marginRight: '10px' }}
+    >
+      Approve Order
+    </Button>
+    <Button
+      variant="outlined"
+      startIcon={<Cancel />}
+      onClick={handleUpdateReject}
+      style={{ whiteSpace: 'nowrap', color: "red" }}
+    >
+      Reject Order
+    </Button>
+  </div>
+</Paper>
    </Grid>
       
       )}

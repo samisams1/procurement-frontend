@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Box, Link, Drawer, Typography, Avatar, IconButton } from '@mui/material';
 import useResponsive from '../hooks/useResponsive';
@@ -45,6 +45,8 @@ type DashboardSidebarProps = {
 };
 
 const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCloseSidebar }) => {
+  const navigate = useNavigate();
+  const { setCurrentUser } = useContext(UserContext);
   const { pathname } = useLocation();
   const isDesktop = useResponsive('up', 'lg');
   const { currentUser } = React.useContext(UserContext);
@@ -59,6 +61,12 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCl
   if (!currentUser) {
     return <Spinner />;
   }
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("currentUser");
+    setCurrentUser(null); // Assuming there is a setCurrentUser function in the UserContext
+    navigate('/home');
+  };
 
   const renderContent = (
     <div>
@@ -71,8 +79,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ isOpenSidebar, onCl
         </Box>
         <IconButton
   color="inherit"
-  component={RouterLink}
-  to="/home"
+  onClick={handleLogout}
   sx={{ p: 1, borderRadius: '60%' }}
 >
   <LogoutSharp fontSize="small" />
