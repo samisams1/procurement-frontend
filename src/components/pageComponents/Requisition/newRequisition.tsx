@@ -210,7 +210,7 @@ const handleSubmit = async (
       setOpenSnackbar(true);
       setTimeout(() => {
         if (response.data) {
-          navigate(`/drafts`);
+          navigate(`/requisitions`);
         } else {
           console.error('Invalid response data');
           // Handle the case when the response data is not as expected
