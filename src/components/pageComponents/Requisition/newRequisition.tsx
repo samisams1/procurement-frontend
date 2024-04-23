@@ -226,8 +226,8 @@ const handleSubmit = async (
       setOpenSnackbar(true);
       setTimeout(() => {
         if (response.data) {
-          navigate(`/drafts`);
-         // navigate(`/purchaseRequest/${id}`);
+          //navigate(`/requisitions`);
+         navigate(`/purchaseRequest/${id}`);
 
         } else {
           console.error('Invalid response data');
